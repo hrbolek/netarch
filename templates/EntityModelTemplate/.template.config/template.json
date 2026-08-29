@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "WebAppArchitecture",
+  "classifications": ["C#", "Entity", "Model", "Store"],
+  "identity": "WebAppArchitecture.EntityModelTemplate",
+  "name": "WebAppArchitecture Entity Model Layer",
+  "shortName": "entity-model",
+  "sourceName": "EntityName",
+  "preferNameDirectory": false,
+  "symbols": {
+    "rootNamespace": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "WebAppArchitecture",
+      "replaces": "RootNamespace"
+    }
+  },
+  "sources": [{
+    "exclude": [".template.config/**", "README.md"]
+  }]
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "WebAppArchitecture",
+  "classifications": ["Razor", "Entity", "UI"],
+  "identity": "WebAppArchitecture.EntityUITemplate",
+  "name": "WebAppArchitecture Entity UI Layer",
+  "shortName": "entity-ui",
+  "sourceName": "EntityName",
+  "preferNameDirectory": false,
+  "symbols": {
+    "rootNamespace": {"type":"parameter","datatype":"string","defaultValue":"WebAppArchitecture","replaces":"RootNamespace"},
+    "title": {"type":"parameter","datatype":"string","defaultValue":"EntityName","replaces":"EntityTitle"}
+  },
+  "sources": [{"exclude": [".template.config/**", "README.md"]}]
+}

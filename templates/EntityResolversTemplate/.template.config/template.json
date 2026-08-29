@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "WebAppArchitecture",
+  "classifications": ["C#", "Entity", "Resolvers", "Minimal API"],
+  "identity": "WebAppArchitecture.EntityResolversTemplate",
+  "name": "WebAppArchitecture Entity Resolvers Layer",
+  "shortName": "entity-resolvers",
+  "sourceName": "EntityName",
+  "preferNameDirectory": false,
+  "symbols": {
+    "rootNamespace": {"type":"parameter","datatype":"string","defaultValue":"WebAppArchitecture","replaces":"RootNamespace"},
+    "route": {"type":"parameter","datatype":"string","defaultValue":"entity","replaces":"entity-route"}
+  },
+  "sources": [{"exclude": [".template.config/**", "README.md"]}]
+}

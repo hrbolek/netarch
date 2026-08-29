@@ -1,0 +1,39 @@
+@namespace WebAppArchitecture.Base.UI.Components
+@typeparam TModel
+
+<div class="card @CssClass">
+    @if (Header is not null)
+    {
+        <div class="card-header">@Header(Model)</div>
+    }
+    else if (!string.IsNullOrWhiteSpace(HeaderText))
+    {
+        <div class="card-header">@HeaderText</div>
+    }
+
+    <div class="card-body">
+        @if (ChildContent is not null)
+        {
+            @ChildContent(Model)
+        }
+    </div>
+
+    @if (Footer is not null)
+    {
+        <div class="card-footer">@Footer(Model)</div>
+    }
+    else if (!string.IsNullOrWhiteSpace(FooterText))
+    {
+        <div class="card-footer">@FooterText</div>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public TModel Model { get; set; } = default!;
+    [Parameter] public string? CssClass { get; set; }
+    [Parameter] public string? HeaderText { get; set; }
+    [Parameter] public string? FooterText { get; set; }
+    [Parameter] public RenderFragment<TModel>? Header { get; set; }
+    [Parameter] public RenderFragment<TModel>? Footer { get; set; }
+    [Parameter] public RenderFragment<TModel>? ChildContent { get; set; }
+}

@@ -1,0 +1,17 @@
+@namespace RootNamespace.EntityName.UI.Pages
+@using RootNamespace.EntityName.Models
+@using RootNamespace.EntityName.UI.Components
+
+<WebAppArchitecture.Base.UI.Pages.PageView
+    TModel="EntityNameResponse"
+    TComponent="EditableCard"
+    Model="@Model"
+    Title="Editace: EntityTitle" />
+
+@code {
+    [Parameter, EditorRequired]
+    public EntityNameResponse Model { get; set; } = default!;
+
+    [Parameter]
+    public bool IsFragment { get; set; }
+}

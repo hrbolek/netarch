@@ -1,0 +1,72 @@
+@namespace WebAppArchitecture.Base.UI.Components
+@typeparam TModel
+@using System.Globalization
+@using System.Reflection
+@using System.Text.Json
+
+<div class="row Attribute_Row">
+    @if (!string.IsNullOrWhiteSpace(Label))
+    {
+        <div class="col-12 col-md-4 Attribute_Col_Label"><b>@Label</b></div>
+        <div class="col-12 col-md-8 Attribute_Col_Value">
+            @if (ChildContent is not null) { @ChildContent } else { @RenderValue(Value) }
+        </div>
+    }
+    else
+    {
+        <div class="col-12 Attribute_Col_Value">
+            @if (ChildContent is not null) { @ChildContent } else { @RenderValue(Value) }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public TModel? Item { get; set; }
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? AttributeName { get; set; }
+    [Parameter] public object? AttributeValue { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private object? Value => AttributeValue ?? GetAttributeValue(Item, AttributeName);
+
+    private static object? GetAttributeValue(TModel? item, string? attributeName)
+    {
+        if (item is null || string.IsNullOrWhiteSpace(attributeName)) return null;
+        if (item is IReadOnlyDictionary<string, object?> ro && ro.TryGetValue(attributeName, out var rv)) return rv;
+        if (item is IDictionary<string, object?> dict && dict.TryGetValue(attributeName, out var dv)) return dv;
+
+        var property = item.GetType().GetProperty(attributeName,
+            BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+        return property?.GetValue(item);
+    }
+
+    private RenderFragment RenderValue(object? value) => builder =>
+    {
+        if (value is null) return;
+        switch (value)
+        {
+            case bool b:
+                builder.AddContent(0, b ? "Ano" : "Ne");
+                break;
+            case DateTime dt:
+                builder.AddContent(0, dt.ToString("g", CultureInfo.GetCultureInfo("cs-CZ")));
+                break;
+            case DateTimeOffset dto:
+                builder.AddContent(0, dto.LocalDateTime.ToString("g", CultureInfo.GetCultureInfo("cs-CZ")));
+                break;
+            case string s:
+                builder.AddContent(0, s);
+                break;
+            default:
+                if (!value.GetType().IsPrimitive && value is not decimal && value is not Guid && value is not Enum)
+                {
+                    builder.OpenElement(0, "pre");
+                    builder.AddAttribute(1, "class", "mb-0");
+                    builder.AddContent(2, JsonSerializer.Serialize(value, new JsonSerializerOptions { WriteIndented = true }));
+                    builder.CloseElement();
+                }
+                else builder.AddContent(0, value.ToString());
+                break;
+        }
+    };
+}

@@ -1,0 +1,19 @@
+@namespace WebAppArchitecture.Base.UI.Pages
+@typeparam TModel where TModel : IEntityDBModel
+
+<Page Title="@Title">
+    <LargeCard TModel="TModel" Model="@Model" HeaderText="@HeaderText" FooterText="@FooterText">
+        @if (ChildContent is not null)
+        {
+            <ChildContent Context="item">@ChildContent(item)</ChildContent>
+        }
+    </LargeCard>
+</Page>
+
+@code {
+    [Parameter, EditorRequired] public TModel Model { get; set; } = default!;
+    [Parameter] public string Title { get; set; } = "WebAppArchitecture";
+    [Parameter] public string? HeaderText { get; set; }
+    [Parameter] public string? FooterText { get; set; }
+    [Parameter] public RenderFragment<TModel>? ChildContent { get; set; }
+}

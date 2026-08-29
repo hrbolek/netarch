@@ -1,0 +1,28 @@
+@namespace WebAppArchitecture.Base.UI.Pages
+@typeparam TModel where TModel : IEntityDBModel
+
+<PageBase TModel="TModel" Model="@Model" Title="@Title" HeaderText="@HeaderText" FooterText="@FooterText">
+    <ChildContent Context="item">
+        @if (ChildContent is not null)
+        {
+            @ChildContent(item)
+        }
+        else
+        {
+            <DynamicComponent Type="@EditableCardType" Parameters="@GetParameters(item)" />
+        }
+    </ChildContent>
+</PageBase>
+
+@code {
+    [Parameter, EditorRequired] public TModel Model { get; set; } = default!;
+    [Parameter] public string Title { get; set; } = "Editace";
+    [Parameter] public string? HeaderText { get; set; }
+    [Parameter] public string? FooterText { get; set; }
+    [Parameter] public RenderFragment<TModel>? ChildContent { get; set; }
+
+    private static Type EditableCardType => typeof(EditableCard<>).MakeGenericType(typeof(TModel));
+
+    private static IDictionary<string, object?> GetParameters(TModel model)
+        => new Dictionary<string, object?> { ["Model"] = model };
+}

@@ -1,0 +1,32 @@
+@namespace WebAppArchitecture.Base.UI.Components
+@typeparam TModel where TModel : IEntityDBModel
+
+<CardCapsule TModel="TModel" Model="@Model" FooterText="@FooterText">
+    <Header Context="item">
+        @if (Header is not null)
+        {
+            @Header(item)
+        }
+        else
+        {
+            <EntityLink TModel="TModel" Model="@item">
+                <ChildContent Context="entity">@(HeaderText ?? entity.id.ToString())</ChildContent>
+            </EntityLink>
+        }
+    </Header>
+
+    <ChildContent Context="item">
+        @if (ChildContent is not null)
+        {
+            @ChildContent(item)
+        }
+    </ChildContent>
+</CardCapsule>
+
+@code {
+    [Parameter, EditorRequired] public TModel Model { get; set; } = default!;
+    [Parameter] public string? HeaderText { get; set; }
+    [Parameter] public string? FooterText { get; set; }
+    [Parameter] public RenderFragment<TModel>? Header { get; set; }
+    [Parameter] public RenderFragment<TModel>? ChildContent { get; set; }
+}

@@ -1,0 +1,20 @@
+@namespace WebAppArchitecture.Base.UI.Pages
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://unpkg.com/htmx.org@2.0.8"></script>
+</head>
+<body>
+    @ChildContent
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+@code {
+    [Parameter] public string Title { get; set; } = "WebAppArchitecture";
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

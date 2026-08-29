@@ -1,0 +1,19 @@
+@namespace WebAppArchitecture.Base.UI.Htmx
+<div id="@Id" hx-get="@Url" hx-trigger="@Trigger" hx-swap="@Swap">
+    @if (Placeholder is not null)
+    {
+        @Placeholder
+    }
+    else
+    {
+        <div class="text-muted">Načítám...</div>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public string Url { get; set; } = default!;
+    [Parameter] public string? Id { get; set; }
+    [Parameter] public string Trigger { get; set; } = "load";
+    [Parameter] public string Swap { get; set; } = "innerHTML";
+    [Parameter] public RenderFragment? Placeholder { get; set; }
+}

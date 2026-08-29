@@ -1,0 +1,27 @@
+@namespace WebAppArchitecture.Base.UI.Pages
+@typeparam TModel where TModel : IEntityDBModel
+
+<Page Title="@Title">
+    <div class="container-fluid py-3">
+        @if (Items is not null)
+        {
+            @foreach (var item in Items)
+            {
+                if (ItemContent is not null)
+                {
+                    @ItemContent(item)
+                }
+                else
+                {
+                    <MediumCard TModel="TModel" Model="@item" />
+                }
+            }
+        }
+    </div>
+</Page>
+
+@code {
+    [Parameter] public string Title { get; set; } = "Seznam";
+    [Parameter, EditorRequired] public IReadOnlyCollection<TModel> Items { get; set; } = Array.Empty<TModel>();
+    [Parameter] public RenderFragment<TModel>? ItemContent { get; set; }
+}

@@ -1,0 +1,18 @@
+@namespace RootNamespace.EntityName.UI.Components
+@using RootNamespace.EntityName.Models
+
+<WebAppArchitecture.Base.UI.Components.EditableCard TModel="EntityNameResponse" Model="@Model" HeaderText="EntityTitle">
+    <ChildContent Context="item">
+        <form>
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input class="form-control" name="Name" value="@item.Name" />
+            </div>
+        </form>
+    </ChildContent>
+</WebAppArchitecture.Base.UI.Components.EditableCard>
+
+@code {
+    [Parameter, EditorRequired]
+    public EntityNameResponse Model { get; set; } = default!;
+}

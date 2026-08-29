@@ -1,0 +1,25 @@
+@namespace WebAppArchitecture.Base.UI.Components
+@typeparam TModel where TModel : IEntityDBModel
+
+<a href="@Href" class="@CssClass">
+    @if (ChildContent is not null)
+    {
+        @ChildContent(Model)
+    }
+    else
+    {
+        @Model.id
+    }
+</a>
+
+@code {
+    [Parameter, EditorRequired] public TModel Model { get; set; } = default!;
+    [Parameter] public string App { get; set; } = "demo";
+    [Parameter] public string? Type { get; set; }
+    [Parameter] public string Action { get; set; } = "view";
+    [Parameter] public string? CssClass { get; set; }
+    [Parameter] public RenderFragment<TModel>? ChildContent { get; set; }
+
+    private string EffectiveType => string.IsNullOrWhiteSpace(Type) ? typeof(TModel).Name : Type;
+    private string Href => $"/{App}/{EffectiveType}/{Action}/{Model.id}";
+}

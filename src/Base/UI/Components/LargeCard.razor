@@ -1,0 +1,32 @@
+@namespace WebAppArchitecture.Base.UI.Components
+@typeparam TModel where TModel : IEntityDBModel
+
+<CardCapsule TModel="TModel" Model="@Model" HeaderText="@HeaderText" FooterText="@FooterText">
+    <ChildContent Context="item">
+        <div class="row g-3">
+            @if (SideContent is not null)
+            {
+                <div class="col-12 col-md-3">@SideContent(item)</div>
+            }
+
+            <div class="@(SideContent is not null ? "col-12 col-md-9" : "col-12")">
+                @if (ChildContent is not null)
+                {
+                    @ChildContent(item)
+                }
+                else
+                {
+                    <MediumCard TModel="TModel" Model="@item" />
+                }
+            </div>
+        </div>
+    </ChildContent>
+</CardCapsule>
+
+@code {
+    [Parameter, EditorRequired] public TModel Model { get; set; } = default!;
+    [Parameter] public RenderFragment<TModel>? SideContent { get; set; }
+    [Parameter] public RenderFragment<TModel>? ChildContent { get; set; }
+    [Parameter] public string? HeaderText { get; set; }
+    [Parameter] public string? FooterText { get; set; }
+}
