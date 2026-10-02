@@ -1,7 +1,7 @@
 {
   "name": "WebAppArchitecture",
-  "build": {
-    "dockerfile": "Dockerfile"
-  },
-  "forwardPorts": [8080]
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "forwardPorts": [8000]
 }

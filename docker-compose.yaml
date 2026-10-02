@@ -1,0 +1,27 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__UserStore: Data Source=/data/user-store.db
+      ConnectionStrings__RbacStore: Data Source=/data/rbac-store.db
+    volumes:
+      - ./data:/data
+    expose:
+      - "8080"
+
+  fake-entra:
+    build:
+      context: https://github.com/hrbolek/easy_entra_id.git#main:fake
+    depends_on:
+      - app
+    environment:
+      APP_TITLE: SignFakeArchitecture Fake Entra ID
+      TARGET_SERVER: http://app:8080
+      FAKE_USERS_JSON: /config/fake-users.json
+    volumes:
+      - ./docker/fake-users.json:/config/fake-users.json:ro
+    ports:
+      - "8000:8000"

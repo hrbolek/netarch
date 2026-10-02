@@ -295,6 +295,32 @@ dotnet --info
 
 Projekt používá .NET 8.
 
+## Spuštění za fake Easy Entra ID
+
+Pro lokální běh za reverzní proxy, která simuluje easy_entra_id, použijte:
+
+```bash
+docker compose up --build
+```
+
+Veřejný vstup je potom na:
+
+```text
+http://localhost:8000
+```
+
+Login obrazovku poskytuje kontejner `fake-entra`, který do požadavků vůči aplikaci přidává hlavičky `x-ms-client-principal`, `x-ms-client-principal-id` a `x-ms-client-principal-name`.
+
+Aplikace akceptuje dostupné EasyAuth hlavičky flexibilně: pokud není k dispozici kompletní `x-ms-client-principal`, použije fallback z `x-ms-client-principal-id` a `x-ms-client-principal-name`.
+
+Aplikace při startu seeduje odpovídající uživatele a RBAC oprávnění pro tyto fake identity:
+
+- John Newbie
+- Planner Admin
+- Auditor
+
+Soubor `docker/fake-users.json` obsahuje pro uživatele i `scopes` (např. `read:profile`, `read:messages`) a tyto scope se mapují do claimů `scp` a `scope`.
+
 ## Restore a build
 
 Z rootu repository:

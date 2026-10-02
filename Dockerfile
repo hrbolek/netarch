@@ -13,19 +13,30 @@ WORKDIR /src
 # ------------------------------------------------------------
 
 COPY SignFakeArchitecture.sln ./
+COPY Directory.Build.props ./
 
 COPY src/Base/Base.csproj src/Base/
+COPY src/Group.Models/Group.Models.csproj src/Group.Models/
+COPY src/Group.Resolvers/Group.Resolvers.csproj src/Group.Resolvers/
+COPY src/Group.Services/Group.Services.csproj src/Group.Services/
+COPY src/Group.UI/Group.UI.csproj src/Group.UI/
 COPY src/Host/Host.csproj src/Host/
-
-# Add generated/module projects here if they are part
-# of the solution.
-#
-# Example:
-#
-# COPY src/Document.Models/Document.Models.csproj src/Document.Models/
-# COPY src/Document.Services/Document.Services.csproj src/Document.Services/
-# COPY src/Document.Resolvers/Document.Resolvers.csproj src/Document.Resolvers/
-# COPY src/Document.UI/Document.UI.csproj src/Document.UI/
+COPY src/Membership.Models/Membership.Models.csproj src/Membership.Models/
+COPY src/Membership.Resolvers/Membership.Resolvers.csproj src/Membership.Resolvers/
+COPY src/Membership.Services/Membership.Services.csproj src/Membership.Services/
+COPY src/Membership.UI/Membership.UI.csproj src/Membership.UI/
+COPY src/Role.Models/Role.Models.csproj src/Role.Models/
+COPY src/Role.Resolvers/Role.Resolvers.csproj src/Role.Resolvers/
+COPY src/Role.Services/Role.Services.csproj src/Role.Services/
+COPY src/Role.UI/Role.UI.csproj src/Role.UI/
+COPY src/RoleType.Models/RoleType.Models.csproj src/RoleType.Models/
+COPY src/RoleType.Resolvers/RoleType.Resolvers.csproj src/RoleType.Resolvers/
+COPY src/RoleType.Services/RoleType.Services.csproj src/RoleType.Services/
+COPY src/RoleType.UI/RoleType.UI.csproj src/RoleType.UI/
+COPY src/User.Models/User.Models.csproj src/User.Models/
+COPY src/User.Resolvers/User.Resolvers.csproj src/User.Resolvers/
+COPY src/User.Services/User.Services.csproj src/User.Services/
+COPY src/User.UI/User.UI.csproj src/User.UI/
 
 
 # ------------------------------------------------------------

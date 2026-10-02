@@ -303,6 +303,50 @@ public sealed class SqliteUserStore : IUserStore
 
         command.ExecuteNonQuery();
 
+                    SeedDefaults(connection);
+                }
+
+                private static void SeedDefaults(SqliteConnection connection)
+                {
+                    var now = DateTimeOffset.UtcNow;
+
+                    SeedUser(connection, new UserModel(
+                        WebAppArchitecture.Base.Security.RbacWellKnown.BootstrapAdminUserId,
+                        "Bootstrap Admin",
+                        WebAppArchitecture.Base.Security.RbacWellKnown.RootSecurityObjectId,
+                        now,
+                        now,
+                        WebAppArchitecture.Base.Security.RbacWellKnown.BootstrapAdminUserId,
+                        WebAppArchitecture.Base.Security.RbacWellKnown.BootstrapAdminUserId));
+
+                    foreach (var fakeUser in WebAppArchitecture.Base.Security.FakeEntraSeedUsers.All)
+                    {
+                        SeedUser(connection, new UserModel(
+                            fakeUser.id,
+                            fakeUser.Name,
+                            WebAppArchitecture.Base.Security.RbacWellKnown.RootSecurityObjectId,
+                            now,
+                            now,
+                            WebAppArchitecture.Base.Security.RbacWellKnown.BootstrapAdminUserId,
+                            WebAppArchitecture.Base.Security.RbacWellKnown.BootstrapAdminUserId));
+                    }
+                }
+
+                private static void SeedUser(SqliteConnection connection, UserModel model)
+                {
+                    using var command = connection.CreateCommand();
+                    command.CommandText = $"""
+                        INSERT OR IGNORE INTO {TableName}(id, name, rbac_id, created_at, updated_at, created_by, updated_by)
+                        VALUES ($id, $name, $rbac_id, $created_at, $updated_at, $created_by, $updated_by);
+                        """;
+                    command.Parameters.AddWithValue("$id", model.id.ToString());
+                    command.Parameters.AddWithValue("$name", model.Name);
+                    command.Parameters.AddWithValue("$rbac_id", model.rbac_id.ToString());
+                    command.Parameters.AddWithValue("$created_at", model.created_at.ToString("O"));
+                    command.Parameters.AddWithValue("$updated_at", model.updated_at.ToString("O"));
+                    command.Parameters.AddWithValue("$created_by", model.created_by.ToString());
+                    command.Parameters.AddWithValue("$updated_by", model.updated_by.ToString());
+                    command.ExecuteNonQuery();
         EnsureColumnExists(connection, TableName, "rbac_id", "TEXT NOT NULL DEFAULT '20000000-0000-0000-0000-000000000001'");
         EnsureColumnExists(connection, TableName, "created_at", "TEXT NOT NULL DEFAULT '1970-01-01T00:00:00.0000000+00:00'");
         EnsureColumnExists(connection, TableName, "updated_at", "TEXT NOT NULL DEFAULT '1970-01-01T00:00:00.0000000+00:00'");

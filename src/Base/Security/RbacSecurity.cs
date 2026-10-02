@@ -1,3 +1,5 @@
+using System.Text;
+using System.Text.Json;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -28,6 +30,41 @@ public static class RbacWellKnown
     public static readonly Guid BootstrapAdminUserId = Guid.Parse("00000000-0000-0000-0000-000000000001");
 }
 
+public sealed record FakeEntraSeedUser(
+    Guid id,
+    string Name,
+    string Email,
+    string RootRoleType
+);
+
+public static class FakeEntraSeedUsers
+{
+    public static readonly FakeEntraSeedUser JohnNewbie = new(
+        Guid.Parse("97c80a87-8206-4845-98df-2af25ed33916"),
+        "John Newbie",
+        "john.newbie@world.com",
+        "Rector");
+
+    public static readonly FakeEntraSeedUser PlannerAdmin = new(
+        Guid.Parse("b06d811c-6945-4c74-bbc7-0222537d2e13"),
+        "Planner Admin",
+        "planner.admin@world.com",
+        "Administrator");
+
+    public static readonly FakeEntraSeedUser Auditor = new(
+        Guid.Parse("7c03699a-f3c2-48b5-854f-8302c47145c9"),
+        "Auditor",
+        "auditor@world.com",
+        "Dean");
+
+    public static IReadOnlyList<FakeEntraSeedUser> All { get; } =
+    [
+        JohnNewbie,
+        PlannerAdmin,
+        Auditor
+    ];
+}
+
 public interface ICurrentActorProvider
 {
     Guid? TryGetActorUserId(HttpContext httpContext);
@@ -45,6 +82,12 @@ public sealed class HeaderOrClaimActorProvider : ICurrentActorProvider
 
         if (TryParseClaim(httpContext.User, ClaimTypes.NameIdentifier, out var nid))
             return nid;
+
+        if (TryParseValue(httpContext.Request.Headers["x-ms-client-principal-id"], out var easyAuthHeaderActor))
+            return easyAuthHeaderActor;
+
+        if (TryParseEasyAuthPrincipalActor(httpContext.Request.Headers["x-ms-client-principal"], out var easyAuthPrincipalActor))
+            return easyAuthPrincipalActor;
 
         if (TryParseValue(httpContext.Request.Headers["X-Actor-UserId"], out var headerActor))
             return headerActor;
@@ -70,7 +113,185 @@ public sealed class HeaderOrClaimActorProvider : ICurrentActorProvider
 
         return Guid.TryParse(value, out userId);
     }
+
+    private static bool TryParseEasyAuthPrincipalActor(string? encodedPrincipal, out Guid userId)
+    {
+        userId = Guid.Empty;
+        if (string.IsNullOrWhiteSpace(encodedPrincipal))
+            return false;
+
+        try
+        {
+            var json = Encoding.UTF8.GetString(Convert.FromBase64String(encodedPrincipal));
+            var payload = JsonSerializer.Deserialize<EasyAuthPrincipalPayload>(json, EasyAuthPrincipalJsonOptions);
+            if (payload?.claims is null)
+                return false;
+
+            foreach (var claim in payload.claims)
+            {
+                if (claim is null || !string.Equals(claim.typ, "oid", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                if (TryParseValue(claim.val, out userId))
+                    return true;
+            }
+        }
+        catch
+        {
+            return false;
+        }
+
+        return false;
+    }
+
+    private static readonly JsonSerializerOptions EasyAuthPrincipalJsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
 }
+
+public static class EasyEntraHeaderPrincipalExtensions
+{
+    public static IApplicationBuilder UseEasyEntraHeaderPrincipal(this IApplicationBuilder app)
+    {
+        ArgumentNullException.ThrowIfNull(app);
+
+        return app.Use(async (httpContext, next) =>
+        {
+            if (httpContext.User.Identity?.IsAuthenticated != true &&
+                TryBuildPrincipal(httpContext.Request.Headers, out var principal))
+            {
+                httpContext.User = principal;
+            }
+
+            await next();
+        });
+    }
+
+    private static bool TryBuildPrincipal(IHeaderDictionary headers, out ClaimsPrincipal principal)
+    {
+        principal = new ClaimsPrincipal(new ClaimsIdentity());
+        var claims = new List<Claim>();
+
+
+        if (TryDecodeEasyAuthPrincipal(headers["x-ms-client-principal"], claims) ||
+            TryBuildFallbackClaims(headers, claims))
+        {
+            principal = new ClaimsPrincipal(
+                new ClaimsIdentity(claims, "EasyEntraProxy", ClaimTypes.Name, ClaimTypes.Role));
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool TryDecodeEasyAuthPrincipal(string? encodedPrincipal, List<Claim> claims)
+    {
+        if (string.IsNullOrWhiteSpace(encodedPrincipal))
+            return false;
+
+        try
+        {
+            var json = Encoding.UTF8.GetString(Convert.FromBase64String(encodedPrincipal));
+            var payload = JsonSerializer.Deserialize<EasyAuthPrincipalPayload>(json, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            if (payload?.claims is null || payload.claims.Count == 0)
+                return false;
+
+            foreach (var claim in payload.claims)
+            {
+                if (claim is null || string.IsNullOrWhiteSpace(claim.typ) || string.IsNullOrWhiteSpace(claim.val))
+                    continue;
+
+                AddClaimMappings(claims, claim.typ, claim.val);
+            }
+
+            return claims.Count > 0;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static bool TryBuildFallbackClaims(IHeaderDictionary headers, List<Claim> claims)
+    {
+        var principalId = headers["x-ms-client-principal-id"].ToString();
+        var principalName = headers["x-ms-client-principal-name"].ToString();
+
+        if (string.IsNullOrWhiteSpace(principalId) && string.IsNullOrWhiteSpace(principalName))
+            return false;
+
+        if (!string.IsNullOrWhiteSpace(principalId))
+        {
+            AddClaimMappings(claims, "oid", principalId);
+            AddClaimMappings(claims, "sub", principalId);
+        }
+
+        if (!string.IsNullOrWhiteSpace(principalName))
+        {
+            AddClaimMappings(claims, "name", principalName);
+            AddClaimMappings(claims, "preferred_username", principalName);
+            AddClaimMappings(claims, "email", principalName);
+        }
+
+        return claims.Count > 0;
+    }
+
+    private static void AddClaimMappings(List<Claim> claims, string claimType, string claimValue)
+    {
+        if (string.IsNullOrWhiteSpace(claimType) || string.IsNullOrWhiteSpace(claimValue))
+            return;
+
+        claims.Add(new Claim(claimType, claimValue));
+
+        if (string.Equals(claimType, "roles", StringComparison.OrdinalIgnoreCase))
+        {
+            foreach (var role in claimValue.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                claims.Add(new Claim(ClaimTypes.Role, role));
+
+            return;
+        }
+
+        if (string.Equals(claimType, "scp", StringComparison.OrdinalIgnoreCase))
+        {
+            var scopes = claimValue
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Distinct(StringComparer.Ordinal)
+                .ToArray();
+
+            foreach (var scope in scopes)
+            {
+                claims.Add(new Claim("scp", scope));
+                claims.Add(new Claim("scope", scope));
+            }
+
+            return;
+        }
+
+        if (string.Equals(claimType, "oid", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(claimType, "sub", StringComparison.OrdinalIgnoreCase))
+        {
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, claimValue));
+            return;
+        }
+
+        if (string.Equals(claimType, "name", StringComparison.OrdinalIgnoreCase))
+        {
+            claims.Add(new Claim(ClaimTypes.Name, claimValue));
+            return;
+        }
+
+        if (string.Equals(claimType, "email", StringComparison.OrdinalIgnoreCase))
+            claims.Add(new Claim(ClaimTypes.Email, claimValue));
+    }
+}
+
+file sealed record EasyAuthPrincipalPayload(List<EasyAuthPrincipalClaim>? claims);
+file sealed record EasyAuthPrincipalClaim(string? typ, string? val);
 
 public interface IRbacAuthorizationService
 {
@@ -974,6 +1195,17 @@ public sealed class SqliteRbacService
             membershipSeed.ExecuteNonQuery();
         }
 
+        for (var index = 0; index < FakeEntraSeedUsers.All.Count; index++)
+        {
+            var user = FakeEntraSeedUsers.All[index];
+            SeedRootMembership(
+                connection,
+                Guid.Parse($"30000000-0000-0000-0000-{(index + 2).ToString("D12")}"),
+                user.id,
+                now,
+                RbacWellKnown.BootstrapAdminUserId);
+        }
+
         using (var roleSeed = connection.CreateCommand())
         {
             roleSeed.CommandText = """
@@ -994,6 +1226,72 @@ public sealed class SqliteRbacService
             roleSeed.Parameters.AddWithValue("$updated_by", RbacWellKnown.BootstrapAdminUserId.ToString());
             roleSeed.ExecuteNonQuery();
         }
+
+        for (var index = 0; index < FakeEntraSeedUsers.All.Count; index++)
+        {
+            var user = FakeEntraSeedUsers.All[index];
+            SeedRootRole(
+                connection,
+                Guid.Parse($"40000000-0000-0000-0000-{(index + 2).ToString("D12")}"),
+                user.id,
+                user.RootRoleType,
+                now,
+                RbacWellKnown.BootstrapAdminUserId);
+        }
+    }
+
+    private static void SeedRootMembership(
+        SqliteConnection connection,
+        Guid membershipId,
+        Guid userId,
+        DateTimeOffset now,
+        Guid actorUserId)
+    {
+        using var membershipSeed = connection.CreateCommand();
+        membershipSeed.CommandText = """
+            INSERT OR IGNORE INTO rbac_group_memberships
+                (id, group_id, user_id, valid_from, valid_to, created_at, updated_at, created_by, updated_by)
+            VALUES
+                ($id, $group_id, $user_id, $valid_from, NULL, $created_at, $updated_at, $created_by, $updated_by);
+            """;
+
+        membershipSeed.Parameters.AddWithValue("$id", membershipId.ToString());
+        membershipSeed.Parameters.AddWithValue("$group_id", RbacWellKnown.RootGroupId.ToString());
+        membershipSeed.Parameters.AddWithValue("$user_id", userId.ToString());
+        membershipSeed.Parameters.AddWithValue("$valid_from", ToIso(now));
+        membershipSeed.Parameters.AddWithValue("$created_at", ToIso(now));
+        membershipSeed.Parameters.AddWithValue("$updated_at", ToIso(now));
+        membershipSeed.Parameters.AddWithValue("$created_by", actorUserId.ToString());
+        membershipSeed.Parameters.AddWithValue("$updated_by", actorUserId.ToString());
+        membershipSeed.ExecuteNonQuery();
+    }
+
+    private static void SeedRootRole(
+        SqliteConnection connection,
+        Guid roleId,
+        Guid userId,
+        string roleType,
+        DateTimeOffset now,
+        Guid actorUserId)
+    {
+        using var roleSeed = connection.CreateCommand();
+        roleSeed.CommandText = """
+            INSERT OR IGNORE INTO rbac_group_roles
+                (id, group_id, user_id, role_type, is_deputy, valid_from, valid_to, delegated_by_role_id, created_at, updated_at, created_by, updated_by)
+            VALUES
+                ($id, $group_id, $user_id, $role_type, 0, $valid_from, NULL, NULL, $created_at, $updated_at, $created_by, $updated_by);
+            """;
+
+        roleSeed.Parameters.AddWithValue("$id", roleId.ToString());
+        roleSeed.Parameters.AddWithValue("$group_id", RbacWellKnown.RootGroupId.ToString());
+        roleSeed.Parameters.AddWithValue("$user_id", userId.ToString());
+        roleSeed.Parameters.AddWithValue("$role_type", NormalizeRoleType(roleType));
+        roleSeed.Parameters.AddWithValue("$valid_from", ToIso(now));
+        roleSeed.Parameters.AddWithValue("$created_at", ToIso(now));
+        roleSeed.Parameters.AddWithValue("$updated_at", ToIso(now));
+        roleSeed.Parameters.AddWithValue("$created_by", actorUserId.ToString());
+        roleSeed.Parameters.AddWithValue("$updated_by", actorUserId.ToString());
+        roleSeed.ExecuteNonQuery();
     }
 
     private static void SeedRoleTypeIfMissing(SqliteConnection connection, string roleType, IEnumerable<string> operations)
