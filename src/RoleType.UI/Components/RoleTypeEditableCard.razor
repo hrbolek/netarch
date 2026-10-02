@@ -1,0 +1,20 @@
+@using WebAppArchitecture.Base.UI.Components
+@using WebAppArchitecture.RoleType.Models
+
+@namespace WebAppArchitecture.RoleType.UI.Components
+
+<EditableCard TModel="RoleTypeResponse" Model="@Model" HeaderText="RoleType">
+    <ChildContent Context="item">
+        <form>
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input class="form-control" name="name" value="@item.name" />
+            </div>
+        </form>
+    </ChildContent>
+</EditableCard>
+
+@code {
+    [Parameter, EditorRequired]
+    public RoleTypeResponse Model { get; set; } = default!;
+}

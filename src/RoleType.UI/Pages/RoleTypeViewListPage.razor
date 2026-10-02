@@ -1,0 +1,19 @@
+@using WebAppArchitecture.Base.UI.Pages
+@using WebAppArchitecture.RoleType.Models
+@using WebAppArchitecture.RoleType.UI.Components
+
+@namespace WebAppArchitecture.RoleType.UI.Pages
+
+<PageViewList TModel="RoleTypeResponse" Items="@Model" Title="RoleTypes">
+    <ChildContent Context="item">
+        <RoleTypeMediumCard Model="@item" />
+    </ChildContent>
+</PageViewList>
+
+@code {
+    [Parameter, EditorRequired]
+    public RoleTypeResponse[] Model { get; set; } = default!;
+
+    [Parameter]
+    public bool IsFragment { get; set; }
+}

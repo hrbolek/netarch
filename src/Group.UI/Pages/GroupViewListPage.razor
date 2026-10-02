@@ -1,0 +1,19 @@
+@using WebAppArchitecture.Base.UI.Pages
+@using WebAppArchitecture.Group.Models
+@using WebAppArchitecture.Group.UI.Components
+
+@namespace WebAppArchitecture.Group.UI.Pages
+
+<PageViewList TModel="GroupResponse" Items="@Model" Title="Skupiny">
+    <ChildContent Context="item">
+        <GroupMediumCard Model="@item" />
+    </ChildContent>
+</PageViewList>
+
+@code {
+    [Parameter, EditorRequired]
+    public GroupResponse[] Model { get; set; } = default!;
+
+    [Parameter]
+    public bool IsFragment { get; set; }
+}

@@ -13,6 +13,19 @@ using WebAppArchitecture;
 using WebAppArchitecture.User.Resolvers;
 using WebAppArchitecture.User.Services;
 using WebAppArchitecture.User.Models;
+using WebAppArchitecture.Group.Resolvers;
+using WebAppArchitecture.Group.Services;
+using WebAppArchitecture.Group.Models;
+using WebAppArchitecture.Role.Resolvers;
+using WebAppArchitecture.Role.Services;
+using WebAppArchitecture.Role.Models;
+using WebAppArchitecture.Membership.Resolvers;
+using WebAppArchitecture.Membership.Services;
+using WebAppArchitecture.Membership.Models;
+using WebAppArchitecture.RoleType.Resolvers;
+using WebAppArchitecture.RoleType.Services;
+using WebAppArchitecture.RoleType.Models;
+using WebAppArchitecture.Base.Security;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,8 +53,26 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 // ============================================================
 // TODO 2. Dependency Injection z template
 // ============================================================
-builder.Services.AddSingleton<IUserStore, InMemoryUserStore>();
+var userStoreConnectionString =
+    builder.Configuration.GetConnectionString("UserStore")
+    ?? "Data Source=./data/user-store.db";
+
+var rbacStoreConnectionString =
+    builder.Configuration.GetConnectionString("RbacStore")
+    ?? "Data Source=./data/rbac-store.db";
+
+builder.Services.AddSqliteRbac(rbacStoreConnectionString);
+
+builder.Services.AddSingleton<IUserStore>(_ => new SqliteUserStore(userStoreConnectionString));
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddSingleton<IGroupStore>(_ => new SqliteGroupStore(rbacStoreConnectionString));
+builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddSingleton<IRoleStore>(_ => new SqliteRoleStore(rbacStoreConnectionString));
+builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddSingleton<IMembershipStore>(_ => new SqliteMembershipStore(rbacStoreConnectionString));
+builder.Services.AddScoped<IMembershipService, MembershipService>();
+builder.Services.AddSingleton<IRoleTypeStore>(_ => new SqliteRoleTypeStore(rbacStoreConnectionString));
+builder.Services.AddScoped<IRoleTypeService, RoleTypeService>();
 
 var app = builder.Build();
 
@@ -58,10 +89,13 @@ app.MapGet("/", () => Results.Ok(new
     message = "App běží",
 
     auth =
-        "bez autentizace / autorizace",
+        "RBAC actor from X-Actor-UserId header",
 
     storage =
-        "filesystem + in memory (pro účely testování)",
+        "SQLite (User + RBAC)",
+
+    bootstrap_admin_user_id =
+        RbacWellKnown.BootstrapAdminUserId,
 
 }));
 
@@ -69,6 +103,11 @@ app.MapGet("/", () => Results.Ok(new
 // TODO 3. Mapování endpointů z template
 // ============================================================
 app.MapUserEndpoints("/architecture");
+app.MapGroupEndpoints("/architecture");
+app.MapRoleEndpoints("/architecture");
+app.MapMembershipEndpoints("/architecture");
+app.MapRoleTypeEndpoints("/architecture");
+app.MapRbacEndpoints("/architecture/rbac");
 
 // ============================================================
 // Start

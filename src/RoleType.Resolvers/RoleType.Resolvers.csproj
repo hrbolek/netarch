@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WebAppArchitecture.RoleType.Resolvers</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../Base/Base.csproj" />
+    <ProjectReference Include="../RoleType.Models/RoleType.Models.csproj" />
+    <ProjectReference Include="../RoleType.Services/RoleType.Services.csproj" />
+    <ProjectReference Include="../RoleType.UI/RoleType.UI.csproj" />
+  </ItemGroup>
+</Project>

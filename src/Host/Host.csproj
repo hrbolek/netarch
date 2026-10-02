@@ -12,6 +12,10 @@
     <PackageReference Include="Microsoft.Identity.Web" Version="3.14.1" />
 
     <ProjectReference Include="../Base/Base.csproj" />
+    <ProjectReference Include="../Group.Resolvers/Group.Resolvers.csproj" />
+    <ProjectReference Include="../Role.Resolvers/Role.Resolvers.csproj" />
+    <ProjectReference Include="../Membership.Resolvers/Membership.Resolvers.csproj" />
+    <ProjectReference Include="../RoleType.Resolvers/RoleType.Resolvers.csproj" />
     <ProjectReference Include="../User.Resolvers/User.Resolvers.csproj" />
 
   </ItemGroup>

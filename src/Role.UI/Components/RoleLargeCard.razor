@@ -1,0 +1,23 @@
+@using WebAppArchitecture.Base.UI.Components
+@using WebAppArchitecture.Role.Models
+
+@namespace WebAppArchitecture.Role.UI.Components
+
+<LargeCard TModel="RoleResponse" Model="@Model" HeaderText="Role">
+    <SideContent Context="item">
+        <RoleMediumCard Model="@item" />
+        <EntityLinks TModel="RoleResponse" Model="@item" Links="@GetLinks(item)" />
+    </SideContent>
+</LargeCard>
+
+@code {
+    [Parameter, EditorRequired]
+    public RoleResponse Model { get; set; } = default!;
+
+    private static EntityNavigationLink[] GetLinks(RoleResponse item)
+        =>
+        [
+            new("Group", $"/architecture/GroupResponse/view/{item.group_id}", "Open parent group"),
+            new("User", $"/architecture/UserResponse/view/{item.user_id}", "Open assigned user")
+        ];
+}

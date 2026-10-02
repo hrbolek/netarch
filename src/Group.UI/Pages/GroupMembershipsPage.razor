@@ -1,0 +1,24 @@
+@using WebAppArchitecture.Base.UI.Components
+@using WebAppArchitecture.Base.UI.Pages
+@using WebAppArchitecture.Group.Models
+@using WebAppArchitecture.Group.UI.Components
+@using WebAppArchitecture.Membership.Models
+@using WebAppArchitecture.Membership.UI.Components
+
+@namespace WebAppArchitecture.Group.UI.Pages
+
+<Page Title="@Model.Title">
+    <GroupLargeCard Model="@Model.Parent">
+        <ChildContent Context="item">
+            <EntityRelationSection TItem="MembershipResponse" TItemComponent="MembershipMediumCard" Items="@Model.Items" Title="@Model.SectionTitle" />
+        </ChildContent>
+    </GroupLargeCard>
+</Page>
+
+@code {
+    [Parameter, EditorRequired]
+    public EntityRelationsViewModel<GroupResponse, MembershipResponse> Model { get; set; } = default!;
+
+    [Parameter]
+    public bool IsFragment { get; set; }
+}

@@ -1,0 +1,15 @@
+@using WebAppArchitecture.Base.UI.Pages
+@using WebAppArchitecture.Membership.Models
+@using WebAppArchitecture.Membership.UI.Components
+
+@namespace WebAppArchitecture.Membership.UI.Pages
+
+<PageView TModel="MembershipResponse" TComponent="MembershipLargeCard" Model="@Model" Title="Membership" />
+
+@code {
+    [Parameter, EditorRequired]
+    public MembershipResponse Model { get; set; } = default!;
+
+    [Parameter]
+    public bool IsFragment { get; set; }
+}

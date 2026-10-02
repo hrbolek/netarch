@@ -1,0 +1,19 @@
+@using WebAppArchitecture.Base.UI.Components
+@using WebAppArchitecture.Role.Models
+
+@namespace WebAppArchitecture.Role.UI.Components
+
+<MediumCard TModel="RoleResponse" Model="@Model" HeaderText="Role">
+    <ChildContent Context="item">
+        <Attribute TModel="RoleResponse" Item="@item" Label="ID" AttributeName="id" />
+        <Attribute TModel="RoleResponse" Item="@item" Label="Group" AttributeName="group_id" />
+        <Attribute TModel="RoleResponse" Item="@item" Label="User" AttributeName="user_id" />
+        <Attribute TModel="RoleResponse" Item="@item" Label="Role Type" AttributeName="role_type" />
+        <Attribute TModel="RoleResponse" Item="@item" Label="Deputy" AttributeName="is_deputy" />
+    </ChildContent>
+</MediumCard>
+
+@code {
+    [Parameter, EditorRequired]
+    public RoleResponse Model { get; set; } = default!;
+}

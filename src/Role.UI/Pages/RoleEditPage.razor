@@ -1,0 +1,15 @@
+@using WebAppArchitecture.Base.UI.Pages
+@using WebAppArchitecture.Role.Models
+@using WebAppArchitecture.Role.UI.Components
+
+@namespace WebAppArchitecture.Role.UI.Pages
+
+<PageView TModel="RoleResponse" TComponent="RoleEditableCard" Model="@Model" Title="Editace: Role" />
+
+@code {
+    [Parameter, EditorRequired]
+    public RoleResponse Model { get; set; } = default!;
+
+    [Parameter]
+    public bool IsFragment { get; set; }
+}

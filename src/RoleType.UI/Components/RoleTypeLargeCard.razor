@@ -1,0 +1,15 @@
+@using WebAppArchitecture.Base.UI.Components
+@using WebAppArchitecture.RoleType.Models
+
+@namespace WebAppArchitecture.RoleType.UI.Components
+
+<LargeCard TModel="RoleTypeResponse" Model="@Model" HeaderText="RoleType">
+    <SideContent Context="item">
+        <RoleTypeMediumCard Model="@item" />
+    </SideContent>
+</LargeCard>
+
+@code {
+    [Parameter, EditorRequired]
+    public RoleTypeResponse Model { get; set; } = default!;
+}

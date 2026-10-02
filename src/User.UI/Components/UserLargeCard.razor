@@ -11,6 +11,7 @@
     <SideContent Context="item">
         <UserMediumCard
             Model="@item" />
+        <EntityLinks TModel="UserResponse" Model="@item" Links="@GetLinks(item)" />
     </SideContent>
 
     <ChildContent Context="item">
@@ -28,4 +29,11 @@
 
     [Parameter]
     public RenderFragment<UserResponse>? ChildContent { get; set; }
+
+    private static EntityNavigationLink[] GetLinks(UserResponse item)
+        =>
+        [
+            new("Memberships", $"/architecture/UserResponse/{item.id}/memberships", "Memberships of this user"),
+            new("Roles", $"/architecture/UserResponse/{item.id}/roles", "Roles of this user")
+        ];
 }

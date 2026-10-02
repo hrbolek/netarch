@@ -1,0 +1,33 @@
+@using WebAppArchitecture.Base.UI.Components
+@using WebAppArchitecture.Group.Models
+
+@namespace WebAppArchitecture.Group.UI.Components
+
+<LargeCard TModel="GroupResponse" Model="@Model" HeaderText="Skupina">
+    <SideContent Context="item">
+        <GroupMediumCard Model="@item" />
+        <EntityLinks TModel="GroupResponse" Model="@item" Links="@GetLinks(item)" />
+    </SideContent>
+
+    <ChildContent Context="item">
+        @if (ChildContent is not null)
+        {
+            @ChildContent(item)
+        }
+    </ChildContent>
+</LargeCard>
+
+@code {
+    [Parameter, EditorRequired]
+    public GroupResponse Model { get; set; } = default!;
+
+    [Parameter]
+    public RenderFragment<GroupResponse>? ChildContent { get; set; }
+
+    private static EntityNavigationLink[] GetLinks(GroupResponse item)
+        =>
+        [
+            new("Roles", $"/architecture/GroupResponse/{item.id}/roles", "Roles in this group"),
+            new("Memberships", $"/architecture/GroupResponse/{item.id}/memberships", "Members of this group")
+        ];
+}

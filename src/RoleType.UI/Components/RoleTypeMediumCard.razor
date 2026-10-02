@@ -1,0 +1,17 @@
+@using WebAppArchitecture.Base.UI.Components
+@using WebAppArchitecture.RoleType.Models
+
+@namespace WebAppArchitecture.RoleType.UI.Components
+
+<MediumCard TModel="RoleTypeResponse" Model="@Model" HeaderText="RoleType">
+    <ChildContent Context="item">
+        <Attribute TModel="RoleTypeResponse" Item="@item" Label="ID" AttributeName="id" />
+        <Attribute TModel="RoleTypeResponse" Item="@item" Label="Name" AttributeName="name" />
+        <Attribute TModel="RoleTypeResponse" Item="@item" Label="Operations" AttributeName="operations" />
+    </ChildContent>
+</MediumCard>
+
+@code {
+    [Parameter, EditorRequired]
+    public RoleTypeResponse Model { get; set; } = default!;
+}

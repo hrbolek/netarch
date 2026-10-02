@@ -1,0 +1,15 @@
+@using WebAppArchitecture.Base.UI.Pages
+@using WebAppArchitecture.RoleType.Models
+@using WebAppArchitecture.RoleType.UI.Components
+
+@namespace WebAppArchitecture.RoleType.UI.Pages
+
+<PageView TModel="RoleTypeResponse" TComponent="RoleTypeLargeCard" Model="@Model" Title="RoleType" />
+
+@code {
+    [Parameter, EditorRequired]
+    public RoleTypeResponse Model { get; set; } = default!;
+
+    [Parameter]
+    public bool IsFragment { get; set; }
+}

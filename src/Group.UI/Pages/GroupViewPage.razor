@@ -1,0 +1,15 @@
+@using WebAppArchitecture.Base.UI.Pages
+@using WebAppArchitecture.Group.Models
+@using WebAppArchitecture.Group.UI.Components
+
+@namespace WebAppArchitecture.Group.UI.Pages
+
+<PageView TModel="GroupResponse" TComponent="GroupLargeCard" Model="@Model" Title="Skupina" />
+
+@code {
+    [Parameter, EditorRequired]
+    public GroupResponse Model { get; set; } = default!;
+
+    [Parameter]
+    public bool IsFragment { get; set; }
+}

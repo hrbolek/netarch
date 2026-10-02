@@ -1,0 +1,17 @@
+@using WebAppArchitecture.Base.UI.Components
+@using WebAppArchitecture.Group.Models
+
+@namespace WebAppArchitecture.Group.UI.Components
+
+<MediumCard TModel="GroupResponse" Model="@Model" HeaderText="Skupina">
+    <ChildContent Context="item">
+        <Attribute TModel="GroupResponse" Item="@item" Label="ID" AttributeName="id" />
+        <Attribute TModel="GroupResponse" Item="@item" Label="Name" AttributeName="Name" />
+        <Attribute TModel="GroupResponse" Item="@item" Label="Master Group" AttributeName="master_group_id" />
+    </ChildContent>
+</MediumCard>
+
+@code {
+    [Parameter, EditorRequired]
+    public GroupResponse Model { get; set; } = default!;
+}

@@ -1,0 +1,24 @@
+@using WebAppArchitecture.Base.UI.Components
+@using WebAppArchitecture.Membership.Models
+
+@namespace WebAppArchitecture.Membership.UI.Components
+
+<EditableCard TModel="MembershipResponse" Model="@Model" HeaderText="Membership">
+    <ChildContent Context="item">
+        <form>
+            <div class="mb-3">
+                <label class="form-label">Valid From</label>
+                <input class="form-control" name="valid_from" value="@item.valid_from" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Valid To</label>
+                <input class="form-control" name="valid_to" value="@item.valid_to" />
+            </div>
+        </form>
+    </ChildContent>
+</EditableCard>
+
+@code {
+    [Parameter, EditorRequired]
+    public MembershipResponse Model { get; set; } = default!;
+}

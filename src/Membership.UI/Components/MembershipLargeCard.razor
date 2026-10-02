@@ -1,0 +1,23 @@
+@using WebAppArchitecture.Base.UI.Components
+@using WebAppArchitecture.Membership.Models
+
+@namespace WebAppArchitecture.Membership.UI.Components
+
+<LargeCard TModel="MembershipResponse" Model="@Model" HeaderText="Membership">
+    <SideContent Context="item">
+        <MembershipMediumCard Model="@item" />
+        <EntityLinks TModel="MembershipResponse" Model="@item" Links="@GetLinks(item)" />
+    </SideContent>
+</LargeCard>
+
+@code {
+    [Parameter, EditorRequired]
+    public MembershipResponse Model { get; set; } = default!;
+
+    private static EntityNavigationLink[] GetLinks(MembershipResponse item)
+        =>
+        [
+            new("Group", $"/architecture/GroupResponse/view/{item.group_id}", "Open related group"),
+            new("User", $"/architecture/UserResponse/view/{item.user_id}", "Open member user")
+        ];
+}

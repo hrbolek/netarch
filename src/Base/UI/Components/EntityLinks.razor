@@ -1,0 +1,26 @@
+@namespace WebAppArchitecture.Base.UI.Components
+@typeparam TModel
+
+@if (Links.Count > 0)
+{
+    <div class="card mt-3">
+        <div class="card-header">Relations</div>
+        <div class="list-group list-group-flush">
+            @foreach (var link in Links)
+            {
+                <a href="@link.Href" class="list-group-item list-group-item-action">
+                    <div>@link.Label</div>
+                    @if (!string.IsNullOrWhiteSpace(link.Description))
+                    {
+                        <small class="text-muted">@link.Description</small>
+                    }
+                </a>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public TModel Model { get; set; } = default!;
+    [Parameter] public IReadOnlyCollection<EntityNavigationLink> Links { get; set; } = Array.Empty<EntityNavigationLink>();
+}
