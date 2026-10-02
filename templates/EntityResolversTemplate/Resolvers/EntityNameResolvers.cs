@@ -1,33 +1,52 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+
 using WebAppArchitecture.Base.Filtering;
 using WebAppArchitecture.Base.Endpoints;
-using RootNamespace.EntityName.Models;
-using RootNamespace.EntityName.Services;
-using RootNamespace.EntityName.UI.Pages;
+using WebAppArchitecture.Base.Resolvers;
 
-namespace RootNamespace.EntityName.Resolvers;
+using WebAppArchitecture.EntityName.Models;
+using WebAppArchitecture.EntityName.Services;
+using WebAppArchitecture.EntityName.UI.Pages;
+
+namespace WebAppArchitecture.EntityName.Resolvers;
 
 public static class EntityNameResolvers
 {
+    public static async Task<IResult> Create(
+        EntityNameCreateRequest request,
+        IEntityNameService service,
+        CancellationToken cancellationToken)
+    {
+        return await BaseResolvers.Create<EntityNameModel, EntityNameResponse, EntityNameCreateRequest, IEntityNameService>(
+            request,
+            service,
+            cancellationToken);
+    }
     public static async Task<IResult> Read(
         Guid id,
         IEntityNameService service,
         CancellationToken cancellationToken)
     {
-        var model = await service.GetByIdAsync(id, cancellationToken);
-        if (model is null) return Results.NotFound();
+        // var model = await service.GetByIdAsync(id, cancellationToken);
+        // if (model is null) return Results.NotFound();
 
-        return ApiResults.Ok(new EntityNameResponse(model.id, model.Name));
+        // return ApiResults.Ok(model);
+
+        return await BaseResolvers.Read<EntityNameModel, EntityNameResponse, IEntityNameService>(
+            id,
+            service,
+            cancellationToken);
     }
 
     public static async Task<IResult> List(
         IEntityNameService service,
         CancellationToken cancellationToken)
     {
-        var models = await service.GetAllAsync(cancellationToken);
-        return ApiResults.Ok(models.Select(ToResponse).ToArray());
+        return await BaseResolvers.List<EntityNameModel, EntityNameResponse, IEntityNameService>(
+            service,
+            cancellationToken);
     }
 
     /// <summary>
@@ -44,7 +63,7 @@ public static class EntityNameResolvers
             var predicate = HasuraFilterExpression.Build<EntityNameModel>(request.Where);
             var models = await service.VectorAsync(predicate, cancellationToken);
 
-            return ApiResults.Ok(models.Select(ToResponse).ToArray());
+            return ApiResults.Ok(models.ToArray());
         }
         catch (HasuraFilterException ex)
         {
@@ -56,8 +75,27 @@ public static class EntityNameResolvers
         }
     }
 
-    private static EntityNameResponse ToResponse(EntityNameModel model)
-        => new(model.id, model.Name);
+    public static async Task<IResult> Update(
+        EntityNameUpdateRequest request,
+        IEntityNameService service,
+        CancellationToken cancellationToken)
+    {
+        return await BaseResolvers.Update<EntityNameModel, EntityNameResponse, EntityNameUpdateRequest, IEntityNameService>(
+            request,
+            service,
+            cancellationToken);
+    }
+
+    public static async Task<IResult> Delete(
+        Guid id,
+        IEntityNameService service,
+        CancellationToken cancellationToken)
+    {
+        return await BaseResolvers.Delete<EntityNameModel, EntityNameResponse, IEntityNameService>(
+            id,
+            service,
+            cancellationToken);
+    }
 }
 
 public sealed record EntityNameVectorRequest(
@@ -65,28 +103,39 @@ public sealed record EntityNameVectorRequest(
 
 public static class EntityNameEndpointExtensions
 {
-    public static IEndpointRouteBuilder MapEntityNameEndpoints(this IEndpointRouteBuilder endpoints)
+    public static IEndpointRouteBuilder MapEntityNameEndpoints(this IEndpointRouteBuilder endpoints, string prefix)
     {
         var group = endpoints
-            .MapGroup("/entity-route")
+            .MapGroup(prefix + "/EntityNameResponse")
             .WithTags("EntityName");
 
-        group.MapGet("/{id:guid}", EntityNameResolvers.Read)
+        group.MapPost("/create", EntityNameResolvers.Create)
+            .WithName("EntityNameCreate")
+            .ApplyJsonModel<EntityNameResponse>();
+
+        group.MapGet("/view/{id:guid}", EntityNameResolvers.Read)
             .WithName("EntityNameRead")
             .ApplyViewModel<EntityNameViewPage, EntityNameResponse>();
 
-        group.MapGet("/{id:guid}/edit", EntityNameResolvers.Read)
+        group.MapGet("/edit/{id:guid}", EntityNameResolvers.Read)
             .WithName("EntityNameEdit")
             .ApplyViewModel<EntityNameEditPage, EntityNameResponse>();
 
         group.MapGet("/list", EntityNameResolvers.List)
             .WithName("EntityNameList")
-            .ApplyJsonModel<EntityNameResponse[]>();
+            .ApplyViewModel<EntityNameViewListPage, EntityNameResponse[]>();
 
         // Structured Hasura-like filters are sent as JSON in the request body.
         group.MapPost("/vector", EntityNameResolvers.Vector)
             .WithName("EntityNameVector")
             .ApplyJsonModel<EntityNameResponse[]>();
+
+        group.MapPut("/update", EntityNameResolvers.Update)
+            .WithName("EntityNameUpdate")
+            .ApplyJsonModel<EntityNameResponse>();
+
+        group.MapDelete("/delete", EntityNameResolvers.Delete)
+            .WithName("EntityNameDelete");
 
         return endpoints;
     }

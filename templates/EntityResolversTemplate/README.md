@@ -4,7 +4,7 @@ Generuje samostatný `EntityName.Resolvers.csproj`, static resolvers a explicitn
 Používá `MapGroup(...)`, `ApplyViewModel` / `ApplyJsonModel` a generuje také endpoint pro filtrovaný vektor entit.
 
 ```bash
-dotnet new entity-resolvers -n Document -o src/Document.Resolvers --rootNamespace MyApp --route document
+dotnet new entity-resolvers -n Document -o src/Document.Resolvers --rootNamespace WebAppArchitecture.Dokument --route document
 ```
 
 Výchozí project references očekávají `../Base`, `../Document.Models`, `../Document.Services` a `../Document.UI`.

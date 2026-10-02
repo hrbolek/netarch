@@ -1,0 +1,31 @@
+@using WebAppArchitecture.User.Models
+@using WebAppArchitecture.Base.UI.Components
+
+@namespace WebAppArchitecture.User.UI.Components
+
+<LargeCard
+    TModel="UserResponse"
+    Model="@Model"
+    HeaderText="Uživatel">
+
+    <SideContent Context="item">
+        <UserMediumCard
+            Model="@item" />
+    </SideContent>
+
+    <ChildContent Context="item">
+        @if (ChildContent is not null)
+        {
+            @ChildContent(item)
+        }
+    </ChildContent>
+
+</LargeCard>
+
+@code {
+    [Parameter, EditorRequired]
+    public UserResponse Model { get; set; } = default!;
+
+    [Parameter]
+    public RenderFragment<UserResponse>? ChildContent { get; set; }
+}

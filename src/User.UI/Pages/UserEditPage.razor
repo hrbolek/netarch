@@ -1,0 +1,19 @@
+@using WebAppArchitecture.Base.UI.Pages
+@using WebAppArchitecture.User.Models
+@using WebAppArchitecture.User.UI.Components
+
+@namespace WebAppArchitecture.User.UI.Pages
+
+<PageView
+    TModel="UserResponse"
+    TComponent="UserEditableCard"
+    Model="@Model"
+    Title="Editace: Uživatel" />
+
+@code {
+    [Parameter, EditorRequired]
+    public UserResponse Model { get; set; } = default!;
+
+    [Parameter]
+    public bool IsFragment { get; set; }
+}

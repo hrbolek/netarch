@@ -3,7 +3,7 @@
 Generuje samostatný `EntityName.Services.csproj`, service interface/implementaci a `AddEntityNameServices()`.
 
 ```bash
-dotnet new entity-service -n Document -o src/Document.Services --rootNamespace MyApp
+dotnet new entity-service -n Document -o src/Document.Services --rootNamespace WebAppArchitecture.Dokument
 ```
 
 Výchozí project references očekávají `../Base` a `../Document.Models`.

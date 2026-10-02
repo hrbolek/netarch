@@ -1,0 +1,16 @@
+@using WebAppArchitecture.User.Models
+@using WebAppArchitecture.Base.UI.Components
+
+@namespace WebAppArchitecture.User.UI.Components
+
+<MediumCard TModel="UserResponse" Model="@Model" HeaderText="Uživatel">
+    <ChildContent Context="item">
+        <Attribute TModel="UserResponse" Item="@item" Label="ID" AttributeName="id" />
+        <Attribute TModel="UserResponse" Item="@item" Label="Name" AttributeName="Name" />
+    </ChildContent>
+</MediumCard>
+
+@code {
+    [Parameter, EditorRequired]
+    public UserResponse Model { get; set; } = default!;
+}

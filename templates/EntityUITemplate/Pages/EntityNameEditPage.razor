@@ -1,8 +1,10 @@
-@namespace RootNamespace.EntityName.UI.Pages
+@using WebAppArchitecture.Base.UI.Pages
 @using RootNamespace.EntityName.Models
 @using RootNamespace.EntityName.UI.Components
 
-<WebAppArchitecture.Base.UI.Pages.PageView
+@namespace RootNamespace.EntityName.UI.Pages
+
+<PageView
     TModel="EntityNameResponse"
     TComponent="EditableCard"
     Model="@Model"

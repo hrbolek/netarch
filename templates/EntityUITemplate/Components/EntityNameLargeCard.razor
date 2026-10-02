@@ -1,0 +1,25 @@
+@using WebAppArchitecture.Base.UI.Components
+@using RootNamespace.EntityName.Models
+
+@namespace RootNamespace.EntityName.UI.Components
+
+<LargeCard TModel="EntityNameResponse" Model="@Model" HeaderText="EntityTitle">
+    <SideContent Context="item">
+        <MediumCard Model="@item" />
+    </SideContent>
+
+    <ChildContent Context="item">
+        @if (ChildContent is not null)
+        {
+            @ChildContent(item)
+        }
+    </ChildContent>
+</LargeCard>
+
+@code {
+    [Parameter, EditorRequired]
+    public EntityNameResponse Model { get; set; } = default!;
+
+    [Parameter]
+    public RenderFragment<EntityNameResponse>? ChildContent { get; set; }
+}

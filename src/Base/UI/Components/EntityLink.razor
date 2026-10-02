@@ -1,5 +1,5 @@
 @namespace WebAppArchitecture.Base.UI.Components
-@typeparam TModel where TModel : IEntityDBModel
+@typeparam TModel where TModel : IEntityDTOModel
 
 <a href="@Href" class="@CssClass">
     @if (ChildContent is not null)
@@ -14,7 +14,7 @@
 
 @code {
     [Parameter, EditorRequired] public TModel Model { get; set; } = default!;
-    [Parameter] public string App { get; set; } = "demo";
+    [Parameter] public string App { get; set; } = "architecture";
     [Parameter] public string? Type { get; set; }
     [Parameter] public string Action { get; set; } = "view";
     [Parameter] public string? CssClass { get; set; }

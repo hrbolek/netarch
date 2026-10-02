@@ -1,5 +1,5 @@
 @namespace WebAppArchitecture.Base.UI.Pages
-@typeparam TModel where TModel : IEntityDBModel
+@typeparam TModel where TModel : IEntityDTOModel
 
 <Page Title="@Title">
     <div class="container-fluid py-3">
@@ -7,13 +7,13 @@
         {
             @foreach (var item in Items)
             {
-                if (ItemContent is not null)
+                if (ChildContent is not null)
                 {
-                    @ItemContent(item)
+                    @ChildContent(item)
                 }
                 else
                 {
-                    <MediumCard TModel="TModel" Model="@item" />
+                    <WebAppArchitecture.Base.UI.Components.MediumCard TModel="TModel" Model="@item" />
                 }
             }
         }
@@ -23,5 +23,5 @@
 @code {
     [Parameter] public string Title { get; set; } = "Seznam";
     [Parameter, EditorRequired] public IReadOnlyCollection<TModel> Items { get; set; } = Array.Empty<TModel>();
-    [Parameter] public RenderFragment<TModel>? ItemContent { get; set; }
+    [Parameter] public RenderFragment<TModel>? ChildContent { get; set; }
 }

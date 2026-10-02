@@ -9,17 +9,27 @@ public interface IEntityDBModel
     Guid id { get; }
 }
 
-public interface IEntityDTOModel<TEntity>
-    where TEntity : IEntityDBModel
+public interface IEntityDTOModel
 {
-    TEntity ToEntity();
+    Guid id { get; }
 }
 
-public interface IFromModel<IEntityDBModel, IEntityDTOModel>
-    where IEntityDTOModel : IFromModel<IEntityDBModel, IEntityDTOModel>
+public interface IEntityDTOModel<TEntity, TSelf> : IEntityDTOModel, ICreateDTOModel<TEntity>
+    where TEntity : IEntityDBModel
+    where TSelf : IEntityDTOModel<TEntity, TSelf>
 {
-    static abstract IEntityDTOModel FromModel(
-        IEntityDBModel model);
+    static abstract TSelf FromModel(TEntity model);
 
-    abstract IEntityDBModel ToModel();
+}
+
+public interface ICreateDTOModel<TEntity>
+    where TEntity : IEntityDBModel
+{
+    TEntity ToModel();
+}
+
+public interface IUpdateDTOModel<TEntity>: IEntityDTOModel
+    where TEntity : IEntityDBModel
+{
+    TEntity ApplyTo(TEntity model);
 }

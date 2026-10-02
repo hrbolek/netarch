@@ -1,0 +1,16 @@
+@using WebAppArchitecture.Base.UI.Components
+@using RootNamespace.EntityName.Models
+
+@namespace RootNamespace.EntityName.UI.Components
+
+<MediumCard TModel="EntityNameResponse" Model="@Model" HeaderText="EntityTitle">
+    <ChildContent Context="item">
+        <Attribute TModel="EntityNameResponse" Item="@item" Label="ID" AttributeName="id" />
+        <Attribute TModel="EntityNameResponse" Item="@item" Label="Name" AttributeName="Name" />
+    </ChildContent>
+</MediumCard>
+
+@code {
+    [Parameter, EditorRequired]
+    public EntityNameResponse Model { get; set; } = default!;
+}

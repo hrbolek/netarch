@@ -1,12 +1,14 @@
 @namespace WebAppArchitecture.Base.UI.Pages
-@typeparam TModel where TModel : IEntityDBModel
+@typeparam TModel where TModel : IEntityDTOModel
 
 <Page Title="@Title">
     <LargeCard TModel="TModel" Model="@Model" HeaderText="@HeaderText" FooterText="@FooterText">
-        @if (ChildContent is not null)
-        {
-            <ChildContent Context="item">@ChildContent(item)</ChildContent>
-        }
+        <ChildContent Context="item">
+            @if (ChildContent is not null)
+            {
+                @ChildContent(item)
+            }
+        </ChildContent>
     </LargeCard>
 </Page>
 

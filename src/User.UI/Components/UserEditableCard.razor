@@ -1,0 +1,19 @@
+@namespace WebAppArchitecture.User.UI.Components
+@using WebAppArchitecture.User.Models
+@using WebAppArchitecture.Base.UI.Components
+
+<EditableCard TModel="UserResponse" Model="@Model" HeaderText="Uživatel">
+    <ChildContent Context="item">
+        <form>
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input class="form-control" name="Name" value="@item.Name" />
+            </div>
+        </form>
+    </ChildContent>
+</EditableCard>
+
+@code {
+    [Parameter, EditorRequired]
+    public UserResponse Model { get; set; } = default!;
+}

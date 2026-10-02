@@ -5,7 +5,7 @@ Generuje samostatný `EntityName.Models.csproj` s persistence modelem, response 
 Z rootu repozitáře:
 
 ```bash
-dotnet new entity-model -n Document -o src/Document.Models --rootNamespace MyApp
+dotnet new entity-model -n Document -o src/Document.Models --rootNamespace WebAppArchitecture.Dokument
 ```
 
 Projekt očekává `src/Base/Base.csproj` o jednu úroveň vedle.

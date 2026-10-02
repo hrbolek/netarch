@@ -1,7 +1,9 @@
-@namespace RootNamespace.EntityName.UI.Components
 @using RootNamespace.EntityName.Models
+@using WebAppArchitecture.Base.UI.Components
 
-<WebAppArchitecture.Base.UI.Components.EditableCard TModel="EntityNameResponse" Model="@Model" HeaderText="EntityTitle">
+@namespace RootNamespace.EntityName.UI.Components
+
+<EditableCard TModel="EntityNameResponse" Model="@Model" HeaderText="EntityTitle">
     <ChildContent Context="item">
         <form>
             <div class="mb-3">
@@ -10,7 +12,7 @@
             </div>
         </form>
     </ChildContent>
-</WebAppArchitecture.Base.UI.Components.EditableCard>
+</EditableCard>
 
 @code {
     [Parameter, EditorRequired]
