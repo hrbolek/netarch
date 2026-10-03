@@ -1,0 +1,36 @@
+@using WebAppArchitecture.Base.UI.Pages
+
+@namespace WebAppArchitecture.Role.UI.Pages
+
+<Page Title="Vytvorit roli">
+    <div class="container py-3">
+        <h1 class="h4 mb-3">Nova role</h1>
+        <form method="post" action="/architecture/RoleResponse/create-form" class="card card-body">
+            <div class="mb-3">
+                <label class="form-label">Group ID</label>
+                <input class="form-control" name="group_id" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">User ID</label>
+                <input class="form-control" name="user_id" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Role type</label>
+                <input class="form-control" name="role_type_id" required />
+            </div>
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" name="is_deputy" value="true" id="role-is-deputy" />
+                <label class="form-check-label" for="role-is-deputy">Is deputy</label>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Valid from (ISO datetime)</label>
+                <input class="form-control" name="valid_from" placeholder="2026-01-01T00:00:00Z" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Valid to (ISO datetime)</label>
+                <input class="form-control" name="valid_to" placeholder="2026-12-31T23:59:59Z" />
+            </div>
+            <button type="submit" class="btn btn-primary">Vytvorit</button>
+        </form>
+    </div>
+</Page>

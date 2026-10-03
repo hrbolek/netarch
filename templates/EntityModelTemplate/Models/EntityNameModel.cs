@@ -1,71 +1,51 @@
+using System.Linq.Expressions;
 using WebAppArchitecture.Base.Data;
+using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.EntityName.Models;
 
-/// <summary>Persistence/data model.</summary>
-public sealed record EntityNameModel(
-    Guid id,
-    string Name
-) : IEntityDBModel;
-
-/// <summary>Public resolver/UI DTO kept outside the resolver assembly.</summary>
+/// <summary>
+/// Application/transport DTOs only. The persistence EntityNameModel belongs to DBLayer.
+/// </summary>
 public sealed record EntityNameResponse(
     Guid id,
-    string Name
-) : IEntityDTOModel<EntityNameModel, EntityNameResponse>
+    string Name,
+    Guid rbac_id
+) : IEntityDTOModel<EntityNameModel, EntityNameResponse>, ISecuredEntityDTOModel
 {
     public static EntityNameResponse FromModel(EntityNameModel model)
-        => new(
-            model.id,
-            model.Name
-        );
+        => new(model.id, model.Name, model.rbac_id);
+
+    public static Expression<Func<EntityNameModel, EntityNameResponse>> Projection
+        => model => new EntityNameResponse(model.id, model.Name, model.rbac_id);
 
     public EntityNameModel ToModel()
-        => new(
-            id,
-            Name
-        );        
-};
+        => new(id, Name, rbac_id, DateTimeOffset.UtcNow, DateTimeOffset.UtcNow, Guid.Empty, Guid.Empty);
+}
 
 public sealed record EntityNameCreateRequest(
-    string Name
-) : ICreateDTOModel<EntityNameModel>
+    string Name,
+    Guid? rbac_id = null
+) : ICreateDTOModel<EntityNameModel>, ISecuredCreateRequest
 {
     public EntityNameModel ToModel()
-        => new(
-            Guid.NewGuid(),
-            Name
-        );
-};
+    {
+        var now = DateTimeOffset.UtcNow;
+        return new EntityNameModel(Guid.NewGuid(), Name,
+            rbac_id ?? WebAppArchitecture.Base.Security.RbacWellKnown.RootSecurityObjectId,
+            now, now, Guid.Empty, Guid.Empty);
+    }
+}
 
 public sealed record EntityNameUpdateRequest(
     Guid id,
     string Name
-) : IUpdateDTOModel<EntityNameModel>, IEntityDTOModel<EntityNameModel, EntityNameUpdateRequest>
+) : IUpdateDTOModel<EntityNameModel>
 {
-    public static EntityNameUpdateRequest FromModel(EntityNameModel model)
-        => new(
-            model.id,
-            model.Name
-        );
-
     public EntityNameModel ApplyTo(EntityNameModel model)
-        => model with
-        {
-            Name = Name
-        };
-    public EntityNameModel ToModel()
-        => new(
-            id,
-            Name
-        );
-};
-public interface IEntityNameStore : IBaseStore<EntityNameModel>
-{
-}
+        => model with { Name = Name, updated_at = DateTimeOffset.UtcNow };
 
-/// <summary>Demo store persistent for the lifetime of the host process.</summary>
-public sealed class InMemoryEntityNameStore
-    : InMemoryStore<EntityNameModel>, IEntityNameStore
-{
+    public EntityNameModel ToModel()
+        => new(id, Name, WebAppArchitecture.Base.Security.RbacWellKnown.RootSecurityObjectId,
+            DateTimeOffset.UtcNow, DateTimeOffset.UtcNow, Guid.Empty, Guid.Empty);
 }

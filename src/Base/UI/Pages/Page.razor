@@ -1,4 +1,6 @@
 @namespace WebAppArchitecture.Base.UI.Pages
+@using System.Globalization
+@inject NavigationManager Navigation
 <!DOCTYPE html>
 <html lang="cs">
 <head>
@@ -9,6 +11,64 @@
     <script src="https://unpkg.com/htmx.org@2.0.8"></script>
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Architecture</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">User</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/architecture/UserResponse/list">Seznam</a></li>
+                            <li><a class="dropdown-item" href="/architecture/UserResponse/create">Vytvořit</a></li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li><a class="@GetRelationItemCss(UserRelationsEnabled)" href="@GetRelationHref(UserRelationsEnabled, $"/architecture/UserResponse/memberships/{CurrentEntityId}")">Memberships</a></li>
+                            <li><a class="@GetRelationItemCss(UserRelationsEnabled)" href="@GetRelationHref(UserRelationsEnabled, $"/architecture/UserResponse/roles/{CurrentEntityId}")">Roles</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Group</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/architecture/GroupResponse/list">Seznam</a></li>
+                            <li><a class="dropdown-item" href="/architecture/GroupResponse/create">Vytvořit</a></li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li><a class="@GetRelationItemCss(GroupRelationsEnabled)" href="@GetRelationHref(GroupRelationsEnabled, $"/architecture/GroupResponse/memberships/{CurrentEntityId}")">Memberships</a></li>
+                            <li><a class="@GetRelationItemCss(GroupRelationsEnabled)" href="@GetRelationHref(GroupRelationsEnabled, $"/architecture/GroupResponse/roles/{CurrentEntityId}")">Roles</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Role</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/architecture/RoleResponse/list">Seznam</a></li>
+                            <li><a class="dropdown-item" href="/architecture/RoleResponse/create">Vytvořit</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Membership</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/architecture/MembershipResponse/list">Seznam</a></li>
+                            <li><a class="dropdown-item" href="/architecture/MembershipResponse/create">Vytvořit</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">RoleType</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/architecture/RoleTypeResponse/list">Seznam</a></li>
+                            <li><a class="dropdown-item" href="/architecture/RoleTypeResponse/create">Vytvořit</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     @ChildContent
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
@@ -17,4 +77,31 @@
 @code {
     [Parameter] public string Title { get; set; } = "WebAppArchitecture";
     [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private string? CurrentResponseModel => ParseCurrentRoute().responseModel;
+    private Guid? CurrentEntityId => ParseCurrentRoute().id;
+
+    private bool UserRelationsEnabled => string.Equals(CurrentResponseModel, "UserResponse", StringComparison.OrdinalIgnoreCase) && CurrentEntityId is not null;
+    private bool GroupRelationsEnabled => string.Equals(CurrentResponseModel, "GroupResponse", StringComparison.OrdinalIgnoreCase) && CurrentEntityId is not null;
+
+    private (string? responseModel, string? operation, Guid? id) ParseCurrentRoute()
+    {
+        var path = new Uri(Navigation.Uri, UriKind.Absolute).AbsolutePath.Trim('/');
+        var segments = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+        if (segments.Length < 3 || !string.Equals(segments[0], "architecture", StringComparison.OrdinalIgnoreCase))
+            return (null, null, null);
+
+        Guid? id = null;
+        if (segments.Length >= 4 && Guid.TryParse(segments[3], out var parsed))
+            id = parsed;
+
+        return (segments[1], segments[2], id);
+    }
+
+    private static string GetRelationHref(bool enabled, string enabledHref)
+        => enabled ? enabledHref : "javascript:void(0)";
+
+    private static string GetRelationItemCss(bool enabled)
+        => enabled ? "dropdown-item" : "dropdown-item disabled";
 }

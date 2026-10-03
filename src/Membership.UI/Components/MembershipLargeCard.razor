@@ -7,12 +7,23 @@
     <SideContent Context="item">
         <MembershipMediumCard Model="@item" />
         <EntityLinks TModel="MembershipResponse" Model="@item" Links="@GetLinks(item)" />
+        <EntityPermissions RbacId="@item.rbac_id" />
     </SideContent>
+
+    <ChildContent Context="item">
+        @if (ChildContent is not null)
+        {
+            @ChildContent(item)
+        }
+    </ChildContent>
 </LargeCard>
 
 @code {
     [Parameter, EditorRequired]
     public MembershipResponse Model { get; set; } = default!;
+
+    [Parameter]
+    public RenderFragment<MembershipResponse>? ChildContent { get; set; }
 
     private static EntityNavigationLink[] GetLinks(MembershipResponse item)
         =>

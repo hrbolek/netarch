@@ -6,10 +6,21 @@
 <LargeCard TModel="RoleTypeResponse" Model="@Model" HeaderText="RoleType">
     <SideContent Context="item">
         <RoleTypeMediumCard Model="@item" />
+        <EntityPermissions RbacId="@item.rbac_id" />
     </SideContent>
+
+    <ChildContent Context="item">
+        @if (ChildContent is not null)
+        {
+            @ChildContent(item)
+        }
+    </ChildContent>
 </LargeCard>
 
 @code {
     [Parameter, EditorRequired]
     public RoleTypeResponse Model { get; set; } = default!;
+
+    [Parameter]
+    public RenderFragment<RoleTypeResponse>? ChildContent { get; set; }
 }

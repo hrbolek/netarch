@@ -1,6 +1,8 @@
 using System.Text;
 using System.Text.Json;
 using System.Security.Claims;
+using System.Collections.Concurrent;
+using System.Net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -26,7 +28,8 @@ public static class RbacOperations
 public static class RbacWellKnown
 {
     public static readonly Guid RootGroupId = Guid.Parse("10000000-0000-0000-0000-000000000001");
-    public static readonly Guid RootSecurityObjectId = Guid.Parse("20000000-0000-0000-0000-000000000001");
+    public static readonly Guid RootSecurityObjectId = RootGroupId;
+    public static readonly Guid RootGroupTypeId = Guid.Parse("30000000-0000-0000-0000-000000000001");
     public static readonly Guid BootstrapAdminUserId = Guid.Parse("00000000-0000-0000-0000-000000000001");
 }
 
@@ -310,6 +313,35 @@ public interface IRbacAuthorizationService
         CancellationToken cancellationToken = default);
 }
 
+    public interface IRbacService : IRbacAuthorizationService
+    {
+        Task<bool> IsCurrentActorAllowedAsync(
+        HttpContext httpContext,
+        Guid rbacObjectId,
+        string operation,
+        CancellationToken cancellationToken = default);
+    }
+
+public interface IRbacPermissionQueryService
+{
+    Task<IReadOnlyCollection<RbacEffectivePermissionRecord>> GetEffectivePermissionsAsync(
+        Guid rbacObjectId,
+        CancellationToken cancellationToken = default);
+}
+
+public sealed record RbacEffectivePermissionRecord(
+    Guid role_id,
+    Guid group_id,
+    string? group_name,
+    Guid user_id,
+    string? user_name,
+    string role_type,
+    bool is_deputy,
+    DateTimeOffset valid_from,
+    DateTimeOffset? valid_to,
+    IReadOnlyCollection<string> operations
+);
+
 public interface IRbacAdminService
 {
     Task<RbacGroupRecord> CreateGroupAsync(
@@ -428,17 +460,36 @@ public sealed record UpsertRoleTypeOperationRequest(
 );
 
 public sealed class SqliteRbacService
-    : IRbacAuthorizationService, IRbacAdminService
+    : IRbacService, IRbacAdminService, IRbacPermissionQueryService
 {
     private readonly string _connectionString;
+    private readonly string? _userStoreConnectionString;
+    private readonly ICurrentActorProvider _actorProvider;
+    private readonly ConcurrentDictionary<RbacAuthorizationCacheKey, RbacAuthorizationCacheValue> _authorizationCache = new();
+    private static readonly TimeSpan AuthorizationCacheTtl = TimeSpan.FromSeconds(20);
 
-    public SqliteRbacService(string connectionString)
+    public SqliteRbacService(string connectionString, ICurrentActorProvider actorProvider, string? userStoreConnectionString = null)
     {
         if (string.IsNullOrWhiteSpace(connectionString))
             throw new ArgumentException("Connection string must not be empty.", nameof(connectionString));
 
+        _actorProvider = actorProvider ?? throw new ArgumentNullException(nameof(actorProvider));
         _connectionString = connectionString;
+        _userStoreConnectionString = userStoreConnectionString;
         EnsureDatabase();
+    }
+
+    public async Task<bool> IsCurrentActorAllowedAsync(
+        HttpContext httpContext,
+        Guid rbacObjectId,
+        string operation,
+        CancellationToken cancellationToken = default)
+    {
+        var actorUserId = _actorProvider.TryGetActorUserId(httpContext);
+        if (actorUserId is null)
+            return false;
+
+        return await IsAllowedAsync(actorUserId.Value, rbacObjectId, operation, cancellationToken);
     }
 
     public async Task<bool> IsAllowedAsync(
@@ -452,6 +503,10 @@ public sealed class SqliteRbacService
 
         var normalizedOperation = NormalizeToken(operation);
         var now = DateTimeOffset.UtcNow;
+        var cacheKey = new RbacAuthorizationCacheKey(actorUserId, rbacObjectId, normalizedOperation);
+
+        if (_authorizationCache.TryGetValue(cacheKey, out var cached) && cached.expires_at > now)
+            return cached.allowed;
 
         var securityAncestors = await GetSecurityObjectAncestorsAsync(
             rbacObjectId,
@@ -491,12 +546,104 @@ public sealed class SqliteRbacService
                         cancellationToken);
 
                     if (allowed)
+                    {
+                        _authorizationCache[cacheKey] = new RbacAuthorizationCacheValue(true, now.Add(AuthorizationCacheTtl));
                         return true;
+                    }
                 }
             }
         }
 
+        _authorizationCache[cacheKey] = new RbacAuthorizationCacheValue(false, now.Add(AuthorizationCacheTtl));
         return false;
+    }
+
+    public async Task<IReadOnlyCollection<RbacEffectivePermissionRecord>> GetEffectivePermissionsAsync(
+        Guid rbacObjectId,
+        CancellationToken cancellationToken = default)
+    {
+        var now = DateTimeOffset.UtcNow;
+        var securityAncestors = await GetSecurityObjectAncestorsAsync(rbacObjectId, cancellationToken);
+
+        var candidateGroupIds = new HashSet<Guid>();
+        foreach (var securityObject in securityAncestors)
+        {
+            if (securityObject.group_id is null)
+                continue;
+
+            var lineage = await GetGroupLineageAsync(securityObject.group_id.Value, cancellationToken);
+            foreach (var groupId in lineage)
+                candidateGroupIds.Add(groupId);
+        }
+
+        if (candidateGroupIds.Count == 0)
+            return Array.Empty<RbacEffectivePermissionRecord>();
+
+        await using var connection = CreateConnection();
+        await connection.OpenAsync(cancellationToken);
+
+        await using var command = connection.CreateCommand();
+        var groupParams = candidateGroupIds.Select((_, index) => $"$g{index}").ToArray();
+
+        command.CommandText = $"""
+            SELECT r.id,
+                   r.group_id,
+                   g.name,
+                   r.user_id,
+                   r.role_type,
+                   r.is_deputy,
+                   r.valid_from,
+                   r.valid_to,
+                   GROUP_CONCAT(DISTINCT rto.operation) AS operations_csv
+            FROM rbac_group_roles r
+            LEFT JOIN rbac_groups g ON g.id = r.group_id
+            LEFT JOIN rbac_role_type_operations rto ON rto.role_type = r.role_type
+            WHERE r.group_id IN ({string.Join(",", groupParams)})
+              AND r.valid_from <= $now
+              AND (r.valid_to IS NULL OR r.valid_to >= $now)
+            GROUP BY r.id, r.group_id, g.name, r.user_id, r.role_type, r.is_deputy, r.valid_from, r.valid_to
+            ORDER BY r.role_type, r.valid_from DESC;
+            """;
+
+        var paramIndex = 0;
+        foreach (var groupId in candidateGroupIds)
+        {
+            command.Parameters.AddWithValue($"$g{paramIndex}", groupId.ToString());
+            paramIndex++;
+        }
+        command.Parameters.AddWithValue("$now", ToIso(now));
+
+        var rows = new List<RbacEffectivePermissionSqlRow>();
+        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
+        {
+            rows.Add(new RbacEffectivePermissionSqlRow(
+                role_id: Guid.Parse(reader.GetString(0)),
+                group_id: Guid.Parse(reader.GetString(1)),
+                group_name: reader.IsDBNull(2) ? null : reader.GetString(2),
+                user_id: Guid.Parse(reader.GetString(3)),
+                role_type: reader.GetString(4),
+                is_deputy: reader.GetInt64(5) != 0,
+                valid_from: ParseIso(reader.GetString(6)),
+                valid_to: reader.IsDBNull(7) ? null : ParseIso(reader.GetString(7)),
+                operations_csv: reader.IsDBNull(8) ? null : reader.GetString(8)));
+        }
+
+        var userNames = await ResolveUserNamesAsync(rows.Select(row => row.user_id), cancellationToken);
+
+        return rows
+            .Select(row => new RbacEffectivePermissionRecord(
+                role_id: row.role_id,
+                group_id: row.group_id,
+                group_name: row.group_name,
+                user_id: row.user_id,
+                user_name: userNames.TryGetValue(row.user_id, out var userName) ? userName : null,
+                role_type: row.role_type,
+                is_deputy: row.is_deputy,
+                valid_from: row.valid_from,
+                valid_to: row.valid_to,
+                operations: ParseOperationsCsv(row.operations_csv)))
+            .ToArray();
     }
 
     public async Task<bool> CanAssignDeputyRoleAsync(
@@ -580,6 +727,7 @@ public sealed class SqliteRbacService
         command.Parameters.AddWithValue("$updated_by", model.updated_by.ToString());
 
         await command.ExecuteNonQueryAsync(cancellationToken);
+        InvalidateAuthorizationCache();
         return model;
     }
 
@@ -633,6 +781,7 @@ public sealed class SqliteRbacService
         command.Parameters.AddWithValue("$updated_by", model.updated_by.ToString());
 
         await command.ExecuteNonQueryAsync(cancellationToken);
+        InvalidateAuthorizationCache();
         return model;
     }
 
@@ -716,6 +865,7 @@ public sealed class SqliteRbacService
         command.Parameters.AddWithValue("$updated_by", model.updated_by.ToString());
 
         await command.ExecuteNonQueryAsync(cancellationToken);
+        InvalidateAuthorizationCache();
         return model;
     }
 
@@ -770,6 +920,7 @@ public sealed class SqliteRbacService
         command.Parameters.AddWithValue("$updated_by", model.updated_by.ToString());
 
         await command.ExecuteNonQueryAsync(cancellationToken);
+        InvalidateAuthorizationCache();
         return model;
     }
 
@@ -802,6 +953,7 @@ public sealed class SqliteRbacService
         command.Parameters.AddWithValue("$name", roleType);
 
         await command.ExecuteNonQueryAsync(cancellationToken);
+        InvalidateAuthorizationCache();
     }
 
     public async Task UpsertRoleTypeOperationAsync(
@@ -838,6 +990,15 @@ public sealed class SqliteRbacService
         roleTypeCommand.Parameters.AddWithValue("$name", roleType);
         await roleTypeCommand.ExecuteNonQueryAsync(cancellationToken);
 
+        await using var operationCommand = connection.CreateCommand();
+        operationCommand.CommandText = """
+            INSERT OR IGNORE INTO rbac_operations (name, display_name)
+            VALUES ($name, $display_name);
+            """;
+        operationCommand.Parameters.AddWithValue("$name", operation);
+        operationCommand.Parameters.AddWithValue("$display_name", request.operation.Trim());
+        await operationCommand.ExecuteNonQueryAsync(cancellationToken);
+
         await using var command = connection.CreateCommand();
         command.CommandText = """
             INSERT OR IGNORE INTO rbac_role_type_operations (role_type, operation)
@@ -846,6 +1007,12 @@ public sealed class SqliteRbacService
         command.Parameters.AddWithValue("$role_type", roleType);
         command.Parameters.AddWithValue("$operation", operation);
         await command.ExecuteNonQueryAsync(cancellationToken);
+        InvalidateAuthorizationCache();
+    }
+
+    private void InvalidateAuthorizationCache()
+    {
+        _authorizationCache.Clear();
     }
 
     private async Task<IReadOnlyCollection<RbacSecurityObjectRecord>> GetSecurityObjectAncestorsAsync(
@@ -1073,6 +1240,11 @@ public sealed class SqliteRbacService
 
             CREATE TABLE IF NOT EXISTS rbac_role_types (
                 name TEXT PRIMARY KEY
+            );
+
+            CREATE TABLE IF NOT EXISTS rbac_operations (
+                name TEXT PRIMARY KEY,
+                display_name TEXT NOT NULL
             );
 
             CREATE TABLE IF NOT EXISTS rbac_role_type_operations (
@@ -1310,6 +1482,17 @@ public sealed class SqliteRbacService
 
         foreach (var operation in operations)
         {
+            using (var operationCommand = connection.CreateCommand())
+            {
+                operationCommand.CommandText = """
+                    INSERT OR IGNORE INTO rbac_operations (name, display_name)
+                    VALUES ($name, $display_name);
+                    """;
+                operationCommand.Parameters.AddWithValue("$name", NormalizeToken(operation));
+                operationCommand.Parameters.AddWithValue("$display_name", operation);
+                operationCommand.ExecuteNonQuery();
+            }
+
             using var opCommand = connection.CreateCommand();
             opCommand.CommandText = """
                 INSERT OR IGNORE INTO rbac_role_type_operations (role_type, operation)
@@ -1319,6 +1502,88 @@ public sealed class SqliteRbacService
             opCommand.Parameters.AddWithValue("$operation", NormalizeToken(operation));
             opCommand.ExecuteNonQuery();
         }
+    }
+
+    private async Task<Dictionary<Guid, string>> ResolveUserNamesAsync(IEnumerable<Guid> userIds, CancellationToken cancellationToken)
+    {
+        var uniqueIds = userIds.Distinct().ToArray();
+        if (uniqueIds.Length == 0)
+            return new Dictionary<Guid, string>();
+
+        await using var connection = CreateConnection();
+        await connection.OpenAsync(cancellationToken);
+
+        var usersTable = await ResolveUsersTableAsync(connection, cancellationToken);
+        if (usersTable is null)
+            return new Dictionary<Guid, string>();
+
+        await using var command = connection.CreateCommand();
+        var idParams = uniqueIds.Select((_, index) => $"$u{index}").ToArray();
+        command.CommandText = $"""
+            SELECT id, name
+            FROM {usersTable}
+            WHERE id IN ({string.Join(",", idParams)});
+            """;
+
+        for (var i = 0; i < uniqueIds.Length; i++)
+            command.Parameters.AddWithValue($"$u{i}", uniqueIds[i].ToString());
+
+        var result = new Dictionary<Guid, string>();
+        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
+        {
+            if (!Guid.TryParse(reader.GetString(0), out var id))
+                continue;
+
+            result[id] = reader.GetString(1);
+        }
+
+        return result;
+    }
+
+    private async Task<string?> ResolveUsersTableAsync(SqliteConnection connection, CancellationToken cancellationToken)
+    {
+        if (await HasTableAsync(connection, "main", "users", cancellationToken))
+            return "users";
+
+        if (string.IsNullOrWhiteSpace(_userStoreConnectionString))
+            return null;
+
+        var userStoreSource = new SqliteConnectionStringBuilder(_userStoreConnectionString).DataSource;
+        if (string.IsNullOrWhiteSpace(userStoreSource))
+            return null;
+
+        var currentSource = new SqliteConnectionStringBuilder(_connectionString).DataSource;
+        if (string.Equals(currentSource, userStoreSource, StringComparison.OrdinalIgnoreCase))
+            return await HasTableAsync(connection, "main", "users", cancellationToken)
+                ? "users"
+                : null;
+
+        try
+        {
+            await using var attach = connection.CreateCommand();
+            attach.CommandText = "ATTACH DATABASE $path AS userdb;";
+            attach.Parameters.AddWithValue("$path", userStoreSource);
+            await attach.ExecuteNonQueryAsync(cancellationToken);
+        }
+        catch
+        {
+            // userdb may already be attached for the same connection scope
+        }
+
+        return await HasTableAsync(connection, "userdb", "users", cancellationToken)
+            ? "userdb.users"
+            : null;
+    }
+
+    private static async Task<bool> HasTableAsync(SqliteConnection connection, string schema, string tableName, CancellationToken cancellationToken)
+    {
+        await using var command = connection.CreateCommand();
+        command.CommandText = $"SELECT 1 FROM {schema}.sqlite_master WHERE type = 'table' AND name = $name LIMIT 1;";
+        command.Parameters.AddWithValue("$name", tableName);
+
+        var scalar = await command.ExecuteScalarAsync(cancellationToken);
+        return scalar is not null;
     }
 
     private void EnsureDataDirectoryExists()
@@ -1378,6 +1643,18 @@ public sealed class SqliteRbacService
     private static DateTimeOffset ParseIso(string value)
         => DateTimeOffset.Parse(value, null, System.Globalization.DateTimeStyles.RoundtripKind);
 
+    private static IReadOnlyCollection<string> ParseOperationsCsv(string? operationsCsv)
+    {
+        if (string.IsNullOrWhiteSpace(operationsCsv))
+            return Array.Empty<string>();
+
+        return operationsCsv
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(value => value, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+    }
+
     private static Guid? TryReadNullableGuid(object? value)
     {
         if (value is null || value is DBNull)
@@ -1420,16 +1697,44 @@ public sealed class SqliteRbacService
             updated_by: Guid.Parse(reader.GetString(7))
         );
     }
+
+    private sealed record RbacEffectivePermissionSqlRow(
+        Guid role_id,
+        Guid group_id,
+        string? group_name,
+        Guid user_id,
+        string role_type,
+        bool is_deputy,
+        DateTimeOffset valid_from,
+        DateTimeOffset? valid_to,
+        string? operations_csv
+    );
+
+    private sealed record RbacAuthorizationCacheKey(
+        Guid actor_user_id,
+        Guid rbac_object_id,
+        string operation
+    );
+
+    private sealed record RbacAuthorizationCacheValue(
+        bool allowed,
+        DateTimeOffset expires_at
+    );
 }
 
 public static class RbacServiceCollectionExtensions
 {
-    public static IServiceCollection AddSqliteRbac(this IServiceCollection services, string connectionString)
+    public static IServiceCollection AddSqliteRbac(this IServiceCollection services, string connectionString, string? userStoreConnectionString = null)
     {
-        services.AddSingleton<SqliteRbacService>(_ => new SqliteRbacService(connectionString));
+        services.AddSingleton<ICurrentActorProvider, HeaderOrClaimActorProvider>();
+        services.AddSingleton<SqliteRbacService>(sp => new SqliteRbacService(
+            connectionString,
+            sp.GetRequiredService<ICurrentActorProvider>(),
+            userStoreConnectionString));
+        services.AddSingleton<IRbacService>(sp => sp.GetRequiredService<SqliteRbacService>());
         services.AddSingleton<IRbacAuthorizationService>(sp => sp.GetRequiredService<SqliteRbacService>());
         services.AddSingleton<IRbacAdminService>(sp => sp.GetRequiredService<SqliteRbacService>());
-        services.AddSingleton<ICurrentActorProvider, HeaderOrClaimActorProvider>();
+        services.AddSingleton<IRbacPermissionQueryService>(sp => sp.GetRequiredService<SqliteRbacService>());
 
         return services;
     }
@@ -1604,6 +1909,63 @@ public static class RbacEndpointExtensions
                 operation,
                 allowed
             });
+        });
+
+        group.MapGet("/permissions/{rbacId:guid}", async (
+            Guid rbacId,
+            HttpContext httpContext,
+            IRbacAuthorizationService authService,
+            IRbacPermissionQueryService permissionQueryService,
+            ICurrentActorProvider actorProvider,
+            CancellationToken cancellationToken) =>
+        {
+            var actor = actorProvider.TryGetActorUserId(httpContext);
+            if (actor is null)
+                return Results.Content("<div class='alert alert-warning mb-0'>Unauthorized: actor identity missing.</div>", "text/html; charset=utf-8");
+
+            var canRead = await authService.IsAllowedAsync(actor.Value, rbacId, RbacOperations.Read, cancellationToken);
+            if (!canRead)
+                return Results.Content("<div class='alert alert-warning mb-0'>You are not allowed to inspect permissions for this object.</div>", "text/html; charset=utf-8");
+
+            var permissions = await permissionQueryService.GetEffectivePermissionsAsync(rbacId, cancellationToken);
+            if (permissions.Count == 0)
+                return Results.Content("<div class='text-muted'>No active permissions found.</div>", "text/html; charset=utf-8");
+
+            var builder = new StringBuilder();
+            builder.Append("<ul class='list-group list-group-flush'>");
+
+            foreach (var permission in permissions)
+            {
+                var userLabel = !string.IsNullOrWhiteSpace(permission.user_name)
+                    ? permission.user_name
+                    : permission.user_id.ToString();
+
+                var groupLabel = !string.IsNullOrWhiteSpace(permission.group_name)
+                    ? permission.group_name
+                    : permission.group_id.ToString();
+
+                var validity = permission.valid_to is null
+                    ? $"from {permission.valid_from:yyyy-MM-dd HH:mm}"
+                    : $"from {permission.valid_from:yyyy-MM-dd HH:mm} to {permission.valid_to:yyyy-MM-dd HH:mm}";
+
+                var operations = permission.operations.Count == 0
+                    ? "none"
+                    : string.Join(", ", permission.operations);
+
+                var userHref = $"/architecture/UserResponse/view/{permission.user_id}";
+                var groupHref = $"/architecture/GroupResponse/view/{permission.group_id}";
+                var roleHref = $"/architecture/RoleResponse/view/{permission.role_id}";
+
+                builder.Append("<li class='list-group-item'>");
+                builder.Append($"<div><a href='{WebUtility.HtmlEncode(userHref)}'><strong>{WebUtility.HtmlEncode(userLabel)}</strong></a> in role <a href='{WebUtility.HtmlEncode(roleHref)}'><code>{WebUtility.HtmlEncode(permission.role_type)}</code></a>{(permission.is_deputy ? " <span class='badge text-bg-secondary'>deputy</span>" : string.Empty)}</div>");
+                builder.Append($"<div class='small text-muted'>Group: <a href='{WebUtility.HtmlEncode(groupHref)}'>{WebUtility.HtmlEncode(groupLabel)}</a> | Validity: {WebUtility.HtmlEncode(validity)}</div>");
+                builder.Append($"<div class='small'>Operations: {WebUtility.HtmlEncode(operations)}</div>");
+                builder.Append("</li>");
+            }
+
+            builder.Append("</ul>");
+
+            return Results.Content(builder.ToString(), "text/html; charset=utf-8");
         });
 
         return endpoints;

@@ -29,6 +29,10 @@ using WebAppArchitecture.RoleType.Resolvers;
 using WebAppArchitecture.RoleType.Services;
 using WebAppArchitecture.RoleType.Models;
 using WebAppArchitecture.Base.Security;
+using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.Base.Data;
+using WebAppArchitecture.DBLayer;
+using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,28 +60,66 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 // ============================================================
 // TODO 2. Dependency Injection z template
 // ============================================================
-var userStoreConnectionString =
-    builder.Configuration.GetConnectionString("UserStore")
-    ?? "Data Source=./data/user-store.db";
+var configuredConnectionString =
+    builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? "Data Source=./data/application.db";
 
-var rbacStoreConnectionString =
-    builder.Configuration.GetConnectionString("RbacStore")
-    ?? "Data Source=./data/rbac-store.db";
+// SQLite is used concurrently by multiple request-scoped DbContexts.
+// It supports many readers but only one writer at a time. Default Timeout
+// makes competing writers wait briefly instead of failing immediately with SQLITE_BUSY.
+var connectionString = configuredConnectionString.Contains("Default Timeout=", StringComparison.OrdinalIgnoreCase)
+    ? configuredConnectionString
+    : configuredConnectionString.TrimEnd(';') + ";Default Timeout=5;Foreign Keys=True";
 
-builder.Services.AddSqliteRbac(rbacStoreConnectionString);
+Directory.CreateDirectory("./data");
 
-builder.Services.AddSingleton<IUserStore>(_ => new SqliteUserStore(userStoreConnectionString));
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlite(connectionString));
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IDBLayer, DBLayer>();
+builder.Services.AddScoped<ISecurityProjectionService, SecurityProjectionService>();
+builder.Services.AddScoped<ISecurityLayer, SecurityLayer>();
+
+builder.Services.AddScoped<IUserStore, EfUserStore>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddSingleton<IGroupStore>(_ => new SqliteGroupStore(rbacStoreConnectionString));
+builder.Services.AddScoped<IGroupStore, EfGroupStore>();
 builder.Services.AddScoped<IGroupService, GroupService>();
-builder.Services.AddSingleton<IRoleStore>(_ => new SqliteRoleStore(rbacStoreConnectionString));
+builder.Services.AddScoped<IGroupTypeStore, EfGroupTypeStore>();
+builder.Services.AddScoped<IGroupTypeService, GroupTypeService>();
+builder.Services.AddScoped<IRoleStore, EfRoleStore>();
 builder.Services.AddScoped<IRoleService, RoleService>();
-builder.Services.AddSingleton<IMembershipStore>(_ => new SqliteMembershipStore(rbacStoreConnectionString));
+builder.Services.AddScoped<IMembershipStore, EfMembershipStore>();
 builder.Services.AddScoped<IMembershipService, MembershipService>();
-builder.Services.AddSingleton<IRoleTypeStore>(_ => new SqliteRoleTypeStore(rbacStoreConnectionString));
+builder.Services.AddScoped<IRoleTypeStore, EfRoleTypeStore>();
 builder.Services.AddScoped<IRoleTypeService, RoleTypeService>();
+builder.Services.AddScoped<IBaseStore<UserModel>>(sp => sp.GetRequiredService<IUserStore>());
+builder.Services.AddScoped<IBaseStore<GroupModel>>(sp => sp.GetRequiredService<IGroupStore>());
+builder.Services.AddScoped<IBaseStore<GroupTypeModel>>(sp => sp.GetRequiredService<IGroupTypeStore>());
+builder.Services.AddScoped<IBaseStore<RoleModel>>(sp => sp.GetRequiredService<IRoleStore>());
+builder.Services.AddScoped<IBaseStore<MembershipModel>>(sp => sp.GetRequiredService<IMembershipStore>());
+builder.Services.AddScoped<IBaseStore<RoleTypeModel>>(sp => sp.GetRequiredService<IRoleTypeStore>());
+
+
+builder.Services.AddSingleton<ICurrentActorProvider, HeaderOrClaimActorProvider>();
+builder.Services.AddScoped<SecurityService>();
+builder.Services.AddScoped<ISecurityService>(sp => sp.GetRequiredService<SecurityService>());
+builder.Services.AddScoped<IRbacService>(sp => sp.GetRequiredService<SecurityService>());
+builder.Services.AddScoped<IRbacAuthorizationService>(sp => sp.GetRequiredService<SecurityService>());
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var systemDataSource = builder.Configuration["SystemData:Source"]
+        ?? Environment.GetEnvironmentVariable("SYSTEMDATA_SOURCE")
+        ?? SystemDataImporter.DefaultSource;
+    var importSystemData = builder.Configuration.GetValue("SystemData:Import", true);
+    await DatabaseInitializer.InitializeAsync(db, systemDataSource, importSystemData);
+    var securityProjection = scope.ServiceProvider.GetRequiredService<ISecurityProjectionService>();
+    await securityProjection.RebuildAllAsync();
+}
 
 // ============================================================
 // Swagger
@@ -107,7 +149,7 @@ app.MapGet("/", (HttpContext httpContext, ICurrentActorProvider actorProvider) =
         ?? httpContext.User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value,
 
     storage =
-        "SQLite (User + RBAC)",
+        "SQLite / EF Core (single application database)",
 
     bootstrap_admin_user_id =
         RbacWellKnown.BootstrapAdminUserId,
@@ -188,7 +230,7 @@ app.MapGroupEndpoints("/architecture");
 app.MapRoleEndpoints("/architecture");
 app.MapMembershipEndpoints("/architecture");
 app.MapRoleTypeEndpoints("/architecture");
-app.MapRbacEndpoints("/architecture/rbac");
+app.MapSecurityEndpoints("/architecture");
 
 // ============================================================
 // Start

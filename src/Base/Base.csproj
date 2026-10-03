@@ -7,6 +7,14 @@
     <RazorLangVersion>8.0</RazorLangVersion>
   </PropertyGroup>
 
+  <!-- Compatibility guard: Update 10 placed BaseService.cs in this project.
+       When a newer ZIP is unpacked over an older workspace the stale file can
+       remain and would otherwise be picked up by the SDK default Compile glob. -->
+  <ItemGroup>
+    <Compile Remove="Services/BaseService.cs" />
+    <Compile Remove="Security/SecurityService.cs" />
+  </ItemGroup>
+
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />

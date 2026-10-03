@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../Base/Base.csproj" />
+    <ProjectReference Include="../SecurityLayer/SecurityLayer.csproj" />
     <ProjectReference Include="../Role.Models/Role.Models.csproj" />
   </ItemGroup>
 </Project>

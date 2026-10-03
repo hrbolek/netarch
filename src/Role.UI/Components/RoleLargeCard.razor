@@ -7,12 +7,23 @@
     <SideContent Context="item">
         <RoleMediumCard Model="@item" />
         <EntityLinks TModel="RoleResponse" Model="@item" Links="@GetLinks(item)" />
+        <EntityPermissions RbacId="@item.rbac_id" />
     </SideContent>
+
+    <ChildContent Context="item">
+        @if (ChildContent is not null)
+        {
+            @ChildContent(item)
+        }
+    </ChildContent>
 </LargeCard>
 
 @code {
     [Parameter, EditorRequired]
     public RoleResponse Model { get; set; } = default!;
+
+    [Parameter]
+    public RenderFragment<RoleResponse>? ChildContent { get; set; }
 
     private static EntityNavigationLink[] GetLinks(RoleResponse item)
         =>

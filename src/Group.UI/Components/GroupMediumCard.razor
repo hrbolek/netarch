@@ -7,7 +7,18 @@
     <ChildContent Context="item">
         <Attribute TModel="GroupResponse" Item="@item" Label="ID" AttributeName="id" />
         <Attribute TModel="GroupResponse" Item="@item" Label="Name" AttributeName="Name" />
-        <Attribute TModel="GroupResponse" Item="@item" Label="Master Group" AttributeName="master_group_id" />
+        <Attribute TModel="GroupResponse" Item="@item" Label="Master Group">
+            @if (item.master_group_id is null)
+            {
+                <span class="text-muted">none</span>
+            }
+            else
+            {
+                <EntityLink TModel="GroupResponse" Model="@item" Type="GroupResponse" EntityId="@item.master_group_id.Value">
+                    <ChildContent Context="_">@(item.master_group_name ?? item.master_group_id.Value.ToString())</ChildContent>
+                </EntityLink>
+            }
+        </Attribute>
     </ChildContent>
 </MediumCard>
 

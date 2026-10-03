@@ -1,0 +1,21 @@
+@namespace WebAppArchitecture.Base.UI.Components
+@using WebAppArchitecture.Base.UI.Htmx
+
+@if (RbacId != Guid.Empty)
+{
+    <div class="card mt-3">
+        <div class="card-header">Valid Permissions</div>
+        <div class="card-body p-0">
+            <LazyContent Url="@($"/{App}/RbacPermissionResponse/permissions/{RbacId}")">
+                <Placeholder>
+                    <div class="p-3 text-muted">Loading permissions...</div>
+                </Placeholder>
+            </LazyContent>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public Guid RbacId { get; set; }
+    [Parameter] public string App { get; set; } = "architecture";
+}

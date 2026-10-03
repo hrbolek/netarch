@@ -1,5 +1,8 @@
 using WebAppArchitecture.Base.Services;
+using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.RoleType.Models;
+using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.RoleType.Services;
 
@@ -7,9 +10,9 @@ public interface IRoleTypeService : IBaseService<RoleTypeModel, RoleTypeResponse
 {
 }
 
-public sealed class RoleTypeService : BaseService<RoleTypeModel, RoleTypeResponse, IRoleTypeStore>, IRoleTypeService
+public sealed class RoleTypeService : BaseService<RoleTypeModel, RoleTypeResponse>, IRoleTypeService
 {
-    public RoleTypeService(IRoleTypeStore store) : base(store)
+    public RoleTypeService(ISecurityLayer security) : base(security)
     {
     }
 }

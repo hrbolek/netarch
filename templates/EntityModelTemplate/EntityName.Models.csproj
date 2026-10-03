@@ -5,8 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>RootNamespace.EntityName.Models</RootNamespace>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="../Base/Base.csproj" />
+    <ProjectReference Include="../DBLayer/DBLayer.csproj" />
   </ItemGroup>
 </Project>

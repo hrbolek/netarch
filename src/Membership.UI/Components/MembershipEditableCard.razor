@@ -3,20 +3,35 @@
 
 @namespace WebAppArchitecture.Membership.UI.Components
 
-<EditableCard TModel="MembershipResponse" Model="@Model" HeaderText="Membership">
-    <ChildContent Context="item">
-        <form>
-            <div class="mb-3">
-                <label class="form-label">Valid From</label>
-                <input class="form-control" name="valid_from" value="@item.valid_from" />
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Valid To</label>
-                <input class="form-control" name="valid_to" value="@item.valid_to" />
-            </div>
-        </form>
-    </ChildContent>
-</EditableCard>
+<div id="membership-edit-root-@Model.id">
+    <form hx-post="@($"/architecture/MembershipResponse/update/{Model.id}")"
+          hx-target="@($"#membership-edit-root-{Model.id}")"
+          hx-swap="outerHTML">
+        <div class="mb-3">
+            <label class="form-label">Valid From</label>
+            <input class="form-control"
+                   name="valid_from"
+                   value="@Model.valid_from.ToString("O")"
+                   hx-post="@($"/architecture/MembershipResponse/update/{Model.id}")"
+                   hx-trigger="change delay:300ms"
+                   hx-include="closest form"
+                   hx-target="@($"#membership-edit-root-{Model.id}")"
+                   hx-swap="outerHTML" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Valid To</label>
+            <input class="form-control"
+                   name="valid_to"
+                   value="@Model.valid_to?.ToString("O")"
+                   hx-post="@($"/architecture/MembershipResponse/update/{Model.id}")"
+                   hx-trigger="change delay:300ms"
+                   hx-include="closest form"
+                   hx-target="@($"#membership-edit-root-{Model.id}")"
+                   hx-swap="outerHTML" />
+        </div>
+        <button class="btn btn-primary" type="submit">Uložit</button>
+    </form>
+</div>
 
 @code {
     [Parameter, EditorRequired]

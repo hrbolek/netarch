@@ -3,16 +3,24 @@
 
 @namespace WebAppArchitecture.RoleType.UI.Components
 
-<EditableCard TModel="RoleTypeResponse" Model="@Model" HeaderText="RoleType">
-    <ChildContent Context="item">
-        <form>
-            <div class="mb-3">
-                <label class="form-label">Name</label>
-                <input class="form-control" name="name" value="@item.name" />
-            </div>
-        </form>
-    </ChildContent>
-</EditableCard>
+<div id="roletype-edit-root-@Model.id">
+    <form hx-post="@($"/architecture/RoleTypeResponse/update/{Model.id}")"
+          hx-target="@($"#roletype-edit-root-{Model.id}")"
+          hx-swap="outerHTML">
+        <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input class="form-control"
+                   name="name"
+                   value="@Model.name"
+                   hx-post="@($"/architecture/RoleTypeResponse/update/{Model.id}")"
+                   hx-trigger="keyup changed delay:600ms"
+                   hx-include="closest form"
+                   hx-target="@($"#roletype-edit-root-{Model.id}")"
+                   hx-swap="outerHTML" />
+        </div>
+        <button class="btn btn-primary" type="submit">Uložit</button>
+    </form>
+</div>
 
 @code {
     [Parameter, EditorRequired]

@@ -8,6 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="../Base/Base.csproj" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.10" />
+    <ProjectReference Include="../DBLayer/DBLayer.csproj" />
   </ItemGroup>
 </Project>

@@ -4,7 +4,15 @@
 
 @namespace WebAppArchitecture.Role.UI.Pages
 
-<PageView TModel="RoleResponse" TComponent="RoleEditableCard" Model="@Model" Title="Editace: Role" />
+<PageEdit TModel="RoleResponse" Model="@Model" Title="Editace: Role">
+    <ChildContent Context="item">
+        <RoleLargeCard Model="@item">
+            <ChildContent Context="largeItem">
+                <RoleEditableCard Model="@largeItem" />
+            </ChildContent>
+        </RoleLargeCard>
+    </ChildContent>
+</PageEdit>
 
 @code {
     [Parameter, EditorRequired]

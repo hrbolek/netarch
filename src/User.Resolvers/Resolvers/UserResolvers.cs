@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,11 +17,33 @@ using WebAppArchitecture.Role.Services;
 using WebAppArchitecture.User.Models;
 using WebAppArchitecture.User.Services;
 using WebAppArchitecture.User.UI.Pages;
+using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.User.Resolvers;
 
 public static class UserResolvers
 {
+    public static async Task<IResult> CreatePage(
+        HttpContext httpContext,
+        IRbacService rbacService,
+        ICurrentActorProvider actorProvider,
+        CancellationToken cancellationToken)
+    {
+        if (actorProvider.TryGetActorUserId(httpContext) is null)
+            return Results.Unauthorized();
+
+        var allowed = await rbacService.IsCurrentActorAllowedAsync(
+            httpContext,
+            RbacWellKnown.RootSecurityObjectId,
+            RbacOperations.Create,
+            cancellationToken);
+
+        if (!allowed)
+            return Results.Forbid();
+
+        return new RazorComponentResult<UserCreatePage>();
+    }
+
     public static async Task<IResult> Create(
         UserCreateRequest request,
         HttpContext httpContext,
@@ -46,6 +69,23 @@ public static class UserResolvers
             httpContext,
             service,
             cancellationToken);
+    }
+
+    public static async Task<IResult> CreateForm(
+        HttpContext httpContext,
+        IUserService service,
+        CancellationToken cancellationToken)
+    {
+        var form = await httpContext.Request.ReadFormAsync(cancellationToken);
+        var name = form["Name"].ToString();
+        if (string.IsNullOrWhiteSpace(name))
+            return Results.BadRequest(new { error = "Name is required." });
+
+        var result = await Create(new UserCreateRequest(name), httpContext, service, cancellationToken);
+        if (result is IModelResult modelResult && modelResult.Model is UserResponse created)
+            return Results.Redirect($"/architecture/UserResponse/edit/{created.id}");
+
+        return result;
     }
     public static async Task<IResult> Read(
         Guid id,
@@ -139,6 +179,45 @@ public static class UserResolvers
             httpContext,
             service,
             cancellationToken);
+    }
+
+    public static async Task<IResult> UpdateForm(
+        Guid id,
+        HttpContext httpContext,
+        IUserService service,
+        CancellationToken cancellationToken)
+    {
+        var form = await httpContext.Request.ReadFormAsync(cancellationToken);
+        var name = form["Name"].ToString();
+        if (string.IsNullOrWhiteSpace(name))
+            return Results.BadRequest(new { error = "Name is required." });
+
+        var actorProvider = httpContext.RequestServices.GetRequiredService<ICurrentActorProvider>();
+        var actorUserId = actorProvider.TryGetActorUserId(httpContext);
+        if (actorUserId is null)
+            return Results.Unauthorized();
+
+        var existing = await service.GetByIdAsync(id, cancellationToken);
+        if (existing is null)
+            return Results.NotFound();
+
+        var authorization = await BaseResolvers.AuthorizeModelAsync(
+            httpContext,
+            existing,
+            RbacOperations.Update,
+            cancellationToken);
+
+        if (authorization is not null)
+            return authorization;
+
+        var request = new UserUpdateRequest(
+            id,
+            name,
+            DateTimeOffset.UtcNow,
+            actorUserId);
+
+        var updated = await service.UpdateAsync(request, cancellationToken);
+        return ApiResults.Ok(updated);
     }
 
     public static async Task<IResult> Delete(
@@ -238,6 +317,12 @@ public static class UserEndpointExtensions
             .WithName("UserCreate")
             .ApplyJsonModel<UserResponse>();
 
+        group.MapGet("/create", UserResolvers.CreatePage)
+            .WithName("UserCreatePage");
+
+        group.MapPost("/create-form", UserResolvers.CreateForm)
+            .WithName("UserCreateForm");
+
         group.MapGet("/view/{id:guid}", UserResolvers.Read)
             .WithName("UserRead")
             .ApplyViewModel<UserViewPage, UserResponse>();
@@ -250,11 +335,11 @@ public static class UserEndpointExtensions
             .WithName("UserList")
             .ApplyViewModel<UserViewListPage, UserResponse[]>();
 
-        group.MapGet("/{id:guid}/memberships", UserResolvers.Memberships)
+        group.MapGet("/memberships/{id:guid}", UserResolvers.Memberships)
             .WithName("UserMemberships")
             .ApplyViewModel<UserMembershipsPage, EntityRelationsViewModel<UserResponse, MembershipResponse>>();
 
-        group.MapGet("/{id:guid}/roles", UserResolvers.Roles)
+        group.MapGet("/roles/{id:guid}", UserResolvers.Roles)
             .WithName("UserRoles")
             .ApplyViewModel<UserRolesPage, EntityRelationsViewModel<UserResponse, RoleResponse>>();
 
@@ -266,6 +351,10 @@ public static class UserEndpointExtensions
         group.MapPut("/update", UserResolvers.Update)
             .WithName("UserUpdate")
             .ApplyJsonModel<UserResponse>();
+
+        group.MapPost("/update/{id:guid}", UserResolvers.UpdateForm)
+            .WithName("UserUpdateForm")
+            .ApplyViewModel<UserEditPage, UserResponse>();
 
         group.MapDelete("/delete", UserResolvers.Delete)
             .WithName("UserDelete");

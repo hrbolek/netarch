@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+
 namespace WebAppArchitecture.Base.Data;
 
 /// <summary>
@@ -38,6 +40,7 @@ public interface IEntityDTOModel<TEntity, TSelf> : IEntityDTOModel, ICreateDTOMo
     where TSelf : IEntityDTOModel<TEntity, TSelf>
 {
     static abstract TSelf FromModel(TEntity model);
+    static abstract Expression<Func<TEntity, TSelf>> Projection { get; }
 
 }
 

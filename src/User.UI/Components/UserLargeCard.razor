@@ -12,6 +12,7 @@
         <UserMediumCard
             Model="@item" />
         <EntityLinks TModel="UserResponse" Model="@item" Links="@GetLinks(item)" />
+        <EntityPermissions RbacId="@item.rbac_id" />
     </SideContent>
 
     <ChildContent Context="item">
@@ -33,7 +34,7 @@
     private static EntityNavigationLink[] GetLinks(UserResponse item)
         =>
         [
-            new("Memberships", $"/architecture/UserResponse/{item.id}/memberships", "Memberships of this user"),
-            new("Roles", $"/architecture/UserResponse/{item.id}/roles", "Roles of this user")
+            new("Memberships", $"/architecture/UserResponse/memberships/{item.id}", "Memberships of this user"),
+            new("Roles", $"/architecture/UserResponse/roles/{item.id}", "Roles of this user")
         ];
 }

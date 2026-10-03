@@ -6,6 +6,7 @@ namespace WebAppArchitecture.Base.Data;
 public interface IBaseStore<TModel>
     where TModel : IEntityDBModel
 {
+    IQueryable<TModel> Query() => throw new NotSupportedException("Queryable access is not implemented by this store.");
     Task<TModel?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
     Task<IReadOnlyCollection<TModel>> GetAllAsync(CancellationToken cancellationToken = default);
     Task<IReadOnlyCollection<TModel>> VectorAsync(
@@ -23,6 +24,8 @@ public class InMemoryStore<TModel> : IBaseStore<TModel>
     where TModel : IEntityDBModel
 {
     private readonly ConcurrentDictionary<Guid, TModel> _store = new();
+
+    public IQueryable<TModel> Query() => _store.Values.AsQueryable();
 
     public Task<TModel?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {

@@ -1,3 +1,8 @@
+
+## Current persistence and RBAC architecture
+
+The default runtime uses a single EF Core `ApplicationDbContext` backed by SQLite (`data/application.db`). Stores receive the DbContext by dependency injection and keep `IQueryable` inside the persistence layer. Group and GroupType hierarchies use materialized paths. Authorization is exposed through `SecurityService`, with persistence-specific authorization queries isolated in `ISecurityStore`. See `ARCHITECTURE_UPDATE_09.md`.
+
 # SignFakeArchitecture / WebAppArchitecture
 
 Modulární ukázková architektura pro ASP.NET Core 8, Minimal API a Razor Components.
@@ -1475,3 +1480,32 @@ Swagger:
 ```text
 http://localhost:8080/swagger
 ```
+
+## Architecture update 10
+
+See `ARCHITECTURE_UPDATE_10.md` for the centralized DBLayer, secured IQueryable pipeline, DTO projections and EffectiveAccess materialized security projection.
+
+
+## Layered data access
+
+The current dependency direction is intentionally strict:
+
+`Resolvers / UI / OData -> Domain Services -> SecurityLayer -> DBLayer -> ApplicationDbContext -> SQLite`
+
+Domain Services do not inject stores, DbContext, or DBLayer. They receive `ISecurityLayer`. DBLayer is the raw persistence library and SecurityLayer is the authorization boundary that exposes secured `IQueryable<TEntity>` plus secured mutations. Services project DB entities to DTOs before returning data.
+
+## Update 12: normalized RBAC operations
+
+RBAC operations are normalized through `operations` and `role_type_operations`. Roles and `effective_access` reference RoleTypes by `role_type_id`; runtime authorization no longer parses `operations_csv`. See `ARCHITECTURE_UPDATE_12.md`.
+
+
+## Update 13 – persistence ownership and operations enrichment
+
+Persistence DB models now live in `src/DBLayer`. Domain `*.Models` projects contain DTO/request contracts only. `SecurityLayer` includes bulk operations lookup and post-materialization enrichment extensions; see `ARCHITECTURE_UPDATE_13.md`.
+
+## HK2026 system data seed
+
+On a new database, the host initializes organization/security data from
+`_uois/systemdata.hk2026.json`. The default source is GitHub and can be changed
+with `SYSTEMDATA_SOURCE`; a local compact seed can be produced with
+`tools/extract_systemdata.py`. See `ARCHITECTURE_UPDATE_14.md`.

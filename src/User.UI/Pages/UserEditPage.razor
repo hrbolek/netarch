@@ -4,11 +4,15 @@
 
 @namespace WebAppArchitecture.User.UI.Pages
 
-<PageView
-    TModel="UserResponse"
-    TComponent="UserEditableCard"
-    Model="@Model"
-    Title="Editace: Uživatel" />
+<PageEdit TModel="UserResponse" Model="@Model" Title="Editace: Uživatel">
+    <ChildContent Context="item">
+        <UserLargeCard Model="@item">
+            <ChildContent Context="largeItem">
+                <UserEditableCard Model="@largeItem" />
+            </ChildContent>
+        </UserLargeCard>
+    </ChildContent>
+</PageEdit>
 
 @code {
     [Parameter, EditorRequired]

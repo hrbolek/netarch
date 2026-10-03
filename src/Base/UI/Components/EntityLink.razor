@@ -14,6 +14,7 @@
 
 @code {
     [Parameter, EditorRequired] public TModel Model { get; set; } = default!;
+    [Parameter] public Guid? EntityId { get; set; }
     [Parameter] public string App { get; set; } = "architecture";
     [Parameter] public string? Type { get; set; }
     [Parameter] public string Action { get; set; } = "view";
@@ -21,5 +22,6 @@
     [Parameter] public RenderFragment<TModel>? ChildContent { get; set; }
 
     private string EffectiveType => string.IsNullOrWhiteSpace(Type) ? typeof(TModel).Name : Type;
-    private string Href => $"/{App}/{EffectiveType}/{Action}/{Model.id}";
+    private Guid EffectiveId => EntityId ?? Model.id;
+    private string Href => $"/{App}/{EffectiveType}/{Action}/{EffectiveId}";
 }

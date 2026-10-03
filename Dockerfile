@@ -22,6 +22,8 @@ COPY src/Group.Services/Group.Services.csproj src/Group.Services/
 COPY src/Group.UI/Group.UI.csproj src/Group.UI/
 COPY src/Host/Host.csproj src/Host/
 COPY src/Membership.Models/Membership.Models.csproj src/Membership.Models/
+COPY src/DBLayer/DBLayer.csproj src/DBLayer/
+COPY src/SecurityLayer/SecurityLayer.csproj src/SecurityLayer/
 COPY src/Membership.Resolvers/Membership.Resolvers.csproj src/Membership.Resolvers/
 COPY src/Membership.Services/Membership.Services.csproj src/Membership.Services/
 COPY src/Membership.UI/Membership.UI.csproj src/Membership.UI/

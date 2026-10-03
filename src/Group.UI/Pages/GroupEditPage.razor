@@ -4,7 +4,15 @@
 
 @namespace WebAppArchitecture.Group.UI.Pages
 
-<PageView TModel="GroupResponse" TComponent="GroupEditableCard" Model="@Model" Title="Editace: Skupina" />
+<PageEdit TModel="GroupResponse" Model="@Model" Title="Editace: Skupina">
+    <ChildContent Context="item">
+        <GroupLargeCard Model="@item">
+            <ChildContent Context="largeItem">
+                <GroupEditableCard Model="@largeItem" />
+            </ChildContent>
+        </GroupLargeCard>
+    </ChildContent>
+</PageEdit>
 
 @code {
     [Parameter, EditorRequired]

@@ -4,7 +4,15 @@
 
 @namespace WebAppArchitecture.RoleType.UI.Pages
 
-<PageView TModel="RoleTypeResponse" TComponent="RoleTypeEditableCard" Model="@Model" Title="Editace: RoleType" />
+<PageEdit TModel="RoleTypeResponse" Model="@Model" Title="Editace: RoleType">
+    <ChildContent Context="item">
+        <RoleTypeLargeCard Model="@item">
+            <ChildContent Context="largeItem">
+                <RoleTypeEditableCard Model="@largeItem" />
+            </ChildContent>
+        </RoleTypeLargeCard>
+    </ChildContent>
+</PageEdit>
 
 @code {
     [Parameter, EditorRequired]

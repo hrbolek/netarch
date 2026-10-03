@@ -7,6 +7,7 @@
     <SideContent Context="item">
         <GroupMediumCard Model="@item" />
         <EntityLinks TModel="GroupResponse" Model="@item" Links="@GetLinks(item)" />
+        <EntityPermissions RbacId="@item.rbac_id" />
     </SideContent>
 
     <ChildContent Context="item">
@@ -27,7 +28,7 @@
     private static EntityNavigationLink[] GetLinks(GroupResponse item)
         =>
         [
-            new("Roles", $"/architecture/GroupResponse/{item.id}/roles", "Roles in this group"),
-            new("Memberships", $"/architecture/GroupResponse/{item.id}/memberships", "Members of this group")
+            new("Roles", $"/architecture/GroupResponse/roles/{item.id}", "Roles in this group"),
+            new("Memberships", $"/architecture/GroupResponse/memberships/{item.id}", "Members of this group")
         ];
 }

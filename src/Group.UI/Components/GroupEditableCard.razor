@@ -3,16 +3,24 @@
 
 @namespace WebAppArchitecture.Group.UI.Components
 
-<EditableCard TModel="GroupResponse" Model="@Model" HeaderText="Skupina">
-    <ChildContent Context="item">
-        <form>
-            <div class="mb-3">
-                <label class="form-label">Name</label>
-                <input class="form-control" name="Name" value="@item.Name" />
-            </div>
-        </form>
-    </ChildContent>
-</EditableCard>
+<div id="group-edit-root-@Model.id">
+    <form hx-post="@($"/architecture/GroupResponse/update/{Model.id}")"
+          hx-target="@($"#group-edit-root-{Model.id}")"
+          hx-swap="outerHTML">
+        <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input class="form-control"
+                   name="Name"
+                   value="@Model.Name"
+                   hx-post="@($"/architecture/GroupResponse/update/{Model.id}")"
+                   hx-trigger="keyup changed delay:600ms"
+                   hx-include="closest form"
+                   hx-target="@($"#group-edit-root-{Model.id}")"
+                   hx-swap="outerHTML" />
+        </div>
+        <button class="btn btn-primary" type="submit">Uložit</button>
+    </form>
+</div>
 
 @code {
     [Parameter, EditorRequired]

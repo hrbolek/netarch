@@ -30,11 +30,12 @@ public static class BaseResolvers
         string operation,
         CancellationToken cancellationToken)
     {
-        var authContext = ResolveAuthorizationContext(httpContext);
-        if (authContext is null)
+        var rbacService = httpContext.RequestServices.GetService<IRbacService>();
+        if (rbacService is null)
             return models.ToArray();
 
-        if (authContext.ActorUserId is null)
+        var actorProvider = httpContext.RequestServices.GetService<ICurrentActorProvider>();
+        if (actorProvider?.TryGetActorUserId(httpContext) is null)
             return Array.Empty<TDTOModel>();
 
         var filtered = new List<TDTOModel>();
@@ -47,8 +48,8 @@ public static class BaseResolvers
                 continue;
             }
 
-            var allowed = await authContext.AuthorizationService.IsAllowedAsync(
-                authContext.ActorUserId.Value,
+            var allowed = await rbacService.IsCurrentActorAllowedAsync(
+                httpContext,
                 secured.rbac_id,
                 operation,
                 cancellationToken);
@@ -68,7 +69,7 @@ public static class BaseResolvers
         HttpContext httpContext,
         TService service,
         CancellationToken cancellationToken)
-        where TDBModel : IEntityDBModel
+        where TDBModel : class, ISecuredEntityDBModel
         where TDTOModel : IEntityDTOModel<TDBModel, TDTOModel>
         where TService : IBaseService<TDBModel, TDTOModel>
     {
@@ -98,7 +99,7 @@ public static class BaseResolvers
         HttpContext httpContext,
         TService service,
         CancellationToken cancellationToken)
-        where TDBModel : IEntityDBModel
+        where TDBModel : class, ISecuredEntityDBModel
         where TDTOModel : IEntityDTOModel<TDBModel, TDTOModel>
         where TService : IBaseService<TDBModel, TDTOModel>
     {
@@ -111,7 +112,7 @@ public static class BaseResolvers
             RbacOperations.List,
             cancellationToken);
 
-        if (ResolveAuthorizationContext(httpContext) is not null && filtered.Length == 0)
+        if (httpContext.RequestServices.GetService<IRbacService>() is not null && filtered.Length == 0)
         {
             var actorProvider = httpContext.RequestServices.GetService<ICurrentActorProvider>();
             if (actorProvider?.TryGetActorUserId(httpContext) is null)
@@ -130,23 +131,24 @@ public static class BaseResolvers
         HttpContext httpContext,
         TService service,
         CancellationToken cancellationToken)
-        where TDBModel : IEntityDBModel
+        where TDBModel : class, ISecuredEntityDBModel
         where TDTOModel : IEntityDTOModel<TDBModel, TDTOModel>
         where TCreateRequest : ICreateDTOModel<TDBModel>
         where TService : IBaseService<TDBModel, TDTOModel>
     {
         if (request is ISecuredCreateRequest securedCreate)
         {
-            var authContext = ResolveAuthorizationContext(httpContext);
-            if (authContext is not null)
+            var rbacService = httpContext.RequestServices.GetService<IRbacService>();
+            if (rbacService is not null)
             {
-                if (authContext.ActorUserId is null)
+                var actorProvider = httpContext.RequestServices.GetService<ICurrentActorProvider>();
+                if (actorProvider?.TryGetActorUserId(httpContext) is null)
                     return Results.Unauthorized();
 
                 var targetRbacId = securedCreate.rbac_id ?? RbacWellKnown.RootSecurityObjectId;
 
-                var allowed = await authContext.AuthorizationService.IsAllowedAsync(
-                    authContext.ActorUserId.Value,
+                var allowed = await rbacService.IsCurrentActorAllowedAsync(
+                    httpContext,
                     targetRbacId,
                     RbacOperations.Create,
                     cancellationToken);
@@ -172,11 +174,9 @@ public static class BaseResolvers
         HttpContext httpContext,
         TService service,
         CancellationToken cancellationToken)
-        where TDBModel : IEntityDBModel
+        where TDBModel : class, ISecuredEntityDBModel
         where TDTOModel : IEntityDTOModel<TDBModel, TDTOModel>
-        where TUpdateRequest :
-            IUpdateDTOModel<TDBModel>,
-            IEntityDTOModel<TDBModel, TUpdateRequest>
+        where TUpdateRequest : IUpdateDTOModel<TDBModel>
         where TService : IBaseService<TDBModel, TDTOModel>
     {
         var current = await service.GetByIdAsync(
@@ -210,7 +210,7 @@ public static class BaseResolvers
         HttpContext httpContext,
         TService service,
         CancellationToken cancellationToken)
-        where TDBModel : IEntityDBModel
+        where TDBModel : class, ISecuredEntityDBModel
         where TDTOModel : IEntityDTOModel<TDBModel, TDTOModel>
         where TService : IBaseService<TDBModel, TDTOModel>
     {
@@ -246,15 +246,16 @@ public static class BaseResolvers
         if (model is not ISecuredEntityDTOModel secured)
             return null;
 
-        var authContext = ResolveAuthorizationContext(httpContext);
-        if (authContext is null)
+        var rbacService = httpContext.RequestServices.GetService<IRbacService>();
+        if (rbacService is null)
             return null;
 
-        if (authContext.ActorUserId is null)
+        var actorProvider = httpContext.RequestServices.GetService<ICurrentActorProvider>();
+        if (actorProvider?.TryGetActorUserId(httpContext) is null)
             return Results.Unauthorized();
 
-        var allowed = await authContext.AuthorizationService.IsAllowedAsync(
-            authContext.ActorUserId.Value,
+        var allowed = await rbacService.IsCurrentActorAllowedAsync(
+            httpContext,
             secured.rbac_id,
             operation,
             cancellationToken);
@@ -264,30 +265,13 @@ public static class BaseResolvers
             : Results.Forbid();
     }
 
-    private static BaseResolverAuthorizationContext? ResolveAuthorizationContext(HttpContext httpContext)
-    {
-        var authorizationService = httpContext.RequestServices.GetService<IRbacAuthorizationService>();
-        if (authorizationService is null)
-            return null;
-
-        var actorProvider = httpContext.RequestServices.GetService<ICurrentActorProvider>();
-        if (actorProvider is null)
-            return null;
-
-        var actorUserId = actorProvider.TryGetActorUserId(httpContext);
-        return new BaseResolverAuthorizationContext(authorizationService, actorUserId);
-    }
-
-    private sealed record BaseResolverAuthorizationContext(
-        IRbacAuthorizationService AuthorizationService,
-        Guid? ActorUserId);
 }
 
 // public class BaseResolvers<
 //     TService,
 //     TDBModel,
 //     TDTOModel>
-//     where TDBModel : IEntityDBModel
+//     where TDBModel : class, ISecuredEntityDBModel
 //     where TDTOModel : IEntityDTOModel<TDBModel, TDTOModel>
 //     where TService : IBaseService<TDBModel, TDTOModel>
 // {

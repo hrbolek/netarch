@@ -2,16 +2,24 @@
 @using WebAppArchitecture.User.Models
 @using WebAppArchitecture.Base.UI.Components
 
-<EditableCard TModel="UserResponse" Model="@Model" HeaderText="Uživatel">
-    <ChildContent Context="item">
-        <form>
-            <div class="mb-3">
-                <label class="form-label">Name</label>
-                <input class="form-control" name="Name" value="@item.Name" />
-            </div>
-        </form>
-    </ChildContent>
-</EditableCard>
+<div id="user-edit-root-@Model.id">
+    <form hx-post="@($"/architecture/UserResponse/update/{Model.id}")"
+          hx-target="@($"#user-edit-root-{Model.id}")"
+          hx-swap="outerHTML">
+        <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input class="form-control"
+                   name="Name"
+                   value="@Model.Name"
+                   hx-post="@($"/architecture/UserResponse/update/{Model.id}")"
+                   hx-trigger="keyup changed delay:600ms"
+                   hx-include="closest form"
+                   hx-target="@($"#user-edit-root-{Model.id}")"
+                   hx-swap="outerHTML" />
+        </div>
+        <button class="btn btn-primary" type="submit">Uložit</button>
+    </form>
+</div>
 
 @code {
     [Parameter, EditorRequired]

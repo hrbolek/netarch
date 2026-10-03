@@ -3,20 +3,59 @@
 
 @namespace WebAppArchitecture.Role.UI.Components
 
-<EditableCard TModel="RoleResponse" Model="@Model" HeaderText="Role">
-    <ChildContent Context="item">
-        <form>
-            <div class="mb-3">
-                <label class="form-label">Role Type</label>
-                <input class="form-control" name="role_type" value="@item.role_type" />
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Deputy</label>
-                <input class="form-control" name="is_deputy" value="@item.is_deputy" />
-            </div>
-        </form>
-    </ChildContent>
-</EditableCard>
+<div id="role-edit-root-@Model.id">
+    <form hx-post="@($"/architecture/RoleResponse/update/{Model.id}")"
+          hx-target="@($"#role-edit-root-{Model.id}")"
+          hx-swap="outerHTML">
+        <div class="mb-3">
+            <label class="form-label">Role Type</label>
+            <input class="form-control"
+                   name="role_type_id"
+                   value="@Model.role_type_id"
+                   hx-post="@($"/architecture/RoleResponse/update/{Model.id}")"
+                   hx-trigger="keyup changed delay:600ms"
+                   hx-include="closest form"
+                   hx-target="@($"#role-edit-root-{Model.id}")"
+                   hx-swap="outerHTML" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Deputy</label>
+            <select class="form-select"
+                    name="is_deputy"
+                    hx-post="@($"/architecture/RoleResponse/update/{Model.id}")"
+                    hx-trigger="change"
+                    hx-include="closest form"
+                    hx-target="@($"#role-edit-root-{Model.id}")"
+                    hx-swap="outerHTML">
+                <option value="false" selected="@(!Model.is_deputy)">Ne</option>
+                <option value="true" selected="@(Model.is_deputy)">Ano</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Valid From</label>
+            <input class="form-control"
+                   name="valid_from"
+                   value="@Model.valid_from.ToString("O")"
+                   hx-post="@($"/architecture/RoleResponse/update/{Model.id}")"
+                   hx-trigger="change delay:300ms"
+                   hx-include="closest form"
+                   hx-target="@($"#role-edit-root-{Model.id}")"
+                   hx-swap="outerHTML" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Valid To</label>
+            <input class="form-control"
+                   name="valid_to"
+                   value="@Model.valid_to?.ToString("O")"
+                   hx-post="@($"/architecture/RoleResponse/update/{Model.id}")"
+                   hx-trigger="change delay:300ms"
+                   hx-include="closest form"
+                   hx-target="@($"#role-edit-root-{Model.id}")"
+                   hx-swap="outerHTML" />
+        </div>
+        <button class="btn btn-primary" type="submit">Uložit</button>
+    </form>
+</div>
 
 @code {
     [Parameter, EditorRequired]

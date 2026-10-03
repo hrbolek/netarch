@@ -4,7 +4,15 @@
 
 @namespace WebAppArchitecture.Membership.UI.Pages
 
-<PageView TModel="MembershipResponse" TComponent="MembershipEditableCard" Model="@Model" Title="Editace: Membership" />
+<PageEdit TModel="MembershipResponse" Model="@Model" Title="Editace: Membership">
+    <ChildContent Context="item">
+        <MembershipLargeCard Model="@item">
+            <ChildContent Context="largeItem">
+                <MembershipEditableCard Model="@largeItem" />
+            </ChildContent>
+        </MembershipLargeCard>
+    </ChildContent>
+</PageEdit>
 
 @code {
     [Parameter, EditorRequired]

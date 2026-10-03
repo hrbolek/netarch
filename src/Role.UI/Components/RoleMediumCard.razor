@@ -6,10 +6,30 @@
 <MediumCard TModel="RoleResponse" Model="@Model" HeaderText="Role">
     <ChildContent Context="item">
         <Attribute TModel="RoleResponse" Item="@item" Label="ID" AttributeName="id" />
-        <Attribute TModel="RoleResponse" Item="@item" Label="Group" AttributeName="group_id" />
-        <Attribute TModel="RoleResponse" Item="@item" Label="User" AttributeName="user_id" />
+        <Attribute TModel="RoleResponse" Item="@item" Label="Group">
+            <EntityLink TModel="RoleResponse" Model="@item" Type="GroupResponse" EntityId="@item.group_id">
+                <ChildContent Context="_">@(item.group_name ?? item.group_id.ToString())</ChildContent>
+            </EntityLink>
+        </Attribute>
+        <Attribute TModel="RoleResponse" Item="@item" Label="User">
+            <EntityLink TModel="RoleResponse" Model="@item" Type="UserResponse" EntityId="@item.user_id">
+                <ChildContent Context="_">@(item.user_name ?? item.user_id.ToString())</ChildContent>
+            </EntityLink>
+        </Attribute>
         <Attribute TModel="RoleResponse" Item="@item" Label="Role Type" AttributeName="role_type" />
         <Attribute TModel="RoleResponse" Item="@item" Label="Deputy" AttributeName="is_deputy" />
+        <Attribute TModel="RoleResponse" Item="@item" Label="Delegated By Role">
+            @if (item.delegated_by_role_id is null)
+            {
+                <span class="text-muted">none</span>
+            }
+            else
+            {
+                <EntityLink TModel="RoleResponse" Model="@item" Type="RoleResponse" EntityId="@item.delegated_by_role_id.Value">
+                    <ChildContent Context="_">@(item.delegated_by_role_type ?? item.delegated_by_role_id.Value.ToString())</ChildContent>
+                </EntityLink>
+            }
+        </Attribute>
     </ChildContent>
 </MediumCard>
 
