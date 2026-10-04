@@ -30,6 +30,8 @@ using WebAppArchitecture.RoleType.Services;
 using WebAppArchitecture.RoleType.Models;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.Security.Resolvers;
+using WebAppArchitecture.Security.Services;
 using WebAppArchitecture.Base.Data;
 using WebAppArchitecture.DBLayer;
 using Microsoft.EntityFrameworkCore;
@@ -104,6 +106,7 @@ builder.Services.AddScoped<IBaseStore<RoleTypeModel>>(sp => sp.GetRequiredServic
 builder.Services.AddSingleton<ICurrentActorProvider, HeaderOrClaimActorProvider>();
 builder.Services.AddScoped<SecurityService>();
 builder.Services.AddScoped<ISecurityService>(sp => sp.GetRequiredService<SecurityService>());
+builder.Services.AddScoped<ISecurityPermissionService, SecurityPermissionService>();
 builder.Services.AddScoped<IRbacService>(sp => sp.GetRequiredService<SecurityService>());
 builder.Services.AddScoped<IRbacAuthorizationService>(sp => sp.GetRequiredService<SecurityService>());
 

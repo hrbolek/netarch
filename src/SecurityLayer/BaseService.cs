@@ -11,13 +11,32 @@ public class BaseService<TDBModel, TDTOModel> : IBaseService<TDBModel, TDTOModel
     protected readonly ISecurityLayer Security;
     public BaseService(ISecurityLayer security) => Security = security;
 
-    public virtual IQueryable<TDTOModel> Query() => Security.Query<TDBModel>().Select(TDTOModel.Projection);
+    public virtual IQueryable<TDTOModel> Query() => Security.Query<TDBModel>(SecurityOperations.List).Select(TDTOModel.Projection);
     public virtual Task<TDTOModel?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
-        => Task.FromResult(Query().SingleOrDefault(x => x.id == id));
+        => Task.FromResult(
+            Security.Query<TDBModel>(SecurityOperations.Read)
+                .Where(entity => entity.id == id)
+                .Select(TDTOModel.Projection)
+                .SingleOrDefault());
     public virtual Task<IReadOnlyCollection<TDTOModel>> GetAllAsync(CancellationToken cancellationToken = default)
-        => Task.FromResult<IReadOnlyCollection<TDTOModel>>(Query().ToArray());
-    public virtual Task<IReadOnlyCollection<TDTOModel>> VectorAsync(Expression<Func<TDBModel, bool>> predicate, CancellationToken cancellationToken = default)
-        => Task.FromResult<IReadOnlyCollection<TDTOModel>>(Security.Query<TDBModel>().Where(predicate).Select(TDTOModel.Projection).ToArray());
+        => Task.FromResult<IReadOnlyCollection<TDTOModel>>(
+            Security.Query<TDBModel>(SecurityOperations.List)
+                .Select(TDTOModel.Projection)
+                .ToArray());
+    public virtual Task<IReadOnlyCollection<TDTOModel>> VectorAsync(
+        Expression<Func<TDBModel, bool>> predicate,
+        CancellationToken cancellationToken = default)
+        => VectorAsync(predicate, SecurityOperations.List, cancellationToken);
+
+    public virtual Task<IReadOnlyCollection<TDTOModel>> VectorAsync(
+        Expression<Func<TDBModel, bool>> predicate,
+        string operation,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyCollection<TDTOModel>>(
+            Security.Query<TDBModel>(operation)
+                .Where(predicate)
+                .Select(TDTOModel.Projection)
+                .ToArray());
     public virtual Task<TDTOModel> CreateAsync<TCreateRequest>(TCreateRequest model, CancellationToken cancellationToken = default) where TCreateRequest : ICreateDTOModel<TDBModel>
         => Security.ExecuteInTransactionAsync(async ct =>
         {

@@ -124,28 +124,17 @@ public static class UserResolvers
         try
         {
             var actorProvider = httpContext.RequestServices.GetRequiredService<ICurrentActorProvider>();
-            var authService = httpContext.RequestServices.GetRequiredService<IRbacAuthorizationService>();
             var actorUserId = actorProvider.TryGetActorUserId(httpContext);
             if (actorUserId is null)
                 return Results.Unauthorized();
 
             var predicate = HasuraFilterExpression.Build<UserModel>(request.Where ?? new Dictionary<string, object?>());
-            var models = await service.VectorAsync(predicate, cancellationToken);
+            var models = await service.VectorAsync(
+                predicate,
+                RbacOperations.Vector,
+                cancellationToken);
 
-            var filtered = new List<UserResponse>();
-            foreach (var model in models)
-            {
-                var allowed = await authService.IsAllowedAsync(
-                    actorUserId.Value,
-                    model.rbac_id,
-                    RbacOperations.Vector,
-                    cancellationToken);
-
-                if (allowed)
-                    filtered.Add(model);
-            }
-
-            return ApiResults.Ok(filtered.ToArray());
+            return ApiResults.Ok(models);
         }
         catch (HasuraFilterException ex)
         {
@@ -244,28 +233,14 @@ public static class UserResolvers
         if (user is null)
             return Results.NotFound();
 
-        var authorization = await BaseResolvers.AuthorizeModelAsync(
-            httpContext,
-            user,
-            RbacOperations.Read,
-            cancellationToken);
-
-        if (authorization is not null)
-            return authorization;
-
         var memberships = await membershipService.VectorAsync(membership => membership.user_id == id, cancellationToken);
-        var filteredMemberships = await BaseResolvers.FilterAuthorizedAsync(
-            httpContext,
-            memberships,
-            RbacOperations.List,
-            cancellationToken);
 
         return ApiResults.Ok(new EntityRelationsViewModel<UserResponse, MembershipResponse>(
             user,
-            filteredMemberships,
+            memberships,
             "Uživatel: členství",
             "Memberships"));
-    }
+    }   
 
     public static async Task<IResult> Roles(
         Guid id,
@@ -278,25 +253,11 @@ public static class UserResolvers
         if (user is null)
             return Results.NotFound();
 
-        var authorization = await BaseResolvers.AuthorizeModelAsync(
-            httpContext,
-            user,
-            RbacOperations.Read,
-            cancellationToken);
-
-        if (authorization is not null)
-            return authorization;
-
         var roles = await roleService.VectorAsync(role => role.user_id == id, cancellationToken);
-        var filteredRoles = await BaseResolvers.FilterAuthorizedAsync(
-            httpContext,
-            roles,
-            RbacOperations.List,
-            cancellationToken);
 
         return ApiResults.Ok(new EntityRelationsViewModel<UserResponse, RoleResponse>(
             user,
-            filteredRoles,
+            roles,
             "Uživatel: role",
             "Roles"));
     }

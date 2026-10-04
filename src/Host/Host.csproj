@@ -19,6 +19,7 @@
     <ProjectReference Include="../User.Resolvers/User.Resolvers.csproj" />
     <ProjectReference Include="../DBLayer/DBLayer.csproj" />
     <ProjectReference Include="../SecurityLayer/SecurityLayer.csproj" />
+    <ProjectReference Include="../Security.Resolvers/Security.Resolvers.csproj" />
 
   </ItemGroup>
 </Project>

@@ -1,6 +1,4 @@
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.DBLayer;
 
@@ -15,9 +13,9 @@ public sealed class SecurityService(IDBLayer db, ICurrentActorProvider actorProv
 {
     public Task<IReadOnlySet<string>> GetAllowedOperationsAsync(Guid userId, Guid rbacId, CancellationToken cancellationToken = default)
     {
-        var now = DateTimeOffset.UtcNow;
+        var nowUnixMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         var roleTypeIds = db.Query<EffectiveAccessModel>()
-            .Where(x => x.user_id == userId && x.rbac_id == rbacId && x.valid_from <= now && (x.valid_to == null || x.valid_to >= now))
+            .Where(x => x.user_id == userId && x.rbacobject_id == rbacId && x.valid_from_unix_ms <= nowUnixMs && (x.valid_to_unix_ms == null || x.valid_to_unix_ms >= nowUnixMs))
             .Select(x => x.role_type_id);
 
         var operationIds = db.Query<RoleTypeOperationModel>()
@@ -46,25 +44,19 @@ public sealed class SecurityService(IDBLayer db, ICurrentActorProvider actorProv
     public Task<bool> CanAssignDeputyRoleAsync(Guid actorUserId, Guid groupId, string roleType, DateTimeOffset validFrom, DateTimeOffset? validTo, CancellationToken cancellationToken = default)
     {
         var roleTypeIds = db.Query<RoleTypeModel>().Where(x => x.name == roleType).Select(x => x.id);
-        var allowed = db.Query<RoleModel>().Any(r =>
-            r.user_id == actorUserId && r.group_id == groupId && !r.is_deputy && roleTypeIds.Contains(r.role_type_id) &&
-            r.valid_from <= validFrom && (r.valid_to == null || (validTo != null && r.valid_to >= validTo)));
-        return Task.FromResult(allowed);
-    }
-}
+        // SQLite cannot translate ordering comparisons over DateTimeOffset reliably.
+        // First narrow the candidate set in SQL, then evaluate the small validity predicate in memory.
+        var candidates = db.Query<RoleModel>()
+            .Where(r => r.user_id == actorUserId
+                && r.group_id == groupId
+                && !r.is_deputy
+                && roleTypeIds.Contains(r.role_type_id))
+            .ToArray();
 
-public static class SecurityEndpointExtensions
-{
-    public static IEndpointRouteBuilder MapSecurityEndpoints(this IEndpointRouteBuilder endpoints, string prefix)
-    {
-        var group = endpoints.MapGroup(prefix.TrimEnd('/') + "/security").WithTags("Security");
-        group.MapGet("/{rbacId:guid}/operations", async (Guid rbacId, Guid? userId, HttpContext httpContext, ISecurityService service, ICurrentActorProvider actorProvider, CancellationToken cancellationToken) =>
-        {
-            var effectiveUserId = userId ?? actorProvider.TryGetActorUserId(httpContext);
-            if (effectiveUserId is null) return Results.Unauthorized();
-            var operations = await service.GetAllowedOperationsAsync(effectiveUserId.Value, rbacId, cancellationToken);
-            return Results.Ok(operations.OrderBy(x => x, StringComparer.OrdinalIgnoreCase).ToArray());
-        });
-        return endpoints;
+        var allowed = candidates.Any(r =>
+            r.valid_from <= validFrom
+            && (r.valid_to == null || (validTo != null && r.valid_to >= validTo)));
+
+        return Task.FromResult(allowed);
     }
 }

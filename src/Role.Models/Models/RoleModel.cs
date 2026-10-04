@@ -15,7 +15,7 @@ public sealed record RoleResponse(
     DateTimeOffset valid_from,
     DateTimeOffset? valid_to,
     Guid? delegated_by_role_id,
-    Guid rbac_id,
+    Guid rbacobject_id,
     DateTimeOffset created_at,
     DateTimeOffset updated_at,
     Guid created_by,
@@ -28,17 +28,21 @@ public sealed record RoleResponse(
     public static RoleResponse FromModel(RoleModel model) => new(
         model.id, model.group_id, model.user_id, model.role_type_id, model.role_type?.name,
         model.is_deputy, model.valid_from, model.valid_to, model.delegated_by_role_id,
-        model.rbac_id, model.created_at, model.updated_at, model.created_by, model.updated_by,
+        model.rbacobject_id, model.created_at, model.updated_at, model.created_by, model.updated_by,
         model.group_name, model.user_name, null);
 
     public static Expression<Func<RoleModel, RoleResponse>> Projection => model => new RoleResponse(
         model.id, model.group_id, model.user_id, model.role_type_id, model.role_type != null ? model.role_type.name : null,
         model.is_deputy, model.valid_from, model.valid_to, model.delegated_by_role_id,
-        model.rbac_id, model.created_at, model.updated_at, model.created_by, model.updated_by,
+        model.rbacobject_id, model.created_at, model.updated_at, model.created_by, model.updated_by,
         model.group_name, model.user_name, null);
 
     public RoleModel ToModel() => new(id, group_id, user_id, role_type_id, is_deputy, valid_from, valid_to,
-        delegated_by_role_id, rbac_id, created_at, updated_at, created_by, updated_by, group_name, user_name);
+        delegated_by_role_id, rbacobject_id, created_at, updated_at, created_by, updated_by)
+    {
+        group_name = group_name,
+        user_name = user_name
+    };
 }
 
 public sealed record RoleCreateRequest(
@@ -49,7 +53,7 @@ public sealed record RoleCreateRequest(
     DateTimeOffset valid_from,
     DateTimeOffset? valid_to = null,
     Guid? delegated_by_role_id = null,
-    Guid? rbac_id = null,
+    Guid? rbacobject_id = null,
     DateTimeOffset? created_at = null,
     DateTimeOffset? updated_at = null,
     Guid? created_by = null,
@@ -60,7 +64,7 @@ public sealed record RoleCreateRequest(
     {
         var now = DateTimeOffset.UtcNow;
         return new(Guid.NewGuid(), group_id, user_id, role_type_id, is_deputy, valid_from, valid_to,
-            delegated_by_role_id, rbac_id ?? group_id, created_at ?? now, updated_at ?? now,
+            delegated_by_role_id, rbacobject_id ?? group_id, created_at ?? now, updated_at ?? now,
             created_by ?? Guid.Empty, updated_by ?? Guid.Empty);
     }
 }

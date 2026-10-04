@@ -170,25 +170,11 @@ public static class GroupResolvers
         if (group is null)
             return Results.NotFound();
 
-        var authorization = await BaseResolvers.AuthorizeModelAsync(
-            httpContext,
-            group,
-            RbacOperations.Read,
-            cancellationToken);
-
-        if (authorization is not null)
-            return authorization;
-
         var roles = await roleService.VectorAsync(role => role.group_id == id, cancellationToken);
-        var filteredRoles = await BaseResolvers.FilterAuthorizedAsync(
-            httpContext,
-            roles,
-            RbacOperations.List,
-            cancellationToken);
 
         return ApiResults.Ok(new EntityRelationsViewModel<GroupResponse, RoleResponse>(
             group,
-            filteredRoles,
+            roles,
             "Skupina: role",
             "Roles"));
     }
@@ -204,25 +190,11 @@ public static class GroupResolvers
         if (group is null)
             return Results.NotFound();
 
-        var authorization = await BaseResolvers.AuthorizeModelAsync(
-            httpContext,
-            group,
-            RbacOperations.Read,
-            cancellationToken);
-
-        if (authorization is not null)
-            return authorization;
-
         var memberships = await membershipService.VectorAsync(membership => membership.group_id == id, cancellationToken);
-        var filteredMemberships = await BaseResolvers.FilterAuthorizedAsync(
-            httpContext,
-            memberships,
-            RbacOperations.List,
-            cancellationToken);
 
         return ApiResults.Ok(new EntityRelationsViewModel<GroupResponse, MembershipResponse>(
             group,
-            filteredMemberships,
+            memberships,
             "Skupina: členství",
             "Memberships"));
     }

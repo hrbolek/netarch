@@ -11,7 +11,7 @@ public sealed record MembershipResponse(
     Guid user_id,
     DateTimeOffset valid_from,
     DateTimeOffset? valid_to,
-    Guid rbac_id,
+    Guid rbacobject_id,
     DateTimeOffset created_at,
     DateTimeOffset updated_at,
     Guid created_by,
@@ -21,15 +21,19 @@ public sealed record MembershipResponse(
 ) : IEntityDTOModel<MembershipModel, MembershipResponse>, ISecuredEntityDTOModel
 {
     public static MembershipResponse FromModel(MembershipModel model) => new(
-        model.id, model.group_id, model.user_id, model.valid_from, model.valid_to, model.rbac_id,
+        model.id, model.group_id, model.user_id, model.valid_from, model.valid_to, model.rbacobject_id,
         model.created_at, model.updated_at, model.created_by, model.updated_by, model.group_name, model.user_name);
 
     public static Expression<Func<MembershipModel, MembershipResponse>> Projection => model => new MembershipResponse(
-        model.id, model.group_id, model.user_id, model.valid_from, model.valid_to, model.rbac_id,
+        model.id, model.group_id, model.user_id, model.valid_from, model.valid_to, model.rbacobject_id,
         model.created_at, model.updated_at, model.created_by, model.updated_by, model.group_name, model.user_name);
 
-    public MembershipModel ToModel() => new(id, group_id, user_id, valid_from, valid_to, rbac_id,
-        created_at, updated_at, created_by, updated_by, group_name, user_name);
+    public MembershipModel ToModel() => new(id, group_id, user_id, valid_from, valid_to, rbacobject_id,
+        created_at, updated_at, created_by, updated_by)
+    {
+        group_name = group_name,
+        user_name = user_name
+    };
 }
 
 public sealed record MembershipCreateRequest(
@@ -37,7 +41,7 @@ public sealed record MembershipCreateRequest(
     Guid user_id,
     DateTimeOffset valid_from,
     DateTimeOffset? valid_to = null,
-    Guid? rbac_id = null,
+    Guid? rbacobject_id = null,
     DateTimeOffset? created_at = null,
     DateTimeOffset? updated_at = null,
     Guid? created_by = null,
@@ -48,7 +52,7 @@ public sealed record MembershipCreateRequest(
     {
         var now = DateTimeOffset.UtcNow;
         return new(Guid.NewGuid(), group_id, user_id, valid_from, valid_to,
-            rbac_id ?? RbacWellKnown.RootSecurityObjectId,
+            rbacobject_id ?? RbacWellKnown.RootSecurityObjectId,
             created_at ?? now, updated_at ?? now, created_by ?? Guid.Empty, updated_by ?? Guid.Empty);
     }
 }

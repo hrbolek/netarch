@@ -12,7 +12,7 @@
         <UserMediumCard
             Model="@item" />
         <EntityLinks TModel="UserResponse" Model="@item" Links="@GetLinks(item)" />
-        <EntityPermissions RbacId="@item.rbac_id" />
+        <EntityPermissions RbacId="@item.rbacobject_id" />
     </SideContent>
 
     <ChildContent Context="item">

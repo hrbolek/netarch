@@ -55,7 +55,7 @@ public static class OperationsEnrichmentExtensions
         where T : ISecuredEntityDTOModel
         => source.EnrichWithOperationsAsync(
             security,
-            item => item.rbac_id,
+            item => item.rbacobject_id,
             (item, operations) => new WithOperations<T>(item, operations),
             cancellationToken);
 

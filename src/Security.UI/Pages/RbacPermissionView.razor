@@ -1,0 +1,29 @@
+@namespace WebAppArchitecture.Security.UI.Pages
+
+@if (IsFragment)
+{
+    <RbacPermissionList Model="@Model" />
+}
+else
+{
+    <Page Title="Effective permissions">
+        <div class="container py-3">
+            <h1 class="h4 mb-3">Effective permissions</h1>
+            <div class="small text-muted mb-3">RBAC object: @Model.rbacobject_id</div>
+            <div class="card">
+                <div class="card-header">Valid Permissions</div>
+                <div class="card-body p-0">
+                    <RbacPermissionList Model="@Model" />
+                </div>
+            </div>
+        </div>
+    </Page>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public RbacPermissionResponse Model { get; set; } = default!;
+
+    [Parameter]
+    public bool IsFragment { get; set; }
+}

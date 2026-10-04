@@ -75,7 +75,7 @@ public static class SystemDataImporter
                 type.Name,
                 parentId,
                 path,
-                RbacWellKnown.RootGroupId,
+                type.RbacObjectId ?? RbacWellKnown.RootGroupId,
                 type.CreatedAt ?? now,
                 type.UpdatedAt ?? type.CreatedAt ?? now,
                 actor,
@@ -98,7 +98,7 @@ public static class SystemDataImporter
                 group.GroupTypeId,
                 masterId,
                 path,
-                group.Id,
+                group.RbacObjectId ?? group.Id,
                 group.CreatedAt ?? now,
                 group.UpdatedAt ?? group.CreatedAt ?? now,
                 actor,
@@ -116,9 +116,13 @@ public static class SystemDataImporter
                 ?? JoinName(String(element, "firstname"), String(element, "familyname"))
                 ?? JoinName(String(element, "firstname"), String(element, "surname"))
                 ?? id.ToString();
+            var email = String(element, "email");
+            var surname = String(element, "surname") ?? String(element, "familyname");
+            var rbacobjectId = GuidValue(element, "rbacobject_id") ?? RbacWellKnown.RootGroupId;
             var created = Date(element, "created") ?? now;
             var updated = Date(element, "lastchange") ?? created;
-            db.Users.Add(new UserModel(id, name, RbacWellKnown.RootGroupId, created, updated, actor, actor));
+            db.Users.Add(new UserModel(
+                id, name, email, surname, rbacobjectId, created, updated, actor, actor));
             userCount++;
         }
         await db.SaveChangesAsync(cancellationToken);
@@ -132,7 +136,9 @@ public static class SystemDataImporter
             var name = String(element, "name") ?? id.ToString();
             var created = Date(element, "created") ?? now;
             var updated = Date(element, "lastchange") ?? created;
-            db.RoleTypes.Add(new RoleTypeModel(id, name, RbacWellKnown.RootGroupId, created, updated, actor, actor));
+            db.RoleTypes.Add(new RoleTypeModel(
+                id, name, GuidValue(element, "rbacobject_id") ?? RbacWellKnown.RootGroupId,
+                created, updated, actor, actor));
             roleTypeCount++;
         }
         await db.SaveChangesAsync(cancellationToken);
@@ -168,7 +174,7 @@ public static class SystemDataImporter
                 validFrom,
                 validTo,
                 null,
-                groupId,
+                GuidValue(element, "rbacobject_id") ?? groupId,
                 created,
                 updated,
                 createdBy,
@@ -193,7 +199,8 @@ public static class SystemDataImporter
                 var validFrom = Date(element, "startdate") ?? Date(element, "valid_from") ?? created;
                 var validTo = Date(element, "enddate") ?? Date(element, "valid_to");
                 db.Memberships.Add(new MembershipModel(
-                    id, groupId, userId, validFrom, validTo, groupId,
+                    id, groupId, userId, validFrom, validTo,
+                    GuidValue(element, "rbacobject_id") ?? groupId,
                     created, updated,
                     GuidValue(element, "createdby") ?? actor,
                     GuidValue(element, "changedby") ?? actor));
@@ -244,6 +251,7 @@ public static class SystemDataImporter
             String(e, "name") ?? id.ToString(),
             GuidValue(e, "mastergroup_id"),
             typeId,
+            GuidValue(e, "rbacobject_id"),
             Date(e, "created"),
             Date(e, "lastchange"));
     }
@@ -255,6 +263,7 @@ public static class SystemDataImporter
         return new SourceGroupType(
             id,
             String(e, "name") ?? id.ToString(),
+            GuidValue(e, "rbacobject_id"),
             Date(e, "created"),
             Date(e, "lastchange"));
     }
@@ -353,11 +362,11 @@ public static class SystemDataImporter
     }
 
     private sealed record SourceGroup(
-        Guid Id, string Name, Guid? MasterGroupId, Guid GroupTypeId,
+        Guid Id, string Name, Guid? MasterGroupId, Guid GroupTypeId, Guid? RbacObjectId,
         DateTimeOffset? CreatedAt, DateTimeOffset? UpdatedAt);
 
     private sealed record SourceGroupType(
-        Guid Id, string Name, DateTimeOffset? CreatedAt, DateTimeOffset? UpdatedAt);
+        Guid Id, string Name, Guid? RbacObjectId, DateTimeOffset? CreatedAt, DateTimeOffset? UpdatedAt);
 
     private sealed class OwnedHttpStream(Stream inner, HttpResponseMessage response, HttpClient client) : Stream
     {

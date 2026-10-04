@@ -13,7 +13,7 @@ public interface IEntityDBModel
 
 public interface ISecuredEntityDBModel : IEntityDBModel
 {
-    Guid rbac_id { get; }
+    Guid rbacobject_id { get; }
     DateTimeOffset created_at { get; }
     DateTimeOffset updated_at { get; }
     Guid created_by { get; }
@@ -27,12 +27,12 @@ public interface IEntityDTOModel
 
 public interface ISecuredEntityDTOModel : IEntityDTOModel
 {
-    Guid rbac_id { get; }
+    Guid rbacobject_id { get; }
 }
 
 public interface ISecuredCreateRequest
 {
-    Guid? rbac_id { get; }
+    Guid? rbacobject_id { get; }
 }
 
 public interface IEntityDTOModel<TEntity, TSelf> : IEntityDTOModel, ICreateDTOModel<TEntity>

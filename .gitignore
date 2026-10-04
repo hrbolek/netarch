@@ -4,3 +4,4 @@ obj/
 .vscode/
 WebAppArchitecture/data/
 *.user
+**.zip

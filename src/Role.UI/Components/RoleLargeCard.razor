@@ -7,7 +7,7 @@
     <SideContent Context="item">
         <RoleMediumCard Model="@item" />
         <EntityLinks TModel="RoleResponse" Model="@item" Links="@GetLinks(item)" />
-        <EntityPermissions RbacId="@item.rbac_id" />
+        <EntityPermissions RbacId="@item.rbacobject_id" />
     </SideContent>
 
     <ChildContent Context="item">

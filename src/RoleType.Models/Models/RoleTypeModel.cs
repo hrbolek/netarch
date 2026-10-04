@@ -9,7 +9,7 @@ public sealed record RoleTypeResponse(
     Guid id,
     string name,
     string[] operations,
-    Guid rbac_id,
+    Guid rbacobject_id,
     DateTimeOffset created_at,
     DateTimeOffset updated_at,
     Guid created_by,
@@ -19,14 +19,14 @@ public sealed record RoleTypeResponse(
     public static RoleTypeResponse FromModel(RoleTypeModel model)
         => new(model.id, model.name,
             model.operation_links.Where(x => x.operation is not null).Select(x => x.operation!.name).OrderBy(x => x).ToArray(),
-            model.rbac_id, model.created_at, model.updated_at, model.created_by, model.updated_by);
+            model.rbacobject_id, model.created_at, model.updated_at, model.created_by, model.updated_by);
 
     public static Expression<Func<RoleTypeModel, RoleTypeResponse>> Projection => model => new RoleTypeResponse(
         model.id, model.name,
         model.operation_links.Where(x => x.operation != null).Select(x => x.operation!.name).OrderBy(x => x).ToArray(),
-        model.rbac_id, model.created_at, model.updated_at, model.created_by, model.updated_by);
+        model.rbacobject_id, model.created_at, model.updated_at, model.created_by, model.updated_by);
 
-    public RoleTypeModel ToModel() => new(id, name, rbac_id, created_at, updated_at, created_by, updated_by)
+    public RoleTypeModel ToModel() => new(id, name, rbacobject_id, created_at, updated_at, created_by, updated_by)
     {
         requested_operations = operations
     };
@@ -35,7 +35,7 @@ public sealed record RoleTypeResponse(
 public sealed record RoleTypeCreateRequest(
     string name,
     string[] operations,
-    Guid? rbac_id = null,
+    Guid? rbacobject_id = null,
     DateTimeOffset? created_at = null,
     DateTimeOffset? updated_at = null,
     Guid? created_by = null,
@@ -45,7 +45,7 @@ public sealed record RoleTypeCreateRequest(
     public RoleTypeModel ToModel()
     {
         var now = DateTimeOffset.UtcNow;
-        return new RoleTypeModel(Guid.NewGuid(), name, rbac_id ?? RbacWellKnown.RootSecurityObjectId,
+        return new RoleTypeModel(Guid.NewGuid(), name, rbacobject_id ?? RbacWellKnown.RootSecurityObjectId,
             created_at ?? now, updated_at ?? now, created_by ?? Guid.Empty, updated_by ?? Guid.Empty)
         {
             requested_operations = Normalize(operations)

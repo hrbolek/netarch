@@ -22,6 +22,8 @@ public sealed class ApplicationDbContext : DbContext
         {
             e.ToTable("users"); e.HasKey(x => x.id);
             e.Property(x => x.Name).HasColumnName("name");
+            e.Property(x => x.email).HasColumnName("email");
+            e.Property(x => x.surname).HasColumnName("surname");
             ConfigureSecured(e);
         });
 
@@ -71,6 +73,7 @@ public sealed class ApplicationDbContext : DbContext
         {
             e.ToTable("role_type_operations"); e.HasKey(x => x.id);
             e.HasIndex(x => new { x.role_type_id, x.operation_id }).IsUnique();
+            e.HasIndex(x => new { x.operation_id, x.role_type_id });
             e.HasOne<RoleTypeModel>()
                 .WithMany(x => x.operation_links)
                 .HasForeignKey(x => x.role_type_id)
@@ -102,17 +105,24 @@ public sealed class ApplicationDbContext : DbContext
         modelBuilder.Entity<EffectiveAccessModel>(e =>
         {
             e.ToTable("effective_access");
-            e.HasKey(x => new { x.user_id, x.rbac_id, x.role_type_id, x.source_role_id });
-            e.HasIndex(x => new { x.user_id, x.rbac_id, x.role_type_id });
+            e.HasKey(x => new { x.user_id, x.rbacobject_id, x.role_type_id, x.source_role_id, x.source_membership_id });
+
+            // Security queries join secured entities by rbacobject_id first and then
+            // constrain access for the current user and validity interval.
+            // Keep both orderings: rbac-first is ideal for entity -> access joins,
+            // user-first is useful for user-centric security lookups/batch enrichment.
+            e.HasIndex(x => new { x.rbacobject_id, x.user_id, x.valid_from_unix_ms, x.valid_to_unix_ms, x.role_type_id });
+            e.HasIndex(x => new { x.user_id, x.rbacobject_id, x.role_type_id });
             e.HasIndex(x => x.source_role_id);
             e.HasIndex(x => x.source_group_id);
+            e.HasIndex(x => x.source_membership_id);
         });
     }
 
     private static void ConfigureSecured<TEntity>(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<TEntity> e)
         where TEntity : class, WebAppArchitecture.Base.Data.ISecuredEntityDBModel
     {
-        e.Property(x => x.rbac_id).HasColumnName("rbac_id");
+        e.Property(x => x.rbacobject_id).HasColumnName("rbacobject_id");
         e.Property(x => x.created_at).HasColumnName("created_at");
         e.Property(x => x.updated_at).HasColumnName("updated_at");
         e.Property(x => x.created_by).HasColumnName("created_by");

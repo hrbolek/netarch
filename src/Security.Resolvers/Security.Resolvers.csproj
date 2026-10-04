@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WebAppArchitecture.Security.Resolvers</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../Base/Base.csproj" />
+    <ProjectReference Include="../SecurityLayer/SecurityLayer.csproj" />
+    <ProjectReference Include="../Security.Models/Security.Models.csproj" />
+    <ProjectReference Include="../Security.Services/Security.Services.csproj" />
+    <ProjectReference Include="../Security.UI/Security.UI.csproj" />
+  </ItemGroup>
+</Project>

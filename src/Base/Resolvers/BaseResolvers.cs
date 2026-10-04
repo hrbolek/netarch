@@ -24,43 +24,6 @@ public static class BaseResolvers
             cancellationToken);
     }
 
-    public static async Task<TDTOModel[]> FilterAuthorizedAsync<TDTOModel>(
-        HttpContext httpContext,
-        IEnumerable<TDTOModel> models,
-        string operation,
-        CancellationToken cancellationToken)
-    {
-        var rbacService = httpContext.RequestServices.GetService<IRbacService>();
-        if (rbacService is null)
-            return models.ToArray();
-
-        var actorProvider = httpContext.RequestServices.GetService<ICurrentActorProvider>();
-        if (actorProvider?.TryGetActorUserId(httpContext) is null)
-            return Array.Empty<TDTOModel>();
-
-        var filtered = new List<TDTOModel>();
-
-        foreach (var model in models)
-        {
-            if (model is not ISecuredEntityDTOModel secured)
-            {
-                filtered.Add(model);
-                continue;
-            }
-
-            var allowed = await rbacService.IsCurrentActorAllowedAsync(
-                httpContext,
-                secured.rbac_id,
-                operation,
-                cancellationToken);
-
-            if (allowed)
-                filtered.Add(model);
-        }
-
-        return filtered.ToArray();
-    }
-
     public static async Task<IResult> Read<
         TDBModel,
         TDTOModel,
@@ -80,15 +43,6 @@ public static class BaseResolvers
         if (result is null)
             return Results.NotFound();
 
-        var authorizeResult = await AuthorizeSingleAsync(
-            httpContext,
-            result,
-            RbacOperations.Read,
-            cancellationToken);
-
-        if (authorizeResult is not null)
-            return authorizeResult;
-
         return ApiResults.Ok(result);
     }
 
@@ -106,20 +60,9 @@ public static class BaseResolvers
         var result = await service.GetAllAsync(
             cancellationToken);
 
-        var filtered = await FilterAuthorizedAsync(
-            httpContext,
-            result,
-            RbacOperations.List,
-            cancellationToken);
-
-        if (httpContext.RequestServices.GetService<IRbacService>() is not null && filtered.Length == 0)
-        {
-            var actorProvider = httpContext.RequestServices.GetService<ICurrentActorProvider>();
-            if (actorProvider?.TryGetActorUserId(httpContext) is null)
-                return Results.Unauthorized();
-        }
-
-        return ApiResults.Ok(filtered);
+        // Row-level authorization is already part of service.GetAllAsync():
+        // SecurityLayer applies the LIST operation directly in the database query.
+        return ApiResults.Ok(result);
     }
 
     public static async Task<IResult> Create<
@@ -145,7 +88,7 @@ public static class BaseResolvers
                 if (actorProvider?.TryGetActorUserId(httpContext) is null)
                     return Results.Unauthorized();
 
-                var targetRbacId = securedCreate.rbac_id ?? RbacWellKnown.RootSecurityObjectId;
+                var targetRbacId = securedCreate.rbacobject_id ?? RbacWellKnown.RootSecurityObjectId;
 
                 var allowed = await rbacService.IsCurrentActorAllowedAsync(
                     httpContext,
@@ -256,7 +199,7 @@ public static class BaseResolvers
 
         var allowed = await rbacService.IsCurrentActorAllowedAsync(
             httpContext,
-            secured.rbac_id,
+            secured.rbacobject_id,
             operation,
             cancellationToken);
 

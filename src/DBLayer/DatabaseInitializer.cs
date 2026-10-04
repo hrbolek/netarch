@@ -80,7 +80,8 @@ public static class DatabaseInitializer
         {
             if (!await db.Users.AnyAsync(x => x.id == seed.id, cancellationToken))
             {
-                db.Users.Add(new UserModel(seed.id, seed.Name, RbacWellKnown.RootGroupId, now, now,
+                db.Users.Add(new UserModel(
+                    seed.id, seed.Name, seed.Email, null, RbacWellKnown.RootGroupId, now, now,
                     RbacWellKnown.BootstrapAdminUserId, RbacWellKnown.BootstrapAdminUserId));
             }
         }
@@ -100,17 +101,85 @@ public static class DatabaseInitializer
             RbacOperations.ManageMemberships, RbacOperations.ManageRoles, RbacOperations.ManageSecurityObjects
         }.Select(x => x.Trim().ToLowerInvariant()).Distinct().ToArray();
 
+        // Operation ids became deterministic in Update 19 because runtime authorization
+        // compares RoleTypeOperation.operation_id directly and no longer joins Operations.
+        // Existing databases can still contain the same operation names under historical,
+        // randomly generated ids. Reconcile them transactionally instead of inserting a
+        // duplicate name (operations.name is unique) or requiring the database to be reset.
         foreach (var operationName in operationNames)
+            await EnsureWellKnownOperationAsync(db, operationName, now, cancellationToken);
+
+        return operationNames;
+    }
+
+    private static async Task EnsureWellKnownOperationAsync(
+        ApplicationDbContext db,
+        string operationName,
+        DateTimeOffset now,
+        CancellationToken cancellationToken)
+    {
+        var operationId = RbacOperationIds.FromName(operationName);
+
+        var byId = await db.Operations
+            .SingleOrDefaultAsync(x => x.id == operationId, cancellationToken);
+        var byName = await db.Operations
+            .SingleOrDefaultAsync(x => x.name == operationName, cancellationToken);
+
+        if (byId is not null)
         {
-            if (!await db.Operations.AnyAsync(x => x.name == operationName, cancellationToken))
-            {
-                db.Operations.Add(new OperationModel(Guid.NewGuid(), operationName, now, now,
-                    RbacWellKnown.BootstrapAdminUserId, RbacWellKnown.BootstrapAdminUserId));
-            }
+            if (!string.Equals(byId.name, operationName, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException(
+                    $"Well-known operation id {operationId} is already used by operation '{byId.name}', " +
+                    $"but '{operationName}' was expected.");
+
+            return;
         }
 
-        await db.SaveChangesAsync(cancellationToken);
-        return operationNames;
+        if (byName is null)
+        {
+            db.Operations.Add(new OperationModel(operationId, operationName, now, now,
+                RbacWellKnown.BootstrapAdminUserId, RbacWellKnown.BootstrapAdminUserId));
+            await db.SaveChangesAsync(cancellationToken);
+            return;
+        }
+
+        var oldOperationId = byName.id;
+        var legacyName = $"__legacy__{operationName}_{oldOperationId:N}";
+
+        await using var transaction = await db.Database.BeginTransactionAsync(cancellationToken);
+        try
+        {
+            // Free the unique operation name first. We intentionally do this before
+            // inserting the new row, while both changes remain invisible until commit.
+            db.Entry(byName).Property(x => x.name).CurrentValue = legacyName;
+            db.Entry(byName).Property(x => x.updated_at).CurrentValue = now;
+            db.Entry(byName).Property(x => x.updated_by).CurrentValue = RbacWellKnown.BootstrapAdminUserId;
+            await db.SaveChangesAsync(cancellationToken);
+
+            var replacement = new OperationModel(operationId, operationName, byName.created_at, now,
+                byName.created_by, RbacWellKnown.BootstrapAdminUserId);
+            db.Operations.Add(replacement);
+            await db.SaveChangesAsync(cancellationToken);
+
+            var links = await db.RoleTypeOperations
+                .Where(x => x.operation_id == oldOperationId)
+                .ToArrayAsync(cancellationToken);
+
+            foreach (var link in links)
+                db.Entry(link).Property(x => x.operation_id).CurrentValue = operationId;
+
+            await db.SaveChangesAsync(cancellationToken);
+
+            db.Operations.Remove(byName);
+            await db.SaveChangesAsync(cancellationToken);
+
+            await transaction.CommitAsync(cancellationToken);
+        }
+        catch
+        {
+            await transaction.RollbackAsync(cancellationToken);
+            throw;
+        }
     }
 
     private static async Task EnsureBootstrapRoleTypesAsync(

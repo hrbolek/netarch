@@ -17,6 +17,19 @@
             </EntityLink>
         </Attribute>
         <Attribute TModel="RoleResponse" Item="@item" Label="Role Type" AttributeName="role_type" />
+        <Attribute TModel="RoleResponse" Item="@item" Label="Valid From">
+            <span>@item.valid_from.ToString("yyyy-MM-dd HH:mm zzz")</span>
+        </Attribute>
+        <Attribute TModel="RoleResponse" Item="@item" Label="Valid To">
+            @if (item.valid_to is null)
+            {
+                <span class="text-muted">without end</span>
+            }
+            else
+            {
+                <span>@item.valid_to.Value.ToString("yyyy-MM-dd HH:mm zzz")</span>
+            }
+        </Attribute>
         <Attribute TModel="RoleResponse" Item="@item" Label="Deputy" AttributeName="is_deputy" />
         <Attribute TModel="RoleResponse" Item="@item" Label="Delegated By Role">
             @if (item.delegated_by_role_id is null)
@@ -29,6 +42,12 @@
                     <ChildContent Context="_">@(item.delegated_by_role_type ?? item.delegated_by_role_id.Value.ToString())</ChildContent>
                 </EntityLink>
             }
+        </Attribute>
+        <Attribute TModel="RoleResponse" Item="@item" Label="Created">
+            <span>@item.created_at.ToString("yyyy-MM-dd HH:mm zzz")</span>
+        </Attribute>
+        <Attribute TModel="RoleResponse" Item="@item" Label="Updated">
+            <span>@item.updated_at.ToString("yyyy-MM-dd HH:mm zzz")</span>
         </Attribute>
     </ChildContent>
 </MediumCard>

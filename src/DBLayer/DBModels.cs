@@ -6,7 +6,9 @@ namespace WebAppArchitecture.DBLayer;
 public sealed record UserModel(
     Guid id,
     string Name,
-    Guid rbac_id,
+    string? email,
+    string? surname,
+    Guid rbacobject_id,
     DateTimeOffset created_at,
     DateTimeOffset updated_at,
     Guid created_by,
@@ -18,13 +20,16 @@ public sealed record GroupTypeModel(
     string Name,
     Guid? parent_group_type_id,
     string path,
-    Guid rbac_id,
+    Guid rbacobject_id,
     DateTimeOffset created_at,
     DateTimeOffset updated_at,
     Guid created_by,
-    Guid updated_by,
-    string? parent_group_type_name = null
-) : ISecuredEntityDBModel;
+    Guid updated_by
+) : ISecuredEntityDBModel
+{
+    [NotMapped]
+    public string? parent_group_type_name { get; init; }
+}
 
 public sealed record GroupModel(
     Guid id,
@@ -32,14 +37,19 @@ public sealed record GroupModel(
     Guid group_type_id,
     Guid? master_group_id,
     string path,
-    Guid rbac_id,
+    Guid rbacobject_id,
     DateTimeOffset created_at,
     DateTimeOffset updated_at,
     Guid created_by,
-    Guid updated_by,
-    string? master_group_name = null,
-    string? group_type_name = null
-) : ISecuredEntityDBModel;
+    Guid updated_by
+) : ISecuredEntityDBModel
+{
+    [NotMapped]
+    public string? master_group_name { get; init; }
+
+    [NotMapped]
+    public string? group_type_name { get; init; }
+}
 
 public sealed record MembershipModel(
     Guid id,
@@ -47,14 +57,19 @@ public sealed record MembershipModel(
     Guid user_id,
     DateTimeOffset valid_from,
     DateTimeOffset? valid_to,
-    Guid rbac_id,
+    Guid rbacobject_id,
     DateTimeOffset created_at,
     DateTimeOffset updated_at,
     Guid created_by,
-    Guid updated_by,
-    string? group_name = null,
-    string? user_name = null
-) : ISecuredEntityDBModel;
+    Guid updated_by
+) : ISecuredEntityDBModel
+{
+    [NotMapped]
+    public string? group_name { get; init; }
+
+    [NotMapped]
+    public string? user_name { get; init; }
+}
 
 public sealed record RoleModel(
     Guid id,
@@ -65,22 +80,26 @@ public sealed record RoleModel(
     DateTimeOffset valid_from,
     DateTimeOffset? valid_to,
     Guid? delegated_by_role_id,
-    Guid rbac_id,
+    Guid rbacobject_id,
     DateTimeOffset created_at,
     DateTimeOffset updated_at,
     Guid created_by,
-    Guid updated_by,
-    string? group_name = null,
-    string? user_name = null
+    Guid updated_by
 ) : ISecuredEntityDBModel
 {
+    [NotMapped]
+    public string? group_name { get; init; }
+
+    [NotMapped]
+    public string? user_name { get; init; }
+
     public RoleTypeModel? role_type { get; init; }
 }
 
 public sealed record RoleTypeModel(
     Guid id,
     string name,
-    Guid rbac_id,
+    Guid rbacobject_id,
     DateTimeOffset created_at,
     DateTimeOffset updated_at,
     Guid created_by,

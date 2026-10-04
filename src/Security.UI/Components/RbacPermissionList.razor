@@ -1,0 +1,99 @@
+@namespace WebAppArchitecture.Security.UI.Components
+
+@if (Model.permissions.Count == 0)
+{
+    <div class="text-muted p-3">No active permissions found.</div>
+}
+else
+{
+    <ul class="list-group list-group-flush">
+        @foreach (var permission in Model.permissions)
+        {
+            <li class="list-group-item">
+                <div>
+                    <a href="@UserHref(permission)"><strong>@UserLabel(permission)</strong></a>
+                    <span class="text-muted"> in role </span>
+                    <a href="@RoleTypeHref(permission)"><code>@permission.role_type</code></a>
+                    <span class="text-muted"> (</span><a href="@RoleHref(permission)">role</a><span class="text-muted">)</span>
+                    @if (permission.is_deputy)
+                    {
+                        <span class="badge text-bg-warning ms-1">deputy</span>
+                    }
+                </div>
+
+                <div>
+                    <span class="text-muted">at</span>
+                    <a href="@GroupHref(permission)">@GroupLabel(permission)</a>
+                </div>
+
+                <div class="small text-muted">@Validity(permission)</div>
+
+                @if (permission.source_membership_id is Guid membershipId)
+                {
+                    <div class="small text-muted">
+                        membership:
+                        <a href="@MembershipHref(membershipId)"><code>@membershipId</code></a>
+                    </div>
+                }
+
+                <div class="mt-1">
+                    @if (permission.operations.Count == 0)
+                    {
+                        <span class="text-muted">none</span>
+                    }
+                    else
+                    {
+                        @foreach (var operation in permission.operations)
+                        {
+                            <span class="badge text-bg-secondary me-1">@operation</span>
+                        }
+                    }
+                </div>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public RbacPermissionResponse Model { get; set; } = default!;
+
+    [Parameter]
+    public string App { get; set; } = "architecture";
+
+    private string UserHref(RbacPermissionItemResponse permission)
+        => $"/{App}/UserResponse/view/{permission.user_id}";
+
+    private string GroupHref(RbacPermissionItemResponse permission)
+        => $"/{App}/GroupResponse/view/{permission.group_id}";
+
+    private string RoleHref(RbacPermissionItemResponse permission)
+        => $"/{App}/RoleResponse/view/{permission.role_id}";
+
+    private string RoleTypeHref(RbacPermissionItemResponse permission)
+        => $"/{App}/RoleTypeResponse/view/{permission.role_type_id}";
+
+    private string MembershipHref(Guid membershipId)
+        => $"/{App}/MembershipResponse/view/{membershipId}";
+
+    private static string UserLabel(RbacPermissionItemResponse permission)
+    {
+        var label = !string.IsNullOrWhiteSpace(permission.user_name)
+            ? permission.user_name!
+            : permission.user_id.ToString();
+
+        return string.IsNullOrWhiteSpace(permission.user_email)
+            ? label
+            : $"{label} <{permission.user_email}>";
+    }
+
+    private static string GroupLabel(RbacPermissionItemResponse permission)
+        => !string.IsNullOrWhiteSpace(permission.group_name)
+            ? permission.group_name!
+            : permission.group_id.ToString();
+
+    private static string Validity(RbacPermissionItemResponse permission)
+        => permission.valid_to is null
+            ? $"from {permission.valid_from:yyyy-MM-dd HH:mm}"
+            : $"from {permission.valid_from:yyyy-MM-dd HH:mm} to {permission.valid_to:yyyy-MM-dd HH:mm}";
+}

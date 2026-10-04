@@ -156,7 +156,7 @@ public sealed class EfGroupStore(ApplicationDbContext db) : EfStore<GroupModel>(
     public override async Task<GroupModel> CreateAsync(GroupModel model, CancellationToken cancellationToken = default)
     {
         var path = await BuildPathAsync(model.id, model.master_group_id, cancellationToken);
-        var normalized = model with { path = path, rbac_id = model.id };
+        var normalized = model with { path = path, rbacobject_id = model.id };
         return await base.CreateAsync(normalized, cancellationToken);
     }
 
@@ -166,7 +166,7 @@ public sealed class EfGroupStore(ApplicationDbContext db) : EfStore<GroupModel>(
         var old = await Db.Groups.AsNoTracking().SingleAsync(x => x.id == model.id, cancellationToken);
         var newPath = await BuildPathAsync(model.id, model.master_group_id, cancellationToken);
         await RewriteDescendantPathsAsync(old.path, newPath, model.id, cancellationToken);
-        return await base.UpdateAsync(model with { path = newPath, rbac_id = model.id }, cancellationToken);
+        return await base.UpdateAsync(model with { path = newPath, rbacobject_id = model.id }, cancellationToken);
     }
 
     private async Task<string> BuildPathAsync(Guid id, Guid? parentId, CancellationToken ct)
