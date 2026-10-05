@@ -1,0 +1,18 @@
+@typeparam TModel where TModel : IEntityDTOModel
+@using System.Text.Json
+
+<div class="card mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span>@Title</span>
+        <EntityLink TModel="TModel" Model="@Model" App="digital-processes" />
+    </div>
+    <div class="card-body">
+        <pre class="mb-0 small">@JsonSerializer.Serialize(Model, JsonOptions)</pre>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public TModel Model { get; set; } = default!;
+    [Parameter] public string Title { get; set; } = typeof(TModel).Name;
+    private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
+}

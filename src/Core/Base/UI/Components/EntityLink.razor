@@ -1,0 +1,42 @@
+@namespace WebAppArchitecture.Base.UI.Components
+@typeparam TModel where TModel : IEntityDTOModel
+@inject WebAppArchitecture.Base.UI.Routing.IEntityRouteRegistry Routes
+
+<a href="@Href" class="@CssClass">
+    @if (ChildContent is not null)
+    {
+        @ChildContent(Model)
+    }
+    else
+    {
+        @Model.visual_label
+    }
+</a>
+
+@code {
+    [Parameter, EditorRequired] public TModel Model { get; set; } = default!;
+    [Parameter] public Guid? EntityId { get; set; }
+
+    // Preferred route override names.
+    [Parameter] public string? App { get; set; }
+    [Parameter] public string? Entity { get; set; }
+    [Parameter] public string? Operation { get; set; }
+
+    // Backwards-compatible aliases used by older components.
+    [Parameter] public string? Type { get; set; }
+    [Parameter] public string? Action { get; set; }
+
+    [Parameter] public string? CssClass { get; set; }
+    [Parameter] public RenderFragment<TModel>? ChildContent { get; set; }
+
+    private Guid EffectiveId => EntityId ?? Model.id;
+    private string? EffectiveEntity => !string.IsNullOrWhiteSpace(Entity) ? Entity : Type;
+    private string? EffectiveOperation => !string.IsNullOrWhiteSpace(Operation) ? Operation : Action;
+
+    private string Href => Routes.GetUrl(
+        typeof(TModel),
+        EffectiveId,
+        App,
+        EffectiveEntity,
+        EffectiveOperation);
+}

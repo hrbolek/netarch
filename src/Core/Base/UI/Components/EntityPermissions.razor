@@ -1,0 +1,54 @@
+@namespace WebAppArchitecture.Base.UI.Components
+@using WebAppArchitecture.Base.UI.Htmx
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@if (RbacId != Guid.Empty)
+{
+    var modalId = $"add-role-{RbacId:N}";
+    <div class="card mt-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span>Valid Permissions</span>
+            <button type="button" class="btn btn-sm btn-outline-primary"
+                    data-bs-toggle="modal" data-bs-target="#@modalId">
+                Add role
+            </button>
+        </div>
+        <div class="card-body p-0">
+            <LazyContent Url="@($"/{App}/RbacPermissionResponse/permissions/{RbacId}")">
+                <Placeholder><div class="p-3 text-muted">Loading permissions...</div></Placeholder>
+            </LazyContent>
+        </div>
+    </div>
+
+    <div class="modal fade" id="@modalId" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create role</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <LazyContent Url="@RoleDialogUrl">
+                        <Placeholder><div class="p-4 text-muted">Loading role form...</div></Placeholder>
+                    </LazyContent>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public Guid RbacId { get; set; }
+    [Parameter] public string App { get; set; } = "architecture";
+
+    private string ReturnUrl
+    {
+        get
+        {
+            var request = HttpContextAccessor.HttpContext?.Request;
+            return request is null ? $"/{App}" : request.Path.ToString() + request.QueryString.ToString();
+        }
+    }
+
+    private string RoleDialogUrl => $"/architecture/RbacPermissionResponse/create-role/{RbacId}?return_url={Uri.EscapeDataString(ReturnUrl)}";
+}

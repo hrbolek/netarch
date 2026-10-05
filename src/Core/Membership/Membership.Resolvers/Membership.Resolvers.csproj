@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WebAppArchitecture.Membership.Resolvers</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../../Base/Base.csproj" />
+    <ProjectReference Include="../Membership.Models/Membership.Models.csproj" />
+    <ProjectReference Include="../Membership.Services/Membership.Services.csproj" />
+    <ProjectReference Include="../Membership.UI/Membership.UI.csproj" />
+  </ItemGroup>
+</Project>

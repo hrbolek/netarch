@@ -1,0 +1,16 @@
+@namespace WebAppArchitecture.DigitalProcesses.UI.Renderers
+
+<section class="card mb-3" data-form-node-id="@Definition.id">
+    <div class="card-header">
+        <strong>@(Definition.label ?? Definition.key)</strong>
+    </div>
+    @if (!string.IsNullOrWhiteSpace(Definition.description))
+    {
+        <div class="card-body py-2 text-muted small">@Definition.description</div>
+    }
+</section>
+
+@code {
+    [Parameter, EditorRequired] public FormNodeResponse Definition { get; set; } = default!;
+    [Parameter] public SubmissionNodeResponse? Value { get; set; }
+}

@@ -1,0 +1,36 @@
+@using WebAppArchitecture.Base.UI.Components
+@using WebAppArchitecture.Membership.Models
+
+@namespace WebAppArchitecture.Membership.UI.Components
+
+<MediumCard TModel="MembershipResponse" Model="@Model" HeaderText="@Model.visual_label">
+    <ChildContent Context="item">
+        <Attribute TModel="MembershipResponse" Item="@item" Label="ID" AttributeName="id" />
+
+        <Attribute TModel="MembershipResponse" Item="@item" Label="Group">
+            <div><code>@item.group_id</code></div>
+            <LazyEntityLink Entity="GroupResponse" EntityId="@item.group_id">
+                <Placeholder>
+                    <span class="text-muted small">loading group…</span>
+                </Placeholder>
+            </LazyEntityLink>
+        </Attribute>
+
+        <Attribute TModel="MembershipResponse" Item="@item" Label="User">
+            <div><code>@item.user_id</code></div>
+            <LazyEntityLink Entity="UserResponse" EntityId="@item.user_id">
+                <Placeholder>
+                    <span class="text-muted small">loading user…</span>
+                </Placeholder>
+            </LazyEntityLink>
+        </Attribute>
+
+        <Attribute TModel="MembershipResponse" Item="@item" Label="Valid From" AttributeName="valid_from" />
+        <Attribute TModel="MembershipResponse" Item="@item" Label="Valid To" AttributeName="valid_to" />
+    </ChildContent>
+</MediumCard>
+
+@code {
+    [Parameter, EditorRequired]
+    public MembershipResponse Model { get; set; } = default!;
+}

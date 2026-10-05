@@ -1,0 +1,14 @@
+@typeparam TModel where TModel : IEntityDTOModel
+@namespace WebAppArchitecture.DigitalProcesses.UI.Pages
+@using WebAppArchitecture.DigitalProcesses.UI.Components
+
+<Page Title="@typeof(TModel).Name">
+    <div class="container py-3">
+        <DigitalProcessModelCard TModel="TModel" Model="@Model" />
+    </div>
+</Page>
+
+@code {
+    [Parameter, EditorRequired] public TModel Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
+}

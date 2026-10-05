@@ -1,0 +1,42 @@
+@namespace WebAppArchitecture.Base.UI.Pages
+@using WebAppArchitecture.Base.UI.Routing
+
+<Page Title="@Model.Label">
+    <div class="container py-4">
+        <div class="mb-4">
+            <h1 class="h3">@Model.Label</h1>
+            <p class="text-muted">@Model.Description</p>
+        </div>
+
+        <div class="row g-3">
+            @foreach (var item in Model.Navigation)
+            {
+                <div class="col-12 col-md-6 col-xl-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h2 class="h5">@item.Label</h2>
+                            @if (item.Children is not null)
+                            {
+                                <div class="list-group list-group-flush">
+                                    @foreach (var child in item.Children.Where(child => !child.Separator && child.RequiresResponseModel is null))
+                                    {
+                                        <a class="list-group-item list-group-item-action px-0" href="@child.Url">@child.Label</a>
+                                    }
+                                </div>
+                            }
+                            else if (!string.IsNullOrWhiteSpace(item.Url))
+                            {
+                                <a class="btn btn-outline-primary" href="@item.Url">Open</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</Page>
+
+@code {
+    [Parameter, EditorRequired] public ApplicationDefinition Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
+}

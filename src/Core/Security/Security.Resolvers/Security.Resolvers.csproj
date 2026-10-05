@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WebAppArchitecture.Security.Resolvers</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../../Base/Base.csproj" />
+    <ProjectReference Include="../../SecurityLayer/SecurityLayer.csproj" />
+    <ProjectReference Include="../Security.Models/Security.Models.csproj" />
+    <ProjectReference Include="../Security.Services/Security.Services.csproj" />
+    <ProjectReference Include="../Security.UI/Security.UI.csproj" />
+    <ProjectReference Include="../../User/User.Models/User.Models.csproj" />
+    <ProjectReference Include="../../User/User.Services/User.Services.csproj" />
+    <ProjectReference Include="../../Role/Role.Models/Role.Models.csproj" />
+    <ProjectReference Include="../../Role/Role.Services/Role.Services.csproj" />
+    <ProjectReference Include="../../RoleType/RoleType.Models/RoleType.Models.csproj" />
+    <ProjectReference Include="../../RoleType/RoleType.Services/RoleType.Services.csproj" />
+  </ItemGroup>
+</Project>

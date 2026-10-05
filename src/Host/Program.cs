@@ -3,12 +3,16 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using WebAppArchitecture.Base.UI.Routing;
+using WebAppArchitecture.Base.Endpoints;
+using WebAppArchitecture.Base.UI.Pages;
 
 using Microsoft.OpenApi.Models;
 
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 using WebAppArchitecture;
+using WebAppArchitecture.Host;
 
 // ===========================================================
 // TODO 1. Určení jmenných prostorů a názvů tříd z template
@@ -34,10 +38,44 @@ using WebAppArchitecture.Security.Resolvers;
 using WebAppArchitecture.Security.Services;
 using WebAppArchitecture.Base.Data;
 using WebAppArchitecture.DBLayer;
+using WebAppArchitecture.DigitalProcesses.Models;
+using WebAppArchitecture.DigitalProcesses.Services;
+using WebAppArchitecture.DigitalProcesses.Resolvers;
+using WebAppArchitecture.DigitalProcesses.UI.Routing;
 using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton<IEntityRouteRegistry>(sp =>
+{
+    var registry = new EntityRouteRegistry();
+    registry.Register<WebAppArchitecture.Group.Models.GroupTypeResponse>(operation: "read");
+    registry.Register<FormDefinitionResponse>(app: "digital-processes");
+    registry.Register<FormVersionResponse>(app: "digital-processes");
+    registry.Register<FormNodeTypeResponse>(app: "digital-processes");
+    registry.Register<FormNodeResponse>(app: "digital-processes");
+    registry.Register<WorkflowDefinitionResponse>(app: "digital-processes");
+    registry.Register<WorkflowVersionResponse>(app: "digital-processes");
+    registry.Register<WorkflowStateResponse>(app: "digital-processes");
+    registry.Register<WorkflowStateAccessRuleResponse>(app: "digital-processes");
+    registry.Register<WorkflowTransitionResponse>(app: "digital-processes");
+    registry.Register<ProcessDefinitionResponse>(app: "digital-processes");
+    registry.Register<ProcessDefinitionVersionResponse>(app: "digital-processes");
+    registry.Register<RequestResponse>(app: "digital-processes");
+    registry.Register<SubmissionResponse>(app: "digital-processes");
+    registry.Register<SubmissionNodeResponse>(app: "digital-processes");
+    registry.Register<RequestTransitionHistoryResponse>(app: "digital-processes");
+    return registry;
+});
+
+builder.Services.AddSingleton<IApplicationNavigationRegistry>(sp =>
+{
+    var registry = new ApplicationNavigationRegistry();
+    registry.RegisterArchitecture();
+    registry.RegisterDigitalProcesses();
+    return registry;
+});
 
 // ============================================================
 // Services
@@ -80,7 +118,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IDBLayer, DBLayer>();
+builder.Services.AddScoped<IDatabaseDumpService, DatabaseDumpService>();
+builder.Services.AddHostedService<DatabaseDumpHostedService>();
 builder.Services.AddScoped<ISecurityProjectionService, SecurityProjectionService>();
+builder.Services.AddScoped<IRbacAccessBindingManager, RbacAccessBindingManager>();
 builder.Services.AddScoped<ISecurityLayer, SecurityLayer>();
 
 builder.Services.AddScoped<IUserStore, EfUserStore>();
@@ -95,6 +136,24 @@ builder.Services.AddScoped<IMembershipStore, EfMembershipStore>();
 builder.Services.AddScoped<IMembershipService, MembershipService>();
 builder.Services.AddScoped<IRoleTypeStore, EfRoleTypeStore>();
 builder.Services.AddScoped<IRoleTypeService, RoleTypeService>();
+
+builder.Services.AddScoped<IFormDefinitionService, FormDefinitionService>();
+builder.Services.AddScoped<IFormVersionService, FormVersionService>();
+builder.Services.AddScoped<IFormNodeTypeService, FormNodeTypeService>();
+builder.Services.AddScoped<IFormNodeService, FormNodeService>();
+builder.Services.AddScoped<IWorkflowDefinitionService, WorkflowDefinitionService>();
+builder.Services.AddScoped<IWorkflowVersionService, WorkflowVersionService>();
+builder.Services.AddScoped<IWorkflowStateService, WorkflowStateService>();
+builder.Services.AddScoped<IWorkflowStateAccessRuleService, WorkflowStateAccessRuleService>();
+builder.Services.AddScoped<IWorkflowTransitionService, WorkflowTransitionService>();
+builder.Services.AddScoped<IProcessDefinitionService, ProcessDefinitionService>();
+builder.Services.AddScoped<IProcessDefinitionVersionService, ProcessDefinitionVersionService>();
+builder.Services.AddScoped<IRequestService, RequestService>();
+builder.Services.AddScoped<ISubmissionService, SubmissionService>();
+builder.Services.AddScoped<ISubmissionNodeService, SubmissionNodeService>();
+builder.Services.AddScoped<IRequestTransitionHistoryService, RequestTransitionHistoryService>();
+builder.Services.AddSingleton<IDigitalProcessIntegration, UnconfiguredDigitalProcessIntegration>();
+builder.Services.AddDigitalProcessRenderers();
 builder.Services.AddScoped<IBaseStore<UserModel>>(sp => sp.GetRequiredService<IUserStore>());
 builder.Services.AddScoped<IBaseStore<GroupModel>>(sp => sp.GetRequiredService<IGroupStore>());
 builder.Services.AddScoped<IBaseStore<GroupTypeModel>>(sp => sp.GetRequiredService<IGroupTypeStore>());
@@ -115,11 +174,33 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    var systemDataSource = builder.Configuration["SystemData:Source"]
-        ?? Environment.GetEnvironmentVariable("SYSTEMDATA_SOURCE")
-        ?? SystemDataImporter.DefaultSource;
-    var importSystemData = builder.Configuration.GetValue("SystemData:Import", true);
-    await DatabaseInitializer.InitializeAsync(db, systemDataSource, importSystemData);
+    await db.Database.EnsureCreatedAsync();
+
+    var dumpPath = builder.Configuration["DatabaseDump:Path"]
+        ?? Environment.GetEnvironmentVariable("DATABASE_DUMP_PATH")
+        ?? "./data/dump.json";
+    var dumpService = scope.ServiceProvider.GetRequiredService<IDatabaseDumpService>();
+    var restoredFromDump = await dumpService.LoadIfExistsAsync(dumpPath);
+
+    if (restoredFromDump)
+    {
+        // A dump is a complete database snapshot. Never mix a restored snapshot with
+        // the external SystemData/GitHub import path. Only local/idempotent bootstrap
+        // reconciliation is allowed after restore.
+        await DatabaseInitializer.InitializeAsync(
+            db,
+            systemDataSource: null,
+            importSystemData: false);
+    }
+    else
+    {
+        var systemDataSource = builder.Configuration["SystemData:Source"]
+            ?? Environment.GetEnvironmentVariable("SYSTEMDATA_SOURCE")
+            ?? SystemDataImporter.DefaultSource;
+        var importSystemData = builder.Configuration.GetValue("SystemData:Import", true);
+        await DatabaseInitializer.InitializeAsync(db, systemDataSource, importSystemData);
+    }
+
     var securityProjection = scope.ServiceProvider.GetRequiredService<ISecurityProjectionService>();
     await securityProjection.RebuildAllAsync();
 }
@@ -133,30 +214,50 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 
-app.MapGet("/", (HttpContext httpContext, ICurrentActorProvider actorProvider) => Results.Ok(new
+app.MapGet("/", (IApplicationNavigationRegistry navigation) =>
+    navigation.GetApplications().ToArray())
+    .ApplyViewModel<ApplicationHomePage, ApplicationDefinition[]>()
+    .WithName("ApplicationHome")
+    .WithTags("Home")
+    .WithDescription("""
+        Displays the application home page.
+
+        The page lists all registered application branches and provides navigation
+        to the Architecture and Digital Processes application roots.
+        """);
+
+app.MapGet("/architecture", (IApplicationNavigationRegistry navigation) =>
+    navigation.Get("architecture"))
+    .ApplyViewModel<ApplicationDashboardPage, ApplicationDefinition>()
+    .WithName("ArchitectureHome")
+    .WithTags("Home")
+    .WithDescription("""
+        Displays the Architecture application landing page and its navigation entries.
+        """);
+
+app.MapGet("/digital-processes", (IApplicationNavigationRegistry navigation) =>
+    navigation.Get("digital-processes"))
+    .ApplyViewModel<ApplicationDashboardPage, ApplicationDefinition>()
+    .WithName("DigitalProcessesHome")
+    .WithTags("Home")
+    .WithDescription("""
+        Displays the Digital Processes application landing page.
+
+        The page provides entry points to requests, process definitions, forms,
+        workflows, submissions and Digital Processes administration.
+        """);
+
+app.MapGet("/info", (HttpContext httpContext, ICurrentActorProvider actorProvider) => Results.Ok(new
 {
     message = "App běží",
-
-    auth =
-        "Easy Entra proxy headers, claims, or X-Actor-UserId fallback",
-
-    is_authenticated =
-        httpContext.User.Identity?.IsAuthenticated ?? false,
-
-    actor_user_id =
-        actorProvider.TryGetActorUserId(httpContext),
-
-    principal_name =
-        httpContext.User.FindFirst("preferred_username")?.Value
+    auth = "Easy Entra proxy headers, claims, or X-Actor-UserId fallback",
+    is_authenticated = httpContext.User.Identity?.IsAuthenticated ?? false,
+    actor_user_id = actorProvider.TryGetActorUserId(httpContext),
+    principal_name = httpContext.User.FindFirst("preferred_username")?.Value
         ?? httpContext.User.Identity?.Name
         ?? httpContext.User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value,
-
-    storage =
-        "SQLite / EF Core (single application database)",
-
-    bootstrap_admin_user_id =
-        RbacWellKnown.BootstrapAdminUserId,
-
+    storage = "SQLite / EF Core (single application database)",
+    bootstrap_admin_user_id = RbacWellKnown.BootstrapAdminUserId,
 }));
 
 app.MapGet("/debug", (HttpContext httpContext, ICurrentActorProvider actorProvider) =>
@@ -234,6 +335,7 @@ app.MapRoleEndpoints("/architecture");
 app.MapMembershipEndpoints("/architecture");
 app.MapRoleTypeEndpoints("/architecture");
 app.MapSecurityEndpoints("/architecture");
+app.MapDigitalProcessEndpoints("/digital-processes");
 
 // ============================================================
 // Start

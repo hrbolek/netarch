@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WebAppArchitecture.DigitalProcesses.UI</RootNamespace>
+    <RazorLangVersion>8.0</RazorLangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../../../Core/Base/Base.csproj" />
+    <ProjectReference Include="../DigitalProcesses.Models/DigitalProcesses.Models.csproj" />
+  </ItemGroup>
+</Project>

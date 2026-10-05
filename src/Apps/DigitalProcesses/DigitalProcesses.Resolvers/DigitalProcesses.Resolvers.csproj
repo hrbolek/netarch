@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WebAppArchitecture.DigitalProcesses.Resolvers</RootNamespace>
+    <!-- AD0001 is emitted when the ASP.NET Core RouteHandlerAnalyzer itself
+         crashes on the generic Minimal API endpoint composition used here.
+         It is an analyzer-internal warning, not a compiler diagnostic. -->
+    <NoWarn>$(NoWarn);AD0001</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../../../Core/Base/Base.csproj" />
+    <ProjectReference Include="../../../Core/DBLayer/DBLayer.csproj" />
+    <ProjectReference Include="../DigitalProcesses.Models/DigitalProcesses.Models.csproj" />
+    <ProjectReference Include="../DigitalProcesses.Services/DigitalProcesses.Services.csproj" />
+    <ProjectReference Include="../DigitalProcesses.UI/DigitalProcesses.UI.csproj" />
+  </ItemGroup>
+</Project>

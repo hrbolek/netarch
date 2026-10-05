@@ -1,0 +1,59 @@
+@typeparam TModel where TModel : IEntityDTOModel
+@namespace WebAppArchitecture.DigitalProcesses.UI.Pages
+@using WebAppArchitecture.DigitalProcesses.UI.Components
+@using WebAppArchitecture.DigitalProcesses.Models
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+<Page Title="@($"{typeof(TModel).Name} list")">
+    <div class="container py-3">
+        <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+            @if (ShowFilter)
+            {
+                <form method="get" class="card card-body flex-grow-1">
+                    <label class="form-label fw-semibold" for="where-filter">Filter (Hasura <code>where</code>)</label>
+                    <div class="input-group">
+                        <input id="where-filter" class="form-control font-monospace" name="where" value="@CurrentWhere"
+                               placeholder='{"name":{"_ilike":"%request%"}}' />
+                        <button class="btn btn-outline-primary" type="submit">Filter</button>
+                        <a class="btn btn-outline-secondary" href="@CurrentPath">Clear</a>
+                    </div>
+                    <div class="form-text">Applied to the secured IQueryable before the database SELECT.</div>
+                </form>
+            }
+            @if (CreateUrl is not null)
+            {
+                <a class="btn btn-primary text-nowrap" href="@CreateUrl">Create</a>
+            }
+        </div>
+        @foreach (var item in Model)
+        {
+            <DigitalProcessModelCard TModel="TModel" Model="@item" />
+        }
+    </div>
+</Page>
+
+@code {
+    [Parameter, EditorRequired] public TModel[] Model { get; set; } = Array.Empty<TModel>();
+    [Parameter] public bool IsFragment { get; set; }
+    [Parameter] public bool ShowFilter { get; set; } = true;
+
+    private string CurrentWhere => HttpContextAccessor.HttpContext?.Request.Query["where"].ToString() ?? string.Empty;
+    private string CurrentPath => HttpContextAccessor.HttpContext?.Request.Path.ToString() ?? string.Empty;
+
+    private string? CreateUrl => typeof(TModel).Name switch
+    {
+        nameof(FormDefinitionResponse) => "/digital-processes/FormDefinitionResponse/create",
+        nameof(FormVersionResponse) => "/digital-processes/FormVersionResponse/create",
+        nameof(FormNodeTypeResponse) => "/digital-processes/FormNodeTypeResponse/create",
+        nameof(FormNodeResponse) => "/digital-processes/FormNodeResponse/create",
+        nameof(WorkflowDefinitionResponse) => "/digital-processes/WorkflowDefinitionResponse/create",
+        nameof(WorkflowVersionResponse) => "/digital-processes/WorkflowVersionResponse/create",
+        nameof(WorkflowStateResponse) => "/digital-processes/WorkflowStateResponse/create",
+        nameof(WorkflowStateAccessRuleResponse) => "/digital-processes/WorkflowStateAccessRuleResponse/create",
+        nameof(WorkflowTransitionResponse) => "/digital-processes/WorkflowTransitionResponse/create",
+        nameof(ProcessDefinitionResponse) => "/digital-processes/ProcessDefinitionResponse/create",
+        nameof(ProcessDefinitionVersionResponse) => "/digital-processes/ProcessDefinitionVersionResponse/create",
+        nameof(RequestResponse) => "/digital-processes/RequestResponse/create",
+        _ => null
+    };
+}

@@ -1,0 +1,25 @@
+@using WebAppArchitecture.DigitalProcesses.UI.Routing
+@inject IFormNodeRendererRegistry Renderers
+
+@if (ComponentType is not null)
+{
+    <DynamicComponent Type="@ComponentType" Parameters="@Parameters" />
+}
+else
+{
+    <div class="alert alert-warning py-2">
+        No renderer is registered for <code>@RendererKey</code>.
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public string RendererKey { get; set; } = default!;
+    [Parameter, EditorRequired] public FormNodeResponse Definition { get; set; } = default!;
+    [Parameter] public SubmissionNodeResponse? Value { get; set; }
+    private Type? ComponentType => Renderers.Resolve(RendererKey);
+    private IDictionary<string,object?> Parameters => new Dictionary<string,object?>
+    {
+        ["Definition"] = Definition,
+        ["Value"] = Value
+    };
+}

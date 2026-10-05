@@ -1,0 +1,125 @@
+@namespace WebAppArchitecture.Security.UI.Components
+@using WebAppArchitecture.Base.Data
+@using WebAppArchitecture.Base.UI.Components
+
+@if (Model.permissions.Count == 0)
+{
+    <div class="text-muted p-3">No active permissions found.</div>
+}
+else
+{
+    <ul class="list-group list-group-flush">
+        @foreach (var permission in Model.permissions)
+        {
+            <li class="list-group-item">
+                <div>
+                    <EntityLink TModel="EntityLinkResponse"
+                                Model="@UserLink(permission)"
+                                App="@App"
+                                Entity="UserResponse">
+                        <ChildContent Context="link"><strong>@link.visual_label</strong></ChildContent>
+                    </EntityLink>
+                    <span class="text-muted"> in role </span>
+                    <EntityLink TModel="EntityLinkResponse"
+                                Model="@RoleTypeLink(permission)"
+                                App="@App"
+                                Entity="RoleTypeResponse">
+                        <ChildContent Context="link"><code>@link.visual_label</code></ChildContent>
+                    </EntityLink>
+                    <span class="text-muted"> (</span>
+                    <EntityLink TModel="EntityLinkResponse"
+                                Model="@RoleLink(permission)"
+                                App="@App"
+                                Entity="RoleResponse">
+                        <ChildContent Context="link">role</ChildContent>
+                    </EntityLink>
+                    <span class="text-muted">)</span>
+                    @if (permission.is_deputy)
+                    {
+                        <span class="badge text-bg-warning ms-1">deputy</span>
+                    }
+                </div>
+
+                <div>
+                    <span class="text-muted">at </span>
+                    <EntityLink TModel="EntityLinkResponse"
+                                Model="@GroupLink(permission)"
+                                App="@App"
+                                Entity="GroupResponse" />
+                </div>
+
+                <div class="small text-muted">@Validity(permission)</div>
+
+                @if (permission.source_membership_id is Guid membershipId)
+                {
+                    <div class="small text-muted">
+                        membership:
+                        <EntityLink TModel="EntityLinkResponse"
+                                    Model="@MembershipLink(membershipId)"
+                                    App="@App"
+                                    Entity="MembershipResponse">
+                            <ChildContent Context="link"><code>@link.id</code></ChildContent>
+                        </EntityLink>
+                    </div>
+                }
+
+                @if (permission.source_access_binding_id is Guid bindingId)
+                {
+                    <div class="small text-muted">binding: <code>@bindingId</code></div>
+                }
+
+                <div class="mt-1">
+                    @if (permission.operations.Count == 0)
+                    {
+                        <span class="text-muted">none</span>
+                    }
+                    else
+                    {
+                        @foreach (var operation in permission.operations)
+                        {
+                            <span class="badge text-bg-secondary me-1">@operation</span>
+                        }
+                    }
+                </div>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public RbacPermissionResponse Model { get; set; } = default!;
+
+    [Parameter]
+    public string App { get; set; } = "architecture";
+
+    private static EntityLinkResponse UserLink(RbacPermissionItemResponse permission)
+    {
+        var label = !string.IsNullOrWhiteSpace(permission.user_name)
+            ? permission.user_name!
+            : permission.user_id.ToString();
+        if (!string.IsNullOrWhiteSpace(permission.user_email))
+            label += $" <{permission.user_email}>";
+        return new(permission.user_id, label, "UserResponse");
+    }
+
+    private static EntityLinkResponse GroupLink(RbacPermissionItemResponse permission)
+        => new(
+            permission.group_id,
+            !string.IsNullOrWhiteSpace(permission.group_name) ? permission.group_name! : permission.group_id.ToString(),
+            "GroupResponse");
+
+    private static EntityLinkResponse RoleLink(RbacPermissionItemResponse permission)
+        => new(permission.role_id, "role", "RoleResponse");
+
+    private static EntityLinkResponse RoleTypeLink(RbacPermissionItemResponse permission)
+        => new(permission.role_type_id, permission.role_type, "RoleTypeResponse");
+
+    private static EntityLinkResponse MembershipLink(Guid membershipId)
+        => new(membershipId, membershipId.ToString(), "MembershipResponse");
+
+    private static string Validity(RbacPermissionItemResponse permission)
+        => permission.valid_to is null
+            ? $"from {permission.valid_from:yyyy-MM-dd HH:mm}"
+            : $"from {permission.valid_from:yyyy-MM-dd HH:mm} to {permission.valid_to:yyyy-MM-dd HH:mm}";
+}

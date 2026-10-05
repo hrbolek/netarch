@@ -1,0 +1,12 @@
+@namespace WebAppArchitecture.DigitalProcesses.UI.Renderers
+
+<div class="mb-3" data-form-node-id="@Definition.id">
+    <label class="form-label" for="@InputId">@(Definition.label ?? Definition.key)</label>
+    <input id="@InputId" name="@Definition.key" class="form-control" type="number" value="@RendererValue.AsString(Value)" />
+</div>
+
+@code {
+    [Parameter, EditorRequired] public FormNodeResponse Definition { get; set; } = default!;
+    [Parameter] public SubmissionNodeResponse? Value { get; set; }
+    private string InputId => $"form-node-{Definition.id:N}";
+}

@@ -1,0 +1,45 @@
+@namespace WebAppArchitecture.Base.UI.Pages
+@typeparam TModel where TModel : IEntityDTOModel
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+<Page Title="@Title">
+    <div class="container-fluid py-3">
+        @if (ShowFilter)
+        {
+            <form method="get" class="card card-body mb-3">
+                <label class="form-label fw-semibold" for="where-filter">Filter (Hasura <code>where</code>)</label>
+                <div class="input-group">
+                    <input id="where-filter" class="form-control font-monospace" name="where" value="@CurrentWhere"
+                           placeholder='{"name":{"_ilike":"%smith%"}}' />
+                    <button class="btn btn-outline-primary" type="submit">Filter</button>
+                    <a class="btn btn-outline-secondary" href="@CurrentPath">Clear</a>
+                </div>
+                <div class="form-text">The JSON predicate is translated to an expression and applied to the secured IQueryable before the database SELECT.</div>
+            </form>
+        }
+        @if (Items is not null)
+        {
+            @foreach (var item in Items)
+            {
+                if (ChildContent is not null)
+                {
+                    @ChildContent(item)
+                }
+                else
+                {
+                    <WebAppArchitecture.Base.UI.Components.MediumCard TModel="TModel" Model="@item" />
+                }
+            }
+        }
+    </div>
+</Page>
+
+@code {
+    [Parameter] public string Title { get; set; } = "Seznam";
+    [Parameter, EditorRequired] public IReadOnlyCollection<TModel> Items { get; set; } = Array.Empty<TModel>();
+    [Parameter] public RenderFragment<TModel>? ChildContent { get; set; }
+    [Parameter] public bool ShowFilter { get; set; } = true;
+
+    private string CurrentWhere => HttpContextAccessor.HttpContext?.Request.Query["where"].ToString() ?? string.Empty;
+    private string CurrentPath => HttpContextAccessor.HttpContext?.Request.Path.ToString() ?? string.Empty;
+}

@@ -1,0 +1,24 @@
+@namespace WebAppArchitecture.DigitalProcesses.UI.Pages
+
+<Page Title="Form tree">
+    <div class="container py-3">
+        <h1 class="h4">@Model.form.visual_label</h1>
+        <div class="list-group">
+            @foreach (var node in Model.nodes.OrderBy(x => x.path).ThenBy(x => x.position))
+            {
+                var depth = Math.Max(0, node.path.Count(c => c == '/') - 1);
+                <div class="list-group-item" style="padding-left:@(1 + depth * 1.5)rem">
+                    <EntityLink TModel="FormNodeResponse" Model="@node" App="digital-processes" />
+                    <span class="text-muted ms-2">@node.key</span>
+                    <span class="badge text-bg-light ms-2">@node.min_occurs..@node.max_occurs</span>
+                    <code class="d-block small text-muted">@node.path</code>
+                </div>
+            }
+        </div>
+    </div>
+</Page>
+
+@code {
+    [Parameter, EditorRequired] public FormTreeResponse Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
+}

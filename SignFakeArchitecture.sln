@@ -2,63 +2,71 @@
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Base", "src\Base\Base.csproj", "{C000159C-8FBA-48B2-AB9D-50F0C91C6323}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Base", "src\Core\Base\Base.csproj", "{C000159C-8FBA-48B2-AB9D-50F0C91C6323}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1F00FDA2-D0D9-4C62-9CC4-E94FD59BF2CE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Host", "src\Host\Host.csproj", "{9B58A52A-8A91-4876-96E9-4E83994F85C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User.Resolvers", "src\User.Resolvers\User.Resolvers.csproj", "{A54E25D2-FF33-47F3-B4D9-E9CB930A75C0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User.Resolvers", "src\Core\User\User.Resolvers\User.Resolvers.csproj", "{A54E25D2-FF33-47F3-B4D9-E9CB930A75C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User.UI", "src\User.UI\User.UI.csproj", "{0BE5C5FC-40A9-4237-8E76-BA045E6013C0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User.UI", "src\Core\User\User.UI\User.UI.csproj", "{0BE5C5FC-40A9-4237-8E76-BA045E6013C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User.Models", "src\User.Models\User.Models.csproj", "{E7F5EF4F-0F1B-4507-883A-18C3B395F6B0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User.Models", "src\Core\User\User.Models\User.Models.csproj", "{E7F5EF4F-0F1B-4507-883A-18C3B395F6B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User.Services", "src\User.Services\User.Services.csproj", "{219FFBE5-150C-47C1-8076-EFD27628F7EC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User.Services", "src\Core\User\User.Services\User.Services.csproj", "{219FFBE5-150C-47C1-8076-EFD27628F7EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Role.Services", "src\Role.Services\Role.Services.csproj", "{2F154515-165E-40FA-BD07-ED1189BA5F13}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Role.Services", "src\Core\Role\Role.Services\Role.Services.csproj", "{2F154515-165E-40FA-BD07-ED1189BA5F13}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Role.UI", "src\Role.UI\Role.UI.csproj", "{FA1CC980-8193-4538-81FF-90EA8C19794E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Role.UI", "src\Core\Role\Role.UI\Role.UI.csproj", "{FA1CC980-8193-4538-81FF-90EA8C19794E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Role.Resolvers", "src\Role.Resolvers\Role.Resolvers.csproj", "{BBAC8601-C7FE-4D3C-8FC7-1530F8AB7B03}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Role.Resolvers", "src\Core\Role\Role.Resolvers\Role.Resolvers.csproj", "{BBAC8601-C7FE-4D3C-8FC7-1530F8AB7B03}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Membership.Models", "src\Membership.Models\Membership.Models.csproj", "{937DB560-E139-4498-BF82-20A2AE869FF6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Membership.Models", "src\Core\Membership\Membership.Models\Membership.Models.csproj", "{937DB560-E139-4498-BF82-20A2AE869FF6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Membership.Services", "src\Membership.Services\Membership.Services.csproj", "{CD915F9D-525E-47DA-AA4B-ADC228BE386B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Membership.Services", "src\Core\Membership\Membership.Services\Membership.Services.csproj", "{CD915F9D-525E-47DA-AA4B-ADC228BE386B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Membership.UI", "src\Membership.UI\Membership.UI.csproj", "{3AF4B076-5639-4293-89F8-24B82B68CE16}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Membership.UI", "src\Core\Membership\Membership.UI\Membership.UI.csproj", "{3AF4B076-5639-4293-89F8-24B82B68CE16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Membership.Resolvers", "src\Membership.Resolvers\Membership.Resolvers.csproj", "{CAEC5360-5404-4525-AA8F-90BB10986E74}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Membership.Resolvers", "src\Core\Membership\Membership.Resolvers\Membership.Resolvers.csproj", "{CAEC5360-5404-4525-AA8F-90BB10986E74}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoleType.Services", "src\RoleType.Services\RoleType.Services.csproj", "{1E3DA0BF-1252-4205-928B-95E12EBBE376}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoleType.Services", "src\Core\RoleType\RoleType.Services\RoleType.Services.csproj", "{1E3DA0BF-1252-4205-928B-95E12EBBE376}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoleType.UI", "src\RoleType.UI\RoleType.UI.csproj", "{7B572AB8-40DE-4565-8FD5-B7FE4492D7F1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoleType.UI", "src\Core\RoleType\RoleType.UI\RoleType.UI.csproj", "{7B572AB8-40DE-4565-8FD5-B7FE4492D7F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoleType.Resolvers", "src\RoleType.Resolvers\RoleType.Resolvers.csproj", "{2CF97CF7-0D56-4B87-A33A-179A23509961}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoleType.Resolvers", "src\Core\RoleType\RoleType.Resolvers\RoleType.Resolvers.csproj", "{2CF97CF7-0D56-4B87-A33A-179A23509961}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Group.Models", "src\Group.Models\Group.Models.csproj", "{F9F4116C-5E48-4C87-981C-E96FAFED5104}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Group.Models", "src\Core\Group\Group.Models\Group.Models.csproj", "{F9F4116C-5E48-4C87-981C-E96FAFED5104}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Group.Services", "src\Group.Services\Group.Services.csproj", "{5677FB6D-E7B4-4628-B68C-0105F4D4699F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Group.Services", "src\Core\Group\Group.Services\Group.Services.csproj", "{5677FB6D-E7B4-4628-B68C-0105F4D4699F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Group.UI", "src\Group.UI\Group.UI.csproj", "{19D08690-8139-4539-BFC5-B0779DB5D4F4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Group.UI", "src\Core\Group\Group.UI\Group.UI.csproj", "{19D08690-8139-4539-BFC5-B0779DB5D4F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Group.Resolvers", "src\Group.Resolvers\Group.Resolvers.csproj", "{205850F2-25AC-4BF5-88DB-4F15C4AFBFA0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Group.Resolvers", "src\Core\Group\Group.Resolvers\Group.Resolvers.csproj", "{205850F2-25AC-4BF5-88DB-4F15C4AFBFA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Role.Models", "src\Role.Models\Role.Models.csproj", "{91C86A40-6393-4EBE-8FEC-C17BF0D7E1FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Role.Models", "src\Core\Role\Role.Models\Role.Models.csproj", "{91C86A40-6393-4EBE-8FEC-C17BF0D7E1FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoleType.Models", "src\RoleType.Models\RoleType.Models.csproj", "{077DC4C2-6B96-4AD6-A0BD-5AE69A9A5941}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoleType.Models", "src\Core\RoleType\RoleType.Models\RoleType.Models.csproj", "{077DC4C2-6B96-4AD6-A0BD-5AE69A9A5941}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBLayer", "src\DBLayer\DBLayer.csproj", "{A1D4D7B2-0F4C-4DA3-9B62-8A31AA6A64B7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBLayer", "src\Core\DBLayer\DBLayer.csproj", "{A1D4D7B2-0F4C-4DA3-9B62-8A31AA6A64B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecurityLayer", "src\SecurityLayer\SecurityLayer.csproj", "{469107D6-FAD1-4724-A307-6054375173D6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecurityLayer", "src\Core\SecurityLayer\SecurityLayer.csproj", "{469107D6-FAD1-4724-A307-6054375173D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Security.Models", "src\Security.Models\Security.Models.csproj", "{B1E26A51-59AF-4F31-85AF-4E00BE1E5E01}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Security.Models", "src\Core\Security\Security.Models\Security.Models.csproj", "{B1E26A51-59AF-4F31-85AF-4E00BE1E5E01}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Security.Services", "src\Security.Services\Security.Services.csproj", "{B1E26A51-59AF-4F31-85AF-4E00BE1E5E02}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Security.Services", "src\Core\Security\Security.Services\Security.Services.csproj", "{B1E26A51-59AF-4F31-85AF-4E00BE1E5E02}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Security.UI", "src\Security.UI\Security.UI.csproj", "{B1E26A51-59AF-4F31-85AF-4E00BE1E5E03}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Security.UI", "src\Core\Security\Security.UI\Security.UI.csproj", "{B1E26A51-59AF-4F31-85AF-4E00BE1E5E03}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Security.Resolvers", "src\Security.Resolvers\Security.Resolvers.csproj", "{B1E26A51-59AF-4F31-85AF-4E00BE1E5E04}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Security.Resolvers", "src\Core\Security\Security.Resolvers\Security.Resolvers.csproj", "{B1E26A51-59AF-4F31-85AF-4E00BE1E5E04}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalProcesses.Models", "src\Apps\DigitalProcesses\DigitalProcesses.Models\DigitalProcesses.Models.csproj", "{D2500001-0000-4000-8000-000000000001}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalProcesses.Services", "src\Apps\DigitalProcesses\DigitalProcesses.Services\DigitalProcesses.Services.csproj", "{D2500002-0000-4000-8000-000000000002}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalProcesses.UI", "src\Apps\DigitalProcesses\DigitalProcesses.UI\DigitalProcesses.UI.csproj", "{D2500003-0000-4000-8000-000000000003}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalProcesses.Resolvers", "src\Apps\DigitalProcesses\DigitalProcesses.Resolvers\DigitalProcesses.Resolvers.csproj", "{D2500004-0000-4000-8000-000000000004}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,6 +74,22 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D2500001-0000-4000-8000-000000000001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2500001-0000-4000-8000-000000000001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2500001-0000-4000-8000-000000000001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2500001-0000-4000-8000-000000000001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2500002-0000-4000-8000-000000000002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2500002-0000-4000-8000-000000000002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2500002-0000-4000-8000-000000000002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2500002-0000-4000-8000-000000000002}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2500003-0000-4000-8000-000000000003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2500003-0000-4000-8000-000000000003}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2500003-0000-4000-8000-000000000003}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2500003-0000-4000-8000-000000000003}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2500004-0000-4000-8000-000000000004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2500004-0000-4000-8000-000000000004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2500004-0000-4000-8000-000000000004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2500004-0000-4000-8000-000000000004}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B1E26A51-59AF-4F31-85AF-4E00BE1E5E01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B1E26A51-59AF-4F31-85AF-4E00BE1E5E01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1E26A51-59AF-4F31-85AF-4E00BE1E5E01}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -180,6 +204,10 @@ Global
 		{A1D4D7B2-0F4C-4DA3-9B62-8A31AA6A64B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{D2500001-0000-4000-8000-000000000001} = {1F00FDA2-D0D9-4C62-9CC4-E94FD59BF2CE}
+		{D2500002-0000-4000-8000-000000000002} = {1F00FDA2-D0D9-4C62-9CC4-E94FD59BF2CE}
+		{D2500003-0000-4000-8000-000000000003} = {1F00FDA2-D0D9-4C62-9CC4-E94FD59BF2CE}
+		{D2500004-0000-4000-8000-000000000004} = {1F00FDA2-D0D9-4C62-9CC4-E94FD59BF2CE}
 		{B1E26A51-59AF-4F31-85AF-4E00BE1E5E01} = {1F00FDA2-D0D9-4C62-9CC4-E94FD59BF2CE}
 		{B1E26A51-59AF-4F31-85AF-4E00BE1E5E02} = {1F00FDA2-D0D9-4C62-9CC4-E94FD59BF2CE}
 		{B1E26A51-59AF-4F31-85AF-4E00BE1E5E03} = {1F00FDA2-D0D9-4C62-9CC4-E94FD59BF2CE}

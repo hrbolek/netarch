@@ -1,0 +1,31 @@
+@namespace WebAppArchitecture.Base.UI.Components
+@using WebAppArchitecture.Base.UI.Htmx
+@inject WebAppArchitecture.Base.UI.Routing.IEntityRouteRegistry Routes
+
+<LazyContent Url="@LinkUrl">
+    <Placeholder>
+        @if (Placeholder is not null)
+        {
+            @Placeholder
+        }
+        else
+        {
+            <span class="text-muted"><code>@EntityId</code></span>
+        }
+    </Placeholder>
+</LazyContent>
+
+@code {
+    [Parameter, EditorRequired] public Guid EntityId { get; set; }
+    [Parameter, EditorRequired] public string Entity { get; set; } = default!;
+    [Parameter] public string? App { get; set; }
+    [Parameter] public string LinkOperation { get; set; } = "link";
+    [Parameter] public RenderFragment? Placeholder { get; set; }
+
+    private string LinkUrl => Routes.GetUrl(
+        typeof(EntityLinkResponse),
+        EntityId,
+        App,
+        Entity,
+        LinkOperation);
+}

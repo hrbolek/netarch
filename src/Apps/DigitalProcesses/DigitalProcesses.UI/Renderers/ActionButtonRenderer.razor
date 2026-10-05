@@ -1,0 +1,13 @@
+@namespace WebAppArchitecture.DigitalProcesses.UI.Renderers
+
+<button type="button"
+        class="btn btn-primary mb-3"
+        data-form-node-id="@Definition.id"
+        data-form-node-key="@Definition.key">
+    @(Definition.label ?? Definition.key)
+</button>
+
+@code {
+    [Parameter, EditorRequired] public FormNodeResponse Definition { get; set; } = default!;
+    [Parameter] public SubmissionNodeResponse? Value { get; set; }
+}

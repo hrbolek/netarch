@@ -1,0 +1,15 @@
+@namespace WebAppArchitecture.Base.UI.Components
+
+<EntityLink TModel="EntityLinkResponse"
+            Model="@Model"
+            App="@Model.app"
+            Entity="@Model.entity"
+            Operation="@Model.operation" />
+
+@code {
+    [Parameter, EditorRequired]
+    public EntityLinkResponse Model { get; set; } = default!;
+
+    [Parameter]
+    public bool IsFragment { get; set; }
+}

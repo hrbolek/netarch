@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WebAppArchitecture.User.Services</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../Base/Base.csproj" />
+    <ProjectReference Include="../../SecurityLayer/SecurityLayer.csproj" />
+    <ProjectReference Include="../User.Models/User.Models.csproj" />
+  </ItemGroup>
+</Project>

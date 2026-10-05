@@ -1,0 +1,12 @@
+@namespace WebAppArchitecture.DigitalProcesses.UI.Renderers
+
+<div class="form-check mb-3" data-form-node-id="@Definition.id">
+    <input id="@InputId" name="@Definition.key" class="form-check-input" type="checkbox" checked="@RendererValue.AsBoolean(Value)" />
+    <label class="form-check-label" for="@InputId">@(Definition.label ?? Definition.key)</label>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public FormNodeResponse Definition { get; set; } = default!;
+    [Parameter] public SubmissionNodeResponse? Value { get; set; }
+    private string InputId => $"form-node-{Definition.id:N}";
+}

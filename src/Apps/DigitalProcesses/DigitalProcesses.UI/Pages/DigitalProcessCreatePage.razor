@@ -1,0 +1,73 @@
+@namespace WebAppArchitecture.DigitalProcesses.UI.Pages
+@using WebAppArchitecture.Base.UI.Pages
+
+<Page Title="@Model.Title">
+    <div class="container py-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h1 class="h4 mb-1">@Model.Title</h1>
+                @if (!string.IsNullOrWhiteSpace(Model.Description))
+                {
+                    <div class="text-muted">@Model.Description</div>
+                }
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.ListUrl))
+            {
+                <a class="btn btn-outline-secondary" href="@Model.ListUrl">Back to list</a>
+            }
+        </div>
+
+        <form method="post" action="@Model.Action" class="card card-body">
+            @foreach (var field in Model.Fields)
+            {
+                @if (field.InputType == "checkbox")
+                {
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" name="@field.Name" value="true" id="field-@field.Name" checked="@field.Checked" />
+                        <label class="form-check-label" for="field-@field.Name">@field.Label</label>
+                        @if (!string.IsNullOrWhiteSpace(field.HelpText))
+                        {
+                            <div class="form-text">@field.HelpText</div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="mb-3">
+                        <label class="form-label" for="field-@field.Name">@field.Label</label>
+                        @if (field.InputType == "textarea")
+                        {
+                            <textarea class="form-control" id="field-@field.Name" name="@field.Name" rows="@field.Rows" required="@field.Required">@field.DefaultValue</textarea>
+                        }
+                        else
+                        {
+                            <input class="form-control"
+                                   id="field-@field.Name"
+                                   name="@field.Name"
+                                   type="@field.InputType"
+                                   value="@field.DefaultValue"
+                                   required="@field.Required"
+                                   min="@field.Min"
+                                   max="@field.Max" />
+                        }
+                        @if (!string.IsNullOrWhiteSpace(field.HelpText))
+                        {
+                            <div class="form-text">@field.HelpText</div>
+                        }
+                    </div>
+                }
+            }
+            <div>
+                <button type="submit" class="btn btn-primary">Create</button>
+            </div>
+        </form>
+    </div>
+</Page>
+
+@code {
+    [Parameter, EditorRequired]
+    public DigitalProcessCreatePageModel Model { get; set; } = default!;
+
+    [Parameter]
+    public bool IsFragment { get; set; }
+}
