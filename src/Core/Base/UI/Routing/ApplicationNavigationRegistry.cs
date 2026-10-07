@@ -40,7 +40,7 @@ public sealed class ApplicationNavigationRegistry : IApplicationNavigationRegist
 
 public static class ArchitectureNavigationRegistration
 {
-    public static ApplicationNavigationRegistry RegisterArchitecture(this ApplicationNavigationRegistry registry)
+    public static IApplicationNavigationRegistry RegisterArchitecture(this IApplicationNavigationRegistry registry)
     {
         registry.Register(new ApplicationDefinition(
             Key: "architecture",

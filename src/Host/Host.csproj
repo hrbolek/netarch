@@ -8,22 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.30" />
-    <PackageReference Include="Microsoft.Identity.Web" Version="3.14.1" />
-
-    <ProjectReference Include="../Core/Base/Base.csproj" />
-    <ProjectReference Include="../Core/Group/Group.Resolvers/Group.Resolvers.csproj" />
-    <ProjectReference Include="../Core/Role/Role.Resolvers/Role.Resolvers.csproj" />
-    <ProjectReference Include="../Core/Membership/Membership.Resolvers/Membership.Resolvers.csproj" />
-    <ProjectReference Include="../Core/RoleType/RoleType.Resolvers/RoleType.Resolvers.csproj" />
-    <ProjectReference Include="../Core/User/User.Resolvers/User.Resolvers.csproj" />
-    <ProjectReference Include="../Core/DBLayer/DBLayer.csproj" />
-    <ProjectReference Include="../Core/SecurityLayer/SecurityLayer.csproj" />
-    <ProjectReference Include="../Core/Security/Security.Resolvers/Security.Resolvers.csproj" />
-
-    <ProjectReference Include="../Apps/DigitalProcesses/DigitalProcesses.Models/DigitalProcesses.Models.csproj" />
-    <ProjectReference Include="../Apps/DigitalProcesses/DigitalProcesses.Services/DigitalProcesses.Services.csproj" />
-    <ProjectReference Include="../Apps/DigitalProcesses/DigitalProcesses.UI/DigitalProcesses.UI.csproj" />
-    <ProjectReference Include="../Apps/DigitalProcesses/DigitalProcesses.Resolvers/DigitalProcesses.Resolvers.csproj" />
+    <ProjectReference Include="../Core/Hosting/Core.Hosting.csproj" />
+    <ProjectReference Include="../Apps/DigitalProcesses/DigitalProcesses.Module/DigitalProcesses.Module.csproj" />
   </ItemGroup>
 </Project>

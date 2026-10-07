@@ -4,7 +4,7 @@ namespace WebAppArchitecture.DigitalProcesses.UI.Routing;
 
 public static class DigitalProcessNavigationRegistration
 {
-    public static ApplicationNavigationRegistry RegisterDigitalProcesses(this ApplicationNavigationRegistry registry)
+    public static IApplicationNavigationRegistry RegisterDigitalProcesses(this IApplicationNavigationRegistry registry)
     {
         registry.Register(new ApplicationDefinition(
             Key: "digital-processes",

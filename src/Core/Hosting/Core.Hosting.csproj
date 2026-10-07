@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WebAppArchitecture.Hosting</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <ProjectReference Include="../Base/Base.csproj" />
+    <ProjectReference Include="../DBLayer/DBLayer.csproj" />
+    <ProjectReference Include="../SecurityLayer/SecurityLayer.csproj" />
+    <ProjectReference Include="../User/User.Models/User.Models.csproj" />
+    <ProjectReference Include="../User/User.Services/User.Services.csproj" />
+    <ProjectReference Include="../User/User.Resolvers/User.Resolvers.csproj" />
+    <ProjectReference Include="../Group/Group.Models/Group.Models.csproj" />
+    <ProjectReference Include="../Group/Group.Services/Group.Services.csproj" />
+    <ProjectReference Include="../Group/Group.Resolvers/Group.Resolvers.csproj" />
+    <ProjectReference Include="../Membership/Membership.Models/Membership.Models.csproj" />
+    <ProjectReference Include="../Membership/Membership.Services/Membership.Services.csproj" />
+    <ProjectReference Include="../Membership/Membership.Resolvers/Membership.Resolvers.csproj" />
+    <ProjectReference Include="../Role/Role.Models/Role.Models.csproj" />
+    <ProjectReference Include="../Role/Role.Services/Role.Services.csproj" />
+    <ProjectReference Include="../Role/Role.Resolvers/Role.Resolvers.csproj" />
+    <ProjectReference Include="../RoleType/RoleType.Models/RoleType.Models.csproj" />
+    <ProjectReference Include="../RoleType/RoleType.Services/RoleType.Services.csproj" />
+    <ProjectReference Include="../RoleType/RoleType.Resolvers/RoleType.Resolvers.csproj" />
+    <ProjectReference Include="../Security/Security.Services/Security.Services.csproj" />
+    <ProjectReference Include="../Security/Security.Resolvers/Security.Resolvers.csproj" />
+  </ItemGroup>
+</Project>
