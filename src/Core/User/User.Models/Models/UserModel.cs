@@ -31,32 +31,6 @@ public sealed record UserResponse(
         id, Name, email, surname, rbacobject_id, created_at, updated_at, created_by, updated_by);
 }
 
-public sealed record UserCreateRequest(
-    string Name,
-    Guid? rbacobject_id = null,
-    DateTimeOffset? created_at = null,
-    DateTimeOffset? updated_at = null,
-    Guid? created_by = null,
-    Guid? updated_by = null,
-    string? email = null,
-    string? surname = null
-) : ICreateDTOModel<UserModel>, ISecuredCreateRequest
-{
-    public UserModel ToModel()
-    {
-        var now = DateTimeOffset.UtcNow;
-        return new(
-            Guid.NewGuid(),
-            Name,
-            email,
-            surname,
-            rbacobject_id ?? WebAppArchitecture.Base.Security.RbacWellKnown.RootSecurityObjectId,
-            created_at ?? now,
-            updated_at ?? now,
-            created_by ?? Guid.Empty,
-            updated_by ?? Guid.Empty);
-    }
-}
 
 public sealed record UserUpdateRequest(
     Guid id,
@@ -90,3 +64,12 @@ public sealed record UserUpdateRequest(
         Guid.Empty,
         updated_by ?? Guid.Empty);
 }
+
+/// <summary>Safe public create contract: a user is created and immediately contained in an existing Group.</summary>
+public sealed record UserCreateContainedRequest(
+    string Name,
+    Guid group_id,
+    string? email = null,
+    string? surname = null,
+    DateTimeOffset? membership_valid_from = null,
+    DateTimeOffset? membership_valid_to = null);

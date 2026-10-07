@@ -18,48 +18,24 @@ namespace WebAppArchitecture.Membership.Resolvers;
 public static class MembershipResolvers
 {
     public static async Task<IResult> CreatePage(
-        HttpContext httpContext,
-        IRbacService rbacService,
         ICurrentActorProvider actorProvider,
+        IRbacAuthorizationService authorizationService,
+        HttpContext httpContext,
         CancellationToken cancellationToken)
     {
-        if (actorProvider.TryGetActorUserId(httpContext) is null)
-            return Results.Unauthorized();
-
-        var allowed = await rbacService.IsCurrentActorAllowedAsync(
-            httpContext,
-            RbacWellKnown.RootSecurityObjectId,
-            RbacOperations.Create,
-            cancellationToken);
-
-        if (!allowed)
+        var actor = actorProvider.TryGetActorUserId(httpContext);
+        if (actor is null) return Results.Unauthorized();
+        if (Guid.TryParse(httpContext.Request.Query["group_id"], out var groupId) &&
+            !await authorizationService.IsAllowedAsync(actor.Value, groupId, RbacOperations.Create, cancellationToken))
             return Results.Forbid();
-
         return new RazorComponentResult<MembershipCreatePage>();
     }
 
-    public static async Task<IResult> Create(MembershipCreateRequest request, HttpContext httpContext, IMembershipService service, CancellationToken cancellationToken)
-    {
-        var actorProvider = httpContext.RequestServices.GetRequiredService<ICurrentActorProvider>();
-        var actorUserId = actorProvider.TryGetActorUserId(httpContext);
-        if (actorUserId is null)
-            return Results.Unauthorized();
-
-        var now = DateTimeOffset.UtcNow;
-        var stampedRequest = request with
-        {
-            created_at = now,
-            updated_at = now,
-            created_by = actorUserId,
-            updated_by = actorUserId
-        };
-
-        return await BaseResolvers.Create<MembershipModel, MembershipResponse, MembershipCreateRequest, IMembershipService>(
-            stampedRequest,
-            httpContext,
-            service,
-            cancellationToken);
-    }
+    public static async Task<IResult> CreateContained(
+        MembershipCreateContainedRequest request,
+        IMembershipService service,
+        CancellationToken cancellationToken)
+        => ApiResults.Ok(await service.CreateContainedAsync(request, cancellationToken));
 
     public static async Task<IResult> CreateForm(
         HttpContext httpContext,
@@ -67,38 +43,28 @@ public static class MembershipResolvers
         CancellationToken cancellationToken)
     {
         var form = await httpContext.Request.ReadFormAsync(cancellationToken);
-
         if (!Guid.TryParse(form["group_id"].ToString(), out var groupId))
             return Results.BadRequest(new { error = "Invalid group_id value." });
-
         if (!Guid.TryParse(form["user_id"].ToString(), out var userId))
             return Results.BadRequest(new { error = "Invalid user_id value." });
-
-        var validFromRaw = form["valid_from"].ToString();
         var validFrom = DateTimeOffset.UtcNow;
-        if (!string.IsNullOrWhiteSpace(validFromRaw) && !DateTimeOffset.TryParse(validFromRaw, out validFrom))
+        var rawFrom = form["valid_from"].ToString();
+        if (!string.IsNullOrWhiteSpace(rawFrom) && !DateTimeOffset.TryParse(rawFrom, out validFrom))
             return Results.BadRequest(new { error = "Invalid valid_from value." });
-
         DateTimeOffset? validTo = null;
-        var validToRaw = form["valid_to"].ToString();
-        if (!string.IsNullOrWhiteSpace(validToRaw))
+        var rawTo = form["valid_to"].ToString();
+        if (!string.IsNullOrWhiteSpace(rawTo))
         {
-            if (!DateTimeOffset.TryParse(validToRaw, out var parsedValidTo))
+            if (!DateTimeOffset.TryParse(rawTo, out var parsed))
                 return Results.BadRequest(new { error = "Invalid valid_to value." });
-
-            validTo = parsedValidTo;
+            validTo = parsed;
         }
-
-        var result = await Create(
-            new MembershipCreateRequest(groupId, userId, validFrom, validTo),
-            httpContext,
-            service,
-            cancellationToken);
-
-        if (result is IModelResult modelResult && modelResult.Model is MembershipResponse created)
-            return Results.Redirect($"/architecture/MembershipResponse/edit/{created.id}");
-
-        return result;
+        var created = await service.CreateContainedAsync(
+            new MembershipCreateContainedRequest(groupId, userId, validFrom, validTo), cancellationToken);
+        var returnUrl = form["return_url"].ToString();
+        return Results.Redirect(string.IsNullOrWhiteSpace(returnUrl)
+            ? $"/architecture/MembershipResponse/edit/{created.id}"
+            : returnUrl);
     }
 
     public static Task<IResult> Read(Guid id, HttpContext httpContext, IMembershipService service, CancellationToken cancellationToken)
@@ -179,6 +145,25 @@ public static class MembershipResolvers
     }
 
 
+    public static async Task<IResult> Actions(
+        Guid id, HttpContext httpContext, IMembershipService service, ICurrentActorProvider actorProvider,
+        IRbacAuthorizationService authorizationService, CancellationToken cancellationToken)
+    {
+        var item = await service.GetByIdAsync(id, cancellationToken);
+        if (item is null) return Results.NotFound();
+        var actor = actorProvider.TryGetActorUserId(httpContext);
+        if (actor is null) return Results.Unauthorized();
+        var canUpdate = await authorizationService.IsAllowedAsync(actor.Value, item.rbacobject_id, RbacOperations.Update, cancellationToken);
+        var canDelete = await authorizationService.IsAllowedAsync(actor.Value, item.rbacobject_id, RbacOperations.Delete, cancellationToken);
+        var actions = new EntityAction[]
+        {
+            new("view", "View", $"/architecture/MembershipResponse/view/{id}", Group: "navigation", Order: 10),
+            new("edit", "Edit", $"/architecture/MembershipResponse/edit/{id}", EntityActionKind.Update, canUpdate, canUpdate ? null : "Update is not permitted.", "navigation", 20),
+            new("delete", "Delete", $"/architecture/MembershipResponse/delete?id={id}", EntityActionKind.Delete, canDelete, canDelete ? null : "Delete is not permitted.", "danger", 90, "DELETE", "Delete this membership?", "/architecture/MembershipResponse/list")
+        };
+        return ApiResults.Ok(new EntityActionMenuModel(actions));
+    }
+
     public static Task<IResult> Link(
         Guid id,
         HttpContext httpContext,
@@ -197,43 +182,78 @@ public static class MembershipEndpointExtensions
     {
         var group = endpoints.MapGroup(prefix + "/MembershipResponse").WithTags("Membership");
 
-        group.MapPost("/create", MembershipResolvers.Create)
-            .WithName("MembershipCreate")
-            .ApplyJsonModel<MembershipResponse>();
+        group.MapPost("/create-contained", MembershipResolvers.CreateContained)
+            .WithName("MembershipCreateContained")
+            .ApplyJsonModel<MembershipResponse>()
+                .WithDescription("""
+                    Creates a Membership inside group_id. Create permission is evaluated on that Group; rbacobject_id is derived by the service.
+                    """);
 
         group.MapGet("/create", MembershipResolvers.CreatePage)
-            .WithName("MembershipCreatePage");
+            .WithName("MembershipCreatePage")
+                .WithDescription("""
+                    GET /create. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapPost("/create-form", MembershipResolvers.CreateForm)
-            .WithName("MembershipCreateForm");
+            .WithName("MembershipCreateForm")
+                .WithDescription("""
+                    POST /create-form. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
 
         group.MapGet("/link/{id:guid}", MembershipResolvers.Link)
             .WithName("MembershipLink")
-            .ApplyViewModel<EntityLinkFragment, EntityLinkResponse>();
+            .ApplyViewModel<EntityLinkFragment, EntityLinkResponse>()
+                .WithDescription("""
+                    GET /link/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
+
+        group.MapGet("/actions/{id:guid}", MembershipResolvers.Actions)
+            .WithName("MembershipActions")
+            .ApplyViewModel<EntityActionMenu, EntityActionMenuModel>()
+            .WithDescription("""Returns the RBAC-aware contextual View/Edit/Delete action menu for a Membership.""");
 
         group.MapGet("/view/{id:guid}", MembershipResolvers.Read)
             .WithName("MembershipRead")
-            .ApplyViewModel<MembershipViewPage, MembershipResponse>();
+            .ApplyViewModel<MembershipViewPage, MembershipResponse>()
+                .WithDescription("""
+                    GET /view/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapGet("/edit/{id:guid}", MembershipResolvers.Read)
             .WithName("MembershipEdit")
-            .ApplyViewModel<MembershipEditPage, MembershipResponse>();
+            .ApplyViewModel<MembershipEditPage, MembershipResponse>()
+                .WithDescription("""
+                    GET /edit/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapGet("/list", MembershipResolvers.List)
             .WithName("MembershipList")
-            .ApplyViewModel<MembershipViewListPage, MembershipResponse[]>();
+            .ApplyViewModel<MembershipViewListPage, MembershipResponse[]>()
+                .WithDescription("""
+                    Lists entities through the secured IQueryable. Optional `where` is a Hasura-like JSON filter, `take` limits the result to 1..200 rows, and `operation` selects the RBAC operation used to build the secured query (default: list). This supports incremental entity selectors without introducing a separate lookup API.
+                    """);
 
         group.MapPut("/update", MembershipResolvers.Update)
             .WithName("MembershipUpdate")
-            .ApplyJsonModel<MembershipResponse>();
+            .ApplyJsonModel<MembershipResponse>()
+                .WithDescription("""
+                    PUT /update. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapPost("/update/{id:guid}", MembershipResolvers.UpdateForm)
             .WithName("MembershipUpdateForm")
-            .ApplyViewModel<MembershipEditPage, MembershipResponse>();
+            .ApplyViewModel<MembershipEditPage, MembershipResponse>()
+                .WithDescription("""
+                    POST /update/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapDelete("/delete", MembershipResolvers.Delete)
-            .WithName("MembershipDelete");
+            .WithName("MembershipDelete")
+                .WithDescription("""
+                    DELETE /delete. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         return endpoints;
     }

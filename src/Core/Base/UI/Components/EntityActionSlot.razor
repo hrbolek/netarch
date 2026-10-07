@@ -1,0 +1,12 @@
+@namespace WebAppArchitecture.Base.UI.Components
+@using WebAppArchitecture.Base.UI.Htmx
+
+<LazyContent Url="@Url" Swap="outerHTML">
+    <Placeholder>
+        <span class="btn btn-sm btn-outline-secondary disabled" aria-hidden="true">&#8942;</span>
+    </Placeholder>
+</LazyContent>
+
+@code {
+    [Parameter, EditorRequired] public string Url { get; set; } = default!;
+}

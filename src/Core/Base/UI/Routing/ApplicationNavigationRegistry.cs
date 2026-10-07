@@ -78,7 +78,6 @@ public static class ArchitectureNavigationRegistration
                 new("RoleType", Children:
                 [
                     new("Seznam", "/architecture/RoleTypeResponse/list"),
-                    new("Vytvořit", "/architecture/RoleTypeResponse/create")
                 ])
             ]));
 

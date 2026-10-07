@@ -32,18 +32,23 @@ public class BaseService<TDBModel, TDTOModel> : IBaseService<TDBModel, TDTOModel
         Expression<Func<TDBModel, bool>> predicate,
         string operation,
         CancellationToken cancellationToken = default)
-        => Task.FromResult<IReadOnlyCollection<TDTOModel>>(
-            Security.Query<TDBModel>(operation)
-                .Where(predicate)
-                .Select(TDTOModel.Projection)
-                .ToArray());
-    public virtual Task<TDTOModel> CreateAsync<TCreateRequest>(TCreateRequest model, CancellationToken cancellationToken = default) where TCreateRequest : ICreateDTOModel<TDBModel>
-        => Security.ExecuteInTransactionAsync(async ct =>
-        {
-            var entity = await Security.StageCreateAsync(model.ToModel(), ct);
-            await Security.SaveChangesAsync(ct);
-            return TDTOModel.FromModel(entity);
-        }, cancellationToken);
+        => VectorAsync(predicate, operation, take: null, cancellationToken: cancellationToken);
+
+    public virtual Task<IReadOnlyCollection<TDTOModel>> VectorAsync(
+        Expression<Func<TDBModel, bool>> predicate,
+        string operation,
+        int? take,
+        CancellationToken cancellationToken = default)
+    {
+        var query = Security.Query<TDBModel>(operation)
+            .Where(predicate)
+            .Select(TDTOModel.Projection);
+
+        if (take is > 0)
+            query = query.Take(take.Value);
+
+        return Task.FromResult<IReadOnlyCollection<TDTOModel>>(query.ToArray());
+    }
     public virtual async Task<TDTOModel> UpdateAsync<TUpdateRequest>(TUpdateRequest model, CancellationToken cancellationToken = default) where TUpdateRequest : IUpdateDTOModel<TDBModel>
     {
         var current = await Security.GetByIdAsync<TDBModel>(model.id, SecurityOperations.Update, cancellationToken)

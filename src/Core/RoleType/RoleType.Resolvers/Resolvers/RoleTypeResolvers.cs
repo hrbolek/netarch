@@ -17,70 +17,6 @@ namespace WebAppArchitecture.RoleType.Resolvers;
 
 public static class RoleTypeResolvers
 {
-    public static async Task<IResult> CreatePage(
-        HttpContext httpContext,
-        IRbacService rbacService,
-        ICurrentActorProvider actorProvider,
-        CancellationToken cancellationToken)
-    {
-        if (actorProvider.TryGetActorUserId(httpContext) is null)
-            return Results.Unauthorized();
-
-        var allowed = await rbacService.IsCurrentActorAllowedAsync(
-            httpContext,
-            RbacWellKnown.RootSecurityObjectId,
-            RbacOperations.Create,
-            cancellationToken);
-
-        if (!allowed)
-            return Results.Forbid();
-
-        return new RazorComponentResult<RoleTypeCreatePage>();
-    }
-
-    public static async Task<IResult> Create(RoleTypeCreateRequest request, HttpContext httpContext, IRoleTypeService service, CancellationToken cancellationToken)
-    {
-        var actorProvider = httpContext.RequestServices.GetRequiredService<ICurrentActorProvider>();
-        var actorUserId = actorProvider.TryGetActorUserId(httpContext);
-        if (actorUserId is null)
-            return Results.Unauthorized();
-
-        var now = DateTimeOffset.UtcNow;
-        var stampedRequest = request with
-        {
-            created_at = now,
-            updated_at = now,
-            created_by = actorUserId,
-            updated_by = actorUserId
-        };
-
-        return await BaseResolvers.Create<RoleTypeModel, RoleTypeResponse, RoleTypeCreateRequest, IRoleTypeService>(
-            stampedRequest,
-            httpContext,
-            service,
-            cancellationToken);
-    }
-
-    public static async Task<IResult> CreateForm(
-        HttpContext httpContext,
-        IRoleTypeService service,
-        CancellationToken cancellationToken)
-    {
-        var form = await httpContext.Request.ReadFormAsync(cancellationToken);
-        var name = form["name"].ToString();
-        if (string.IsNullOrWhiteSpace(name))
-            return Results.BadRequest(new { error = "name is required." });
-
-        var operations = (form["operations"].ToString() ?? string.Empty)
-            .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-
-        var result = await Create(new RoleTypeCreateRequest(name, operations), httpContext, service, cancellationToken);
-        if (result is IModelResult modelResult && modelResult.Model is RoleTypeResponse created)
-            return Results.Redirect($"/architecture/RoleTypeResponse/edit/{created.id}");
-
-        return result;
-    }
-
     public static Task<IResult> Read(Guid id, HttpContext httpContext, IRoleTypeService service, CancellationToken cancellationToken)
         => BaseResolvers.Read<RoleTypeModel, RoleTypeResponse, IRoleTypeService>(id, httpContext, service, cancellationToken);
 
@@ -166,43 +102,56 @@ public static class RoleTypeEndpointExtensions
     {
         var group = endpoints.MapGroup(prefix + "/RoleTypeResponse").WithTags("RoleType");
 
-        group.MapPost("/create", RoleTypeResolvers.Create)
-            .WithName("RoleTypeCreate")
-            .ApplyJsonModel<RoleTypeResponse>();
-
-        group.MapGet("/create", RoleTypeResolvers.CreatePage)
-            .WithName("RoleTypeCreatePage");
-
-        group.MapPost("/create-form", RoleTypeResolvers.CreateForm)
-            .WithName("RoleTypeCreateForm");
-
 
         group.MapGet("/link/{id:guid}", RoleTypeResolvers.Link)
             .WithName("RoleTypeLink")
-            .ApplyViewModel<EntityLinkFragment, EntityLinkResponse>();
+            .ApplyViewModel<EntityLinkFragment, EntityLinkResponse>()
+                .WithDescription("""
+                    GET /link/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapGet("/view/{id:guid}", RoleTypeResolvers.Read)
             .WithName("RoleTypeRead")
-            .ApplyViewModel<RoleTypeViewPage, RoleTypeResponse>();
+            .ApplyViewModel<RoleTypeViewPage, RoleTypeResponse>()
+                .WithDescription("""
+                    GET /view/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapGet("/edit/{id:guid}", RoleTypeResolvers.Read)
             .WithName("RoleTypeEdit")
-            .ApplyViewModel<RoleTypeEditPage, RoleTypeResponse>();
+            .ApplyViewModel<RoleTypeEditPage, RoleTypeResponse>()
+                .WithDescription("""
+                    GET /edit/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapGet("/list", RoleTypeResolvers.List)
             .WithName("RoleTypeList")
-            .ApplyViewModel<RoleTypeViewListPage, RoleTypeResponse[]>();
+            .ApplyViewModel<RoleTypeViewListPage, RoleTypeResponse[]>()
+                .WithDescription("""
+                    Lists secured role types. Optional `where` accepts a JSON Hasura-like filter expression
+                    that is translated to an IQueryable predicate before database materialization. Optional `take`
+                    limits the result to 1..200 rows and is intended for selectors and incremental lookup UI.
+                    """);
 
         group.MapPut("/update", RoleTypeResolvers.Update)
             .WithName("RoleTypeUpdate")
-            .ApplyJsonModel<RoleTypeResponse>();
+            .ApplyJsonModel<RoleTypeResponse>()
+                .WithDescription("""
+                    PUT /update. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapPost("/update/{id:guid}", RoleTypeResolvers.UpdateForm)
             .WithName("RoleTypeUpdateForm")
-            .ApplyViewModel<RoleTypeEditPage, RoleTypeResponse>();
+            .ApplyViewModel<RoleTypeEditPage, RoleTypeResponse>()
+                .WithDescription("""
+                    POST /update/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapDelete("/delete", RoleTypeResolvers.Delete)
-            .WithName("RoleTypeDelete");
+            .WithName("RoleTypeDelete")
+                .WithDescription("""
+                    DELETE /delete. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         return endpoints;
     }

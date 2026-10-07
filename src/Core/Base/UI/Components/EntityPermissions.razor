@@ -4,14 +4,16 @@
 
 @if (RbacId != Guid.Empty)
 {
-    var modalId = $"add-role-{RbacId:N}";
     <div class="card mt-3">
         <div class="card-header d-flex justify-content-between align-items-center">
             <span>Valid Permissions</span>
-            <button type="button" class="btn btn-sm btn-outline-primary"
-                    data-bs-toggle="modal" data-bs-target="#@modalId">
-                Add role
-            </button>
+            <LazyContent Url="@RoleActionUrl">
+                <Placeholder>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" disabled>
+                        Add role
+                    </button>
+                </Placeholder>
+            </LazyContent>
         </div>
         <div class="card-body p-0">
             <LazyContent Url="@($"/{App}/RbacPermissionResponse/permissions/{RbacId}")">
@@ -20,21 +22,6 @@
         </div>
     </div>
 
-    <div class="modal fade" id="@modalId" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Create role</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-0">
-                    <LazyContent Url="@RoleDialogUrl">
-                        <Placeholder><div class="p-4 text-muted">Loading role form...</div></Placeholder>
-                    </LazyContent>
-                </div>
-            </div>
-        </div>
-    </div>
 }
 
 @code {
@@ -50,5 +37,5 @@
         }
     }
 
-    private string RoleDialogUrl => $"/architecture/RbacPermissionResponse/create-role/{RbacId}?return_url={Uri.EscapeDataString(ReturnUrl)}";
+    private string RoleActionUrl => $"/architecture/RbacPermissionResponse/create-role-action/{RbacId}?return_url={Uri.EscapeDataString(ReturnUrl)}";
 }

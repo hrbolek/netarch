@@ -58,10 +58,30 @@ public static class BaseResolvers
         where TService : IBaseService<TDBModel, TDTOModel>
     {
         var where = httpContext.Request.Query["where"].ToString();
+        var operation = httpContext.Request.Query["operation"].ToString();
+        if (string.IsNullOrWhiteSpace(operation))
+            operation = RbacOperations.List;
+        try
+        {
+            _ = RbacOperationIds.FromName(operation);
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            return Results.BadRequest(new { error = "Unknown RBAC operation requested for the list." });
+        }
+
+        int? take = null;
+        var takeText = httpContext.Request.Query["take"].ToString();
+        if (!string.IsNullOrWhiteSpace(takeText))
+        {
+            if (!int.TryParse(takeText, out var parsedTake) || parsedTake < 1 || parsedTake > 200)
+                return Results.BadRequest(new { error = "The 'take' query parameter must be an integer between 1 and 200." });
+            take = parsedTake;
+        }
 
         if (string.IsNullOrWhiteSpace(where))
         {
-            var all = await service.GetAllAsync(cancellationToken);
+            var all = await service.VectorAsync(_ => true, operation, take, cancellationToken);
             return ApiResults.Ok(all);
         }
 
@@ -70,7 +90,7 @@ public static class BaseResolvers
             var filter = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object?>>(where)
                 ?? new Dictionary<string, object?>();
             var predicate = HasuraFilterExpression.Build<TDBModel>(filter);
-            var result = await service.VectorAsync(predicate, RbacOperations.List, cancellationToken);
+            var result = await service.VectorAsync(predicate, operation, take, cancellationToken);
             return ApiResults.Ok(result);
         }
         catch (System.Text.Json.JsonException ex)
@@ -81,49 +101,6 @@ public static class BaseResolvers
         {
             return Results.BadRequest(new { error = "Invalid Hasura-like filter expression.", detail = ex.Message });
         }
-    }
-
-    public static async Task<IResult> Create<
-        TDBModel,
-        TDTOModel,
-        TCreateRequest,
-        TService>(
-        TCreateRequest request,
-        HttpContext httpContext,
-        TService service,
-        CancellationToken cancellationToken)
-        where TDBModel : class, ISecuredEntityDBModel
-        where TDTOModel : IEntityDTOModel<TDBModel, TDTOModel>
-        where TCreateRequest : ICreateDTOModel<TDBModel>
-        where TService : IBaseService<TDBModel, TDTOModel>
-    {
-        if (request is ISecuredCreateRequest securedCreate)
-        {
-            var rbacService = httpContext.RequestServices.GetService<IRbacService>();
-            if (rbacService is not null)
-            {
-                var actorProvider = httpContext.RequestServices.GetService<ICurrentActorProvider>();
-                if (actorProvider?.TryGetActorUserId(httpContext) is null)
-                    return Results.Unauthorized();
-
-                var targetRbacId = securedCreate.rbacobject_id ?? RbacWellKnown.RootSecurityObjectId;
-
-                var allowed = await rbacService.IsCurrentActorAllowedAsync(
-                    httpContext,
-                    targetRbacId,
-                    RbacOperations.Create,
-                    cancellationToken);
-
-                if (!allowed)
-                    return Results.Forbid();
-            }
-        }
-
-        var result = await service.CreateAsync(
-            request,
-            cancellationToken);
-
-        return ApiResults.Ok(result);
     }
 
     public static async Task<IResult> Update<
@@ -258,19 +235,6 @@ public static class BaseResolvers
 //     where TDTOModel : IEntityDTOModel<TDBModel, TDTOModel>
 //     where TService : IBaseService<TDBModel, TDTOModel>
 // {
-//     public static async Task<IResult> Create<TCreateRequest>(
-//         TCreateRequest request,
-//         TService service,
-//         CancellationToken cancellationToken)
-//         where TCreateRequest : ICreateDTOModel<TDBModel>
-//     {
-//         var result = await service.CreateAsync(
-//             request,
-//             cancellationToken);
-
-//         return ApiResults.Ok(result);
-//     }
-
 //     public static async Task<IResult> Update<TUpdateRequest>(
 //         TUpdateRequest request,
 //         TService service,

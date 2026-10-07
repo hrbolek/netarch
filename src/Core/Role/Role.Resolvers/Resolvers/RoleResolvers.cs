@@ -18,48 +18,24 @@ namespace WebAppArchitecture.Role.Resolvers;
 public static class RoleResolvers
 {
     public static async Task<IResult> CreatePage(
-        HttpContext httpContext,
-        IRbacService rbacService,
         ICurrentActorProvider actorProvider,
+        IRbacAuthorizationService authorizationService,
+        HttpContext httpContext,
         CancellationToken cancellationToken)
     {
-        if (actorProvider.TryGetActorUserId(httpContext) is null)
-            return Results.Unauthorized();
-
-        var allowed = await rbacService.IsCurrentActorAllowedAsync(
-            httpContext,
-            RbacWellKnown.RootSecurityObjectId,
-            RbacOperations.Create,
-            cancellationToken);
-
-        if (!allowed)
+        var actor = actorProvider.TryGetActorUserId(httpContext);
+        if (actor is null) return Results.Unauthorized();
+        if (Guid.TryParse(httpContext.Request.Query["group_id"], out var groupId) &&
+            !await authorizationService.IsAllowedAsync(actor.Value, groupId, RbacOperations.Create, cancellationToken))
             return Results.Forbid();
-
         return new RazorComponentResult<RoleCreatePage>();
     }
 
-    public static async Task<IResult> Create(RoleCreateRequest request, HttpContext httpContext, IRoleService service, CancellationToken cancellationToken)
-    {
-        var actorProvider = httpContext.RequestServices.GetRequiredService<ICurrentActorProvider>();
-        var actorUserId = actorProvider.TryGetActorUserId(httpContext);
-        if (actorUserId is null)
-            return Results.Unauthorized();
-
-        var now = DateTimeOffset.UtcNow;
-        var stampedRequest = request with
-        {
-            created_at = now,
-            updated_at = now,
-            created_by = actorUserId,
-            updated_by = actorUserId
-        };
-
-        return await BaseResolvers.Create<RoleModel, RoleResponse, RoleCreateRequest, IRoleService>(
-            stampedRequest,
-            httpContext,
-            service,
-            cancellationToken);
-    }
+    public static async Task<IResult> CreateContained(
+        RoleCreateContainedRequest request,
+        IRoleService service,
+        CancellationToken cancellationToken)
+        => ApiResults.Ok(await service.CreateContainedAsync(request, cancellationToken));
 
     public static async Task<IResult> CreateForm(
         HttpContext httpContext,
@@ -67,44 +43,31 @@ public static class RoleResolvers
         CancellationToken cancellationToken)
     {
         var form = await httpContext.Request.ReadFormAsync(cancellationToken);
-
         if (!Guid.TryParse(form["group_id"].ToString(), out var groupId))
             return Results.BadRequest(new { error = "Invalid group_id value." });
-
         if (!Guid.TryParse(form["user_id"].ToString(), out var userId))
             return Results.BadRequest(new { error = "Invalid user_id value." });
-
-        var roleTypeValue = form["role_type_id"].ToString();
-        if (!Guid.TryParse(roleTypeValue, out var roleTypeId))
+        if (!Guid.TryParse(form["role_type_id"].ToString(), out var roleTypeId))
             return Results.BadRequest(new { error = "role_type_id must be a valid Guid." });
-
         var isDeputy = string.Equals(form["is_deputy"].ToString(), "true", StringComparison.OrdinalIgnoreCase);
-
-        var validFromRaw = form["valid_from"].ToString();
         var validFrom = DateTimeOffset.UtcNow;
-        if (!string.IsNullOrWhiteSpace(validFromRaw) && !DateTimeOffset.TryParse(validFromRaw, out validFrom))
+        var rawFrom = form["valid_from"].ToString();
+        if (!string.IsNullOrWhiteSpace(rawFrom) && !DateTimeOffset.TryParse(rawFrom, out validFrom))
             return Results.BadRequest(new { error = "Invalid valid_from value." });
-
         DateTimeOffset? validTo = null;
-        var validToRaw = form["valid_to"].ToString();
-        if (!string.IsNullOrWhiteSpace(validToRaw))
+        var rawTo = form["valid_to"].ToString();
+        if (!string.IsNullOrWhiteSpace(rawTo))
         {
-            if (!DateTimeOffset.TryParse(validToRaw, out var parsedValidTo))
+            if (!DateTimeOffset.TryParse(rawTo, out var parsed))
                 return Results.BadRequest(new { error = "Invalid valid_to value." });
-
-            validTo = parsedValidTo;
+            validTo = parsed;
         }
-
-        var result = await Create(
-            new RoleCreateRequest(groupId, userId, roleTypeId, isDeputy, validFrom, validTo),
-            httpContext,
-            service,
-            cancellationToken);
-
-        if (result is IModelResult modelResult && modelResult.Model is RoleResponse created)
-            return Results.Redirect($"/architecture/RoleResponse/edit/{created.id}");
-
-        return result;
+        var created = await service.CreateContainedAsync(
+            new RoleCreateContainedRequest(groupId, userId, roleTypeId, isDeputy, validFrom, validTo), cancellationToken);
+        var returnUrl = form["return_url"].ToString();
+        return Results.Redirect(string.IsNullOrWhiteSpace(returnUrl)
+            ? $"/architecture/RoleResponse/edit/{created.id}"
+            : returnUrl);
     }
 
     public static Task<IResult> Read(Guid id, HttpContext httpContext, IRoleService service, CancellationToken cancellationToken)
@@ -196,6 +159,25 @@ public static class RoleResolvers
     }
 
 
+    public static async Task<IResult> Actions(
+        Guid id, HttpContext httpContext, IRoleService service, ICurrentActorProvider actorProvider,
+        IRbacAuthorizationService authorizationService, CancellationToken cancellationToken)
+    {
+        var item = await service.GetByIdAsync(id, cancellationToken);
+        if (item is null) return Results.NotFound();
+        var actor = actorProvider.TryGetActorUserId(httpContext);
+        if (actor is null) return Results.Unauthorized();
+        var canUpdate = await authorizationService.IsAllowedAsync(actor.Value, item.rbacobject_id, RbacOperations.Update, cancellationToken);
+        var canDelete = await authorizationService.IsAllowedAsync(actor.Value, item.rbacobject_id, RbacOperations.Delete, cancellationToken);
+        var actions = new EntityAction[]
+        {
+            new("view", "View", $"/architecture/RoleResponse/view/{id}", Group: "navigation", Order: 10),
+            new("edit", "Edit", $"/architecture/RoleResponse/edit/{id}", EntityActionKind.Update, canUpdate, canUpdate ? null : "Update is not permitted.", "navigation", 20),
+            new("delete", "Delete", $"/architecture/RoleResponse/delete?id={id}", EntityActionKind.Delete, canDelete, canDelete ? null : "Delete is not permitted.", "danger", 90, "DELETE", "Delete this role?", "/architecture/RoleResponse/list")
+        };
+        return ApiResults.Ok(new EntityActionMenuModel(actions));
+    }
+
     public static Task<IResult> Link(
         Guid id,
         HttpContext httpContext,
@@ -214,43 +196,78 @@ public static class RoleEndpointExtensions
     {
         var group = endpoints.MapGroup(prefix + "/RoleResponse").WithTags("Role");
 
-        group.MapPost("/create", RoleResolvers.Create)
-            .WithName("RoleCreate")
-            .ApplyJsonModel<RoleResponse>();
+        group.MapPost("/create-contained", RoleResolvers.CreateContained)
+            .WithName("RoleCreateContained")
+            .ApplyJsonModel<RoleResponse>()
+                .WithDescription("""
+                    Creates a Role inside group_id. Create permission is evaluated on that Group and the role RBAC scope is derived server-side.
+                    """);
 
         group.MapGet("/create", RoleResolvers.CreatePage)
-            .WithName("RoleCreatePage");
+            .WithName("RoleCreatePage")
+                .WithDescription("""
+                    GET /create. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapPost("/create-form", RoleResolvers.CreateForm)
-            .WithName("RoleCreateForm");
+            .WithName("RoleCreateForm")
+                .WithDescription("""
+                    POST /create-form. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
 
         group.MapGet("/link/{id:guid}", RoleResolvers.Link)
             .WithName("RoleLink")
-            .ApplyViewModel<EntityLinkFragment, EntityLinkResponse>();
+            .ApplyViewModel<EntityLinkFragment, EntityLinkResponse>()
+                .WithDescription("""
+                    GET /link/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
+
+        group.MapGet("/actions/{id:guid}", RoleResolvers.Actions)
+            .WithName("RoleActions")
+            .ApplyViewModel<EntityActionMenu, EntityActionMenuModel>()
+            .WithDescription("""Returns the RBAC-aware contextual View/Edit/Delete action menu for a Role.""");
 
         group.MapGet("/view/{id:guid}", RoleResolvers.Read)
             .WithName("RoleRead")
-            .ApplyViewModel<RoleViewPage, RoleResponse>();
+            .ApplyViewModel<RoleViewPage, RoleResponse>()
+                .WithDescription("""
+                    GET /view/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapGet("/edit/{id:guid}", RoleResolvers.Read)
             .WithName("RoleEdit")
-            .ApplyViewModel<RoleEditPage, RoleResponse>();
+            .ApplyViewModel<RoleEditPage, RoleResponse>()
+                .WithDescription("""
+                    GET /edit/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapGet("/list", RoleResolvers.List)
             .WithName("RoleList")
-            .ApplyViewModel<RoleViewListPage, RoleResponse[]>();
+            .ApplyViewModel<RoleViewListPage, RoleResponse[]>()
+                .WithDescription("""
+                    Lists entities through the secured IQueryable. Optional `where` is a Hasura-like JSON filter, `take` limits the result to 1..200 rows, and `operation` selects the RBAC operation used to build the secured query (default: list). This supports incremental entity selectors without introducing a separate lookup API.
+                    """);
 
         group.MapPut("/update", RoleResolvers.Update)
             .WithName("RoleUpdate")
-            .ApplyJsonModel<RoleResponse>();
+            .ApplyJsonModel<RoleResponse>()
+                .WithDescription("""
+                    PUT /update. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapPost("/update/{id:guid}", RoleResolvers.UpdateForm)
             .WithName("RoleUpdateForm")
-            .ApplyViewModel<RoleEditPage, RoleResponse>();
+            .ApplyViewModel<RoleEditPage, RoleResponse>()
+                .WithDescription("""
+                    POST /update/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapDelete("/delete", RoleResolvers.Delete)
-            .WithName("RoleDelete");
+            .WithName("RoleDelete")
+                .WithDescription("""
+                    DELETE /delete. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         return endpoints;
     }

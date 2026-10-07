@@ -67,6 +67,83 @@
     </nav>
 
     @ChildContent
+    <script>
+        (() => {
+            const timers = new WeakMap();
+
+            function buildWhere(fields, term) {
+                const pattern = `%${term}%`;
+                if (fields.length === 1) {
+                    return { [fields[0]]: { _ilike: pattern } };
+                }
+                return {
+                    _or: fields.map(field => ({ [field]: { _ilike: pattern } }))
+                };
+            }
+
+            async function refreshLookup(input) {
+                const root = input.closest('.entity-lookup');
+                if (!root) return;
+
+                const select = root.querySelector('[data-entity-lookup-select]');
+                const status = root.querySelector('[data-entity-lookup-status]');
+                const term = input.value.trim();
+                const minChars = Number(root.dataset.minChars || '3');
+                const take = Number(root.dataset.take || '20');
+                const fields = JSON.parse(root.dataset.searchFields || '[]');
+                const listUrl = root.dataset.listUrl;
+
+                if (!select || !listUrl || fields.length === 0) return;
+
+                if (term.length < minChars) {
+                    status.textContent = `Type at least ${minChars} characters to search.`;
+                    return;
+                }
+
+                status.textContent = 'Searching…';
+                const where = buildWhere(fields, term);
+                const separator = listUrl.includes('?') ? '&' : '?';
+                const url = `${listUrl}${separator}where=${encodeURIComponent(JSON.stringify(where))}&take=${encodeURIComponent(take)}`;
+
+                try {
+                    const response = await fetch(url, {
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Response-Type': 'json'
+                        }
+                    });
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const items = await response.json();
+                    const previous = select.value;
+                    select.replaceChildren();
+                    const empty = document.createElement('option');
+                    empty.value = '';
+                    empty.textContent = 'Select…';
+                    select.appendChild(empty);
+                    for (const item of items) {
+                        const option = document.createElement('option');
+                        option.value = item.id;
+                        option.textContent = item.visual_label || item.name || item.id;
+                        select.appendChild(option);
+                    }
+                    if (previous && [...select.options].some(x => x.value === previous)) {
+                        select.value = previous;
+                    }
+                    status.textContent = `${items.length} result${items.length === 1 ? '' : 's'}.`;
+                } catch (error) {
+                    status.textContent = `Search failed: ${error.message}`;
+                }
+            }
+
+            document.addEventListener('input', event => {
+                const input = event.target.closest?.('[data-entity-lookup-search]');
+                if (!input) return;
+                const old = timers.get(input);
+                if (old) clearTimeout(old);
+                timers.set(input, setTimeout(() => refreshLookup(input), 300));
+            });
+        })();
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

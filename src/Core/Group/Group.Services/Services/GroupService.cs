@@ -5,7 +5,11 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.Group.Services;
 
-public interface IGroupService : IBaseService<GroupModel, GroupResponse> { }
+public interface IGroupService : IBaseService<GroupModel, GroupResponse>
+{
+    Task<GroupResponse> CreateContainedAsync(GroupCreateContainedRequest request, CancellationToken cancellationToken = default);
+    Task<GroupResponse> CreateTypedAsync(GroupCreateTypedRequest request, CancellationToken cancellationToken = default);
+}
 
 public sealed class GroupService : BaseService<GroupModel, GroupResponse>, IGroupService
 {
@@ -14,10 +18,43 @@ public sealed class GroupService : BaseService<GroupModel, GroupResponse>, IGrou
     public GroupService(ISecurityLayer security, ISecurityProjectionService projection)
         : base(security) => _projection = projection;
 
-    public override Task<GroupResponse> CreateAsync<TCreateRequest>(TCreateRequest model, CancellationToken cancellationToken = default)
+    public async Task<GroupResponse> CreateContainedAsync(
+        GroupCreateContainedRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var (parent, _) = await CreationScopeGuard.RequireEntityAsync<GroupModel>(
+            Security, request.master_group_id, "contained", cancellationToken);
+        var groupTypeId = request.group_type_id ?? parent.group_type_id;
+        _ = await Security.GetByIdAsync<GroupTypeModel>(groupTypeId, SecurityOperations.Read, cancellationToken)
+            ?? throw new KeyNotFoundException("Group type not found.");
+        return await CreateCoreAsync(request.Name, groupTypeId, parent, request.inherit_roles, cancellationToken);
+    }
+
+    public async Task<GroupResponse> CreateTypedAsync(
+        GroupCreateTypedRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var (groupType, _) = await CreationScopeGuard.RequireEntityAsync<GroupTypeModel>(
+            Security, request.group_type_id, "typed", cancellationToken);
+        return await CreateCoreAsync(request.Name, groupType.id, null, request.inherit_roles, cancellationToken);
+    }
+
+    private Task<GroupResponse> CreateCoreAsync(
+        string name,
+        Guid groupTypeId,
+        GroupModel? parent,
+        bool inheritRoles,
+        CancellationToken cancellationToken)
         => Security.ExecuteInTransactionAsync(async ct =>
         {
-            var entity = await Security.StageCreateAsync(model.ToModel(), ct);
+            var id = Guid.NewGuid();
+            var now = DateTimeOffset.UtcNow;
+            var actor = Security.CurrentUserId;
+            var path = parent is null ? $"/{id:D}/" : $"{parent.path}{id:D}/";
+            var model = new GroupModel(
+                id, name, groupTypeId, parent?.id, path, inheritRoles, id,
+                now, now, actor, actor);
+            var entity = await Security.StageCreateAsync(model, ct);
             await Security.SaveChangesAsync(ct);
             await _projection.RebuildAllAsync(ct);
             return GroupResponse.FromModel(entity);

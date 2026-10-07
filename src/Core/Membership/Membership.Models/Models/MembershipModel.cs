@@ -39,26 +39,6 @@ public sealed record MembershipResponse(
     };
 }
 
-public sealed record MembershipCreateRequest(
-    Guid group_id,
-    Guid user_id,
-    DateTimeOffset valid_from,
-    DateTimeOffset? valid_to = null,
-    Guid? rbacobject_id = null,
-    DateTimeOffset? created_at = null,
-    DateTimeOffset? updated_at = null,
-    Guid? created_by = null,
-    Guid? updated_by = null
-) : ICreateDTOModel<MembershipModel>, ISecuredCreateRequest
-{
-    public MembershipModel ToModel()
-    {
-        var now = DateTimeOffset.UtcNow;
-        return new(Guid.NewGuid(), group_id, user_id, valid_from, valid_to,
-            rbacobject_id ?? RbacWellKnown.RootSecurityObjectId,
-            created_at ?? now, updated_at ?? now, created_by ?? Guid.Empty, updated_by ?? Guid.Empty);
-    }
-}
 
 public sealed record MembershipUpdateRequest(
     Guid id,
@@ -83,3 +63,10 @@ public sealed record MembershipUpdateRequest(
         RbacWellKnown.RootSecurityObjectId, DateTimeOffset.UtcNow,
         updated_at ?? DateTimeOffset.UtcNow, Guid.Empty, updated_by ?? Guid.Empty);
 }
+
+/// <summary>Safe public create contract. Authorization is evaluated on group_id.</summary>
+public sealed record MembershipCreateContainedRequest(
+    Guid group_id,
+    Guid user_id,
+    DateTimeOffset valid_from,
+    DateTimeOffset? valid_to = null);

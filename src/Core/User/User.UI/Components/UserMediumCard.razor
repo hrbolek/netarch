@@ -3,7 +3,7 @@
 
 @namespace WebAppArchitecture.User.UI.Components
 
-<MediumCard TModel="UserResponse" Model="@Model" HeaderText="Uživatel">
+<MediumCard TModel="UserResponse" Model="@Model" ActionsUrl="@($"/architecture/UserResponse/actions/{Model.id}")" HeaderText="Uživatel">
     <ChildContent Context="item">
         <Attribute TModel="UserResponse" Item="@item" Label="ID" AttributeName="id" />
         <Attribute TModel="UserResponse" Item="@item" Label="Name" AttributeName="Name" />

@@ -3,7 +3,7 @@
 
 @namespace WebAppArchitecture.Group.UI.Components
 
-<MediumCard TModel="GroupResponse" Model="@Model" HeaderText="Skupina">
+<MediumCard TModel="GroupResponse" Model="@Model" ActionsUrl="@($"/architecture/GroupResponse/actions/{Model.id}")" HeaderText="Skupina">
     <ChildContent Context="item">
         <Attribute TModel="GroupResponse" Item="@item" Label="ID" AttributeName="id" />
         <Attribute TModel="GroupResponse" Item="@item" Label="Name" AttributeName="Name" />

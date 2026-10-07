@@ -1,7 +1,5 @@
-using Microsoft.Extensions.DependencyInjection;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.SecurityLayer;
-using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.User.Models;
 using WebAppArchitecture.DBLayer;
 
@@ -9,12 +7,41 @@ namespace WebAppArchitecture.User.Services;
 
 public interface IUserService : IBaseService<UserModel, UserResponse>
 {
+    Task<UserResponse> CreateContainedAsync(UserCreateContainedRequest request, CancellationToken cancellationToken = default);
 }
 
-public sealed class UserService
-    : BaseService<UserModel, UserResponse>, IUserService
+public sealed class UserService : BaseService<UserModel, UserResponse>, IUserService
 {
-    public UserService(ISecurityLayer security) : base(security)
+    private readonly ISecurityProjectionService _projection;
+
+    public UserService(ISecurityLayer security, ISecurityProjectionService projection) : base(security)
+        => _projection = projection;
+
+    public async Task<UserResponse> CreateContainedAsync(
+        UserCreateContainedRequest request,
+        CancellationToken cancellationToken = default)
     {
+        var (group, _) = await CreationScopeGuard.RequireEntityAsync<GroupModel>(
+            Security, request.group_id, "contained", cancellationToken);
+
+        var id = Guid.NewGuid();
+        var now = DateTimeOffset.UtcNow;
+        var actor = Security.CurrentUserId;
+        var validFrom = request.membership_valid_from ?? now;
+
+        return await Security.ExecuteInTransactionAsync(async ct =>
+        {
+            var user = await Security.StageCreateAsync(new UserModel(
+                id, request.Name, request.email, request.surname, id,
+                now, now, actor, actor), ct);
+
+            await Security.StageCreateAsync(new MembershipModel(
+                Guid.NewGuid(), group.id, id, validFrom, request.membership_valid_to,
+                group.rbacobject_id, now, now, actor, actor), ct);
+
+            await Security.SaveChangesAsync(ct);
+            await _projection.RebuildAllAsync(ct);
+            return UserResponse.FromModel(user);
+        }, cancellationToken);
     }
 }

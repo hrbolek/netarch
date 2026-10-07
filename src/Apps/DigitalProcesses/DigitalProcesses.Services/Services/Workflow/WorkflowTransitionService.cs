@@ -1,5 +1,3 @@
-using System.Text.Json;
-using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
 using WebAppArchitecture.DigitalProcesses.Models;
@@ -7,8 +5,39 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
-public interface IWorkflowTransitionService : IBaseService<WorkflowTransitionModel, WorkflowTransitionResponse> { Task<WorkflowTransitionResponse> CreateAsync(CreateWorkflowTransitionRequest request,CancellationToken ct=default); }
-public sealed class WorkflowTransitionService(ISecurityLayer security) : BaseService<WorkflowTransitionModel,WorkflowTransitionResponse>(security),IWorkflowTransitionService
+public interface IWorkflowTransitionService : IBaseService<WorkflowTransitionModel, WorkflowTransitionResponse>
 {
-    public async Task<WorkflowTransitionResponse> CreateAsync(CreateWorkflowTransitionRequest r,CancellationToken ct=default){var workflowVersion=await Security.GetByIdAsync<WorkflowVersionModel>(r.workflow_version_id,SecurityOperations.Update,ct)??throw new KeyNotFoundException("Workflow version not found.");if(workflowVersion.is_published)throw new InvalidOperationException("Published workflow version is immutable.");var s=await Security.GetByIdAsync<WorkflowStateModel>(r.source_state_id,SecurityOperations.Read,ct)??throw new KeyNotFoundException("Source state not found.");var d=await Security.GetByIdAsync<WorkflowStateModel>(r.target_state_id,SecurityOperations.Read,ct)??throw new KeyNotFoundException("Target state not found.");if(s.workflow_version_id!=r.workflow_version_id||d.workflow_version_id!=r.workflow_version_id)throw new InvalidOperationException("Transition states must belong to the same workflow version.");var rbac=r.rbacobject_id??RbacWellKnown.RootSecurityObjectId;if(!await Security.IsAllowedAsync(rbac,SecurityOperations.Create,ct))throw new UnauthorizedAccessException();var now=DateTimeOffset.UtcNow;var a=Security.CurrentUserId;var m=new WorkflowTransitionModel(Guid.NewGuid(),r.workflow_version_id,r.source_state_id,r.target_state_id,r.key,r.name,r.note_required,r.condition_query,r.action_query,rbac,now,now,a,a);return await Security.ExecuteInTransactionAsync(async t=>{var x=await Security.StageCreateAsync(m,t);await Security.SaveChangesAsync(t);return WorkflowTransitionResponse.FromModel(x);},ct);}
+    Task<WorkflowTransitionResponse> CreateContainedAsync(CreateWorkflowTransitionRequest request, CancellationToken ct = default);
+}
+
+public sealed class WorkflowTransitionService(ISecurityLayer security)
+    : BaseService<WorkflowTransitionModel, WorkflowTransitionResponse>(security), IWorkflowTransitionService
+{
+    public async Task<WorkflowTransitionResponse> CreateContainedAsync(CreateWorkflowTransitionRequest request, CancellationToken ct = default)
+    {
+        var (workflowVersion, _) = await CreationScopeGuard.RequireEntityAsync<WorkflowVersionModel>(
+            Security, request.workflow_version_id, "contained", ct);
+        if (workflowVersion.is_published)
+            throw new InvalidOperationException("Published workflow version is immutable.");
+
+        var source = await Security.GetByIdAsync<WorkflowStateModel>(request.source_state_id, SecurityOperations.Read, ct)
+            ?? throw new KeyNotFoundException("Source state not found.");
+        var target = await Security.GetByIdAsync<WorkflowStateModel>(request.target_state_id, SecurityOperations.Read, ct)
+            ?? throw new KeyNotFoundException("Target state not found.");
+        if (source.workflow_version_id != workflowVersion.id || target.workflow_version_id != workflowVersion.id)
+            throw new InvalidOperationException("Transition states must belong to the same workflow version.");
+
+        var now = DateTimeOffset.UtcNow;
+        var actor = Security.CurrentUserId;
+        var model = new WorkflowTransitionModel(
+            Guid.NewGuid(), workflowVersion.id, source.id, target.id, request.key, request.name,
+            request.note_required, request.condition_query, request.action_query,
+            workflowVersion.rbacobject_id, now, now, actor, actor);
+        return await Security.ExecuteInTransactionAsync(async token =>
+        {
+            var x = await Security.StageCreateAsync(model, token);
+            await Security.SaveChangesAsync(token);
+            return WorkflowTransitionResponse.FromModel(x);
+        }, ct);
+    }
 }

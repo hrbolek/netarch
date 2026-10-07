@@ -9,10 +9,8 @@ using WebAppArchitecture.Security.Models;
 using WebAppArchitecture.Security.Services;
 using WebAppArchitecture.Security.UI.Pages;
 using WebAppArchitecture.Security.UI.Components;
-using WebAppArchitecture.User.Services;
 using WebAppArchitecture.Role.Services;
 using WebAppArchitecture.Role.Models;
-using WebAppArchitecture.RoleType.Services;
 using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.Security.Resolvers;
@@ -69,30 +67,58 @@ public static class SecurityResolvers
 
         return ApiResults.Ok(model);
     }
-    public static Task<IResult> CreateRoleDialog(
+    public static async Task<IResult> CreateRoleAction(
         Guid rbacobjectId,
         string? return_url,
-        IUserService userService,
-        IRoleTypeService roleTypeService,
+        HttpContext httpContext,
+        ISecurityService securityService,
+        ICurrentActorProvider actorProvider,
         CancellationToken cancellationToken)
     {
-        var users = userService.Query()
-            .Select(x => new RoleAssignmentOption(x.id, x.visual_label))
-            .ToArray()
-            .OrderBy(x => x.label, StringComparer.CurrentCultureIgnoreCase)
-            .ToArray();
-        var roleTypes = roleTypeService.Query()
-            .Select(x => new RoleAssignmentOption(x.id, x.visual_label))
-            .ToArray()
-            .OrderBy(x => x.label, StringComparer.CurrentCultureIgnoreCase)
-            .ToArray();
+        var actor = actorProvider.TryGetActorUserId(httpContext);
+        if (actor is null)
+            return Results.Unauthorized();
+
+        var canCreateRole = await securityService.IsAllowedAsync(
+            actor.Value,
+            rbacobjectId,
+            SecurityOperations.Create,
+            cancellationToken);
+
+        var model = new RoleAssignmentActionResponse(
+            rbacobjectId,
+            string.IsNullOrWhiteSpace(return_url) ? "/architecture" : return_url,
+            canCreateRole);
+
+        return ApiResults.Ok(model);
+    }
+
+    public static async Task<IResult> CreateRoleDialog(
+        Guid rbacobjectId,
+        string? return_url,
+        HttpContext httpContext,
+        ISecurityService securityService,
+        ICurrentActorProvider actorProvider,
+        CancellationToken cancellationToken)
+    {
+        var actor = actorProvider.TryGetActorUserId(httpContext);
+        if (actor is null)
+            return Results.Unauthorized();
+
+        var canCreateRole = await securityService.IsAllowedAsync(
+            actor.Value,
+            rbacobjectId,
+            SecurityOperations.Create,
+            cancellationToken);
+
+        if (!canCreateRole)
+            return Results.Forbid();
+
         var model = new RoleAssignmentDialogResponse(
             rbacobjectId,
             string.IsNullOrWhiteSpace(return_url) ? "/architecture" : return_url,
-            users,
-            roleTypes,
             DateTimeOffset.Now);
-        return Task.FromResult<IResult>(ApiResults.Ok(model));
+        return ApiResults.Ok(model);
     }
 
     public static async Task<IResult> CreateRoleForm(
@@ -128,19 +154,13 @@ public static class SecurityResolvers
         var allowed = await securityService.IsAllowedAsync(actor.Value, rbacobjectId, SecurityOperations.Create, cancellationToken);
         if (!allowed) return Results.Forbid();
 
-        var now = DateTimeOffset.UtcNow;
-        await roleService.CreateAsync(new RoleCreateRequest(
+        await roleService.CreateContainedAsync(new RoleCreateContainedRequest(
             group_id: rbacobjectId,
             user_id: userId,
             role_type_id: roleTypeId,
             is_deputy: string.Equals(form["is_deputy"].ToString(), "true", StringComparison.OrdinalIgnoreCase),
             valid_from: validFrom,
-            valid_to: validTo,
-            rbacobject_id: rbacobjectId,
-            created_at: now,
-            updated_at: now,
-            created_by: actor,
-            updated_by: actor), cancellationToken);
+            valid_to: validTo), cancellationToken);
 
         var returnUrl = form["return_url"].ToString();
         if (string.IsNullOrWhiteSpace(returnUrl) || !returnUrl.StartsWith('/')) returnUrl = "/architecture";
@@ -161,7 +181,10 @@ public static class SecurityEndpointExtensions
 
         security.MapGet("/{rbacId:guid}/operations", SecurityResolvers.Operations)
             .WithName("SecurityOperations")
-            .ApplyJsonModel<string[]>();
+            .ApplyJsonModel<string[]>()
+                .WithDescription("""
+                    GET /{rbacId:guid}/operations. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         var permissions = endpoints
             .MapGroup(prefix.TrimEnd('/') + "/RbacPermissionResponse")
@@ -169,14 +192,27 @@ public static class SecurityEndpointExtensions
 
         permissions.MapGet("/permissions/{rbacobjectId:guid}", SecurityResolvers.Permissions)
             .WithName("SecurityPermissions")
-            .ApplyViewModel<RbacPermissionView, RbacPermissionResponse>();
+            .ApplyViewModel<RbacPermissionView, RbacPermissionResponse>()
+                .WithDescription("""
+                    GET /permissions/{rbacobjectId:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
+
+        permissions.MapGet("/create-role-action/{rbacobjectId:guid}", SecurityResolvers.CreateRoleAction)
+            .WithName("SecurityCreateRoleAction")
+            .WithDescription("""
+                Returns the RBAC-aware UI action for adding a role to the current object.
+                The response contains an active Add role button only when the current actor
+                has the create operation on the target RBAC object; otherwise it renders a
+                disabled action and no dialog-loading URL is exposed.
+                """)
+            .ApplyViewModel<RoleAssignmentAction, RoleAssignmentActionResponse>();
 
         permissions.MapGet("/create-role/{rbacobjectId:guid}", SecurityResolvers.CreateRoleDialog)
             .WithName("SecurityCreateRoleDialog")
             .WithDescription("""
                 Returns the Bootstrap dialog content used to create a time-limited role
-                directly on the current RBAC object. Users and role types are loaded
-                from the secured application services.
+                directly on the current RBAC object. User and role-type choices are loaded
+                lazily from their standard secured list endpoints using Hasura-like where filters.
                 """)
             .ApplyViewModel<RoleAssignmentDialog, RoleAssignmentDialogResponse>();
 

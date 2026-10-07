@@ -8,7 +8,8 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 
 public interface ISubmissionNodeService : IBaseService<SubmissionNodeModel, SubmissionNodeResponse>
 {
-    Task<SubmissionNodeResponse> CreateNodeAsync(CreateSubmissionNodeRequest request, CancellationToken ct = default);
+    Task<SubmissionNodeResponse> CreateInSubmissionAsync(CreateSubmissionNodeRequest request, CancellationToken ct = default);
+    Task<SubmissionNodeResponse> CreateInNodeAsync(CreateSubmissionNodeRequest request, CancellationToken ct = default);
     Task<SubmissionNodeResponse> SetValueAsync(Guid id, SetSubmissionNodeValueRequest request, CancellationToken ct = default);
     Task<IReadOnlyCollection<SubmissionNodeResponse>> GetSubtreeAsync(Guid id, CancellationToken ct = default);
 }
@@ -19,10 +20,24 @@ public sealed class SubmissionNodeService(
     ISecurityProjectionService securityProjection)
     : BaseService<SubmissionNodeModel, SubmissionNodeResponse>(security), ISubmissionNodeService
 {
-    public async Task<SubmissionNodeResponse> CreateNodeAsync(CreateSubmissionNodeRequest r, CancellationToken ct = default)
+    public Task<SubmissionNodeResponse> CreateInSubmissionAsync(CreateSubmissionNodeRequest request, CancellationToken ct = default)
     {
-        var submission = await Security.GetByIdAsync<SubmissionModel>(r.submission_id, SecurityOperations.Update, ct)
-            ?? throw new KeyNotFoundException("Submission not found or not editable.");
+        if (request.parent_id is not null)
+            throw new InvalidOperationException("Root submission-node creation does not accept parent_id. Use create-in-node.");
+        return CreateCoreAsync(request with { parent_id = null }, requireParent: false, ct);
+    }
+
+    public Task<SubmissionNodeResponse> CreateInNodeAsync(CreateSubmissionNodeRequest request, CancellationToken ct = default)
+    {
+        if (request.parent_id is null)
+            throw new InvalidOperationException("Child submission-node creation requires parent_id.");
+        return CreateCoreAsync(request, requireParent: true, ct);
+    }
+
+    private async Task<SubmissionNodeResponse> CreateCoreAsync(CreateSubmissionNodeRequest r, bool requireParent, CancellationToken ct)
+    {
+        var submission = await Security.GetByIdAsync<SubmissionModel>(r.submission_id, SecurityOperations.Read, ct)
+            ?? throw new KeyNotFoundException("Submission not found.");
         if (submission.is_archived)
             throw new InvalidOperationException("Archived submission is immutable.");
 
@@ -34,10 +49,15 @@ public sealed class SubmissionNodeService(
             throw new ArgumentOutOfRangeException(nameof(r.occurrence));
 
         SubmissionNodeModel? parent = null;
+        if (requireParent && r.parent_id is null)
+            throw new InvalidOperationException("Child submission-node creation requires parent_id.");
+        if (!requireParent && r.parent_id is not null)
+            throw new InvalidOperationException("Root submission-node creation does not accept parent_id.");
+
         if (r.parent_id is Guid pid)
         {
-            parent = await Security.GetByIdAsync<SubmissionNodeModel>(pid, SecurityOperations.Update, ct)
-                ?? throw new KeyNotFoundException("Parent submission node not found.");
+            (parent, _) = await CreationScopeGuard.RequireEntityAsync<SubmissionNodeModel>(
+                Security, pid, "contained", ct);
             if (parent.submission_id != r.submission_id)
                 throw new InvalidOperationException("Parent belongs to another submission.");
             if (formNode.parent_id != parent.form_node_id)
@@ -46,6 +66,11 @@ public sealed class SubmissionNodeService(
         else if (formNode.parent_id is not null)
         {
             throw new InvalidOperationException("Non-root form node requires corresponding parent submission node.");
+        }
+        else
+        {
+            _ = await CreationScopeGuard.RequireEntityAsync<SubmissionModel>(
+                Security, submission.id, "contained", ct);
         }
 
         var request = await Security.GetByIdAsync<RequestModel>(submission.request_id, SecurityOperations.Read, ct)

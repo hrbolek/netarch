@@ -34,25 +34,6 @@ public sealed record GroupTypeResponse(
     };
 }
 
-public sealed record GroupTypeCreateRequest(
-    string Name,
-    Guid? parent_group_type_id = null,
-    Guid? rbacobject_id = null,
-    DateTimeOffset? created_at = null,
-    DateTimeOffset? updated_at = null,
-    Guid? created_by = null,
-    Guid? updated_by = null
-) : ICreateDTOModel<GroupTypeModel>, ISecuredCreateRequest
-{
-    public GroupTypeModel ToModel()
-    {
-        var now = DateTimeOffset.UtcNow;
-        var id = Guid.NewGuid();
-        return new(id, Name, parent_group_type_id, string.Empty,
-            rbacobject_id ?? RbacWellKnown.RootGroupId,
-            created_at ?? now, updated_at ?? now, created_by ?? Guid.Empty, updated_by ?? Guid.Empty);
-    }
-}
 
 public sealed record GroupTypeUpdateRequest(
     Guid id,
@@ -113,27 +94,6 @@ public sealed record GroupResponse(
     };
 }
 
-public sealed record GroupCreateRequest(
-    string Name,
-    Guid? group_type_id = null,
-    Guid? master_group_id = null,
-    Guid? rbacobject_id = null,
-    bool inherit_roles = true,
-    DateTimeOffset? created_at = null,
-    DateTimeOffset? updated_at = null,
-    Guid? created_by = null,
-    Guid? updated_by = null
-) : ICreateDTOModel<GroupModel>, ISecuredCreateRequest
-{
-    public GroupModel ToModel()
-    {
-        var now = DateTimeOffset.UtcNow;
-        var id = Guid.NewGuid();
-        return new(id, Name, group_type_id ?? RbacWellKnown.RootGroupTypeId, master_group_id,
-            string.Empty, inherit_roles, id, created_at ?? now, updated_at ?? now,
-            created_by ?? Guid.Empty, updated_by ?? Guid.Empty);
-    }
-}
 
 public sealed record GroupUpdateRequest(
     Guid id,
@@ -163,3 +123,16 @@ public sealed record GroupUpdateRequest(
         DateTimeOffset.UtcNow, updated_at ?? DateTimeOffset.UtcNow,
         Guid.Empty, updated_by ?? Guid.Empty);
 }
+
+/// <summary>Creates a child group. Authorization is evaluated on master_group_id.</summary>
+public sealed record GroupCreateContainedRequest(
+    string Name,
+    Guid master_group_id,
+    Guid? group_type_id = null,
+    bool inherit_roles = true);
+
+/// <summary>Creates a root group. Authorization is evaluated on group_type_id.</summary>
+public sealed record GroupCreateTypedRequest(
+    string Name,
+    Guid group_type_id,
+    bool inherit_roles = true);

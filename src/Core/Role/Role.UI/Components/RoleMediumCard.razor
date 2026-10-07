@@ -3,7 +3,7 @@
 
 @namespace WebAppArchitecture.Role.UI.Components
 
-<MediumCard TModel="RoleResponse" Model="@Model" HeaderText="Role">
+<MediumCard TModel="RoleResponse" Model="@Model" ActionsUrl="@($"/architecture/RoleResponse/actions/{Model.id}")" HeaderText="Role">
     <ChildContent Context="item">
         <Attribute TModel="RoleResponse" Item="@item" Label="ID" AttributeName="id" />
         <Attribute TModel="RoleResponse" Item="@item" Label="Group">

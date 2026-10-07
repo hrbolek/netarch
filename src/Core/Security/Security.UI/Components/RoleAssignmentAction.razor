@@ -1,0 +1,56 @@
+@namespace WebAppArchitecture.Security.UI.Components
+@using WebAppArchitecture.Security.Models
+@using WebAppArchitecture.Base.UI.Htmx
+
+@if (Model.can_create_role)
+{
+    var modalId = $"add-role-{Model.rbacobject_id:N}";
+
+    <button type="button"
+            class="btn btn-sm btn-outline-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#@modalId">
+        Add role
+    </button>
+
+    <div class="modal fade" id="@modalId" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <LazyContent Url="@RoleDialogUrl" Swap="outerHTML">
+                <Placeholder>
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Create role</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body p-4 text-muted">Loading role form...</div>
+                    </div>
+                </Placeholder>
+            </LazyContent>
+        </div>
+    </div>
+}
+else
+{
+    <span class="d-inline-block"
+          tabindex="0"
+          data-bs-toggle="tooltip"
+          title="You do not have permission to create a role on this object.">
+        <button type="button"
+                class="btn btn-sm btn-outline-secondary"
+                disabled
+                aria-disabled="true">
+            Add role
+        </button>
+    </span>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public RoleAssignmentActionResponse Model { get; set; } = default!;
+
+    [Parameter]
+    public bool IsFragment { get; set; }
+
+    private string RoleDialogUrl =>
+        $"/architecture/RbacPermissionResponse/create-role/{Model.rbacobject_id}?return_url={Uri.EscapeDataString(Model.return_url)}";
+}

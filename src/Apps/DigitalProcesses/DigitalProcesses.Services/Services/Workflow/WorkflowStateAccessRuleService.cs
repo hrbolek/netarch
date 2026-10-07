@@ -8,16 +8,16 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 
 public interface IWorkflowStateAccessRuleService : IBaseService<WorkflowStateAccessRuleModel, WorkflowStateAccessRuleResponse>
 {
-    Task<WorkflowStateAccessRuleResponse> CreateAsync(CreateWorkflowStateAccessRuleRequest request, CancellationToken ct = default);
+    Task<WorkflowStateAccessRuleResponse> CreateContainedAsync(CreateWorkflowStateAccessRuleRequest request, CancellationToken ct = default);
 }
 
 public sealed class WorkflowStateAccessRuleService(ISecurityLayer security)
     : BaseService<WorkflowStateAccessRuleModel, WorkflowStateAccessRuleResponse>(security), IWorkflowStateAccessRuleService
 {
-    public async Task<WorkflowStateAccessRuleResponse> CreateAsync(CreateWorkflowStateAccessRuleRequest request, CancellationToken ct = default)
+    public async Task<WorkflowStateAccessRuleResponse> CreateContainedAsync(CreateWorkflowStateAccessRuleRequest request, CancellationToken ct = default)
     {
-        var state = await Security.GetByIdAsync<WorkflowStateModel>(request.workflow_state_id, SecurityOperations.Update, ct)
-            ?? throw new KeyNotFoundException("Workflow state not found or not editable.");
+        var (state, _) = await CreationScopeGuard.RequireEntityAsync<WorkflowStateModel>(
+            Security, request.workflow_state_id, "contained", ct);
         var version = await Security.GetByIdAsync<WorkflowVersionModel>(state.workflow_version_id, SecurityOperations.Update, ct)
             ?? throw new KeyNotFoundException("Workflow version not found or not editable.");
         if (version.is_published)
@@ -46,15 +46,11 @@ public sealed class WorkflowStateAccessRuleService(ISecurityLayer security)
             throw new InvalidOperationException("target_form_node_id is only valid for form-node scope.");
         }
 
-        var rbac = request.rbacobject_id ?? state.rbacobject_id;
-        if (!await Security.IsAllowedAsync(rbac, SecurityOperations.Create, ct))
-            throw new UnauthorizedAccessException();
-
         var now = DateTimeOffset.UtcNow;
         var actor = Security.CurrentUserId;
         var model = new WorkflowStateAccessRuleModel(
             Guid.NewGuid(), state.id, request.source_role_type_id, request.target_role_type_id,
-            scope, request.target_form_node_id, rbac, now, now, actor, actor);
+            scope, request.target_form_node_id, state.rbacobject_id, now, now, actor, actor);
 
         return await Security.ExecuteInTransactionAsync(async token =>
         {

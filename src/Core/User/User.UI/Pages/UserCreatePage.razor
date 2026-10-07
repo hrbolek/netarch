@@ -1,16 +1,18 @@
 @using WebAppArchitecture.Base.UI.Pages
-
 @namespace WebAppArchitecture.User.UI.Pages
 
-<Page Title="Vytvorit uzivatele">
+<Page Title="Vytvořit uživatele">
     <div class="container py-3">
-        <h1 class="h4 mb-3">Novy uzivatel</h1>
+        <h1 class="h4 mb-3">Nový uživatel</h1>
+        <div class="alert alert-info">
+            Uživatel se vytváří uvnitř existující skupiny. Oprávnění <code>create</code> se ověřuje na této skupině a současně vznikne Membership.
+        </div>
         <form method="post" action="/architecture/UserResponse/create-form" class="card card-body">
-            <div class="mb-3">
-                <label class="form-label">Name</label>
-                <input class="form-control" name="Name" required />
-            </div>
-            <button type="submit" class="btn btn-primary">Vytvorit</button>
+            <div class="mb-3"><label class="form-label">Name</label><input class="form-control" name="Name" required /></div>
+            <div class="mb-3"><label class="form-label">Target group ID</label><input class="form-control" name="group_id" required /><div class="form-text">Bezpečnostní create scope; není to rbacobject_id nového uživatele.</div></div>
+            <div class="mb-3"><label class="form-label">Email</label><input class="form-control" type="email" name="email" /></div>
+            <div class="mb-3"><label class="form-label">Surname</label><input class="form-control" name="surname" /></div>
+            <button type="submit" class="btn btn-primary">Vytvořit</button>
         </form>
     </div>
 </Page>

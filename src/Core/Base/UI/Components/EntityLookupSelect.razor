@@ -1,0 +1,53 @@
+@namespace WebAppArchitecture.Base.UI.Components
+@using System.Text.Json
+
+<div class="entity-lookup"
+     data-list-url="@ListUrl"
+     data-search-fields='@SearchFieldsJson'
+     data-min-chars="@MinChars"
+     data-take="@Take">
+    <label class="form-label" for="@SearchId">@Label</label>
+    <input id="@SearchId"
+           type="search"
+           class="form-control mb-2"
+           autocomplete="off"
+           placeholder="@SearchPlaceholder"
+           data-entity-lookup-search />
+    <select id="@SelectId"
+            class="form-select"
+            name="@Name"
+            required="@Required"
+            data-entity-lookup-select>
+        <option value="">@SelectPlaceholder</option>
+        @if (InitialId is not null)
+        {
+            <option value="@InitialId" selected>@(InitialLabel ?? InitialId.Value.ToString())</option>
+        }
+    </select>
+    <div class="form-text" data-entity-lookup-status>
+        @($"Type at least {MinChars} characters to search.")
+    </div>
+    @if (!string.IsNullOrWhiteSpace(HelpText))
+    {
+        <div class="form-text">@HelpText</div>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public string Name { get; set; } = default!;
+    [Parameter, EditorRequired] public string Label { get; set; } = default!;
+    [Parameter, EditorRequired] public string ListUrl { get; set; } = default!;
+    [Parameter, EditorRequired] public IReadOnlyCollection<string> SearchFields { get; set; } = Array.Empty<string>();
+    [Parameter] public bool Required { get; set; } = true;
+    [Parameter] public int MinChars { get; set; } = 3;
+    [Parameter] public int Take { get; set; } = 20;
+    [Parameter] public string SearchPlaceholder { get; set; } = "Search…";
+    [Parameter] public string SelectPlaceholder { get; set; } = "Select…";
+    [Parameter] public string? HelpText { get; set; }
+    [Parameter] public Guid? InitialId { get; set; }
+    [Parameter] public string? InitialLabel { get; set; }
+
+    private string SearchId => $"lookup-search-{Name}-{GetHashCode():x}";
+    private string SelectId => $"lookup-select-{Name}-{GetHashCode():x}";
+    private string SearchFieldsJson => JsonSerializer.Serialize(SearchFields);
+}

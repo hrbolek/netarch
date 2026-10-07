@@ -33,30 +33,6 @@ public sealed record RoleTypeResponse(
     };
 }
 
-public sealed record RoleTypeCreateRequest(
-    string name,
-    string[] operations,
-    Guid? rbacobject_id = null,
-    DateTimeOffset? created_at = null,
-    DateTimeOffset? updated_at = null,
-    Guid? created_by = null,
-    Guid? updated_by = null
-) : ICreateDTOModel<RoleTypeModel>, ISecuredCreateRequest
-{
-    public RoleTypeModel ToModel()
-    {
-        var now = DateTimeOffset.UtcNow;
-        return new RoleTypeModel(Guid.NewGuid(), name, rbacobject_id ?? RbacWellKnown.RootSecurityObjectId,
-            created_at ?? now, updated_at ?? now, created_by ?? Guid.Empty, updated_by ?? Guid.Empty)
-        {
-            requested_operations = Normalize(operations)
-        };
-    }
-
-    private static string[] Normalize(IEnumerable<string> values) => values
-        .Select(x => x.Trim().ToLowerInvariant()).Where(x => x.Length > 0)
-        .Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
-}
 
 public sealed record RoleTypeUpdateRequest(
     Guid id,

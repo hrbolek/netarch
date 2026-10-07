@@ -31,11 +31,6 @@ public interface ISecuredEntityDTOModel : IEntityDTOModel
     Guid rbacobject_id { get; }
 }
 
-public interface ISecuredCreateRequest
-{
-    Guid? rbacobject_id { get; }
-}
-
 public interface IEntityDTOModel<TEntity, TSelf> : IEntityDTOModel, ICreateDTOModel<TEntity>
     where TEntity : IEntityDBModel
     where TSelf : IEntityDTOModel<TEntity, TSelf>

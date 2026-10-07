@@ -1,0 +1,59 @@
+@namespace WebAppArchitecture.Base.UI.Components
+
+@if (Model.Actions.Count > 0)
+{
+    <div class="dropdown d-inline-block">
+        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false" aria-label="@Model.Label">
+            <span aria-hidden="true">&#8942;</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+            @foreach (var entry in Model.Actions.OrderBy(x => x.Order).GroupBy(x => x.Group).Select((group, index) => new { group, index }))
+            {
+                if (entry.index > 0)
+                {
+                    <li><hr class="dropdown-divider" /></li>
+                }
+
+                @foreach (var action in entry.group.OrderBy(x => x.Order))
+                {
+                    <li>
+                        @if (!action.Enabled)
+                        {
+                            <span class="dropdown-item disabled" aria-disabled="true" title="@action.DisabledReason">
+                                @action.Label
+                            </span>
+                        }
+                        else if (string.Equals(action.HttpMethod, "DELETE", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <button type="button"
+                                    class="dropdown-item text-danger"
+                                    hx-delete="@action.Url"
+                                    hx-confirm="@(action.Confirm ?? "Are you sure?")"
+                                    hx-on::after-request="@DeleteSuccessScript(action)">
+                                @action.Label
+                            </button>
+                        }
+                        else
+                        {
+                            <a class="dropdown-item" href="@action.Url">@action.Label</a>
+                        }
+                    </li>
+                }
+            }
+        </ul>
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public EntityActionMenuModel Model { get; set; } = default!;
+
+    [Parameter]
+    public bool IsFragment { get; set; }
+
+    private static string DeleteSuccessScript(EntityAction action)
+        => string.IsNullOrWhiteSpace(action.SuccessUrl)
+            ? string.Empty
+            : $"if(event.detail.successful) window.location.href='{action.SuccessUrl.Replace("'", "\\'")}';";
+}

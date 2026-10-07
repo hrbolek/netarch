@@ -7,6 +7,7 @@ namespace WebAppArchitecture.Membership.Services;
 
 public interface IMembershipService : IBaseService<MembershipModel, MembershipResponse>
 {
+    Task<MembershipResponse> CreateContainedAsync(MembershipCreateContainedRequest request, CancellationToken cancellationToken = default);
 }
 
 public sealed class MembershipService : BaseService<MembershipModel, MembershipResponse>, IMembershipService
@@ -16,28 +17,34 @@ public sealed class MembershipService : BaseService<MembershipModel, MembershipR
     public MembershipService(ISecurityLayer security, ISecurityProjectionService projection)
         : base(security) => _projection = projection;
 
-    public override Task<MembershipResponse> CreateAsync<TCreateRequest>(
-        TCreateRequest model,
+    public async Task<MembershipResponse> CreateContainedAsync(
+        MembershipCreateContainedRequest request,
         CancellationToken cancellationToken = default)
-        => Security.ExecuteInTransactionAsync(async ct =>
+    {
+        var (group, _) = await CreationScopeGuard.RequireEntityAsync<GroupModel>(
+            Security, request.group_id, "contained", cancellationToken);
+        _ = await Security.GetByIdAsync<UserModel>(request.user_id, SecurityOperations.Read, cancellationToken)
+            ?? throw new KeyNotFoundException("User not found.");
+
+        var now = DateTimeOffset.UtcNow;
+        var actor = Security.CurrentUserId;
+        var model = new MembershipModel(
+            Guid.NewGuid(), group.id, request.user_id, request.valid_from, request.valid_to,
+            group.rbacobject_id, now, now, actor, actor);
+
+        return await Security.ExecuteInTransactionAsync(async ct =>
         {
-            var entity = await Security.StageCreateAsync(model.ToModel(), ct);
+            var entity = await Security.StageCreateAsync(model, ct);
             await Security.SaveChangesAsync(ct);
             await _projection.RebuildAllAsync(ct);
             return MembershipResponse.FromModel(entity);
         }, cancellationToken);
+    }
 
-    public override async Task<MembershipResponse> UpdateAsync<TUpdateRequest>(
-        TUpdateRequest model,
-        CancellationToken cancellationToken = default)
+    public override async Task<MembershipResponse> UpdateAsync<TUpdateRequest>(TUpdateRequest model, CancellationToken cancellationToken = default)
     {
-        var current = await Security.GetByIdAsync<MembershipModel>(
-            model.id,
-            SecurityOperations.Update,
-            cancellationToken)
-            ?? throw new InvalidOperationException(
-                $"Item with id '{model.id}' does not exist or is not accessible.");
-
+        var current = await Security.GetByIdAsync<MembershipModel>(model.id, SecurityOperations.Update, cancellationToken)
+            ?? throw new InvalidOperationException($"Item with id '{model.id}' does not exist or is not accessible.");
         return await Security.ExecuteInTransactionAsync(async ct =>
         {
             var entity = await Security.StageUpdateAsync(model.ApplyTo(current), ct);

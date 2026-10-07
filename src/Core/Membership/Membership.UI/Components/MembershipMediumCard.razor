@@ -3,7 +3,7 @@
 
 @namespace WebAppArchitecture.Membership.UI.Components
 
-<MediumCard TModel="MembershipResponse" Model="@Model" HeaderText="@Model.visual_label">
+<MediumCard TModel="MembershipResponse" Model="@Model" ActionsUrl="@($"/architecture/MembershipResponse/actions/{Model.id}")" HeaderText="@Model.visual_label">
     <ChildContent Context="item">
         <Attribute TModel="MembershipResponse" Item="@item" Label="ID" AttributeName="id" />
 

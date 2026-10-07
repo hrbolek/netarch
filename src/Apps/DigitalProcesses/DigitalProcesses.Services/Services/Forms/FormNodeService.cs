@@ -9,33 +9,79 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 
 public interface IFormNodeService : IBaseService<FormNodeModel, FormNodeResponse>
 {
-    Task<FormNodeResponse> CreateNodeAsync(CreateFormNodeRequest request, CancellationToken ct = default);
+    Task<FormNodeResponse> CreateContainedInVersionAsync(CreateFormNodeRequest request, CancellationToken ct = default);
+    Task<FormNodeResponse> CreateContainedInNodeAsync(CreateFormNodeRequest request, CancellationToken ct = default);
     Task<FormNodeResponse> MoveAsync(Guid id, MoveFormNodeRequest request, CancellationToken ct = default);
     Task<IReadOnlyCollection<FormNodeResponse>> GetSubtreeAsync(Guid id, CancellationToken ct = default);
     Task<FormTreeResponse> GetTreeAsync(Guid formVersionId, CancellationToken ct = default);
 }
 public sealed class FormNodeService(ISecurityLayer security) : BaseService<FormNodeModel, FormNodeResponse>(security), IFormNodeService
 {
-    public async Task<FormNodeResponse> CreateNodeAsync(CreateFormNodeRequest request, CancellationToken ct = default)
+    public Task<FormNodeResponse> CreateContainedInVersionAsync(CreateFormNodeRequest request, CancellationToken ct = default)
     {
-        if(request.min_occurs<0 || request.max_occurs<1 || request.min_occurs>request.max_occurs) throw new ArgumentOutOfRangeException(nameof(request),"Require 0 <= min_occurs <= max_occurs and max_occurs >= 1.");
-        var formVersion=await Security.GetByIdAsync<FormVersionModel>(request.form_version_id,SecurityOperations.Update,ct) ?? throw new KeyNotFoundException("Form version not found or not editable.");
-        if(formVersion.is_published) throw new InvalidOperationException("Published form version is immutable.");
-        var type=await Security.GetByIdAsync<FormNodeTypeModel>(request.node_type_id,SecurityOperations.Read,ct) ?? throw new KeyNotFoundException("Node type not found.");
-        if(request.max_occurs>1 && !type.can_repeat) throw new InvalidOperationException("Selected node type is not repeatable.");
-        FormNodeModel? parent=null;
-        if(request.parent_id is Guid parentId)
+        if (request.parent_id is not null)
+            throw new InvalidOperationException("Root form-node creation does not accept parent_id. Use create-in-node.");
+        return CreateCoreAsync(request, null, ct);
+    }
+
+    public async Task<FormNodeResponse> CreateContainedInNodeAsync(CreateFormNodeRequest request, CancellationToken ct = default)
+    {
+        if (request.parent_id is not Guid parentId)
+            throw new InvalidOperationException("Child form-node creation requires parent_id.");
+        return await CreateCoreAsync(request, parentId, ct);
+    }
+
+    private async Task<FormNodeResponse> CreateCoreAsync(CreateFormNodeRequest request, Guid? parentId, CancellationToken ct)
+    {
+        if (request.min_occurs < 0 || request.max_occurs < 1 || request.min_occurs > request.max_occurs)
+            throw new ArgumentOutOfRangeException(nameof(request), "Require 0 <= min_occurs <= max_occurs and max_occurs >= 1.");
+
+        var formVersion = await Security.GetByIdAsync<FormVersionModel>(request.form_version_id, SecurityOperations.Update, ct)
+            ?? throw new KeyNotFoundException("Form version not found or not editable.");
+        if (formVersion.is_published)
+            throw new InvalidOperationException("Published form version is immutable.");
+
+        var type = await Security.GetByIdAsync<FormNodeTypeModel>(request.node_type_id, SecurityOperations.Read, ct)
+            ?? throw new KeyNotFoundException("Node type not found.");
+        if (request.max_occurs > 1 && !type.can_repeat)
+            throw new InvalidOperationException("Selected node type is not repeatable.");
+
+        FormNodeModel? parent = null;
+        Guid creationRbac;
+        if (parentId is Guid pid)
         {
-            parent=await Security.GetByIdAsync<FormNodeModel>(parentId,SecurityOperations.Update,ct) ?? throw new KeyNotFoundException("Parent node not found or not editable.");
-            if(parent.form_version_id!=request.form_version_id) throw new InvalidOperationException("Parent must belong to the same form version.");
-            var parentType=await Security.GetByIdAsync<FormNodeTypeModel>(parent.node_type_id,SecurityOperations.Read,ct) ?? throw new KeyNotFoundException("Parent node type not found.");
-            if(!parentType.can_have_children) throw new InvalidOperationException("Parent node type cannot have children.");
+            (parent, _) = await CreationScopeGuard.RequireEntityAsync<FormNodeModel>(Security, pid, "contained", ct);
+            if (parent.form_version_id != request.form_version_id)
+                throw new InvalidOperationException("Parent must belong to the same form version.");
+            var parentType = await Security.GetByIdAsync<FormNodeTypeModel>(parent.node_type_id, SecurityOperations.Read, ct)
+                ?? throw new KeyNotFoundException("Parent node type not found.");
+            if (!parentType.can_have_children)
+                throw new InvalidOperationException("Parent node type cannot have children.");
+            creationRbac = parent.rbacobject_id;
         }
-        var id=Guid.NewGuid(); var rbac=request.rbacobject_id ?? parent?.rbacobject_id ?? RbacWellKnown.RootSecurityObjectId;
-        if(!await Security.IsAllowedAsync(rbac,SecurityOperations.Create,ct)) throw new UnauthorizedAccessException();
-        var now=DateTimeOffset.UtcNow; var actor=Security.CurrentUserId; var path=parent is null?MaterializedPath.Root(id):MaterializedPath.Child(parent.path,id);
-        var model=new FormNodeModel(id,request.form_version_id,request.parent_id,path,request.key,request.label,request.description,request.node_type_id,request.position,request.min_occurs,request.max_occurs,request.own_security_scope,request.configuration_json,rbac,now,now,actor,actor);
-        return await Security.ExecuteInTransactionAsync(async token=>{var x=await Security.StageCreateAsync(model,token);await Security.SaveChangesAsync(token);return FormNodeResponse.FromModel(x);},ct);
+        else
+        {
+            var (_, scope) = await CreationScopeGuard.RequireEntityAsync<FormVersionModel>(
+                Security, request.form_version_id, "contained", ct);
+            creationRbac = scope.RbacObjectId;
+        }
+
+        var id = Guid.NewGuid();
+        var now = DateTimeOffset.UtcNow;
+        var actor = Security.CurrentUserId;
+        var path = parent is null ? MaterializedPath.Root(id) : MaterializedPath.Child(parent.path, id);
+        var model = new FormNodeModel(
+            id, request.form_version_id, parentId, path, request.key, request.label, request.description,
+            request.node_type_id, request.position, request.min_occurs, request.max_occurs,
+            request.own_security_scope, request.configuration_json, creationRbac,
+            now, now, actor, actor);
+
+        return await Security.ExecuteInTransactionAsync(async token =>
+        {
+            var x = await Security.StageCreateAsync(model, token);
+            await Security.SaveChangesAsync(token);
+            return FormNodeResponse.FromModel(x);
+        }, ct);
     }
 
     public Task<IReadOnlyCollection<FormNodeResponse>> GetSubtreeAsync(Guid id, CancellationToken ct = default)

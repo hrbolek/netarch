@@ -9,9 +9,15 @@
         }
         else
         {
-            <EntityLink TModel="TModel" Model="@item">
-                <ChildContent Context="entity">@(HeaderText ?? entity.id.ToString())</ChildContent>
-            </EntityLink>
+            <div class="d-flex align-items-center justify-content-between gap-2">
+                <EntityLink TModel="TModel" Model="@item">
+                    <ChildContent Context="entity">@(HeaderText ?? entity.id.ToString())</ChildContent>
+                </EntityLink>
+                @if (!string.IsNullOrWhiteSpace(ActionsUrl))
+                {
+                    <EntityActionSlot Url="@ActionsUrl" />
+                }
+            </div>
         }
     </Header>
 
@@ -27,6 +33,7 @@
     [Parameter, EditorRequired] public TModel Model { get; set; } = default!;
     [Parameter] public string? HeaderText { get; set; }
     [Parameter] public string? FooterText { get; set; }
+    [Parameter] public string? ActionsUrl { get; set; }
     [Parameter] public RenderFragment<TModel>? Header { get; set; }
     [Parameter] public RenderFragment<TModel>? ChildContent { get; set; }
 }

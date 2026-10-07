@@ -48,29 +48,6 @@ public sealed record RoleResponse(
     };
 }
 
-public sealed record RoleCreateRequest(
-    Guid group_id,
-    Guid user_id,
-    Guid role_type_id,
-    bool is_deputy,
-    DateTimeOffset valid_from,
-    DateTimeOffset? valid_to = null,
-    Guid? delegated_by_role_id = null,
-    Guid? rbacobject_id = null,
-    DateTimeOffset? created_at = null,
-    DateTimeOffset? updated_at = null,
-    Guid? created_by = null,
-    Guid? updated_by = null
-) : ICreateDTOModel<RoleModel>, ISecuredCreateRequest
-{
-    public RoleModel ToModel()
-    {
-        var now = DateTimeOffset.UtcNow;
-        return new(Guid.NewGuid(), group_id, user_id, role_type_id, is_deputy, valid_from, valid_to,
-            delegated_by_role_id, rbacobject_id ?? group_id, created_at ?? now, updated_at ?? now,
-            created_by ?? Guid.Empty, updated_by ?? Guid.Empty);
-    }
-}
 
 public sealed record RoleUpdateRequest(
     Guid id,
@@ -99,3 +76,13 @@ public sealed record RoleUpdateRequest(
         null, RbacWellKnown.RootSecurityObjectId, DateTimeOffset.UtcNow,
         updated_at ?? DateTimeOffset.UtcNow, Guid.Empty, updated_by ?? Guid.Empty);
 }
+
+/// <summary>Safe public create contract. Authorization is evaluated on group_id.</summary>
+public sealed record RoleCreateContainedRequest(
+    Guid group_id,
+    Guid user_id,
+    Guid role_type_id,
+    bool is_deputy,
+    DateTimeOffset valid_from,
+    DateTimeOffset? valid_to = null,
+    Guid? delegated_by_role_id = null);

@@ -1,16 +1,35 @@
 @using WebAppArchitecture.Base.UI.Pages
-
+@using WebAppArchitecture.Base.UI.Components
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @namespace WebAppArchitecture.Group.UI.Pages
 
-<Page Title="Vytvorit skupinu">
+<Page Title="Create group">
     <div class="container py-3">
-        <h1 class="h4 mb-3">Nova skupina</h1>
+        <h1 class="h4 mb-3">New group</h1>
+        <div class="alert alert-info">
+            With a parent Group this uses <strong>create-contained</strong> and authorization is evaluated on the parent. Without a parent it uses <strong>create-typed</strong> and authorization is evaluated on the GroupType.
+        </div>
         <form method="post" action="/architecture/GroupResponse/create-form" class="card card-body">
-            <div class="mb-3">
-                <label class="form-label">Name</label>
-                <input class="form-control" name="Name" required />
-            </div>
-            <button type="submit" class="btn btn-primary">Vytvorit</button>
+            <input type="hidden" name="return_url" value="@ReturnUrl" />
+            <div class="mb-3"><label class="form-label">Name</label><input class="form-control" name="Name" required /></div>
+            <div class="mb-3"><EntityLookupSelect Name="group_type_id" Label="Group type" ListUrl="/architecture/GroupTypeResponse/list" SearchFields="@GroupTypeFields" MinChars="2" Take="20" /></div>
+            @if (ContextParentId is Guid parentId)
+            {
+                <input type="hidden" name="master_group_id" value="@parentId" />
+                <div class="mb-3"><label class="form-label">Parent group</label><input class="form-control" value="@parentId" readonly /><div class="form-text">The parent is fixed by the context action.</div></div>
+            }
+            else
+            {
+                <div class="mb-3"><EntityLookupSelect Name="master_group_id" Label="Parent group (optional)" ListUrl="/architecture/GroupResponse/list?operation=create" SearchFields="@GroupFields" Required="false" MinChars="2" Take="20" HelpText="Leave empty for a typed root Group." /></div>
+            }
+            <div class="d-flex gap-2"><button type="submit" class="btn btn-primary">Create</button>@if (!string.IsNullOrWhiteSpace(ReturnUrl)) { <a class="btn btn-outline-secondary" href="@ReturnUrl">Cancel</a> }</div>
         </form>
     </div>
 </Page>
+
+@code {
+    private static readonly string[] GroupFields = ["Name"];
+    private static readonly string[] GroupTypeFields = ["Name"];
+    private Guid? ContextParentId => Guid.TryParse(HttpContextAccessor.HttpContext?.Request.Query["master_group_id"].ToString(), out var value) ? value : null;
+    private string ReturnUrl => HttpContextAccessor.HttpContext?.Request.Query["return_url"].ToString() ?? string.Empty;
+}

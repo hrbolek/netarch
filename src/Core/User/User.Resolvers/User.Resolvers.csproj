@@ -9,6 +9,7 @@
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <ProjectReference Include="../../Base/Base.csproj" />
+    <ProjectReference Include="../../Group/Group.Services/Group.Services.csproj" />
     <ProjectReference Include="../../Membership/Membership.Models/Membership.Models.csproj" />
     <ProjectReference Include="../../Membership/Membership.Services/Membership.Services.csproj" />
     <ProjectReference Include="../../Role/Role.Models/Role.Models.csproj" />

@@ -39,6 +39,7 @@ public static class DatabaseInitializer
             await SystemDataImporter.ImportAsync(db, source, cancellationToken);
         }
 
+        await EnsureCreationScopesAsync(db, now, cancellationToken);
         await EnsureBootstrapUsersAsync(db, now, cancellationToken);
         var operationNames = await EnsureOperationCatalogAsync(db, now, cancellationToken);
         await EnsureBootstrapRoleTypesAsync(db, now, cancellationToken);
@@ -64,6 +65,35 @@ public static class DatabaseInitializer
             db.Groups.Add(new GroupModel(
                 RbacWellKnown.RootGroupId, "Root", RbacWellKnown.RootGroupTypeId, null,
                 $"/{RbacWellKnown.RootGroupId:D}/", true, RbacWellKnown.RootGroupId,
+                now, now, RbacWellKnown.BootstrapAdminUserId, RbacWellKnown.BootstrapAdminUserId));
+        }
+
+        await db.SaveChangesAsync(cancellationToken);
+    }
+
+
+    private static async Task EnsureCreationScopesAsync(
+        ApplicationDbContext db,
+        DateTimeOffset now,
+        CancellationToken cancellationToken)
+    {
+        var root = await db.Groups.SingleAsync(x => x.id == RbacWellKnown.RootGroupId, cancellationToken);
+        var scopes = new (Guid Id, string Name)[]
+        {
+            (RbacWellKnown.FormDefinitionCreationScopeId, "Create Form Definitions"),
+            (RbacWellKnown.WorkflowDefinitionCreationScopeId, "Create Workflow Definitions"),
+            (RbacWellKnown.ProcessDefinitionCreationScopeId, "Create Process Definitions"),
+            (RbacWellKnown.FormNodeTypeCreationScopeId, "Create Form Node Types")
+        };
+
+        foreach (var scope in scopes)
+        {
+            if (await db.Groups.AnyAsync(x => x.id == scope.Id, cancellationToken))
+                continue;
+
+            db.Groups.Add(new GroupModel(
+                scope.Id, scope.Name, RbacWellKnown.RootGroupTypeId, RbacWellKnown.RootGroupId,
+                $"{root.path}{scope.Id:D}/", true, scope.Id,
                 now, now, RbacWellKnown.BootstrapAdminUserId, RbacWellKnown.BootstrapAdminUserId));
         }
 

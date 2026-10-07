@@ -20,58 +20,24 @@ using WebAppArchitecture.User.Models;
 using WebAppArchitecture.User.Services;
 using WebAppArchitecture.User.UI.Pages;
 using WebAppArchitecture.DBLayer;
+using WebAppArchitecture.Group.Services;
 
 namespace WebAppArchitecture.User.Resolvers;
 
 public static class UserResolvers
 {
-    public static async Task<IResult> CreatePage(
-        HttpContext httpContext,
-        IRbacService rbacService,
-        ICurrentActorProvider actorProvider,
-        CancellationToken cancellationToken)
+    public static IResult CreatePage(ICurrentActorProvider actorProvider, HttpContext httpContext)
     {
         if (actorProvider.TryGetActorUserId(httpContext) is null)
             return Results.Unauthorized();
-
-        var allowed = await rbacService.IsCurrentActorAllowedAsync(
-            httpContext,
-            RbacWellKnown.RootSecurityObjectId,
-            RbacOperations.Create,
-            cancellationToken);
-
-        if (!allowed)
-            return Results.Forbid();
-
         return new RazorComponentResult<UserCreatePage>();
     }
 
-    public static async Task<IResult> Create(
-        UserCreateRequest request,
-        HttpContext httpContext,
+    public static async Task<IResult> CreateContained(
+        UserCreateContainedRequest request,
         IUserService service,
         CancellationToken cancellationToken)
-    {
-        var actorProvider = httpContext.RequestServices.GetRequiredService<ICurrentActorProvider>();
-        var actorUserId = actorProvider.TryGetActorUserId(httpContext);
-        if (actorUserId is null)
-            return Results.Unauthorized();
-
-        var now = DateTimeOffset.UtcNow;
-        var stampedRequest = request with
-        {
-            created_at = now,
-            updated_at = now,
-            created_by = actorUserId,
-            updated_by = actorUserId
-        };
-
-        return await BaseResolvers.Create<UserModel, UserResponse, UserCreateRequest, IUserService>(
-            stampedRequest,
-            httpContext,
-            service,
-            cancellationToken);
-    }
+        => ApiResults.Ok(await service.CreateContainedAsync(request, cancellationToken));
 
     public static async Task<IResult> CreateForm(
         HttpContext httpContext,
@@ -82,13 +48,14 @@ public static class UserResolvers
         var name = form["Name"].ToString();
         if (string.IsNullOrWhiteSpace(name))
             return Results.BadRequest(new { error = "Name is required." });
+        if (!Guid.TryParse(form["group_id"].ToString(), out var groupId))
+            return Results.BadRequest(new { error = "group_id must be a valid Guid." });
 
-        var result = await Create(new UserCreateRequest(name), httpContext, service, cancellationToken);
-        if (result is IModelResult modelResult && modelResult.Model is UserResponse created)
-            return Results.Redirect($"/architecture/UserResponse/edit/{created.id}");
-
-        return result;
+        var created = await service.CreateContainedAsync(new UserCreateContainedRequest(
+            name, groupId, form["email"].ToString(), form["surname"].ToString()), cancellationToken);
+        return Results.Redirect($"/architecture/UserResponse/edit/{created.id}");
     }
+
     public static async Task<IResult> Read(
         Guid id,
         HttpContext httpContext,
@@ -253,6 +220,44 @@ public static class UserResolvers
             "Memberships"));
     }
 
+    public static async Task<IResult> Actions(
+        Guid id,
+        HttpContext httpContext,
+        IUserService userService,
+        IGroupService groupService,
+        ICurrentActorProvider actorProvider,
+        IRbacAuthorizationService authorizationService,
+        CancellationToken cancellationToken)
+    {
+        var user = await userService.GetByIdAsync(id, cancellationToken);
+        if (user is null) return Results.NotFound();
+
+        var actor = actorProvider.TryGetActorUserId(httpContext);
+        if (actor is null) return Results.Unauthorized();
+
+        var canUpdate = await authorizationService.IsAllowedAsync(actor.Value, user.rbacobject_id, RbacOperations.Update, cancellationToken);
+        var canDelete = await authorizationService.IsAllowedAsync(actor.Value, user.rbacobject_id, RbacOperations.Delete, cancellationToken);
+        var targetGroups = await groupService.VectorAsync(_ => true, RbacOperations.Create, 1, cancellationToken);
+        var canCreateRelation = targetGroups.Count > 0;
+        var returnUrl = $"/architecture/UserResponse/view/{id}";
+
+        var actions = new EntityAction[]
+        {
+            new("view", "View", returnUrl, EntityActionKind.Navigate, Group: "navigation", Order: 10),
+            new("edit", "Edit", $"/architecture/UserResponse/edit/{id}", EntityActionKind.Update, canUpdate,
+                canUpdate ? null : "You do not have update permission for this user.", "navigation", 20),
+            new("add-to-group", "Add to group", $"/architecture/MembershipResponse/create?user_id={id}&return_url={Uri.EscapeDataString(returnUrl)}",
+                EntityActionKind.Relation, canCreateRelation, canCreateRelation ? null : "You cannot create membership in any available group.", "relations", 30),
+            new("assign-role", "Assign role", $"/architecture/RoleResponse/create?user_id={id}&return_url={Uri.EscapeDataString(returnUrl)}",
+                EntityActionKind.Relation, canCreateRelation, canCreateRelation ? null : "You cannot assign a role in any available group.", "relations", 40),
+            new("delete", "Delete", $"/architecture/UserResponse/delete?id={id}", EntityActionKind.Delete, canDelete,
+                canDelete ? null : "You do not have delete permission for this user.", "danger", 90, "DELETE",
+                "Delete this user?", "/architecture/UserResponse/list")
+        };
+
+        return ApiResults.Ok(new EntityActionMenuModel(actions));
+    }
+
     public static async Task<IResult> Roles(
         Guid id,
         HttpContext httpContext,
@@ -286,56 +291,104 @@ public static class UserEndpointExtensions
             .MapGroup(prefix + "/UserResponse")
             .WithTags("User");
 
-        group.MapPost("/create", UserResolvers.Create)
-            .WithName("UserCreate")
-            .ApplyJsonModel<UserResponse>();
+        group.MapPost("/create-contained", UserResolvers.CreateContained)
+            .WithName("UserCreateContained")
+            .ApplyJsonModel<UserResponse>()
+                .WithDescription("""
+                    Creates a user inside group_id and immediately creates its Membership. Create permission is evaluated on the target Group; no client-supplied RBAC object is accepted.
+                    """);
 
         group.MapGet("/create", UserResolvers.CreatePage)
-            .WithName("UserCreatePage");
+            .WithName("UserCreatePage")
+                .WithDescription("""
+                    GET /create. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapPost("/create-form", UserResolvers.CreateForm)
-            .WithName("UserCreateForm");
+            .WithName("UserCreateForm")
+                .WithDescription("""
+                    POST /create-form. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
 
         group.MapGet("/link/{id:guid}", UserResolvers.Link)
             .WithName("UserLink")
-            .ApplyViewModel<EntityLinkFragment, EntityLinkResponse>();
+            .ApplyViewModel<EntityLinkFragment, EntityLinkResponse>()
+                .WithDescription("""
+                    GET /link/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
+
+        group.MapGet("/actions/{id:guid}", UserResolvers.Actions)
+            .WithName("UserActions")
+            .ApplyViewModel<EntityActionMenu, EntityActionMenuModel>()
+            .WithDescription("""
+                Returns the contextual action menu for a User. Standard View/Edit/Delete actions are combined with relation actions. Enabled state is calculated from the acting user's RBAC permissions; target-dependent relation actions are enabled only when at least one permitted target Group exists.
+                """);
 
         group.MapGet("/view/{id:guid}", UserResolvers.Read)
             .WithName("UserRead")
-            .ApplyViewModel<UserViewPage, UserResponse>();
+            .ApplyViewModel<UserViewPage, UserResponse>()
+                .WithDescription("""
+                    GET /view/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapGet("/edit/{id:guid}", UserResolvers.Read)
             .WithName("UserEdit")
-            .ApplyViewModel<UserEditPage, UserResponse>();
+            .ApplyViewModel<UserEditPage, UserResponse>()
+                .WithDescription("""
+                    GET /edit/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapGet("/list", UserResolvers.List)
             .WithName("UserList")
-            .ApplyViewModel<UserViewListPage, UserResponse[]>();
+            .ApplyViewModel<UserViewListPage, UserResponse[]>()
+                .WithDescription("""
+                    Lists secured users. Optional `where` accepts a JSON Hasura-like filter expression
+                    that is translated to an IQueryable predicate before database materialization. Optional `take`
+                    limits the result to 1..200 rows and is intended for selectors and incremental lookup UI.
+                    """);
 
         group.MapGet("/memberships/{id:guid}", UserResolvers.Memberships)
             .WithName("UserMemberships")
-            .ApplyViewModel<UserMembershipsPage, EntityRelationsViewModel<UserResponse, MembershipResponse>>();
+            .ApplyViewModel<UserMembershipsPage, EntityRelationsViewModel<UserResponse, MembershipResponse>>()
+                .WithDescription("""
+                    GET /memberships/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapGet("/roles/{id:guid}", UserResolvers.Roles)
             .WithName("UserRoles")
-            .ApplyViewModel<UserRolesPage, EntityRelationsViewModel<UserResponse, RoleResponse>>();
+            .ApplyViewModel<UserRolesPage, EntityRelationsViewModel<UserResponse, RoleResponse>>()
+                .WithDescription("""
+                    GET /roles/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         // Structured Hasura-like filters are sent as JSON in the request body.
         group.MapPost("/vector", UserResolvers.Vector)
             .WithName("UserVector")
-            .ApplyJsonModel<UserResponse[]>();
+            .ApplyJsonModel<UserResponse[]>()
+                .WithDescription("""
+                    POST /vector. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapPut("/update", UserResolvers.Update)
             .WithName("UserUpdate")
-            .ApplyJsonModel<UserResponse>();
+            .ApplyJsonModel<UserResponse>()
+                .WithDescription("""
+                    PUT /update. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapPost("/update/{id:guid}", UserResolvers.UpdateForm)
             .WithName("UserUpdateForm")
-            .ApplyViewModel<UserEditPage, UserResponse>();
+            .ApplyViewModel<UserEditPage, UserResponse>()
+                .WithDescription("""
+                    POST /update/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapDelete("/delete", UserResolvers.Delete)
-            .WithName("UserDelete");
+            .WithName("UserDelete")
+                .WithDescription("""
+                    DELETE /delete. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         return endpoints;
     }

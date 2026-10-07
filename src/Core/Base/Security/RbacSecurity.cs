@@ -76,6 +76,14 @@ public static class RbacWellKnown
     public static readonly Guid RootSecurityObjectId = RootGroupId;
     public static readonly Guid RootGroupTypeId = Guid.Parse("30000000-0000-0000-0000-000000000001");
     public static readonly Guid BootstrapAdminUserId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+
+    // Dedicated creation scopes. They are ordinary RBAC Groups created by DatabaseInitializer.
+    // Public create endpoints authorize against one of these existing objects instead of
+    // accepting an arbitrary rbacobject_id from the client.
+    public static readonly Guid FormDefinitionCreationScopeId = Guid.Parse("11000000-0000-0000-0000-000000000001");
+    public static readonly Guid WorkflowDefinitionCreationScopeId = Guid.Parse("11000000-0000-0000-0000-000000000002");
+    public static readonly Guid ProcessDefinitionCreationScopeId = Guid.Parse("11000000-0000-0000-0000-000000000003");
+    public static readonly Guid FormNodeTypeCreationScopeId = Guid.Parse("11000000-0000-0000-0000-000000000004");
 }
 
 public sealed record FakeEntraSeedUser(
@@ -1789,230 +1797,95 @@ public static class RbacEndpointExtensions
 {
     public static IEndpointRouteBuilder MapRbacEndpoints(this IEndpointRouteBuilder endpoints, string prefix)
     {
-        var group = endpoints
-            .MapGroup(prefix)
-            .WithTags("RBAC");
-
-        group.MapGet("/health", () => Results.Ok(new
-        {
-            status = "ok",
-            root_group_id = RbacWellKnown.RootGroupId,
-            root_security_object_id = RbacWellKnown.RootSecurityObjectId,
-            bootstrap_admin_user_id = RbacWellKnown.BootstrapAdminUserId,
-            actor_header = "X-Actor-UserId"
-        }));
-
-        group.MapPost("/group/create", async (
-            CreateGroupRequest request,
-            HttpContext httpContext,
-            IRbacAdminService adminService,
-            ICurrentActorProvider actorProvider,
-            CancellationToken cancellationToken) =>
-        {
-            var actor = actorProvider.TryGetActorUserId(httpContext);
-            if (actor is null)
-                return Results.Unauthorized();
-
-            try
-            {
-                var result = await adminService.CreateGroupAsync(request, actor.Value, cancellationToken);
-                return Results.Ok(result);
-            }
-            catch (InvalidOperationException)
-            {
-                return Results.Forbid();
-            }
-        });
-
-        group.MapPost("/group/member/add", async (
-            AddMembershipRequest request,
-            HttpContext httpContext,
-            IRbacAdminService adminService,
-            ICurrentActorProvider actorProvider,
-            CancellationToken cancellationToken) =>
-        {
-            var actor = actorProvider.TryGetActorUserId(httpContext);
-            if (actor is null)
-                return Results.Unauthorized();
-
-            try
-            {
-                var result = await adminService.AddMembershipAsync(request, actor.Value, cancellationToken);
-                return Results.Ok(result);
-            }
-            catch (InvalidOperationException)
-            {
-                return Results.Forbid();
-            }
-        });
-
-        group.MapPost("/group/role/assign", async (
-            AssignRoleRequest request,
-            HttpContext httpContext,
-            IRbacAdminService adminService,
-            ICurrentActorProvider actorProvider,
-            CancellationToken cancellationToken) =>
-        {
-            var actor = actorProvider.TryGetActorUserId(httpContext);
-            if (actor is null)
-                return Results.Unauthorized();
-
-            try
-            {
-                var result = await adminService.AssignRoleAsync(request, actor.Value, cancellationToken);
-                return Results.Ok(result);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return Results.BadRequest(new { error = ex.Message });
-            }
-        });
-
-        group.MapPost("/security-object/create", async (
-            CreateSecurityObjectRequest request,
-            HttpContext httpContext,
-            IRbacAdminService adminService,
-            ICurrentActorProvider actorProvider,
-            CancellationToken cancellationToken) =>
-        {
-            var actor = actorProvider.TryGetActorUserId(httpContext);
-            if (actor is null)
-                return Results.Unauthorized();
-
-            try
-            {
-                var result = await adminService.CreateSecurityObjectAsync(request, actor.Value, cancellationToken);
-                return Results.Ok(result);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return Results.BadRequest(new { error = ex.Message });
-            }
-        });
-
-        group.MapPost("/role-type/upsert", async (
-            UpsertRoleTypeRequest request,
-            HttpContext httpContext,
-            IRbacAdminService adminService,
-            ICurrentActorProvider actorProvider,
-            CancellationToken cancellationToken) =>
-        {
-            var actor = actorProvider.TryGetActorUserId(httpContext);
-            if (actor is null)
-                return Results.Unauthorized();
-
-            try
-            {
-                await adminService.UpsertRoleTypeAsync(request, actor.Value, cancellationToken);
-                return Results.Ok();
-            }
-            catch (InvalidOperationException ex)
-            {
-                return Results.BadRequest(new { error = ex.Message });
-            }
-        });
-
-        group.MapPost("/role-type/operation/upsert", async (
-            UpsertRoleTypeOperationRequest request,
-            HttpContext httpContext,
-            IRbacAdminService adminService,
-            ICurrentActorProvider actorProvider,
-            CancellationToken cancellationToken) =>
-        {
-            var actor = actorProvider.TryGetActorUserId(httpContext);
-            if (actor is null)
-                return Results.Unauthorized();
-
-            try
-            {
-                await adminService.UpsertRoleTypeOperationAsync(request, actor.Value, cancellationToken);
-                return Results.Ok();
-            }
-            catch (InvalidOperationException ex)
-            {
-                return Results.BadRequest(new { error = ex.Message });
-            }
-        });
-
-        group.MapGet("/access/can", async (
-            Guid userId,
-            Guid rbacId,
-            string operation,
-            IRbacAuthorizationService authService,
-            CancellationToken cancellationToken) =>
-        {
-            var allowed = await authService.IsAllowedAsync(
-                userId,
-                rbacId,
-                operation,
-                cancellationToken);
-
-            return Results.Ok(new
-            {
-                user_id = userId,
-                rbacobject_id = rbacId,
-                operation,
-                allowed
-            });
-        });
-
-        group.MapGet("/permissions/{rbacId:guid}", async (
-            Guid rbacId,
-            HttpContext httpContext,
-            IRbacAuthorizationService authService,
-            IRbacPermissionQueryService permissionQueryService,
-            ICurrentActorProvider actorProvider,
-            CancellationToken cancellationToken) =>
-        {
-            var actor = actorProvider.TryGetActorUserId(httpContext);
-            if (actor is null)
-                return Results.Content("<div class='alert alert-warning mb-0'>Unauthorized: actor identity missing.</div>", "text/html; charset=utf-8");
-
-            var canRead = await authService.IsAllowedAsync(actor.Value, rbacId, RbacOperations.Read, cancellationToken);
-            if (!canRead)
-                return Results.Content("<div class='alert alert-warning mb-0'>You are not allowed to inspect permissions for this object.</div>", "text/html; charset=utf-8");
-
-            var permissions = await permissionQueryService.GetEffectivePermissionsAsync(rbacId, cancellationToken);
-            if (permissions.Count == 0)
-                return Results.Content("<div class='text-muted'>No active permissions found.</div>", "text/html; charset=utf-8");
-
-            var builder = new StringBuilder();
-            builder.Append("<ul class='list-group list-group-flush'>");
-
-            foreach (var permission in permissions)
-            {
-                var userLabel = !string.IsNullOrWhiteSpace(permission.user_name)
-                    ? permission.user_name
-                    : permission.user_id.ToString();
-
-                var groupLabel = !string.IsNullOrWhiteSpace(permission.group_name)
-                    ? permission.group_name
-                    : permission.group_id.ToString();
-
-                var validity = permission.valid_to is null
-                    ? $"from {permission.valid_from:yyyy-MM-dd HH:mm}"
-                    : $"from {permission.valid_from:yyyy-MM-dd HH:mm} to {permission.valid_to:yyyy-MM-dd HH:mm}";
-
-                var operations = permission.operations.Count == 0
-                    ? "none"
-                    : string.Join(", ", permission.operations);
-
-                var userHref = $"/architecture/UserResponse/view/{permission.user_id}";
-                var groupHref = $"/architecture/GroupResponse/view/{permission.group_id}";
-                var roleHref = $"/architecture/RoleResponse/view/{permission.role_id}";
-
-                builder.Append("<li class='list-group-item'>");
-                builder.Append($"<div><a href='{WebUtility.HtmlEncode(userHref)}'><strong>{WebUtility.HtmlEncode(userLabel)}</strong></a> in role <a href='{WebUtility.HtmlEncode(roleHref)}'><code>{WebUtility.HtmlEncode(permission.role_type)}</code></a>{(permission.is_deputy ? " <span class='badge text-bg-secondary'>deputy</span>" : string.Empty)}</div>");
-                builder.Append($"<div class='small text-muted'>Group: <a href='{WebUtility.HtmlEncode(groupHref)}'>{WebUtility.HtmlEncode(groupLabel)}</a> | Validity: {WebUtility.HtmlEncode(validity)}</div>");
-                builder.Append($"<div class='small'>Operations: {WebUtility.HtmlEncode(operations)}</div>");
-                builder.Append("</li>");
-            }
-
-            builder.Append("</ul>");
-
-            return Results.Content(builder.ToString(), "text/html; charset=utf-8");
-        });
-
+        var group = endpoints.MapGroup(prefix).WithTags("RBAC");
+        group.MapGet("/health", RbacEndpointResolvers.Health)
+            .WithDescription("""
+                Returns the legacy RBAC subsystem health information and well-known bootstrap identifiers.
+                """);
+        group.MapGet("/access/can", RbacEndpointResolvers.CanAccess)
+            .WithDescription("""
+                Evaluates whether the selected user is allowed to perform an operation on an RBAC object.
+                """);
+        group.MapGet("/permissions/{rbacId:guid}", RbacEndpointResolvers.Permissions)
+            .WithDescription("""
+                Renders the legacy HTML permission list for an RBAC object after checking read access.
+                """);
         return endpoints;
+    }
+}
+
+public static class RbacEndpointResolvers
+{
+    public static IResult Health() => Results.Ok(new
+    {
+        status = "ok",
+        root_group_id = RbacWellKnown.RootGroupId,
+        root_security_object_id = RbacWellKnown.RootSecurityObjectId,
+        bootstrap_admin_user_id = RbacWellKnown.BootstrapAdminUserId,
+        actor_header = "X-Actor-UserId"
+    });
+
+    public static async Task<IResult> CreateGroup(CreateGroupRequest request,HttpContext httpContext,IRbacAdminService adminService,ICurrentActorProvider actorProvider,CancellationToken cancellationToken)
+    {
+        var actor=actorProvider.TryGetActorUserId(httpContext); if(actor is null)return Results.Unauthorized();
+        try { return Results.Ok(await adminService.CreateGroupAsync(request,actor.Value,cancellationToken)); }
+        catch(InvalidOperationException){ return Results.Forbid(); }
+    }
+    public static async Task<IResult> AddMembership(AddMembershipRequest request,HttpContext httpContext,IRbacAdminService adminService,ICurrentActorProvider actorProvider,CancellationToken cancellationToken)
+    {
+        var actor=actorProvider.TryGetActorUserId(httpContext); if(actor is null)return Results.Unauthorized();
+        try { return Results.Ok(await adminService.AddMembershipAsync(request,actor.Value,cancellationToken)); }
+        catch(InvalidOperationException){ return Results.Forbid(); }
+    }
+    public static async Task<IResult> AssignRole(AssignRoleRequest request,HttpContext httpContext,IRbacAdminService adminService,ICurrentActorProvider actorProvider,CancellationToken cancellationToken)
+    {
+        var actor=actorProvider.TryGetActorUserId(httpContext); if(actor is null)return Results.Unauthorized();
+        try { return Results.Ok(await adminService.AssignRoleAsync(request,actor.Value,cancellationToken)); }
+        catch(InvalidOperationException ex){ return Results.BadRequest(new { error=ex.Message }); }
+    }
+    public static async Task<IResult> CreateSecurityObject(CreateSecurityObjectRequest request,HttpContext httpContext,IRbacAdminService adminService,ICurrentActorProvider actorProvider,CancellationToken cancellationToken)
+    {
+        var actor=actorProvider.TryGetActorUserId(httpContext); if(actor is null)return Results.Unauthorized();
+        try { return Results.Ok(await adminService.CreateSecurityObjectAsync(request,actor.Value,cancellationToken)); }
+        catch(InvalidOperationException ex){ return Results.BadRequest(new { error=ex.Message }); }
+    }
+    public static async Task<IResult> UpsertRoleType(UpsertRoleTypeRequest request,HttpContext httpContext,IRbacAdminService adminService,ICurrentActorProvider actorProvider,CancellationToken cancellationToken)
+    {
+        var actor=actorProvider.TryGetActorUserId(httpContext); if(actor is null)return Results.Unauthorized();
+        try { await adminService.UpsertRoleTypeAsync(request,actor.Value,cancellationToken); return Results.Ok(); }
+        catch(InvalidOperationException ex){ return Results.BadRequest(new { error=ex.Message }); }
+    }
+    public static async Task<IResult> UpsertRoleTypeOperation(UpsertRoleTypeOperationRequest request,HttpContext httpContext,IRbacAdminService adminService,ICurrentActorProvider actorProvider,CancellationToken cancellationToken)
+    {
+        var actor=actorProvider.TryGetActorUserId(httpContext); if(actor is null)return Results.Unauthorized();
+        try { await adminService.UpsertRoleTypeOperationAsync(request,actor.Value,cancellationToken); return Results.Ok(); }
+        catch(InvalidOperationException ex){ return Results.BadRequest(new { error=ex.Message }); }
+    }
+    public static async Task<IResult> CanAccess(Guid userId,Guid rbacId,string operation,IRbacAuthorizationService authService,CancellationToken cancellationToken)
+    {
+        var allowed=await authService.IsAllowedAsync(userId,rbacId,operation,cancellationToken);
+        return Results.Ok(new { user_id=userId, rbacobject_id=rbacId, operation, allowed });
+    }
+    public static async Task<IResult> Permissions(Guid rbacId,HttpContext httpContext,IRbacAuthorizationService authService,IRbacPermissionQueryService permissionQueryService,ICurrentActorProvider actorProvider,CancellationToken cancellationToken)
+    {
+        var actor=actorProvider.TryGetActorUserId(httpContext);
+        if(actor is null)return Results.Content("<div class='alert alert-warning mb-0'>Unauthorized: actor identity missing.</div>","text/html; charset=utf-8");
+        if(!await authService.IsAllowedAsync(actor.Value,rbacId,RbacOperations.Read,cancellationToken))return Results.Content("<div class='alert alert-warning mb-0'>You are not allowed to inspect permissions for this object.</div>","text/html; charset=utf-8");
+        var permissions=await permissionQueryService.GetEffectivePermissionsAsync(rbacId,cancellationToken);
+        if(permissions.Count==0)return Results.Content("<div class='text-muted'>No active permissions found.</div>","text/html; charset=utf-8");
+        var builder=new StringBuilder(); builder.Append("<ul class='list-group list-group-flush'>");
+        foreach(var permission in permissions)
+        {
+            var userLabel=!string.IsNullOrWhiteSpace(permission.user_name)?permission.user_name:permission.user_id.ToString();
+            var groupLabel=!string.IsNullOrWhiteSpace(permission.group_name)?permission.group_name:permission.group_id.ToString();
+            var validity=permission.valid_to is null?$"from {permission.valid_from:yyyy-MM-dd HH:mm}":$"from {permission.valid_from:yyyy-MM-dd HH:mm} to {permission.valid_to:yyyy-MM-dd HH:mm}";
+            var operations=permission.operations.Count==0?"none":string.Join(", ",permission.operations);
+            var userHref=$"/architecture/UserResponse/view/{permission.user_id}"; var groupHref=$"/architecture/GroupResponse/view/{permission.group_id}"; var roleHref=$"/architecture/RoleResponse/view/{permission.role_id}";
+            builder.Append("<li class='list-group-item'>");
+            builder.Append($"<div><a href='{WebUtility.HtmlEncode(userHref)}'><strong>{WebUtility.HtmlEncode(userLabel)}</strong></a> in role <a href='{WebUtility.HtmlEncode(roleHref)}'><code>{WebUtility.HtmlEncode(permission.role_type)}</code></a>{(permission.is_deputy?" <span class='badge text-bg-secondary'>deputy</span>":string.Empty)}</div>");
+            builder.Append($"<div class='small text-muted'>Group: <a href='{WebUtility.HtmlEncode(groupHref)}'>{WebUtility.HtmlEncode(groupLabel)}</a> | Validity: {WebUtility.HtmlEncode(validity)}</div>");
+            builder.Append($"<div class='small'>Operations: {WebUtility.HtmlEncode(operations)}</div>"); builder.Append("</li>");
+        }
+        builder.Append("</ul>"); return Results.Content(builder.ToString(),"text/html; charset=utf-8");
     }
 }

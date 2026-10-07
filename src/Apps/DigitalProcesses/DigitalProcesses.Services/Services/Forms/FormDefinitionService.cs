@@ -1,4 +1,3 @@
-using System.Text.Json;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
@@ -9,19 +8,33 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 
 public interface IFormDefinitionService : IBaseService<FormDefinitionModel, FormDefinitionResponse>
 {
-    Task<FormDefinitionResponse> CreateAsync(CreateFormDefinitionRequest request, CancellationToken ct = default);
+    Task<FormDefinitionResponse> CreateTypedAsync(CreateFormDefinitionRequest request, CancellationToken ct = default);
 }
-public sealed class FormDefinitionService(ISecurityLayer security) : BaseService<FormDefinitionModel, FormDefinitionResponse>(security), IFormDefinitionService
-{
-    public Task<FormDefinitionResponse> CreateAsync(CreateFormDefinitionRequest request, CancellationToken ct = default)
-        => CreateSecuredAsync(request.rbacobject_id, (id, rbac, now, actor) => new FormDefinitionModel(id, request.name, request.description, rbac, now, now, actor, actor), FormDefinitionResponse.FromModel, ct);
 
-    private async Task<TDto> CreateSecuredAsync<TModel,TDto>(Guid? requestedRbac, Func<Guid,Guid,DateTimeOffset,Guid,TModel> factory, Func<TModel,TDto> map, CancellationToken ct)
-        where TModel : class, WebAppArchitecture.Base.Data.ISecuredEntityDBModel
+public sealed class FormDefinitionService(ISecurityLayer security, ISecurityProjectionService securityProjection)
+    : BaseService<FormDefinitionModel, FormDefinitionResponse>(security), IFormDefinitionService
+{
+    public async Task<FormDefinitionResponse> CreateTypedAsync(CreateFormDefinitionRequest request, CancellationToken ct = default)
     {
-        var rbac = requestedRbac ?? RbacWellKnown.RootSecurityObjectId;
-        if (!await Security.IsAllowedAsync(rbac, SecurityOperations.Create, ct)) throw new UnauthorizedAccessException();
-        var now = DateTimeOffset.UtcNow; var actor = Security.CurrentUserId;
-        return await Security.ExecuteInTransactionAsync(async token => { var m = await Security.StageCreateAsync(factory(Guid.NewGuid(), rbac, now, actor), token); await Security.SaveChangesAsync(token); return map(m); }, ct);
+        var (catalog, _) = await CreationScopeGuard.RequireEntityAsync<GroupModel>(
+            Security, RbacWellKnown.FormDefinitionCreationScopeId, "typed", ct);
+
+        var id = Guid.NewGuid();
+        var now = DateTimeOffset.UtcNow;
+        var actor = Security.CurrentUserId;
+
+        return await Security.ExecuteInTransactionAsync(async token =>
+        {
+            await CreationScopeGuard.StageOwnedGroupAsync(
+                Security, id, $"Form definition: {request.name}", catalog, true, now, actor, token);
+
+            var model = new FormDefinitionModel(
+                id, request.name, request.description, id,
+                now, now, actor, actor);
+            var created = await Security.StageCreateAsync(model, token);
+            await Security.SaveChangesAsync(token);
+            await securityProjection.RebuildAllAsync(token);
+            return FormDefinitionResponse.FromModel(created);
+        }, ct);
     }
 }

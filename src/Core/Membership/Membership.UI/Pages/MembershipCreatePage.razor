@@ -1,28 +1,69 @@
 @using WebAppArchitecture.Base.UI.Pages
+@using WebAppArchitecture.Base.UI.Components
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
 @namespace WebAppArchitecture.Membership.UI.Pages
 
-<Page Title="Vytvorit clenstvi">
+<Page Title="Create membership">
     <div class="container py-3">
-        <h1 class="h4 mb-3">Nove clenstvi</h1>
+        <h1 class="h4 mb-3">New membership</h1>
         <form method="post" action="/architecture/MembershipResponse/create-form" class="card card-body">
-            <div class="mb-3">
-                <label class="form-label">Group ID</label>
-                <input class="form-control" name="group_id" required />
+            <input type="hidden" name="return_url" value="@ReturnUrl" />
+
+            @if (ContextGroupId is Guid groupId)
+            {
+                <input type="hidden" name="group_id" value="@groupId" />
+                <div class="mb-3">
+                    <label class="form-label">Group</label>
+                    <input class="form-control" value="@groupId" readonly />
+                    <div class="form-text">The target group is fixed by the context action.</div>
+                </div>
+            }
+            else
+            {
+                <div class="mb-3">
+                    <EntityLookupSelect Name="group_id" Label="Group"
+                                        ListUrl="/architecture/GroupResponse/list?operation=create"
+                                        SearchFields="@GroupFields" MinChars="2" Take="20"
+                                        HelpText="Only groups where the acting user has create permission are returned." />
+                </div>
+            }
+
+            @if (ContextUserId is Guid userId)
+            {
+                <input type="hidden" name="user_id" value="@userId" />
+                <div class="mb-3">
+                    <label class="form-label">User</label>
+                    <input class="form-control" value="@userId" readonly />
+                    <div class="form-text">The user is fixed by the context action.</div>
+                </div>
+            }
+            else
+            {
+                <div class="mb-3">
+                    <EntityLookupSelect Name="user_id" Label="User"
+                                        ListUrl="/architecture/UserResponse/list"
+                                        SearchFields="@UserFields" MinChars="3" Take="20" />
+                </div>
+            }
+
+            <div class="row g-3">
+                <div class="col-md-6"><label class="form-label">Valid from</label><input class="form-control" type="datetime-local" name="valid_from" /></div>
+                <div class="col-md-6"><label class="form-label">Valid to</label><input class="form-control" type="datetime-local" name="valid_to" /></div>
             </div>
-            <div class="mb-3">
-                <label class="form-label">User ID</label>
-                <input class="form-control" name="user_id" required />
+            <div class="mt-3 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Create</button>
+                @if (!string.IsNullOrWhiteSpace(ReturnUrl)) { <a class="btn btn-outline-secondary" href="@ReturnUrl">Cancel</a> }
             </div>
-            <div class="mb-3">
-                <label class="form-label">Valid from (ISO datetime)</label>
-                <input class="form-control" name="valid_from" placeholder="2026-01-01T00:00:00Z" />
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Valid to (ISO datetime)</label>
-                <input class="form-control" name="valid_to" placeholder="2026-12-31T23:59:59Z" />
-            </div>
-            <button type="submit" class="btn btn-primary">Vytvorit</button>
         </form>
     </div>
 </Page>
+
+@code {
+    private static readonly string[] GroupFields = ["Name"];
+    private static readonly string[] UserFields = ["Name", "surname", "email"];
+    private Guid? ContextGroupId => ParseGuid("group_id");
+    private Guid? ContextUserId => ParseGuid("user_id");
+    private string ReturnUrl => HttpContextAccessor.HttpContext?.Request.Query["return_url"].ToString() ?? string.Empty;
+    private Guid? ParseGuid(string key) => Guid.TryParse(HttpContextAccessor.HttpContext?.Request.Query[key].ToString(), out var value) ? value : null;
+}

@@ -23,52 +23,30 @@ namespace WebAppArchitecture.Group.Resolvers;
 public static class GroupResolvers
 {
     public static async Task<IResult> CreatePage(
-        HttpContext httpContext,
-        IRbacService rbacService,
         ICurrentActorProvider actorProvider,
+        IRbacAuthorizationService authorizationService,
+        HttpContext httpContext,
         CancellationToken cancellationToken)
     {
-        if (actorProvider.TryGetActorUserId(httpContext) is null)
-            return Results.Unauthorized();
-
-        var allowed = await rbacService.IsCurrentActorAllowedAsync(
-            httpContext,
-            RbacWellKnown.RootSecurityObjectId,
-            RbacOperations.Create,
-            cancellationToken);
-
-        if (!allowed)
+        var actor = actorProvider.TryGetActorUserId(httpContext);
+        if (actor is null) return Results.Unauthorized();
+        if (Guid.TryParse(httpContext.Request.Query["master_group_id"], out var parentId) &&
+            !await authorizationService.IsAllowedAsync(actor.Value, parentId, RbacOperations.Create, cancellationToken))
             return Results.Forbid();
-
         return new RazorComponentResult<GroupCreatePage>();
     }
 
-    public static async Task<IResult> Create(
-        GroupCreateRequest request,
-        HttpContext httpContext,
+    public static async Task<IResult> CreateContained(
+        GroupCreateContainedRequest request,
         IGroupService service,
         CancellationToken cancellationToken)
-    {
-        var actorProvider = httpContext.RequestServices.GetRequiredService<ICurrentActorProvider>();
-        var actorUserId = actorProvider.TryGetActorUserId(httpContext);
-        if (actorUserId is null)
-            return Results.Unauthorized();
+        => ApiResults.Ok(await service.CreateContainedAsync(request, cancellationToken));
 
-        var now = DateTimeOffset.UtcNow;
-        var stampedRequest = request with
-        {
-            created_at = now,
-            updated_at = now,
-            created_by = actorUserId,
-            updated_by = actorUserId
-        };
-
-        return await BaseResolvers.Create<GroupModel, GroupResponse, GroupCreateRequest, IGroupService>(
-            stampedRequest,
-            httpContext,
-            service,
-            cancellationToken);
-    }
+    public static async Task<IResult> CreateTyped(
+        GroupCreateTypedRequest request,
+        IGroupService service,
+        CancellationToken cancellationToken)
+        => ApiResults.Ok(await service.CreateTypedAsync(request, cancellationToken));
 
     public static async Task<IResult> CreateForm(
         HttpContext httpContext,
@@ -79,12 +57,22 @@ public static class GroupResolvers
         var name = form["Name"].ToString();
         if (string.IsNullOrWhiteSpace(name))
             return Results.BadRequest(new { error = "Name is required." });
+        if (!Guid.TryParse(form["group_type_id"].ToString(), out var groupTypeId))
+            return Results.BadRequest(new { error = "group_type_id must be a valid Guid." });
 
-        var result = await Create(new GroupCreateRequest(name), httpContext, service, cancellationToken);
-        if (result is IModelResult modelResult && modelResult.Model is GroupResponse created)
-            return Results.Redirect($"/architecture/GroupResponse/edit/{created.id}");
+        GroupResponse created;
+        var parentText = form["master_group_id"].ToString();
+        if (Guid.TryParse(parentText, out var parentId))
+            created = await service.CreateContainedAsync(
+                new GroupCreateContainedRequest(name, parentId, groupTypeId), cancellationToken);
+        else
+            created = await service.CreateTypedAsync(
+                new GroupCreateTypedRequest(name, groupTypeId), cancellationToken);
 
-        return result;
+        var returnUrl = form["return_url"].ToString();
+        return Results.Redirect(string.IsNullOrWhiteSpace(returnUrl)
+            ? $"/architecture/GroupResponse/edit/{created.id}"
+            : returnUrl);
     }
 
     public static Task<IResult> Read(Guid id, HttpContext httpContext, IGroupService service, CancellationToken cancellationToken)
@@ -171,6 +159,44 @@ public static class GroupResolvers
     public static Task<IResult> Delete(Guid id, HttpContext httpContext, IGroupService service, CancellationToken cancellationToken)
         => BaseResolvers.Delete<GroupModel, GroupResponse, IGroupService>(id, httpContext, service, cancellationToken);
 
+    public static async Task<IResult> Actions(
+        Guid id,
+        HttpContext httpContext,
+        IGroupService groupService,
+        ICurrentActorProvider actorProvider,
+        IRbacAuthorizationService authorizationService,
+        CancellationToken cancellationToken)
+    {
+        var item = await groupService.GetByIdAsync(id, cancellationToken);
+        if (item is null) return Results.NotFound();
+
+        var actor = actorProvider.TryGetActorUserId(httpContext);
+        if (actor is null) return Results.Unauthorized();
+
+        var canCreate = await authorizationService.IsAllowedAsync(actor.Value, item.rbacobject_id, RbacOperations.Create, cancellationToken);
+        var canUpdate = await authorizationService.IsAllowedAsync(actor.Value, item.rbacobject_id, RbacOperations.Update, cancellationToken);
+        var canDelete = await authorizationService.IsAllowedAsync(actor.Value, item.rbacobject_id, RbacOperations.Delete, cancellationToken);
+        var returnUrl = $"/architecture/GroupResponse/view/{id}";
+
+        var actions = new EntityAction[]
+        {
+            new("view", "View", returnUrl, EntityActionKind.Navigate, Group: "navigation", Order: 10),
+            new("edit", "Edit", $"/architecture/GroupResponse/edit/{id}", EntityActionKind.Update, canUpdate,
+                canUpdate ? null : "You do not have update permission for this group.", "navigation", 20),
+            new("add-member", "Add member", $"/architecture/MembershipResponse/create?group_id={id}&return_url={Uri.EscapeDataString(returnUrl)}",
+                EntityActionKind.Relation, canCreate, canCreate ? null : "You do not have permission to add a member to this group.", "relations", 30),
+            new("assign-role", "Assign role", $"/architecture/RoleResponse/create?group_id={id}&return_url={Uri.EscapeDataString(returnUrl)}",
+                EntityActionKind.Relation, canCreate, canCreate ? null : "You do not have permission to assign a role in this group.", "relations", 40),
+            new("add-child", "Add child group", $"/architecture/GroupResponse/create?master_group_id={id}&return_url={Uri.EscapeDataString(returnUrl)}",
+                EntityActionKind.Create, canCreate, canCreate ? null : "You do not have permission to create a child group here.", "relations", 50),
+            new("delete", "Delete", $"/architecture/GroupResponse/delete?id={id}", EntityActionKind.Delete, canDelete,
+                canDelete ? null : "You do not have delete permission for this group.", "danger", 90, "DELETE",
+                "Delete this group?", "/architecture/GroupResponse/list")
+        };
+
+        return ApiResults.Ok(new EntityActionMenuModel(actions));
+    }
+
     public static async Task<IResult> Roles(
         Guid id,
         HttpContext httpContext,
@@ -220,16 +246,6 @@ public static class GroupTypeResolvers
     public static Task<IResult> List(HttpContext httpContext, IGroupTypeService service, CancellationToken cancellationToken)
         => BaseResolvers.List<GroupTypeModel, GroupTypeResponse, IGroupTypeService>(httpContext, service, cancellationToken);
 
-    public static async Task<IResult> Create(GroupTypeCreateRequest request, HttpContext httpContext, IGroupTypeService service, CancellationToken cancellationToken)
-    {
-        var actorProvider = httpContext.RequestServices.GetRequiredService<ICurrentActorProvider>();
-        var actor = actorProvider.TryGetActorUserId(httpContext);
-        if (actor is null) return Results.Unauthorized();
-        var now = DateTimeOffset.UtcNow;
-        var stamped = request with { created_at = now, updated_at = now, created_by = actor, updated_by = actor };
-        return await BaseResolvers.Create<GroupTypeModel, GroupTypeResponse, GroupTypeCreateRequest, IGroupTypeService>(stamped, httpContext, service, cancellationToken);
-    }
-
     public static async Task<IResult> Update(GroupTypeUpdateRequest request, HttpContext httpContext, IGroupTypeService service, CancellationToken cancellationToken)
     {
         var actorProvider = httpContext.RequestServices.GetRequiredService<ICurrentActorProvider>();
@@ -258,60 +274,124 @@ public static class GroupEndpointExtensions
     {
         var group = endpoints.MapGroup(prefix + "/GroupResponse").WithTags("Group");
 
-        group.MapPost("/create", GroupResolvers.Create)
-            .WithName("GroupCreate")
-            .ApplyJsonModel<GroupResponse>();
+        group.MapPost("/create-contained", GroupResolvers.CreateContained)
+            .WithName("GroupCreateContained")
+            .ApplyJsonModel<GroupResponse>()
+                .WithDescription("""
+                    Creates a child Group below master_group_id. Create permission is evaluated on the parent Group; the new Group receives its own RBAC object.
+                    """);
+
+        group.MapPost("/create-typed", GroupResolvers.CreateTyped)
+            .WithName("GroupCreateTyped")
+            .ApplyJsonModel<GroupResponse>()
+            .WithDescription("""
+                Creates a root Group. Create permission is evaluated on group_type_id; the new Group receives its own RBAC object.
+                """);
 
         group.MapGet("/create", GroupResolvers.CreatePage)
-            .WithName("GroupCreatePage");
+            .WithName("GroupCreatePage")
+                .WithDescription("""
+                    GET /create. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapPost("/create-form", GroupResolvers.CreateForm)
-            .WithName("GroupCreateForm");
+            .WithName("GroupCreateForm")
+                .WithDescription("""
+                    POST /create-form. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapGet("/link/{id:guid}", GroupResolvers.Link)
             .WithName("GroupLink")
-            .ApplyViewModel<EntityLinkFragment, EntityLinkResponse>();
+            .ApplyViewModel<EntityLinkFragment, EntityLinkResponse>()
+                .WithDescription("""
+                    GET /link/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
+
+        group.MapGet("/actions/{id:guid}", GroupResolvers.Actions)
+            .WithName("GroupActions")
+            .ApplyViewModel<EntityActionMenu, EntityActionMenuModel>()
+            .WithDescription("""
+                Returns the contextual action menu for a Group. The resolver composes standard View/Edit/Delete actions with Add member, Assign role and Add child group. CUD actions are enabled only when the acting user has the corresponding RBAC permission on the Group.
+                """);
 
         group.MapGet("/view/{id:guid}", GroupResolvers.Read)
             .WithName("GroupRead")
-            .ApplyViewModel<GroupViewPage, GroupResponse>();
+            .ApplyViewModel<GroupViewPage, GroupResponse>()
+                .WithDescription("""
+                    GET /view/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapGet("/edit/{id:guid}", GroupResolvers.Read)
             .WithName("GroupEdit")
-            .ApplyViewModel<GroupEditPage, GroupResponse>();
+            .ApplyViewModel<GroupEditPage, GroupResponse>()
+                .WithDescription("""
+                    GET /edit/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapGet("/list", GroupResolvers.List)
             .WithName("GroupList")
-            .ApplyViewModel<GroupViewListPage, GroupResponse[]>();
+            .ApplyViewModel<GroupViewListPage, GroupResponse[]>()
+                .WithDescription("""
+                    Lists entities through the secured IQueryable. Optional `where` is a Hasura-like JSON filter, `take` limits the result to 1..200 rows, and `operation` selects the RBAC operation used to build the secured query (default: list). This supports incremental entity selectors without introducing a separate lookup API.
+                    """);
 
         group.MapGet("/roles/{id:guid}", GroupResolvers.Roles)
             .WithName("GroupRoles")
-            .ApplyViewModel<GroupRolesPage, EntityRelationsViewModel<GroupResponse, RoleResponse>>();
+            .ApplyViewModel<GroupRolesPage, EntityRelationsViewModel<GroupResponse, RoleResponse>>()
+                .WithDescription("""
+                    GET /roles/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapGet("/memberships/{id:guid}", GroupResolvers.Memberships)
             .WithName("GroupMemberships")
-            .ApplyViewModel<GroupMembershipsPage, EntityRelationsViewModel<GroupResponse, MembershipResponse>>();
+            .ApplyViewModel<GroupMembershipsPage, EntityRelationsViewModel<GroupResponse, MembershipResponse>>()
+                .WithDescription("""
+                    GET /memberships/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapPut("/update", GroupResolvers.Update)
             .WithName("GroupUpdate")
-            .ApplyJsonModel<GroupResponse>();
+            .ApplyJsonModel<GroupResponse>()
+                .WithDescription("""
+                    PUT /update. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapPost("/update/{id:guid}", GroupResolvers.UpdateForm)
             .WithName("GroupUpdateForm")
-            .ApplyViewModel<GroupEditPage, GroupResponse>();
+            .ApplyViewModel<GroupEditPage, GroupResponse>()
+                .WithDescription("""
+                    POST /update/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         group.MapDelete("/delete", GroupResolvers.Delete)
-            .WithName("GroupDelete");
+            .WithName("GroupDelete")
+                .WithDescription("""
+                    DELETE /delete. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
 
         var typeGroup = endpoints.MapGroup(prefix + "/GroupTypeResponse").WithTags("GroupType");
-        typeGroup.MapPost("/create", GroupTypeResolvers.Create).WithName("GroupTypeCreate").ApplyJsonModel<GroupTypeResponse>();
         typeGroup.MapGet("/link/{id:guid}", GroupTypeResolvers.Link)
             .WithName("GroupTypeLink")
-            .ApplyViewModel<EntityLinkFragment, EntityLinkResponse>();
-        typeGroup.MapGet("/read/{id:guid}", GroupTypeResolvers.Read).WithName("GroupTypeRead").ApplyJsonModel<GroupTypeResponse>();
-        typeGroup.MapGet("/list", GroupTypeResolvers.List).WithName("GroupTypeList").ApplyJsonModel<GroupTypeResponse[]>();
-        typeGroup.MapPut("/update", GroupTypeResolvers.Update).WithName("GroupTypeUpdate").ApplyJsonModel<GroupTypeResponse>();
-        typeGroup.MapDelete("/delete/{id:guid}", GroupTypeResolvers.Delete).WithName("GroupTypeDelete");
+            .ApplyViewModel<EntityLinkFragment, EntityLinkResponse>()
+                .WithDescription("""
+                    GET /link/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
+        typeGroup.MapGet("/read/{id:guid}", GroupTypeResolvers.Read).WithName("GroupTypeRead").ApplyJsonModel<GroupTypeResponse>()
+            .WithDescription("""
+                GET /read/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                """);
+        typeGroup.MapGet("/list", GroupTypeResolvers.List).WithName("GroupTypeList").ApplyJsonModel<GroupTypeResponse[]>()
+            .WithDescription("""
+                Lists entities through the secured IQueryable. Optional `where` is a Hasura-like JSON filter, `take` limits the result to 1..200 rows, and `operation` selects the RBAC operation used to build the secured query (default: list). This supports incremental entity selectors without introducing a separate lookup API.
+                """);
+        typeGroup.MapPut("/update", GroupTypeResolvers.Update).WithName("GroupTypeUpdate").ApplyJsonModel<GroupTypeResponse>()
+            .WithDescription("""
+                PUT /update. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                """);
+        typeGroup.MapDelete("/delete/{id:guid}", GroupTypeResolvers.Delete).WithName("GroupTypeDelete")
+            .WithDescription("""
+                DELETE /delete/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                """);
 
         return endpoints;
     }
