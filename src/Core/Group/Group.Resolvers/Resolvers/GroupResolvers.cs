@@ -6,12 +6,15 @@ using Microsoft.Extensions.DependencyInjection;
 using WebAppArchitecture.Base.Endpoints;
 using WebAppArchitecture.Base.Data;
 using WebAppArchitecture.Base.Resolvers;
+using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.Base.UI.Pages;
 using WebAppArchitecture.Base.UI.Components;
+using WebAppArchitecture.Base.UI.Vector;
 using WebAppArchitecture.Group.Models;
 using WebAppArchitecture.Group.Services;
 using WebAppArchitecture.Group.UI.Pages;
+using WebAppArchitecture.Group.UI.Components.Vectors;
 using WebAppArchitecture.Membership.Models;
 using WebAppArchitecture.Membership.Services;
 using WebAppArchitecture.Role.Models;
@@ -208,13 +211,33 @@ public static class GroupResolvers
         if (group is null)
             return Results.NotFound();
 
-        var roles = await roleService.VectorAsync(role => role.group_id == id, cancellationToken);
+        IReadOnlyCollection<RoleResponse> roles = Array.Empty<RoleResponse>();
+        VectorPageInfo? pageInfo = null;
+        if (ShouldLoadVector(httpContext))
+        {
+            if (!VectorQueryParser.TryParse<RoleModel>(
+                httpContext,
+                role => role.group_id == id,
+                out var predicate,
+                out var options,
+                out var error))
+            {
+                return Results.BadRequest(new { error });
+            }
+
+            var page = await roleService.VectorPageAsync(
+                predicate, RbacOperations.List, options, cancellationToken);
+            roles = page.Items;
+            pageInfo = VectorQueryParser.WithRequestState(httpContext, page.PageInfo);
+            VectorQueryParser.WritePagingHeaders(httpContext, pageInfo);
+        }
 
         return ApiResults.Ok(new EntityRelationsViewModel<GroupResponse, RoleResponse>(
             group,
             roles,
             "Skupina: role",
-            "Roles"));
+            "Roles",
+            pageInfo));
     }
 
     public static async Task<IResult> Memberships(
@@ -228,13 +251,47 @@ public static class GroupResolvers
         if (group is null)
             return Results.NotFound();
 
-        var memberships = await membershipService.VectorAsync(membership => membership.group_id == id, cancellationToken);
+        IReadOnlyCollection<MembershipResponse> memberships = Array.Empty<MembershipResponse>();
+        VectorPageInfo? pageInfo = null;
+        if (ShouldLoadVector(httpContext))
+        {
+            if (!VectorQueryParser.TryParse<MembershipModel>(
+                httpContext,
+                membership => membership.group_id == id,
+                out var predicate,
+                out var options,
+                out var error))
+            {
+                return Results.BadRequest(new { error });
+            }
+
+            var page = await membershipService.VectorPageAsync(
+                predicate, RbacOperations.List, options, cancellationToken);
+            memberships = page.Items;
+            pageInfo = VectorQueryParser.WithRequestState(httpContext, page.PageInfo);
+            VectorQueryParser.WritePagingHeaders(httpContext, pageInfo);
+        }
 
         return ApiResults.Ok(new EntityRelationsViewModel<GroupResponse, MembershipResponse>(
             group,
             memberships,
             "Skupina: členství",
-            "Memberships"));
+            "Memberships",
+            pageInfo));
+    }
+
+    private static bool ShouldLoadVector(HttpContext httpContext)
+    {
+        if (string.Equals(httpContext.Request.Headers["HX-Request"].ToString(), "true", StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        var explicitMode = httpContext.Request.Headers["X-Response-Type"].ToString();
+        if (string.Equals(explicitMode, "fragment", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(explicitMode, "json", StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return httpContext.Request.GetTypedHeaders().Accept?.Any(media =>
+            string.Equals(media.MediaType.Value, "application/json", StringComparison.OrdinalIgnoreCase)) == true;
     }
 }
 
@@ -273,6 +330,12 @@ public static class GroupEndpointExtensions
     public static IEndpointRouteBuilder MapGroupEndpoints(this IEndpointRouteBuilder endpoints, string prefix)
     {
         var group = endpoints.MapGroup(prefix + "/GroupResponse").WithTags("Group");
+
+        group.MapGet("", RedirectResolvers.List)
+            .WithDescription("Redirects the short entity collection URI to the canonical /list endpoint while preserving query parameters.");
+
+        group.MapGet("/{id:guid}", RedirectResolvers.View)
+            .WithDescription("Redirects the short entity URI to the canonical /view/{id} endpoint while preserving query parameters.");
 
         group.MapPost("/create-contained", GroupResolvers.CreateContained)
             .WithName("GroupCreateContained")
@@ -337,17 +400,24 @@ public static class GroupEndpointExtensions
 
         group.MapGet("/roles/{id:guid}", GroupResolvers.Roles)
             .WithName("GroupRoles")
-            .ApplyViewModel<GroupRolesPage, EntityRelationsViewModel<GroupResponse, RoleResponse>>()
+            .ApplyViewModel<GroupVectorPage<GroupRoleVectorContent<TableVectorContent>>, EntityRelationsViewModel<GroupResponse, RoleResponse>>()
                 .WithDescription("""
                     GET /roles/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
                     """);
 
         group.MapGet("/memberships/{id:guid}", GroupResolvers.Memberships)
             .WithName("GroupMemberships")
-            .ApplyViewModel<GroupMembershipsPage, EntityRelationsViewModel<GroupResponse, MembershipResponse>>()
+            .ApplyViewModel<GroupVectorPage<GroupMembershipVectorContent<TableVectorContent>>, EntityRelationsViewModel<GroupResponse, MembershipResponse>>()
                 .WithDescription("""
                     GET /memberships/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
                     """);
+
+        group.MapGet("/membershipscards/{id:guid}", GroupResolvers.Memberships)
+            .WithName("GroupMembershipsCards")
+            .ApplyViewModel<GroupVectorPage<GroupMembershipVectorContent<CardVectorContent>>, EntityRelationsViewModel<GroupResponse, MembershipResponse>>()
+            .WithDescription("""
+                Alternative card presentation of the same Group Membership vector. It uses the same resolver, Hasura-like filter query parameters, lazy HTMX loading, and RBAC filtering as /memberships/{id}.
+                """);
 
         group.MapPut("/update", GroupResolvers.Update)
             .WithName("GroupUpdate")

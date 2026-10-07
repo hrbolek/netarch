@@ -1,23 +1,41 @@
 @namespace WebAppArchitecture.Base.UI.Pages
 @typeparam TModel where TModel : IEntityDTOModel
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@using WebAppArchitecture.Base.Services
+@using WebAppArchitecture.Base.UI.Vector
 
 <Page Title="@Title">
     <div class="container-fluid py-3">
         @if (ShowFilter)
         {
             <form method="get" class="card card-body mb-3">
+                <input type="hidden" name="skip" value="0" />
                 <label class="form-label fw-semibold" for="where-filter">Filter (Hasura <code>where</code>)</label>
-                <div class="input-group">
-                    <input id="where-filter" class="form-control font-monospace" name="where" value="@CurrentWhere"
-                           placeholder='{"name":{"_ilike":"%smith%"}}' />
-                    <button class="btn btn-outline-primary" type="submit">Filter</button>
-                    <a class="btn btn-outline-secondary" href="@CurrentPath">Clear</a>
+                <div class="row g-2">
+                    <div class="col-12 col-xl-6">
+                        <input id="where-filter" class="form-control font-monospace" name="where" value="@CurrentWhere"
+                               placeholder='{"name":{"_ilike":"%smith%"}}' />
+                    </div>
+                    <div class="col-12 col-md-6 col-xl-3">
+                        <input class="form-control font-monospace" name="order_by" value="@CurrentOrderBy"
+                               placeholder='{"created_at":"desc"}' aria-label="Order by" />
+                    </div>
+                    <div class="col-4 col-md-2 col-xl-1">
+                        <input class="form-control" type="number" min="1" max="200" name="take" value="@CurrentTake" aria-label="Take" />
+                    </div>
+                    <div class="col-8 col-md-4 col-xl-2 d-flex gap-1">
+                        <button class="btn btn-outline-primary flex-fill" type="submit">Apply</button>
+                        <a class="btn btn-outline-secondary" href="@CurrentPath">Clear</a>
+                    </div>
                 </div>
-                <div class="form-text">The JSON predicate is translated to an expression and applied to the secured IQueryable before the database SELECT.</div>
+                <div class="form-text">Filter, order and page size stay in the query string. Changing them resets paging to the first page.</div>
             </form>
         }
-        @if (Items is not null)
+        @if (Items is not null && Items.Count == 0)
+        {
+            <div class="text-muted mb-3">@(string.IsNullOrWhiteSpace(CurrentWhere) ? "No items." : "No items match the current filter.")</div>
+        }
+        else if (Items is not null)
         {
             @foreach (var item in Items)
             {
@@ -31,6 +49,7 @@
                 }
             }
         }
+        <VectorPager PageInfo="@PageInfo" ItemCount="@(Items?.Count ?? 0)" />
     </div>
 </Page>
 
@@ -41,5 +60,26 @@
     [Parameter] public bool ShowFilter { get; set; } = true;
 
     private string CurrentWhere => HttpContextAccessor.HttpContext?.Request.Query["where"].ToString() ?? string.Empty;
+    private string CurrentOrderBy => HttpContextAccessor.HttpContext?.Request.Query["order_by"].ToString() ?? string.Empty;
+    private string CurrentTake
+        => string.IsNullOrWhiteSpace(HttpContextAccessor.HttpContext?.Request.Query["take"].ToString())
+            ? WebAppArchitecture.Base.Resolvers.VectorQueryParser.DefaultTake.ToString()
+            : HttpContextAccessor.HttpContext!.Request.Query["take"].ToString();
     private string CurrentPath => HttpContextAccessor.HttpContext?.Request.Path.ToString() ?? string.Empty;
+
+    private VectorPageInfo? PageInfo
+    {
+        get
+        {
+            var response = HttpContextAccessor.HttpContext?.Response;
+            if (response is null)
+                return null;
+
+            if (!int.TryParse(response.Headers["X-Vector-Take"].ToString(), out var take))
+                return null;
+            _ = int.TryParse(response.Headers["X-Vector-Skip"].ToString(), out var skip);
+            var hasMore = string.Equals(response.Headers["X-Vector-Has-More"].ToString(), "true", StringComparison.OrdinalIgnoreCase);
+            return new VectorPageInfo(take, skip, hasMore, !string.IsNullOrWhiteSpace(CurrentWhere));
+        }
+    }
 }

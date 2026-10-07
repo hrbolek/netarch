@@ -1,0 +1,45 @@
+@using WebAppArchitecture.Base.UI.Components
+@using WebAppArchitecture.Role.Models
+
+@namespace WebAppArchitecture.Role.UI.Components
+
+<span class="d-inline-flex flex-wrap align-items-center gap-1">
+    @if (!string.IsNullOrWhiteSpace(Model.user_name))
+    {
+        <a href="@($"/architecture/UserResponse/view/{Model.user_id}")">@Model.user_name</a>
+    }
+    else
+    {
+        <LazyEntityLink Entity="UserResponse" EntityId="@Model.user_id">
+            <Placeholder><span class="text-muted">user</span></Placeholder>
+        </LazyEntityLink>
+    }
+    <span class="text-muted">@@</span>
+    @if (!string.IsNullOrWhiteSpace(Model.group_name))
+    {
+        <a href="@($"/architecture/GroupResponse/view/{Model.group_id}")">@Model.group_name</a>
+    }
+    else
+    {
+        <LazyEntityLink Entity="GroupResponse" EntityId="@Model.group_id">
+            <Placeholder><span class="text-muted">group</span></Placeholder>
+        </LazyEntityLink>
+    }
+    <span class="text-muted">[</span>
+    @if (!string.IsNullOrWhiteSpace(Model.role_type))
+    {
+        <a href="@($"/architecture/RoleTypeResponse/view/{Model.role_type_id}")">@Model.role_type</a>
+    }
+    else
+    {
+        <LazyEntityLink Entity="RoleTypeResponse" EntityId="@Model.role_type_id">
+            <Placeholder><span class="text-muted">role type</span></Placeholder>
+        </LazyEntityLink>
+    }
+    <span class="text-muted">]</span>
+</span>
+
+@code {
+    [Parameter, EditorRequired]
+    public RoleResponse Model { get; set; } = default!;
+}

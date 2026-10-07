@@ -1,0 +1,98 @@
+@namespace WebAppArchitecture.Base.UI.Vector
+@using System.Reflection
+
+<div class="table-responsive">
+    <table class="table table-hover table-sm align-middle mb-0">
+        <thead>
+            <tr>
+                <th>@Model.Title</th>
+                @foreach (var column in Columns)
+                {
+                    <th>@column.Label</th>
+                }
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Items.Count == 0)
+            {
+                <tr>
+                    <td colspan="@(Columns.Count + 2)" class="text-muted">@(Model.PageInfo?.HasFilter == true ? "No items match the current filter." : "No items.")</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>
+                            @if (Model.ItemLabelComponentType is not null)
+                            {
+                                <DynamicComponent Type="@Model.ItemLabelComponentType"
+                                                  Parameters="@LabelParameters(item)" />
+                            }
+                            else
+                            {
+                                <a href="@($"/{Model.App}/{Model.EntityType}/view/{item.id}")">@item.visual_label</a>
+                            }
+                        </td>
+                        @foreach (var column in Columns)
+                        {
+                            <td>@FormatValue(GetValue(item, column.PropertyName))</td>
+                        }
+                        <td class="text-end">
+                            <EntityActionSlot Url="@($"/{Model.App}/{Model.EntityType}/actions/{item.id}")" />
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<VectorPager PageInfo="@Model.PageInfo" ItemCount="@Model.Items.Count" TargetId="@Model.TargetId" />
+
+@code {
+    [Parameter, EditorRequired]
+    public VectorContentViewModel Model { get; set; } = default!;
+
+    private IReadOnlyCollection<VectorColumnDefinition> Columns
+        => Model.Columns is { Count: > 0 } ? Model.Columns : InferColumns();
+
+    private IReadOnlyCollection<VectorColumnDefinition> InferColumns()
+    {
+        var first = Model.Items.FirstOrDefault();
+        if (first is null)
+            return Array.Empty<VectorColumnDefinition>();
+
+        var excluded = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "id", "visual_label", "rbacobject_id", "created_by", "updated_by"
+        };
+
+        return first.GetType()
+            .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+            .Where(property => property.CanRead && !excluded.Contains(property.Name))
+            .Take(6)
+            .Select(property => new VectorColumnDefinition(property.Name, property.Name))
+            .ToArray();
+    }
+
+    private static IDictionary<string, object?> LabelParameters(IEntityDTOModel item)
+        => new Dictionary<string, object?> { ["Model"] = item };
+
+    private static object? GetValue(object item, string propertyName)
+        => item.GetType().GetProperty(
+            propertyName,
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase)?.GetValue(item);
+
+    private static string FormatValue(object? value)
+        => value switch
+        {
+            null => "",
+            DateTimeOffset dateTimeOffset => dateTimeOffset.ToString("u"),
+            DateTime dateTime => dateTime.ToString("u"),
+            bool boolean => boolean ? "Yes" : "No",
+            _ => value.ToString() ?? ""
+        };
+}

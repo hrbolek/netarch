@@ -13,6 +13,8 @@ public interface IBaseService<TDBModel, TDTOModel>
     Task<IReadOnlyCollection<TDTOModel>> VectorAsync(Expression<Func<TDBModel, bool>> predicate, CancellationToken cancellationToken = default);
     Task<IReadOnlyCollection<TDTOModel>> VectorAsync(Expression<Func<TDBModel, bool>> predicate, string operation, CancellationToken cancellationToken = default);
     Task<IReadOnlyCollection<TDTOModel>> VectorAsync(Expression<Func<TDBModel, bool>> predicate, string operation, int? take, CancellationToken cancellationToken = default);
+    Task<IReadOnlyCollection<TDTOModel>> VectorAsync(Expression<Func<TDBModel, bool>> predicate, string operation, VectorQueryOptions options, CancellationToken cancellationToken = default);
+    Task<VectorPageResult<TDTOModel>> VectorPageAsync(Expression<Func<TDBModel, bool>> predicate, string operation, VectorQueryOptions options, CancellationToken cancellationToken = default);
     Task<TDTOModel> UpdateAsync<TUpdateRequest>(TUpdateRequest model, CancellationToken cancellationToken = default) where TUpdateRequest : IUpdateDTOModel<TDBModel>;
     Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
 }

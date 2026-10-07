@@ -1,0 +1,32 @@
+@using WebAppArchitecture.Base.Data
+@using WebAppArchitecture.Base.UI.Pages
+@using WebAppArchitecture.Base.UI.Vector
+@using WebAppArchitecture.Membership.Models
+@using WebAppArchitecture.Membership.UI.Components
+@using WebAppArchitecture.User.Models
+@namespace WebAppArchitecture.User.UI.Components.Vectors
+@typeparam TPresentation where TPresentation : IComponent
+
+<DynamicComponent Type="@typeof(TPresentation)" Parameters="@PresentationParameters" />
+
+@code {
+    [Parameter, EditorRequired]
+    public EntityRelationsViewModel<UserResponse, MembershipResponse> Model { get; set; } = default!;
+
+    private VectorContentViewModel PresentationModel => new(
+        Model.SectionTitle,
+        nameof(MembershipResponse),
+        Model.Items.Cast<IEntityDTOModel>().ToArray(),
+        typeof(MembershipMediumCard),
+        new VectorColumnDefinition[]
+        {
+            new("valid_from", "Valid from"),
+            new("valid_to", "Valid to")
+        },
+        ItemLabelComponentType: typeof(MembershipEntityLabel),
+        PageInfo: Model.PageInfo,
+        TargetId: $"user-vector-{Model.Parent.id:N}");
+
+    private IDictionary<string, object?> PresentationParameters
+        => new Dictionary<string, object?> { ["Model"] = PresentationModel };
+}

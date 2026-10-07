@@ -32,22 +32,98 @@ public class BaseService<TDBModel, TDTOModel> : IBaseService<TDBModel, TDTOModel
         Expression<Func<TDBModel, bool>> predicate,
         string operation,
         CancellationToken cancellationToken = default)
-        => VectorAsync(predicate, operation, take: null, cancellationToken: cancellationToken);
+        => VectorAsync(predicate, operation, VectorQueryOptions.Empty, cancellationToken);
 
     public virtual Task<IReadOnlyCollection<TDTOModel>> VectorAsync(
         Expression<Func<TDBModel, bool>> predicate,
         string operation,
         int? take,
         CancellationToken cancellationToken = default)
+        => VectorAsync(predicate, operation, new VectorQueryOptions(Take: take), cancellationToken);
+
+    public virtual Task<IReadOnlyCollection<TDTOModel>> VectorAsync(
+        Expression<Func<TDBModel, bool>> predicate,
+        string operation,
+        VectorQueryOptions options,
+        CancellationToken cancellationToken = default)
     {
-        var query = Security.Query<TDBModel>(operation)
-            .Where(predicate)
-            .Select(TDTOModel.Projection);
+        var query = BuildVectorQuery(predicate, operation, options, probeForMore: false);
+        return Task.FromResult<IReadOnlyCollection<TDTOModel>>(
+            query.Select(TDTOModel.Projection).ToArray());
+    }
 
-        if (take is > 0)
-            query = query.Take(take.Value);
+    public virtual Task<VectorPageResult<TDTOModel>> VectorPageAsync(
+        Expression<Func<TDBModel, bool>> predicate,
+        string operation,
+        VectorQueryOptions options,
+        CancellationToken cancellationToken = default)
+    {
+        var take = options.Take ?? 25;
+        var skip = options.Skip ?? 0;
+        var query = BuildVectorQuery(predicate, operation, options with { Take = take }, probeForMore: true);
+        var values = query.Select(TDTOModel.Projection).ToArray();
+        var hasMore = values.Length > take;
+        IReadOnlyCollection<TDTOModel> items = hasMore ? values.Take(take).ToArray() : values;
+        return Task.FromResult(new VectorPageResult<TDTOModel>(items, new VectorPageInfo(take, skip, hasMore)));
+    }
 
-        return Task.FromResult<IReadOnlyCollection<TDTOModel>>(query.ToArray());
+    protected IQueryable<TDBModel> BuildVectorQuery(
+        Expression<Func<TDBModel, bool>> predicate,
+        string operation,
+        VectorQueryOptions options,
+        bool probeForMore)
+    {
+        IQueryable<TDBModel> query = Security.Query<TDBModel>(operation)
+            .Where(predicate);
+
+        query = ApplyOrdering(query, options.OrderBy);
+
+        if (options.Skip is > 0)
+            query = query.Skip(options.Skip.Value);
+
+        if (options.Take is > 0)
+            query = query.Take(options.Take.Value + (probeForMore ? 1 : 0));
+
+        return query;
+    }
+
+    protected static IQueryable<TModel> ApplyOrdering<TModel>(
+        IQueryable<TModel> query,
+        IReadOnlyCollection<VectorOrderBy>? orderBy)
+    {
+        var requested = orderBy?.ToList() ?? new List<VectorOrderBy>();
+        if (requested.Count == 0)
+            requested.Add(new VectorOrderBy("id"));
+        else if (!requested.Any(item => string.Equals(item.PropertyName, "id", StringComparison.OrdinalIgnoreCase)))
+            requested.Add(new VectorOrderBy("id"));
+
+        var first = true;
+        foreach (var item in requested)
+        {
+            var property = typeof(TModel).GetProperty(
+                item.PropertyName,
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.Public |
+                System.Reflection.BindingFlags.IgnoreCase)
+                ?? throw new InvalidOperationException($"Unknown order property '{item.PropertyName}'.");
+
+            var parameter = Expression.Parameter(typeof(TModel), "entity");
+            var body = Expression.Property(parameter, property);
+            var keySelector = Expression.Lambda(body, parameter);
+
+            var methodName = first
+                ? (item.Descending ? nameof(Queryable.OrderByDescending) : nameof(Queryable.OrderBy))
+                : (item.Descending ? nameof(Queryable.ThenByDescending) : nameof(Queryable.ThenBy));
+
+            var method = typeof(Queryable).GetMethods()
+                .Single(m => m.Name == methodName && m.GetParameters().Length == 2)
+                .MakeGenericMethod(typeof(TModel), property.PropertyType);
+
+            query = (IQueryable<TModel>)method.Invoke(null, new object[] { query, keySelector })!;
+            first = false;
+        }
+
+        return query;
     }
     public virtual async Task<TDTOModel> UpdateAsync<TUpdateRequest>(TUpdateRequest model, CancellationToken cancellationToken = default) where TUpdateRequest : IUpdateDTOModel<TDBModel>
     {

@@ -57,10 +57,10 @@ public static class BaseResolvers
         where TDTOModel : IEntityDTOModel<TDBModel, TDTOModel>
         where TService : IBaseService<TDBModel, TDTOModel>
     {
-        var where = httpContext.Request.Query["where"].ToString();
         var operation = httpContext.Request.Query["operation"].ToString();
         if (string.IsNullOrWhiteSpace(operation))
             operation = RbacOperations.List;
+
         try
         {
             _ = RbacOperationIds.FromName(operation);
@@ -70,37 +70,20 @@ public static class BaseResolvers
             return Results.BadRequest(new { error = "Unknown RBAC operation requested for the list." });
         }
 
-        int? take = null;
-        var takeText = httpContext.Request.Query["take"].ToString();
-        if (!string.IsNullOrWhiteSpace(takeText))
+        if (!VectorQueryParser.TryParse<TDBModel>(
+            httpContext,
+            _ => true,
+            out var predicate,
+            out var options,
+            out var error))
         {
-            if (!int.TryParse(takeText, out var parsedTake) || parsedTake < 1 || parsedTake > 200)
-                return Results.BadRequest(new { error = "The 'take' query parameter must be an integer between 1 and 200." });
-            take = parsedTake;
+            return Results.BadRequest(new { error });
         }
 
-        if (string.IsNullOrWhiteSpace(where))
-        {
-            var all = await service.VectorAsync(_ => true, operation, take, cancellationToken);
-            return ApiResults.Ok(all);
-        }
-
-        try
-        {
-            var filter = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object?>>(where)
-                ?? new Dictionary<string, object?>();
-            var predicate = HasuraFilterExpression.Build<TDBModel>(filter);
-            var result = await service.VectorAsync(predicate, operation, take, cancellationToken);
-            return ApiResults.Ok(result);
-        }
-        catch (System.Text.Json.JsonException ex)
-        {
-            return Results.BadRequest(new { error = "The 'where' query parameter must be a valid JSON object.", detail = ex.Message });
-        }
-        catch (HasuraFilterException ex)
-        {
-            return Results.BadRequest(new { error = "Invalid Hasura-like filter expression.", detail = ex.Message });
-        }
+        var page = await service.VectorPageAsync(predicate, operation, options, cancellationToken);
+        var pageInfo = VectorQueryParser.WithRequestState(httpContext, page.PageInfo);
+        VectorQueryParser.WritePagingHeaders(httpContext, pageInfo);
+        return ApiResults.Ok(page.Items);
     }
 
     public static async Task<IResult> Update<

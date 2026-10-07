@@ -1,0 +1,32 @@
+@namespace WebAppArchitecture.Base.UI.Vector
+@using WebAppArchitecture.Base.Data
+
+<div class="d-grid gap-3">
+    @if (Model.Items.Count == 0)
+    {
+        <div class="text-muted">@(Model.PageInfo?.HasFilter == true ? "No items match the current filter." : "No items.")</div>
+    }
+    else
+    {
+        @foreach (var item in Model.Items)
+        {
+            if (Model.ItemComponentType is not null)
+            {
+                <DynamicComponent Type="@Model.ItemComponentType" Parameters="@CreateParameters(item)" />
+            }
+            else
+            {
+                <a href="@($"/{Model.App}/{Model.EntityType}/view/{item.id}")">@item.visual_label</a>
+            }
+        }
+    }
+</div>
+<VectorPager PageInfo="@Model.PageInfo" ItemCount="@Model.Items.Count" TargetId="@Model.TargetId" />
+
+@code {
+    [Parameter, EditorRequired]
+    public VectorContentViewModel Model { get; set; } = default!;
+
+    private static IDictionary<string, object?> CreateParameters(IEntityDTOModel item)
+        => new Dictionary<string, object?> { ["Model"] = item };
+}

@@ -1,0 +1,77 @@
+@namespace WebAppArchitecture.Base.UI.Components
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@inject WebAppArchitecture.Base.Security.ICurrentActorProvider ActorProvider
+@inject WebAppArchitecture.Base.Security.IRbacAuthorizationService AuthorizationService
+
+<CascadingValue Value="@_context" IsFixed="false">
+    @ChildContent
+</CascadingValue>
+
+@code {
+    /// <summary>
+    /// Optional precomputed permission result. Use this when a resolver has already
+    /// evaluated a set of capabilities in one request (for example a kebab menu).
+    /// When supplied, the gate performs no additional authorization query.
+    /// </summary>
+    [Parameter]
+    public bool? Allowed { get; set; }
+
+    /// <summary>
+    /// RBAC object to authorize when Allowed is not supplied.
+    /// </summary>
+    [Parameter]
+    public Guid? RbacObjectId { get; set; }
+
+    /// <summary>
+    /// Operation to authorize when Allowed is not supplied.
+    /// </summary>
+    [Parameter]
+    public string? Operation { get; set; }
+
+    [Parameter]
+    public string? DisabledReason { get; set; }
+
+    [Parameter, EditorRequired]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    private PermissionGateContext _context = new(false);
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Allowed is not null)
+        {
+            _context = new PermissionGateContext(Allowed.Value, Allowed.Value ? null : DisabledReason);
+            return;
+        }
+
+        if (RbacObjectId is null || string.IsNullOrWhiteSpace(Operation))
+        {
+            _context = new PermissionGateContext(false, DisabledReason ?? "Permission context is not defined.");
+            return;
+        }
+
+        var httpContext = HttpContextAccessor.HttpContext;
+        if (httpContext is null)
+        {
+            _context = new PermissionGateContext(false, DisabledReason ?? "The current user could not be determined.");
+            return;
+        }
+
+        var actorUserId = ActorProvider.TryGetActorUserId(httpContext);
+        if (actorUserId is null)
+        {
+            _context = new PermissionGateContext(false, DisabledReason ?? "The current user is not authenticated.");
+            return;
+        }
+
+        var allowed = await AuthorizationService.IsAllowedAsync(
+            actorUserId.Value,
+            RbacObjectId.Value,
+            Operation,
+            httpContext.RequestAborted);
+
+        _context = new PermissionGateContext(
+            allowed,
+            allowed ? null : DisabledReason ?? $"Operation '{Operation}' is not permitted.");
+    }
+}

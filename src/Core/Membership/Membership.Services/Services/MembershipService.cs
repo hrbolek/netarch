@@ -61,4 +61,71 @@ public sealed class MembershipService : BaseService<MembershipModel, MembershipR
             await Security.SaveChangesAsync(ct);
             await _projection.RebuildAllAsync(ct);
         }, cancellationToken);
+    public override Task<IReadOnlyCollection<MembershipResponse>> VectorAsync(
+        System.Linq.Expressions.Expression<Func<MembershipModel, bool>> predicate,
+        string operation,
+        VectorQueryOptions options,
+        CancellationToken cancellationToken = default)
+    {
+        var query = BuildDetailedQuery(predicate, operation, options, probeForMore: false);
+        return Task.FromResult<IReadOnlyCollection<MembershipResponse>>(query.ToArray());
+    }
+
+    public override Task<VectorPageResult<MembershipResponse>> VectorPageAsync(
+        System.Linq.Expressions.Expression<Func<MembershipModel, bool>> predicate,
+        string operation,
+        VectorQueryOptions options,
+        CancellationToken cancellationToken = default)
+    {
+        var take = options.Take ?? 25;
+        var skip = options.Skip ?? 0;
+        var values = BuildDetailedQuery(predicate, operation, options with { Take = take }, probeForMore: true).ToArray();
+        var hasMore = values.Length > take;
+        IReadOnlyCollection<MembershipResponse> items = hasMore ? values.Take(take).ToArray() : values;
+        return Task.FromResult(new VectorPageResult<MembershipResponse>(items, new VectorPageInfo(take, skip, hasMore)));
+    }
+
+    private IQueryable<MembershipResponse> BuildDetailedQuery(
+        System.Linq.Expressions.Expression<Func<MembershipModel, bool>> predicate,
+        string operation,
+        VectorQueryOptions options,
+        bool probeForMore)
+    {
+        var users = Security.Query<UserModel>(SecurityOperations.Read);
+        var groups = Security.Query<GroupModel>(SecurityOperations.Read);
+
+        IQueryable<MembershipModel> memberships = Security.Query<MembershipModel>(operation)
+            .Where(predicate)
+            .Where(membership => users.Any(user => user.id == membership.user_id))
+            .Where(membership => groups.Any(group => group.id == membership.group_id));
+
+        memberships = ApplyOrdering(memberships, options.OrderBy);
+        if (options.Skip is > 0)
+            memberships = memberships.Skip(options.Skip.Value);
+        if (options.Take is > 0)
+            memberships = memberships.Take(options.Take.Value + (probeForMore ? 1 : 0));
+
+        return
+            from membership in memberships
+            join user in users on membership.user_id equals user.id
+            join grp in groups on membership.group_id equals grp.id
+            let userLabel = user.Name != ""
+                ? user.Name + (user.surname != null && user.surname != "" ? " " + user.surname : "")
+                : (user.email ?? "User")
+            select new MembershipResponse(
+                membership.id,
+                membership.group_id,
+                membership.user_id,
+                membership.valid_from,
+                membership.valid_to,
+                membership.rbacobject_id,
+                membership.created_at,
+                membership.updated_at,
+                membership.created_by,
+                membership.updated_by,
+                grp.Name,
+                userLabel,
+                userLabel + " @ " + grp.Name);
+    }
+
 }

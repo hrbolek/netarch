@@ -18,26 +18,9 @@
                 @foreach (var action in entry.group.OrderBy(x => x.Order))
                 {
                     <li>
-                        @if (!action.Enabled)
-                        {
-                            <span class="dropdown-item disabled" aria-disabled="true" title="@action.DisabledReason">
-                                @action.Label
-                            </span>
-                        }
-                        else if (string.Equals(action.HttpMethod, "DELETE", StringComparison.OrdinalIgnoreCase))
-                        {
-                            <button type="button"
-                                    class="dropdown-item text-danger"
-                                    hx-delete="@action.Url"
-                                    hx-confirm="@(action.Confirm ?? "Are you sure?")"
-                                    hx-on::after-request="@DeleteSuccessScript(action)">
-                                @action.Label
-                            </button>
-                        }
-                        else
-                        {
-                            <a class="dropdown-item" href="@action.Url">@action.Label</a>
-                        }
+                        <PermissionGate Allowed="@action.Enabled" DisabledReason="@action.DisabledReason">
+                            <EntityActionItem Action="@action" />
+                        </PermissionGate>
                     </li>
                 }
             }
@@ -52,8 +35,4 @@
     [Parameter]
     public bool IsFragment { get; set; }
 
-    private static string DeleteSuccessScript(EntityAction action)
-        => string.IsNullOrWhiteSpace(action.SuccessUrl)
-            ? string.Empty
-            : $"if(event.detail.successful) window.location.href='{action.SuccessUrl.Replace("'", "\\'")}';";
 }

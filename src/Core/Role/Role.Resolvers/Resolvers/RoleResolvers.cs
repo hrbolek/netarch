@@ -196,6 +196,12 @@ public static class RoleEndpointExtensions
     {
         var group = endpoints.MapGroup(prefix + "/RoleResponse").WithTags("Role");
 
+        group.MapGet("", RedirectResolvers.List)
+            .WithDescription("Redirects the short entity collection URI to the canonical /list endpoint while preserving query parameters.");
+
+        group.MapGet("/{id:guid}", RedirectResolvers.View)
+            .WithDescription("Redirects the short entity URI to the canonical /view/{id} endpoint while preserving query parameters.");
+
         group.MapPost("/create-contained", RoleResolvers.CreateContained)
             .WithName("RoleCreateContained")
             .ApplyJsonModel<RoleResponse>()

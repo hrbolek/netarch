@@ -1,0 +1,78 @@
+@namespace WebAppArchitecture.Base.UI.Vector
+@using WebAppArchitecture.Base.Services
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@if (PageInfo is not null && (PageInfo.HasPrevious || PageInfo.HasMore))
+{
+    <nav class="d-flex justify-content-between align-items-center gap-2 mt-3" aria-label="Vector pagination">
+        <div class="small text-muted">
+            Showing @(PageInfo.Skip + 1)–@(PageInfo.Skip + Math.Max(ItemCount, 0))
+        </div>
+        <div class="btn-group btn-group-sm" role="group">
+            @if (PageInfo.HasPrevious)
+            {
+                <a class="btn btn-outline-secondary"
+                   href="@BuildUrl(Math.Max(0, PageInfo.Skip - PageInfo.Take))"
+                   hx-get="@HtmxUrl(Math.Max(0, PageInfo.Skip - PageInfo.Take))"
+                   hx-target="@HtmxTarget"
+                   hx-swap="innerHTML"
+                   hx-push-url="true">Previous</a>
+            }
+            else
+            {
+                <span class="btn btn-outline-secondary disabled">Previous</span>
+            }
+
+            @if (PageInfo.HasMore)
+            {
+                <a class="btn btn-outline-secondary"
+                   href="@BuildUrl(PageInfo.Skip + PageInfo.Take)"
+                   hx-get="@HtmxUrl(PageInfo.Skip + PageInfo.Take)"
+                   hx-target="@HtmxTarget"
+                   hx-swap="innerHTML"
+                   hx-push-url="true">Next</a>
+            }
+            else
+            {
+                <span class="btn btn-outline-secondary disabled">Next</span>
+            }
+        </div>
+    </nav>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public VectorPageInfo? PageInfo { get; set; }
+
+    [Parameter]
+    public int ItemCount { get; set; }
+
+    [Parameter]
+    public string? TargetId { get; set; }
+
+    private string? HtmxTarget => string.IsNullOrWhiteSpace(TargetId) ? null : $"#{TargetId}";
+    private string? HtmxUrl(int skip) => string.IsNullOrWhiteSpace(TargetId) ? null : BuildUrl(skip);
+
+    private string BuildUrl(int skip)
+    {
+        var request = HttpContextAccessor.HttpContext?.Request;
+        if (request is null)
+            return string.Empty;
+
+        var pairs = new List<KeyValuePair<string, string?>>();
+        foreach (var pair in request.Query)
+        {
+            if (string.Equals(pair.Key, "skip", StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            foreach (var value in pair.Value)
+                pairs.Add(new KeyValuePair<string, string?>(pair.Key, value));
+        }
+
+        if (skip > 0)
+            pairs.Add(new KeyValuePair<string, string?>("skip", skip.ToString()));
+
+        var queryString = Microsoft.AspNetCore.Http.QueryString.Create(pairs);
+        return request.Path + queryString;
+    }
+}

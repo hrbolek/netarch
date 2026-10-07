@@ -1,0 +1,47 @@
+@using WebAppArchitecture.Base.UI.Htmx
+@using WebAppArchitecture.Base.UI.Vector
+@using WebAppArchitecture.User.Models
+@using WebAppArchitecture.User.UI.Components
+@namespace WebAppArchitecture.User.UI.Pages
+@typeparam TContent where TContent : IComponent
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@if (IsFragment)
+{
+    <DynamicComponent Type="@typeof(TContent)" Parameters="@ContentParameters" />
+}
+else
+{
+    <Page Title="@Model.Title">
+        <UserLargeCard Model="@Model.Parent">
+            <ChildContent Context="item">
+                <VectorQueryForm TargetId="@TargetId" />
+                <LazyContent Id="@TargetId" Url="@CurrentRelativeUrl" />
+            </ChildContent>
+        </UserLargeCard>
+    </Page>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public IEntityRelationsViewModel<UserResponse> Model { get; set; } = default!;
+
+    [Parameter]
+    public bool IsFragment { get; set; }
+
+    private string TargetId => $"user-vector-{Model.Parent.id:N}";
+
+    private string CurrentRelativeUrl
+    {
+        get
+        {
+            var request = HttpContextAccessor.HttpContext?.Request;
+            return request is null
+                ? string.Empty
+                : request.Path + request.QueryString;
+        }
+    }
+
+    private IDictionary<string, object?> ContentParameters
+        => new Dictionary<string, object?> { ["Model"] = Model };
+}

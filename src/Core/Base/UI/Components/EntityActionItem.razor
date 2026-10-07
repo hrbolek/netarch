@@ -1,0 +1,37 @@
+@namespace WebAppArchitecture.Base.UI.Components
+
+@if (!Permission.Allowed)
+{
+    <span class="dropdown-item disabled"
+          aria-disabled="true"
+          title="@(Permission.DisabledReason ?? "This operation is not permitted.")">
+        <span class="me-1" aria-hidden="true">&#128274;</span>@Action.Label
+    </span>
+}
+else if (string.Equals(Action.HttpMethod, "DELETE", StringComparison.OrdinalIgnoreCase))
+{
+    <button type="button"
+            class="dropdown-item text-danger"
+            hx-delete="@Action.Url"
+            hx-confirm="@(Action.Confirm ?? "Are you sure?")"
+            hx-on::after-request="@DeleteSuccessScript(Action)">
+        @Action.Label
+    </button>
+}
+else
+{
+    <a class="dropdown-item" href="@Action.Url">@Action.Label</a>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public EntityAction Action { get; set; } = default!;
+
+    [CascadingParameter]
+    public PermissionGateContext Permission { get; set; } = new(true);
+
+    private static string DeleteSuccessScript(EntityAction action)
+        => string.IsNullOrWhiteSpace(action.SuccessUrl)
+            ? string.Empty
+            : $"if(event.detail.successful) window.location.href='{action.SuccessUrl.Replace("'", "\\'")}';";
+}

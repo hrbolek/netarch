@@ -1,0 +1,57 @@
+@namespace WebAppArchitecture.Base.UI.Vector
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+<form method="get"
+      action="@CurrentPath"
+      class="card card-body mb-3"
+      hx-get="@CurrentPath"
+      hx-target="#@TargetId"
+      hx-swap="innerHTML"
+      hx-push-url="true">
+    <input type="hidden" name="skip" value="0" />
+    <div class="row g-2 align-items-end">
+        <div class="col-12 col-xl-6">
+            <label class="form-label fw-semibold" for="@($"{TargetId}-where")">Filter (Hasura <code>where</code>)</label>
+            <input id="@($"{TargetId}-where")"
+                   class="form-control font-monospace"
+                   name="where"
+                   value="@Query("where")"
+                   placeholder='{"name":{"_ilike":"%smith%"}}' />
+        </div>
+        <div class="col-12 col-md-6 col-xl-3">
+            <label class="form-label fw-semibold" for="@($"{TargetId}-order")">Order (Hasura-like <code>order_by</code>)</label>
+            <input id="@($"{TargetId}-order")"
+                   class="form-control font-monospace"
+                   name="order_by"
+                   value="@Query("order_by")"
+                   placeholder='{"created_at":"desc"}' />
+        </div>
+        <div class="col-6 col-md-2 col-xl-1">
+            <label class="form-label" for="@($"{TargetId}-take")">Take</label>
+            <input id="@($"{TargetId}-take")" class="form-control" type="number" min="1" max="200" name="take" value="@TakeValue" />
+        </div>
+        <div class="col-6 col-md-4 col-xl-2 d-grid gap-1">
+            <button class="btn btn-outline-primary" type="submit">Apply</button>
+            <a class="btn btn-outline-secondary btn-sm" href="@CurrentPath">Clear</a>
+        </div>
+    </div>
+    <div class="form-text mt-2">
+        Vector state stays in the query string. Changing filter or order resets paging to the first page.
+    </div>
+</form>
+
+@code {
+    [Parameter, EditorRequired]
+    public string TargetId { get; set; } = default!;
+
+    private string CurrentPath
+        => HttpContextAccessor.HttpContext?.Request.Path.ToString() ?? string.Empty;
+
+    private string Query(string name)
+        => HttpContextAccessor.HttpContext?.Request.Query[name].ToString() ?? string.Empty;
+
+    private string TakeValue
+        => string.IsNullOrWhiteSpace(Query("take"))
+            ? WebAppArchitecture.Base.Resolvers.VectorQueryParser.DefaultTake.ToString()
+            : Query("take");
+}

@@ -5,18 +5,38 @@
 
 <MediumCard TModel="RoleResponse" Model="@Model" ActionsUrl="@($"/architecture/RoleResponse/actions/{Model.id}")" HeaderText="Role">
     <ChildContent Context="item">
+        <div class="mb-3 fw-semibold"><RoleEntityLabel Model="@item" /></div>
         <Attribute TModel="RoleResponse" Item="@item" Label="ID" AttributeName="id" />
         <Attribute TModel="RoleResponse" Item="@item" Label="Group">
-            <EntityLink TModel="RoleResponse" Model="@item" Type="GroupResponse" EntityId="@item.group_id">
-                <ChildContent Context="_">@(item.group_name ?? item.group_id.ToString())</ChildContent>
-            </EntityLink>
+            @if (!string.IsNullOrWhiteSpace(item.group_name))
+            {
+                <a href="@($"/architecture/GroupResponse/view/{item.group_id}")">@item.group_name</a>
+            }
+            else
+            {
+                <LazyEntityLink Entity="GroupResponse" EntityId="@item.group_id" />
+            }
         </Attribute>
         <Attribute TModel="RoleResponse" Item="@item" Label="User">
-            <EntityLink TModel="RoleResponse" Model="@item" Type="UserResponse" EntityId="@item.user_id">
-                <ChildContent Context="_">@(item.user_name ?? item.user_id.ToString())</ChildContent>
-            </EntityLink>
+            @if (!string.IsNullOrWhiteSpace(item.user_name))
+            {
+                <a href="@($"/architecture/UserResponse/view/{item.user_id}")">@item.user_name</a>
+            }
+            else
+            {
+                <LazyEntityLink Entity="UserResponse" EntityId="@item.user_id" />
+            }
         </Attribute>
-        <Attribute TModel="RoleResponse" Item="@item" Label="Role Type" AttributeName="role_type" />
+        <Attribute TModel="RoleResponse" Item="@item" Label="Role Type">
+            @if (!string.IsNullOrWhiteSpace(item.role_type))
+            {
+                <a href="@($"/architecture/RoleTypeResponse/view/{item.role_type_id}")">@item.role_type</a>
+            }
+            else
+            {
+                <LazyEntityLink Entity="RoleTypeResponse" EntityId="@item.role_type_id" />
+            }
+        </Attribute>
         <Attribute TModel="RoleResponse" Item="@item" Label="Valid From">
             <span>@item.valid_from.ToString("yyyy-MM-dd HH:mm zzz")</span>
         </Attribute>

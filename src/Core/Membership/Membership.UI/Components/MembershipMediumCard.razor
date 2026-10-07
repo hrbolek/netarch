@@ -3,26 +3,31 @@
 
 @namespace WebAppArchitecture.Membership.UI.Components
 
-<MediumCard TModel="MembershipResponse" Model="@Model" ActionsUrl="@($"/architecture/MembershipResponse/actions/{Model.id}")" HeaderText="@Model.visual_label">
+<MediumCard TModel="MembershipResponse" Model="@Model" ActionsUrl="@($"/architecture/MembershipResponse/actions/{Model.id}")" HeaderText="Membership">
     <ChildContent Context="item">
+        <div class="mb-3 fw-semibold"><MembershipEntityLabel Model="@item" /></div>
         <Attribute TModel="MembershipResponse" Item="@item" Label="ID" AttributeName="id" />
 
         <Attribute TModel="MembershipResponse" Item="@item" Label="Group">
-            <div><code>@item.group_id</code></div>
-            <LazyEntityLink Entity="GroupResponse" EntityId="@item.group_id">
-                <Placeholder>
-                    <span class="text-muted small">loading group…</span>
-                </Placeholder>
-            </LazyEntityLink>
+            @if (!string.IsNullOrWhiteSpace(item.group_name))
+            {
+                <a href="@($"/architecture/GroupResponse/view/{item.group_id}")">@item.group_name</a>
+            }
+            else
+            {
+                <LazyEntityLink Entity="GroupResponse" EntityId="@item.group_id" />
+            }
         </Attribute>
 
         <Attribute TModel="MembershipResponse" Item="@item" Label="User">
-            <div><code>@item.user_id</code></div>
-            <LazyEntityLink Entity="UserResponse" EntityId="@item.user_id">
-                <Placeholder>
-                    <span class="text-muted small">loading user…</span>
-                </Placeholder>
-            </LazyEntityLink>
+            @if (!string.IsNullOrWhiteSpace(item.user_name))
+            {
+                <a href="@($"/architecture/UserResponse/view/{item.user_id}")">@item.user_name</a>
+            }
+            else
+            {
+                <LazyEntityLink Entity="UserResponse" EntityId="@item.user_id" />
+            }
         </Attribute>
 
         <Attribute TModel="MembershipResponse" Item="@item" Label="Valid From" AttributeName="valid_from" />
