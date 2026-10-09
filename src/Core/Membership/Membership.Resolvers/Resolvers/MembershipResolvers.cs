@@ -1,3 +1,4 @@
+using WebAppArchitecture.Base.UI.Pages;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -28,7 +29,7 @@ public static class MembershipResolvers
         if (Guid.TryParse(httpContext.Request.Query["group_id"], out var groupId) &&
             !await authorizationService.IsAllowedAsync(actor.Value, groupId, RbacOperations.Create, cancellationToken))
             return Results.Forbid();
-        return new RazorComponentResult<MembershipCreatePage>();
+        return ApiResults.Ok(new CreatePageModel("Membership", httpContext.Request.Query["group_id"].ToString(), httpContext.Request.Query["return_url"].ToString()));
     }
 
     public static async Task<IResult> CreateContained(
@@ -62,9 +63,7 @@ public static class MembershipResolvers
         var created = await service.CreateContainedAsync(
             new MembershipCreateContainedRequest(groupId, userId, validFrom, validTo), cancellationToken);
         var returnUrl = form["return_url"].ToString();
-        return Results.Redirect(string.IsNullOrWhiteSpace(returnUrl)
-            ? $"/architecture/MembershipResponse/edit/{created.id}"
-            : returnUrl);
+        return ApiResults.Ok(created);
     }
 
     public static Task<IResult> Read(Guid id, HttpContext httpContext, IMembershipService service, CancellationToken cancellationToken)
@@ -197,12 +196,14 @@ public static class MembershipEndpointExtensions
 
         group.MapGet("/create", MembershipResolvers.CreatePage)
             .WithName("MembershipCreatePage")
+            .ApplyViewModel<MembershipCreatePage, CreatePageModel>()
                 .WithDescription("""
                     GET /create. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
                     """);
 
         group.MapPost("/create-form", MembershipResolvers.CreateForm)
             .WithName("MembershipCreateForm")
+            .ApplyViewModel<MembershipViewPage, MembershipResponse>()
                 .WithDescription("""
                     POST /create-form. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
                     """);

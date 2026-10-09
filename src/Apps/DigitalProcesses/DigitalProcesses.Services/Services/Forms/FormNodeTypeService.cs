@@ -59,7 +59,7 @@ public sealed class FormNodeTypeService(ISecurityLayer security, ISecurityProjec
                 request.configuration_schema_json, id, now, now, actor, actor);
             var created = await Security.StageCreateAsync(model, token);
             await Security.SaveChangesAsync(token);
-            await securityProjection.RebuildAllAsync(token);
+            await securityProjection.SynchronizeRbacObjectAsync(id, token);
             return FormNodeTypeResponse.FromModel(created);
         }, ct);
     }

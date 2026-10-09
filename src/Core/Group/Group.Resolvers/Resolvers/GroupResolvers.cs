@@ -36,7 +36,7 @@ public static class GroupResolvers
         if (Guid.TryParse(httpContext.Request.Query["master_group_id"], out var parentId) &&
             !await authorizationService.IsAllowedAsync(actor.Value, parentId, RbacOperations.Create, cancellationToken))
             return Results.Forbid();
-        return new RazorComponentResult<GroupCreatePage>();
+        return ApiResults.Ok(new CreatePageModel("Group", httpContext.Request.Query["group_id"].ToString(), httpContext.Request.Query["return_url"].ToString()));
     }
 
     public static async Task<IResult> CreateContained(
@@ -73,9 +73,7 @@ public static class GroupResolvers
                 new GroupCreateTypedRequest(name, groupTypeId), cancellationToken);
 
         var returnUrl = form["return_url"].ToString();
-        return Results.Redirect(string.IsNullOrWhiteSpace(returnUrl)
-            ? $"/architecture/GroupResponse/edit/{created.id}"
-            : returnUrl);
+        return ApiResults.Ok(created);
     }
 
     public static Task<IResult> Read(Guid id, HttpContext httpContext, IGroupService service, CancellationToken cancellationToken)
@@ -353,12 +351,14 @@ public static class GroupEndpointExtensions
 
         group.MapGet("/create", GroupResolvers.CreatePage)
             .WithName("GroupCreatePage")
+            .ApplyViewModel<GroupCreatePage, CreatePageModel>()
                 .WithDescription("""
                     GET /create. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
                     """);
 
         group.MapPost("/create-form", GroupResolvers.CreateForm)
             .WithName("GroupCreateForm")
+            .ApplyViewModel<GroupViewPage, GroupResponse>()
                 .WithDescription("""
                     POST /create-form. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
                     """);

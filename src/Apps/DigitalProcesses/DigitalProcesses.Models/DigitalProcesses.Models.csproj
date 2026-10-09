@@ -4,6 +4,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>WebAppArchitecture.DigitalProcesses.Models</RootNamespace>
+    <Version>0.0.56.1</Version>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../../Core/Base/Base.csproj" />

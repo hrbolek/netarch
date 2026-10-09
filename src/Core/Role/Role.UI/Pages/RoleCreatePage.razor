@@ -45,6 +45,9 @@
 </Page>
 
 @code {
+    [Parameter] public CreatePageModel Model { get; set; } = new("Role");
+    [Parameter] public bool IsFragment { get; set; }
+
     private static readonly string[] GroupFields = ["Name"];
     private static readonly string[] UserFields = ["Name", "surname", "email"];
     private static readonly string[] RoleTypeFields = ["name"];

@@ -28,6 +28,7 @@ public static class SubmissionNodeResolvers
     public static void Map(IEndpointRouteBuilder endpoints, string prefix)
     {
         var group = endpoints.MapGroup(prefix + "/SubmissionNodeResponse").WithTags("DigitalProcesses.Runtime");
+        group.MapActions<SubmissionNodeModel>("SubmissionNodeResponse");
         group.MapGet("/view/{id:guid}", SubmissionNodeResolvers.Read)
             .ApplyViewModel<DigitalProcessModelPage<SubmissionNodeResponse>,SubmissionNodeResponse>()
             .WithDescription("""

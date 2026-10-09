@@ -8,6 +8,7 @@
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <ProjectReference Include="../../../Core/Hosting/Core.Hosting.csproj" />
+    <ProjectReference Include="../../../Core/DBLayer/DBLayer.csproj" />
     <ProjectReference Include="../DigitalProcesses.Models/DigitalProcesses.Models.csproj" />
     <ProjectReference Include="../DigitalProcesses.Services/DigitalProcesses.Services.csproj" />
     <ProjectReference Include="../DigitalProcesses.UI/DigitalProcesses.UI.csproj" />

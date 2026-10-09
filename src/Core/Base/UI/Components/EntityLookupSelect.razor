@@ -5,7 +5,9 @@
      data-list-url="@ListUrl"
      data-search-fields='@SearchFieldsJson'
      data-min-chars="@MinChars"
-     data-take="@Take">
+     data-take="@Take"
+     data-parent-field="@ParentField"
+     data-parent-property="@ParentProperty">
     <label class="form-label" for="@SearchId">@Label</label>
     <input id="@SearchId"
            type="search"
@@ -39,6 +41,8 @@
     [Parameter, EditorRequired] public string ListUrl { get; set; } = default!;
     [Parameter, EditorRequired] public IReadOnlyCollection<string> SearchFields { get; set; } = Array.Empty<string>();
     [Parameter] public bool Required { get; set; } = true;
+    [Parameter] public string? ParentField { get; set; }
+    [Parameter] public string? ParentProperty { get; set; }
     [Parameter] public int MinChars { get; set; } = 3;
     [Parameter] public int Take { get; set; } = 20;
     [Parameter] public string SearchPlaceholder { get; set; } = "Search…";

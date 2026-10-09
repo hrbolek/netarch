@@ -40,7 +40,7 @@ public sealed class UserService : BaseService<UserModel, UserResponse>, IUserSer
                 group.rbacobject_id, now, now, actor, actor), ct);
 
             await Security.SaveChangesAsync(ct);
-            await _projection.RebuildAllAsync(ct);
+            await _projection.SynchronizeRbacObjectAsync(user.id, ct);
             return UserResponse.FromModel(user);
         }, cancellationToken);
     }

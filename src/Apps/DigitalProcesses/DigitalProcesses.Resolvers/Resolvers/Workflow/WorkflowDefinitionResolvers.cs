@@ -1,3 +1,5 @@
+using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.Base.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -19,7 +21,7 @@ public static class WorkflowDefinitionResolvers
     public static Task<IResult> List(HttpContext http, IWorkflowDefinitionService service, CancellationToken ct) => BaseResolvers.List<WorkflowDefinitionModel,WorkflowDefinitionResponse,IWorkflowDefinitionService>(http,service,ct);
     public static Task<IResult> Link(Guid id, HttpContext http, IWorkflowDefinitionService service, CancellationToken ct) => BaseResolvers.Link<WorkflowDefinitionModel,WorkflowDefinitionResponse,IWorkflowDefinitionService>(id,http,service,ct);
 
-    public static RazorComponentResult<DigitalProcessCreatePage> CreatePage() => DigitalProcessCreateForm.Page("Create workflow definition", Prefix+"/WorkflowDefinitionResponse/create-form", Prefix+"/WorkflowDefinitionResponse/list", "Creates the stable identity of a workflow.", DigitalProcessCreateForm.Text("name","Name"),DigitalProcessCreateForm.TextArea("description","Description",false));
+    public static DigitalProcessCreatePageModel CreatePage() => DigitalProcessCreateForm.Page("Create workflow definition", Prefix+"/WorkflowDefinitionResponse/create-form", Prefix+"/WorkflowDefinitionResponse/list", "Creates the stable identity of a workflow.", DigitalProcessCreateForm.Text("name","Name"),DigitalProcessCreateForm.TextArea("description","Description",false));
 
     public static Task<WorkflowDefinitionResponse> CreateApi(CreateWorkflowDefinitionRequest request, IWorkflowDefinitionService service, CancellationToken ct)
         => service.CreateTypedAsync(request, ct);
@@ -31,11 +33,41 @@ public static class WorkflowDefinitionResolvers
         return Results.Redirect(Prefix + "/WorkflowDefinitionResponse/view/" + created.id);
     }
 
+    public static async Task<DefinitionVersionsPageModel> Detail(Guid id, ISecurityLayer security, CancellationToken ct)
+    {
+        var definition = await security.GetByIdAsync<WorkflowDefinitionModel>(id, SecurityOperations.Read, ct) ?? throw new KeyNotFoundException("Definition not found.");
+        var versions = security.Query<WorkflowVersionModel>(SecurityOperations.Read).Where(v => v.workflow_definition_id == id).OrderByDescending(v => v.version)
+            .Select(v => new DefinitionVersionItem(v.id, v.version, v.is_published, v.updated_at)).ToArray();
+        return new DefinitionVersionsPageModel(id, definition.name, "Workflow", versions);
+    }
+    public static async Task<IResult> PublishVersion(Guid id, Guid definitionId, IWorkflowVersionService versions, CancellationToken ct)
+    {
+        var published = await versions.PublishAsync(id, ct);
+        if (published.workflow_definition_id != definitionId) return Results.BadRequest();
+        return Results.Redirect($"/digital-processes/WorkflowDefinitionResponse/view/{definitionId}");
+    }
+    public static async Task<IResult> NewVersion(Guid id, ISecurityLayer security, IWorkflowVersionService versions, CancellationToken ct)
+    {
+        _ = await security.GetByIdAsync<WorkflowDefinitionModel>(id, SecurityOperations.Read, ct) ?? throw new KeyNotFoundException();
+        var next = security.Query<WorkflowVersionModel>(SecurityOperations.Read).Where(v => v.workflow_definition_id == id).Select(v => v.version).ToArray().DefaultIfEmpty(0).Max() + 1;
+        var created = await versions.CreateContainedAsync(new CreateWorkflowVersionRequest(id, next), ct);
+        return Results.Redirect($"/digital-processes/WorkflowVersionResponse/designer/{created.id}");
+    }
+    public static async Task<IResult> DeleteDraft(Guid id, Guid definitionId, IWorkflowVersionService versions, CancellationToken ct)
+    {
+        await versions.DeleteDraftAsync(id, ct);
+        return Results.Redirect("/digital-processes/WorkflowDefinitionResponse/view/" + definitionId);
+    }
     public static void Map(IEndpointRouteBuilder endpoints, string prefix)
     {
         var group = endpoints.MapGroup(prefix + "/WorkflowDefinitionResponse").WithTags("DigitalProcesses.Workflow");
-        group.MapGet("/view/{id:guid}", WorkflowDefinitionResolvers.Read)
-            .ApplyViewModel<DigitalProcessModelPage<WorkflowDefinitionResponse>,WorkflowDefinitionResponse>()
+        group.MapActions<WorkflowDefinitionModel>("WorkflowDefinitionResponse");
+        group.MapPost("/delete-version/{id:guid}", DeleteDraft)
+            .WithDescription("Deletes an unpublished version and its dependent records if no runtime or process references exist.");
+        group.MapPost("/publish-version/{id:guid}", PublishVersion).WithDescription("Publishes one draft version through RBAC-checked services and returns to the parent definition.");
+        group.MapPost("/new-version/{id:guid}", NewVersion).WithDescription("Creates a new workflow draft version from a workflow definition with an automatically incremented version number.");
+        group.MapGet("/view/{id:guid}", WorkflowDefinitionResolvers.Detail)
+            .ApplyViewModel<DefinitionVersionsPage,DefinitionVersionsPageModel>()
             .WithDescription("""
                 Returns one WorkflowDefinition visible to the current actor through the standard RBAC read operation. HTML or JSON is selected by content negotiation.
                 """);
@@ -57,6 +89,7 @@ public static class WorkflowDefinitionResolvers
                 """);
 
         group.MapGet("/create", WorkflowDefinitionResolvers.CreatePage)
+            .ApplyViewModel<DigitalProcessCreatePage, DigitalProcessCreatePageModel>()
             .WithDescription("""
                 Renders the HTML form used to create WorkflowDefinition.
                 """);

@@ -123,7 +123,7 @@ public sealed class SubmissionNodeService(
             var created = await Security.StageCreateAsync(model, token);
             await Security.SaveChangesAsync(token);
             if (ownScopeGroup is not null)
-                await securityProjection.RebuildAllAsync(token);
+                await securityProjection.SynchronizeRbacObjectAsync(ownScopeGroup.id, token);
             return SubmissionNodeResponse.FromModel(created);
         }, ct);
     }

@@ -92,18 +92,29 @@
                 const take = Number(root.dataset.take || '20');
                 const fields = JSON.parse(root.dataset.searchFields || '[]');
                 const listUrl = root.dataset.listUrl;
+                const parentName = root.dataset.parentField;
+                const parentProperty = root.dataset.parentProperty;
+                const parent = parentName ? document.querySelector(`select[name="${parentName}"]`) : null;
 
-                if (!select || !listUrl || fields.length === 0) return;
-
-                if (term.length < minChars) {
-                    status.textContent = `Type at least ${minChars} characters to search.`;
+                if (!select || !listUrl) return;
+                if (parentName && (!parent || !parent.value)) {
+                    select.replaceChildren(new Option('Choose parent entity first', ''));
+                    status.textContent = 'Choose parent entity first.';
                     return;
                 }
 
                 status.textContent = 'Searching…';
-                const where = buildWhere(fields, term);
-                const separator = listUrl.includes('?') ? '&' : '?';
-                const url = `${listUrl}${separator}where=${encodeURIComponent(JSON.stringify(where))}&take=${encodeURIComponent(take)}`;
+                const url = new URL(listUrl, window.location.origin);
+                let fixedWhere = null;
+                try { fixedWhere = url.searchParams.has('where') ? JSON.parse(url.searchParams.get('where')) : null; }
+                catch { status.textContent = 'Invalid lookup filter.'; return; }
+                const searchWhere = term.length >= minChars && fields.length ? buildWhere(fields, term) : null;
+                const parentWhere = parent && parentProperty ? { [parentProperty]: { _eq: parent.value } } : null;
+                const clauses = [fixedWhere, searchWhere, parentWhere].filter(Boolean);
+                const where = clauses.length > 1 ? { _and: clauses } : clauses[0] || null;
+                if (where) url.searchParams.set('where', JSON.stringify(where));
+                else url.searchParams.delete('where');
+                url.searchParams.set('take', String(take));
 
                 try {
                     const response = await fetch(url, {
@@ -123,7 +134,9 @@
                     for (const item of items) {
                         const option = document.createElement('option');
                         option.value = item.id;
-                        option.textContent = item.visual_label || item.name || item.id;
+                        option.textContent = item.version != null
+                            ? `Version ${item.version}${item.is_published ? ' (published)' : ''}`
+                            : item.visual_label || item.name || item.label || item.key || item.id;
                         select.appendChild(option);
                     }
                     if (previous && [...select.options].some(x => x.value === previous)) {
@@ -135,6 +148,23 @@
                 }
             }
 
+            document.addEventListener('DOMContentLoaded', () => {
+                document.querySelectorAll('[data-entity-lookup-search]').forEach(refreshLookup);
+            });
+            document.addEventListener('focusin', event => {
+                const input = event.target.closest?.('[data-entity-lookup-search]');
+                if (input && !input.dataset.loaded) { input.dataset.loaded = 'true'; refreshLookup(input); }
+            });
+            document.addEventListener('change', event => {
+                const selected = event.target.closest?.('[data-entity-lookup-select]');
+                if (!selected) return;
+                document.querySelectorAll('.entity-lookup[data-parent-field]').forEach(root => {
+                    if (root.dataset.parentField === selected.name) {
+                        const search = root.querySelector('[data-entity-lookup-search]');
+                        if (search) refreshLookup(search);
+                    }
+                });
+            });
             document.addEventListener('input', event => {
                 const input = event.target.closest?.('[data-entity-lookup-search]');
                 if (!input) return;

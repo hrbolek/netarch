@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -9,6 +10,7 @@ using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.Base.UI.Pages;
 using WebAppArchitecture.Base.UI.Routing;
 using WebAppArchitecture.DBLayer;
+using DBLayerImplementation = WebAppArchitecture.DBLayer.DBLayer;
 using WebAppArchitecture.Group.Models;
 using WebAppArchitecture.Group.Resolvers;
 using WebAppArchitecture.Group.Services;
@@ -24,6 +26,7 @@ using WebAppArchitecture.RoleType.Services;
 using WebAppArchitecture.Security.Resolvers;
 using WebAppArchitecture.Security.Services;
 using WebAppArchitecture.SecurityLayer;
+using SecurityLayerImplementation = WebAppArchitecture.SecurityLayer.SecurityLayer;
 using WebAppArchitecture.User.Models;
 using WebAppArchitecture.User.Resolvers;
 using WebAppArchitecture.User.Services;
@@ -48,12 +51,13 @@ public sealed class CoreModule : IArchitectureModule
             options.UseSqlite(connectionString));
 
         services.AddHttpContextAccessor();
-        services.AddScoped<IDBLayer, DBLayer>();
+        services.AddScoped<IDBLayer, DBLayerImplementation>();
         services.AddScoped<IDatabaseDumpService, DatabaseDumpService>();
         services.AddHostedService<CoreDatabaseHostedService>();
+        services.AddHostedService<EffectiveAccessCleanupHostedService>();
         services.AddScoped<ISecurityProjectionService, SecurityProjectionService>();
         services.AddScoped<IRbacAccessBindingManager, RbacAccessBindingManager>();
-        services.AddScoped<ISecurityLayer, SecurityLayer>();
+        services.AddScoped<ISecurityLayer, SecurityLayerImplementation>();
 
         services.AddScoped<IUserStore, EfUserStore>();
         services.AddScoped<IUserService, UserService>();

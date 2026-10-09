@@ -16,8 +16,12 @@ public sealed class ProcessDefinitionService(ISecurityLayer security, ISecurityP
 {
     public async Task<ProcessDefinitionResponse> CreateTypedAsync(CreateProcessDefinitionRequest request, CancellationToken ct = default)
     {
-        _ = await Security.GetByIdAsync<RoleTypeModel>(request.initiator_role_type_id, SecurityOperations.Read, ct)
-            ?? throw new KeyNotFoundException("Initiator role type not found.");
+        var initiatorRoleTypeId = request.initiator_role_type_id
+            ?? DigitalProcessWellKnown.InitiatorRoleTypeId;
+
+        _ = await Security.GetByIdAsync<RoleTypeModel>(initiatorRoleTypeId, SecurityOperations.Read, ct)
+            ?? throw new KeyNotFoundException(
+                $"Initiator role type '{initiatorRoleTypeId}' was not found or is not readable.");
         var (catalog, _) = await CreationScopeGuard.RequireEntityAsync<GroupModel>(
             Security, RbacWellKnown.ProcessDefinitionCreationScopeId, "typed", ct);
 
@@ -29,11 +33,11 @@ public sealed class ProcessDefinitionService(ISecurityLayer security, ISecurityP
             await CreationScopeGuard.StageOwnedGroupAsync(
                 Security, id, $"Process definition: {request.name}", catalog, true, now, actor, token);
             var model = new ProcessDefinitionModel(
-                id, request.name, request.description, request.initiator_role_type_id,
+                id, request.name, request.description, initiatorRoleTypeId,
                 id, now, now, actor, actor);
             var created = await Security.StageCreateAsync(model, token);
             await Security.SaveChangesAsync(token);
-            await securityProjection.RebuildAllAsync(token);
+            await securityProjection.SynchronizeRbacObjectAsync(id, token);
             return ProcessDefinitionResponse.FromModel(created);
         }, ct);
     }

@@ -84,7 +84,7 @@ public sealed class RequestService(
                 initial.id, request, submission, instantiated, now, actor, token);
 
             await Security.SaveChangesAsync(token);
-            await securityProjection.RebuildAllAsync(token);
+            await securityProjection.SynchronizeGroupSubtreeAsync(requestGroup.id, token);
             return RequestResponse.FromModel(request);
         }, ct);
     }
@@ -184,7 +184,7 @@ public sealed class RequestService(
             await Security.StageUpdateAsync(updatedRequest, token);
 
             await Security.SaveChangesAsync(token);
-            await securityProjection.RebuildAllAsync(token);
+            await securityProjection.SynchronizeGroupSubtreeAsync(requestGroup.id, token);
 
             if (!string.IsNullOrWhiteSpace(transition.action_query))
                 await integration.ExecuteAsync(
@@ -208,8 +208,8 @@ public sealed class RequestService(
             .Select(SubmissionNodeResponse.Projection).ToArray();
         var history = Security.Query<RequestTransitionHistoryModel>(SecurityOperations.Read)
             .Where(x => x.request_id == requestId)
-            .OrderBy(x => x.changed_at)
-            .Select(RequestTransitionHistoryResponse.Projection).ToArray();
+            .Select(RequestTransitionHistoryResponse.Projection).ToArray()
+            .OrderBy(x => x.changed_at).ToArray();
         return new(RequestResponse.FromModel(r), WorkflowStateResponse.FromModel(state),
             new(SubmissionResponse.FromModel(submission), nodes), history);
     }

@@ -19,7 +19,7 @@ public static class WorkflowStateResolvers
     public static Task<IResult> List(HttpContext http, IWorkflowStateService service, CancellationToken ct) => BaseResolvers.List<WorkflowStateModel,WorkflowStateResponse,IWorkflowStateService>(http,service,ct);
     public static Task<IResult> Link(Guid id, HttpContext http, IWorkflowStateService service, CancellationToken ct) => BaseResolvers.Link<WorkflowStateModel,WorkflowStateResponse,IWorkflowStateService>(id,http,service,ct);
 
-    public static RazorComponentResult<DigitalProcessCreatePage> CreatePage() => DigitalProcessCreateForm.Page("Create workflow state", Prefix+"/WorkflowStateResponse/create-form", Prefix+"/WorkflowStateResponse/list", "Adds a state to a draft workflow version.", DigitalProcessCreateForm.GuidField("workflow_version_id","Workflow version ID"),DigitalProcessCreateForm.Text("key","Key"),DigitalProcessCreateForm.Text("name","Name"),DigitalProcessCreateForm.TextArea("description","Description",false),DigitalProcessCreateForm.Check("is_initial","Initial state"),DigitalProcessCreateForm.Check("is_terminal","Terminal state"),DigitalProcessCreateForm.Number("position","Position","0"));
+    public static DigitalProcessCreatePageModel CreatePage() => DigitalProcessCreateForm.Page("Create workflow state", Prefix+"/WorkflowStateResponse/create-form", Prefix+"/WorkflowStateResponse/list", "Adds a state to a draft workflow version.", DigitalProcessCreateForm.GuidField("workflow_version_id","Workflow version ID"),DigitalProcessCreateForm.Text("key","Key"),DigitalProcessCreateForm.Text("name","Name"),DigitalProcessCreateForm.TextArea("description","Description",false),DigitalProcessCreateForm.Check("is_initial","Initial state"),DigitalProcessCreateForm.Check("is_terminal","Terminal state"),DigitalProcessCreateForm.Number("position","Position","0"));
 
     public static Task<WorkflowStateResponse> CreateApi(CreateWorkflowStateRequest request, IWorkflowStateService service, CancellationToken ct)
         => service.CreateContainedAsync(request, ct);
@@ -34,6 +34,7 @@ public static class WorkflowStateResolvers
     public static void Map(IEndpointRouteBuilder endpoints, string prefix)
     {
         var group = endpoints.MapGroup(prefix + "/WorkflowStateResponse").WithTags("DigitalProcesses.Workflow");
+        group.MapActions<WorkflowStateModel>("WorkflowStateResponse");
         group.MapGet("/view/{id:guid}", WorkflowStateResolvers.Read)
             .ApplyViewModel<DigitalProcessModelPage<WorkflowStateResponse>,WorkflowStateResponse>()
             .WithDescription("""
@@ -57,6 +58,7 @@ public static class WorkflowStateResolvers
                 """);
 
         group.MapGet("/create", WorkflowStateResolvers.CreatePage)
+            .ApplyViewModel<DigitalProcessCreatePage, DigitalProcessCreatePageModel>()
             .WithDescription("""
                 Renders the HTML form used to create WorkflowState.
                 """);

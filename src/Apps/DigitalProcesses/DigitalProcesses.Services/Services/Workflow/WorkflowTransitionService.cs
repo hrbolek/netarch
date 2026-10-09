@@ -8,6 +8,8 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 public interface IWorkflowTransitionService : IBaseService<WorkflowTransitionModel, WorkflowTransitionResponse>
 {
     Task<WorkflowTransitionResponse> CreateContainedAsync(CreateWorkflowTransitionRequest request, CancellationToken ct = default);
+    Task UpdateDefinitionAsync(Guid id, Guid sourceId, Guid targetId, string key, string name, bool noteRequired, string? condition, string? action, CancellationToken ct = default);
+    Task DeleteDefinitionAsync(Guid id, CancellationToken ct = default);
 }
 
 public sealed class WorkflowTransitionService(ISecurityLayer security)
@@ -40,4 +42,33 @@ public sealed class WorkflowTransitionService(ISecurityLayer security)
             return WorkflowTransitionResponse.FromModel(x);
         }, ct);
     }
+    public async Task UpdateDefinitionAsync(Guid id, Guid sourceId, Guid targetId, string key, string name, bool noteRequired, string? condition, string? action, CancellationToken ct = default)
+    {
+        var transition = await Security.GetByIdAsync<WorkflowTransitionModel>(id, SecurityOperations.Update, ct)
+            ?? throw new KeyNotFoundException("Transition not editable.");
+        var version = await Security.GetByIdAsync<WorkflowVersionModel>(transition.workflow_version_id, SecurityOperations.Update, ct)
+            ?? throw new KeyNotFoundException("Version not editable.");
+        if (version.is_published) throw new InvalidOperationException("Published workflow is immutable.");
+        var source = await Security.GetByIdAsync<WorkflowStateModel>(sourceId, SecurityOperations.Read, ct);
+        var target = await Security.GetByIdAsync<WorkflowStateModel>(targetId, SecurityOperations.Read, ct);
+        if (source?.workflow_version_id != version.id || target?.workflow_version_id != version.id)
+            throw new InvalidOperationException("Both states must belong to the current workflow version.");
+        if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Key and name are required.");
+        await Security.StageUpdateAsync(transition with { source_state_id = sourceId, target_state_id = targetId,
+            key = key, name = name, note_required = noteRequired, condition_query = condition, action_query = action,
+            updated_at = DateTimeOffset.UtcNow, updated_by = Security.CurrentUserId }, ct);
+        await Security.SaveChangesAsync(ct);
+    }
+
+    public async Task DeleteDefinitionAsync(Guid id, CancellationToken ct = default)
+    {
+        var transition = await Security.GetByIdAsync<WorkflowTransitionModel>(id, SecurityOperations.Delete, ct)
+            ?? throw new KeyNotFoundException("Transition not deletable.");
+        var version = await Security.GetByIdAsync<WorkflowVersionModel>(transition.workflow_version_id, SecurityOperations.Update, ct)
+            ?? throw new KeyNotFoundException("Version not editable.");
+        if (version.is_published) throw new InvalidOperationException("Published workflow is immutable.");
+        await Security.StageDeleteAsync<WorkflowTransitionModel>(id, ct);
+        await Security.SaveChangesAsync(ct);
+    }
+
 }

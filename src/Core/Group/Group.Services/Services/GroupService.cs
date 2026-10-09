@@ -56,7 +56,7 @@ public sealed class GroupService : BaseService<GroupModel, GroupResponse>, IGrou
                 now, now, actor, actor);
             var entity = await Security.StageCreateAsync(model, ct);
             await Security.SaveChangesAsync(ct);
-            await _projection.RebuildAllAsync(ct);
+            await _projection.SynchronizeRbacObjectAsync(entity.id, ct);
             return GroupResponse.FromModel(entity);
         }, cancellationToken);
 
@@ -74,18 +74,24 @@ public sealed class GroupService : BaseService<GroupModel, GroupResponse>, IGrou
             var entity = await Security.StageUpdateAsync(updatedModel, ct);
             await Security.SaveChangesAsync(ct);
             if (hierarchyChanged)
-                await _projection.RebuildAllAsync(ct);
+                await _projection.SynchronizeGroupSubtreeAsync(entity.id, ct);
             return GroupResponse.FromModel(entity);
         }, cancellationToken);
     }
 
-    public override Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
-        => Security.ExecuteInTransactionAsync(async ct =>
+    public override async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var current = await Security.GetByIdAsync<GroupModel>(id, SecurityOperations.Delete, cancellationToken);
+        if (current is null)
+            return;
+
+        await Security.ExecuteInTransactionAsync(async ct =>
         {
             await Security.StageDeleteAsync<GroupModel>(id, ct);
             await Security.SaveChangesAsync(ct);
-            await _projection.RebuildAllAsync(ct);
+            await _projection.SynchronizeGroupSubtreeAsync(current.id, ct);
         }, cancellationToken);
+    }
 }
 
 public interface IGroupTypeService : IBaseService<GroupTypeModel, GroupTypeResponse> { }

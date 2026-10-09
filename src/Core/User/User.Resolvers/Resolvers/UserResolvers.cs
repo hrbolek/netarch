@@ -33,7 +33,7 @@ public static class UserResolvers
     {
         if (actorProvider.TryGetActorUserId(httpContext) is null)
             return Results.Unauthorized();
-        return new RazorComponentResult<UserCreatePage>();
+        return ApiResults.Ok(new CreatePageModel("User", httpContext.Request.Query["group_id"].ToString(), httpContext.Request.Query["return_url"].ToString()));
     }
 
     public static async Task<IResult> CreateContained(
@@ -56,7 +56,7 @@ public static class UserResolvers
 
         var created = await service.CreateContainedAsync(new UserCreateContainedRequest(
             name, groupId, form["email"].ToString(), form["surname"].ToString()), cancellationToken);
-        return Results.Redirect($"/architecture/UserResponse/edit/{created.id}");
+        return ApiResults.Ok(created);
     }
 
     public static async Task<IResult> Read(
@@ -363,12 +363,14 @@ public static class UserEndpointExtensions
 
         group.MapGet("/create", UserResolvers.CreatePage)
             .WithName("UserCreatePage")
+            .ApplyViewModel<UserCreatePage, CreatePageModel>()
                 .WithDescription("""
                     GET /create. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
                     """);
 
         group.MapPost("/create-form", UserResolvers.CreateForm)
             .WithName("UserCreateForm")
+            .ApplyViewModel<UserViewPage, UserResponse>()
                 .WithDescription("""
                     POST /create-form. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
                     """);

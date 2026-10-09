@@ -5,12 +5,6 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
-public interface IFormVersionService : IBaseService<FormVersionModel, FormVersionResponse>
-{
-    Task<FormVersionResponse> CreateContainedAsync(CreateFormVersionRequest request, CancellationToken ct = default);
-    Task<FormVersionResponse> PublishAsync(Guid id, CancellationToken ct = default);
-}
-
 public sealed class FormVersionService(ISecurityLayer security)
     : BaseService<FormVersionModel, FormVersionResponse>(security), IFormVersionService
 {
@@ -28,11 +22,55 @@ public sealed class FormVersionService(ISecurityLayer security)
         var created = await Security.ExecuteInTransactionAsync(async token =>
         {
             var x = await Security.StageCreateAsync(model, token);
+            var source = Security.Query<FormVersionModel>(SecurityOperations.Read)
+                .Where(v => v.form_definition_id == definition.id && v.version < request.version)
+                .OrderByDescending(v => v.version).FirstOrDefault();
+            if (source is not null)
+            {
+                var nodes = Security.Query<FormNodeModel>(SecurityOperations.Read)
+                    .Where(n => n.form_version_id == source.id).ToArray();
+                var ids = nodes.ToDictionary(n => n.id, _ => Guid.NewGuid());
+                foreach (var node in nodes.OrderBy(n => n.path.Length))
+                {
+                    var newId = ids[node.id];
+                    var mappedPath = node.path;
+                    foreach (var pair in ids)
+                        mappedPath = mappedPath.Replace(pair.Key.ToString("N"), pair.Value.ToString("N"), StringComparison.OrdinalIgnoreCase);
+                    var clone = node with {
+                        id = newId, form_version_id = model.id,
+                        parent_id = node.parent_id is Guid parent ? ids[parent] : null,
+                        path = mappedPath, rbacobject_id = definition.rbacobject_id,
+                        created_at = now, updated_at = now, created_by = actor, updated_by = actor
+                    };
+                    await Security.StageCreateAsync(clone, token);
+                }
+            }
             await Security.SaveChangesAsync(token);
             return FormVersionResponse.FromModel(x);
         }, ct);
 
         return request.publish ? await PublishAsync(created.id, ct) : created;
+    }
+
+    public async Task DeleteDraftAsync(Guid id, CancellationToken ct = default)
+    {
+        var version = await Security.GetByIdAsync<FormVersionModel>(id, SecurityOperations.Delete, ct)
+            ?? throw new KeyNotFoundException("Form version not found or not deletable.");
+        if (version.is_published) throw new InvalidOperationException("Published versions cannot be deleted.");
+        if (Security.Query<ProcessDefinitionVersionModel>(SecurityOperations.Read).Any(p => p.form_version_id == id) ||
+            Security.Query<SubmissionModel>(SecurityOperations.Read).Any(p => p.form_version_id == id))
+            throw new InvalidOperationException("Form version is referenced by a process or submission.");
+        var nodes = Security.Query<FormNodeModel>(SecurityOperations.Read).Where(n => n.form_version_id == id).ToArray();
+        var nodeIds = nodes.Select(n => n.id).ToArray();
+        if (Security.Query<WorkflowStateAccessRuleModel>(SecurityOperations.Read)
+            .Any(r => r.target_form_node_id != null && nodeIds.Contains(r.target_form_node_id.Value)))
+            throw new InvalidOperationException("Form nodes are referenced by workflow access rules.");
+        await Security.ExecuteInTransactionAsync(async token => {
+            foreach (var n in nodes.OrderByDescending(n => n.path.Length))
+                await Security.StageDeleteAsync<FormNodeModel>(n.id, token);
+            await Security.StageDeleteAsync<FormVersionModel>(id, token);
+            await Security.SaveChangesAsync(token);
+        }, ct);
     }
 
     public async Task<FormVersionResponse> PublishAsync(Guid id, CancellationToken ct = default)

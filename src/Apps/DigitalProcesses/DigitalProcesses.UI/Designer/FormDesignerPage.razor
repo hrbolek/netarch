@@ -1,0 +1,252 @@
+@namespace WebAppArchitecture.DigitalProcesses.UI.Designer
+
+<Page Title="Form designer">
+<div class="container-fluid py-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1 class="h4 mb-1">Form designer · @Model.designer.form.visual_label</h1>
+            <div class="text-muted small">Version @Model.designer.form.version @(Model.designer.form.is_published ? "· published" : "· draft")</div>
+        </div>
+        <div class="btn-group">
+            <a class="btn @(Model.test_mode ? "btn-outline-primary" : "btn-primary")" href="@DesignerUrl">Design</a>
+            <a class="btn @(Model.test_mode ? "btn-primary" : "btn-outline-primary")" href="@TestUrl">Test</a>
+        </div>
+    </div>
+
+    @if (Model.test_mode)
+    {
+        <div class="alert alert-info py-2">Test mode uses the same form renderers as runtime. Entered values are dummy browser data and do not create a Submission.</div>
+        <form onsubmit="return false;">
+            @foreach (var node in Roots)
+            {
+                <FormNodeTreeItem Node="@node" Nodes="@Model.designer.nodes" Types="@Model.designer.node_types" TestMode="true" />
+            }
+        </form>
+    }
+    else if (Model.designer.form.is_published)
+    {
+        <div class="alert alert-warning">Published form versions are immutable. Use Test mode to inspect the form or create a new draft version.</div>
+        @foreach (var node in Roots)
+        {
+            <FormNodeTreeItem Node="@node" Nodes="@Model.designer.nodes" Types="@Model.designer.node_types" TestMode="true" />
+        }
+    }
+    else
+    {
+        <div class="row g-3">
+            <div class="col-xl-3">
+                <div class="card mb-3">
+                    <div class="card-header"><strong>Structure</strong></div>
+                    <div class="list-group list-group-flush">
+                        @foreach (var node in Model.designer.nodes.OrderBy(x => x.path).ThenBy(x => x.position))
+                        {
+                            var depth = Math.Max(0, node.path.Count(c => c == '/') - 1);
+                            <div class="list-group-item py-2 d-flex justify-content-between align-items-center" style="padding-left:@(1 + depth * 1.15)rem">
+                                <button type="button" class="btn btn-link text-decoration-none text-start flex-grow-1 p-0" data-bs-toggle="modal" data-bs-target="#edit-node-@node.id">@(node.label ?? node.key)<span class="text-muted small d-block">@node.key</span></button>
+                                <FormNodeActions NodeId="@node.id" ParentId="@node.parent_id" Position="@node.position" FormVersionId="@Model.designer.form.id" CanAdd="@Containers.Any(x => x.id == node.id)" />
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><strong>Library</strong></div>
+                    <div class="card-body">
+                        <p class="small text-muted">Reusable root sections from other readable form versions. Import creates an independent deep copy.</p>
+                        @if (!Model.designer.library_items.Any())
+                        {
+                            <div class="text-muted small">No reusable sections available yet.</div>
+                        }
+                        @foreach (var item in Model.designer.library_items)
+                        {
+                            <form method="post" action="/digital-processes/FormVersionResponse/designer/import-form" class="border rounded p-2 mb-2">
+                                <input type="hidden" name="source_node_id" value="@item.source_node_id" />
+                                <input type="hidden" name="target_form_version_id" value="@Model.designer.form.id" />
+                                <div class="fw-semibold">@item.label</div>
+                                <div class="small text-muted mb-2">@item.key · @item.renderer_key</div>
+                                <label class="form-label small">Target section</label>
+                                <select class="form-select form-select-sm mb-2" name="target_parent_id">
+                                    <option value="">Form root</option>
+                                    @foreach (var target in Containers)
+                                    {
+                                        <option value="@target.id">@(target.label ?? target.key)</option>
+                                    }
+                                </select>
+                                <input class="form-control form-control-sm mb-2" name="key_prefix" placeholder="Optional key prefix" />
+                                <button class="btn btn-sm btn-outline-primary" type="submit">Import copy</button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-6">
+                <div class="card mb-3">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <strong>Form</strong><span class="text-muted small">Same renderer as Test/runtime</span>
+                    </div>
+                    <div class="card-body">
+                        @foreach (var node in Roots)
+                        {
+                            <FormNodeTreeItem Node="@node" Nodes="@Model.designer.nodes" Types="@Model.designer.node_types" TestMode="false" />
+                        }
+                        @if (!Roots.Any())
+                        {
+                            <div class="text-muted">The form is empty. Add a root section or field.</div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3">
+                <div class="card mb-3">
+                    <div class="card-header"><strong>Add node</strong></div>
+                    <div class="card-body">
+                        <form method="post" action="/digital-processes/FormVersionResponse/designer/add-form">
+                            <input type="hidden" name="form_version_id" value="@Model.designer.form.id" />
+                            <label class="form-label">Parent</label>
+                            <select class="form-select mb-2" name="parent_id">
+                                <option value="">Form root</option>
+                                @foreach (var target in Containers)
+                                {
+                                    <option value="@target.id">@(target.label ?? target.key)</option>
+                                }
+                            </select>
+                            <label class="form-label">Type</label>
+                            <select class="form-select mb-2" name="node_type_id" required>
+                                @foreach (var type in OrderedNodeTypes)
+                                {
+                                    <option value="@type.id">@type.name</option>
+                                }
+                            </select>
+                            <label class="form-label">Key</label>
+                            <input class="form-control mb-2" name="key" required />
+                            <label class="form-label">Label</label>
+                            <input class="form-control mb-2" name="label" />
+                            <label class="form-label">Position</label>
+                            <input class="form-control mb-3" type="number" name="position" value="0" />
+                            <button class="btn btn-primary" type="submit">Add</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><strong>Node properties</strong></div>
+                    <div class="card-body small text-muted">Select a node from Structure to navigate to it. Use the kebab menu on a node to edit its properties or position.</div>
+                </div>
+
+                @foreach (var node in Model.designer.nodes.OrderBy(x => x.path).ThenBy(x => x.position))
+                {
+                    <div class="modal fade" id="edit-node-@node.id" tabindex="-1" aria-label="Edit node"><div class="modal-dialog modal-dialog-centered modal-lg"><div class="modal-content">
+                        <div class="modal-header border-bottom p-3"><h2 class="modal-title fs-5">Edit @node.key</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+                        <div class="modal-body p-3"><form method="post" action="/digital-processes/FormVersionResponse/designer/update-form">
+                                <input type="hidden" name="id" value="@node.id" />
+                                <input type="hidden" name="form_version_id" value="@Model.designer.form.id" />
+                                <label class="form-label">Key</label><input class="form-control form-control-sm mb-2" name="key" value="@node.key" required />
+                                <label class="form-label">Label</label><input class="form-control form-control-sm mb-2" name="label" value="@node.label" />
+                                <label class="form-label">Description</label><textarea class="form-control form-control-sm mb-2" name="description">@node.description</textarea>
+                                <div class="row g-2 mb-2"><div class="col"><label class="form-label">Min</label><input class="form-control form-control-sm" type="number" name="min_occurs" value="@node.min_occurs" min="0" /></div><div class="col"><label class="form-label">Max</label><input class="form-control form-control-sm" type="number" name="max_occurs" value="@node.max_occurs" min="1" /></div></div>
+                                <label class="form-label">Configuration JSON</label><textarea class="form-control form-control-sm mb-2" name="configuration_json" rows="5" placeholder="@ConfigurationPlaceholder(node)">@node.configuration_json</textarea>
+                                <div class="form-text mb-2">JSON object; for Select, use a dataSource query. Repeated sections use Min/Max above.</div>
+                                <button class="btn btn-sm btn-outline-primary" type="submit">Save</button>
+                            </form></div>
+                        <div class="modal-footer border-top p-3"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button></div>
+                    </div></div></div>
+                    <div class="modal fade" id="move-node-@node.id" tabindex="-1" aria-label="Move node"><div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+                        <div class="modal-header border-bottom p-3"><h2 class="modal-title fs-5">Position · @node.key</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+                        <div class="modal-body p-3"><form method="post" action="/digital-processes/FormVersionResponse/designer/move-form" class="mt-3 border-top pt-2">
+                                <input type="hidden" name="id" value="@node.id" />
+                                <input type="hidden" name="form_version_id" value="@Model.designer.form.id" />
+                                <label class="form-label">Move to</label>
+                                <select class="form-select form-select-sm mb-2" name="parent_id">
+                                    <option value="">Form root</option>
+                                    @foreach (var target in Containers.Where(x => x.id != node.id))
+                                    {
+                                        <option value="@target.id" selected="@(node.parent_id == target.id)">@(target.label ?? target.key)</option>
+                                    }
+                                </select>
+                                <input class="form-control form-control-sm mb-2" type="number" name="position" value="@node.position" />
+                                <button class="btn btn-sm btn-outline-secondary" type="submit">Move</button>
+                            </form></div>
+                    </div></div></div>
+                }
+            </div>
+        </div>
+        @foreach (var container in Containers)
+        {
+            <dialog id="add-node-@container.id" class="border rounded shadow p-4" style="width:min(95vw, 480px)">
+                <div class="d-flex justify-content-between mb-3"><h2 class="h5">Add node to @(container.label ?? container.key)</h2><button type="button" class="btn-close" onclick="this.closest('dialog').close()" aria-label="Close"></button></div>
+                <form method="post" action="/digital-processes/FormVersionResponse/designer/add-form">
+                    <input type="hidden" name="form_version_id" value="@Model.designer.form.id" />
+                    <input type="hidden" name="parent_id" value="@container.id" />
+                    <label class="form-label">Type</label><select class="form-select mb-2" name="node_type_id" required>@foreach (var type in OrderedNodeTypes) { <option value="@type.id">@type.name</option> }</select>
+                    <label class="form-label">Key</label><input class="form-control mb-2" name="key" required />
+                    <label class="form-label">Label</label><input class="form-control mb-2" name="label" />
+                    <label class="form-label">Position</label><input class="form-control mb-3" name="position" type="number" value="0" />
+                    <button type="submit" class="btn btn-primary">Add node</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="this.closest('dialog').close()">Cancel</button>
+                </form>
+            </dialog>
+        }
+    }
+</div>
+</Page>
+
+<script>
+window.digitalProcessesAddOccurrence = function(button) {
+  const section = button.closest('section[data-form-node-id]');
+  const body = button.closest('[data-repeat-body]');
+  const first = body?.querySelector(':scope > [data-repeat-instance]');
+  if (!first) return;
+  const max = Number(section.dataset.maxOccurs || '1');
+  const instances = body.querySelectorAll(':scope > [data-repeat-instance]');
+  if (instances.length >= max) return;
+  const clone = first.cloneNode(true);
+  clone.querySelectorAll('input,textarea,select').forEach(el => {
+    if (el.type === 'checkbox' || el.type === 'radio') el.checked = false;
+    else if (el.tagName === 'SELECT') el.selectedIndex = 0;
+    else el.value = '';
+    if (el.id) el.id += '-occ-' + instances.length;
+  });
+  const remove = document.createElement('button');
+  remove.type = 'button'; remove.className = 'btn btn-sm btn-outline-danger mb-2';
+  remove.textContent = 'Remove occurrence';
+  remove.onclick = () => { clone.remove(); button.disabled = false; };
+  clone.prepend(remove);
+  first.parentNode.append(clone);
+  button.disabled = instances.length + 1 >= max;
+};
+</script>
+@code {
+    [Parameter, EditorRequired] public FormDesignerPageResponse Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
+    private string DesignerUrl => $"/digital-processes/FormVersionResponse/designer/{Model.designer.form.id}";
+    private static string ConfigurationPlaceholder(FormNodeResponse node) =>
+        node.key.Contains("select", StringComparison.OrdinalIgnoreCase)
+            ? "{\"dataSource\":{\"query\":\"query { users { id name surname } }\",\"variables\":\"section\"}}"
+            : "{\"description\":\"Optional renderer settings\"}";
+    private string TestUrl => $"/digital-processes/FormVersionResponse/test/{Model.designer.form.id}";
+    private IEnumerable<FormNodeResponse> Roots => Model.designer.nodes.Where(x => x.parent_id == null).OrderBy(x => x.position).ThenBy(x => x.key);
+    private IEnumerable<FormNodeResponse> Containers
+    {
+        get
+        {
+            var typeIds = Model.designer.node_types.Where(x => x.can_have_children).Select(x => x.id).ToHashSet();
+            return Model.designer.nodes.Where(x => typeIds.Contains(x.node_type_id)).OrderBy(x => x.path).ThenBy(x => x.position);
+        }
+    }
+    private IEnumerable<FormNodeTypeResponse> OrderedNodeTypes => Model.designer.node_types
+        .OrderBy(x => x.renderer_key switch
+        {
+            "section" => 0,
+            "input.text" => 10,
+            "input.textarea" => 20,
+            "input.number" => 30,
+            "input.date" => 40,
+            "input.checkbox" => 50,
+            "input.select" => 60,
+            _ => 100
+        })
+        .ThenBy(x => x.name);
+
+}

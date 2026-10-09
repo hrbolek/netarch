@@ -21,6 +21,7 @@ public static class RequestTransitionHistoryResolvers
     public static void Map(IEndpointRouteBuilder endpoints, string prefix)
     {
         var group = endpoints.MapGroup(prefix + "/RequestTransitionHistoryResponse").WithTags("DigitalProcesses.Runtime");
+        group.MapActions<RequestTransitionHistoryModel>("RequestTransitionHistoryResponse");
         group.MapGet("/view/{id:guid}", RequestTransitionHistoryResolvers.Read)
             .ApplyViewModel<DigitalProcessModelPage<RequestTransitionHistoryResponse>,RequestTransitionHistoryResponse>()
             .WithDescription("""

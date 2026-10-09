@@ -1,3 +1,5 @@
+using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.Base.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -19,7 +21,13 @@ public static class ProcessDefinitionResolvers
     public static Task<IResult> List(HttpContext http, IProcessDefinitionService service, CancellationToken ct) => BaseResolvers.List<ProcessDefinitionModel,ProcessDefinitionResponse,IProcessDefinitionService>(http,service,ct);
     public static Task<IResult> Link(Guid id, HttpContext http, IProcessDefinitionService service, CancellationToken ct) => BaseResolvers.Link<ProcessDefinitionModel,ProcessDefinitionResponse,IProcessDefinitionService>(id,http,service,ct);
 
-    public static RazorComponentResult<DigitalProcessCreatePage> CreatePage() => DigitalProcessCreateForm.Page("Create process definition", Prefix+"/ProcessDefinitionResponse/create-form", Prefix+"/ProcessDefinitionResponse/list", "Creates a digital-process definition and selects the role type assigned to request initiators.", DigitalProcessCreateForm.Text("name","Name"),DigitalProcessCreateForm.GuidField("initiator_role_type_id","Initiator role type ID"),DigitalProcessCreateForm.TextArea("description","Description",false));
+    public static DigitalProcessCreatePageModel CreatePage() => DigitalProcessCreateForm.Page(
+        "Create process definition",
+        Prefix + "/ProcessDefinitionResponse/create-form",
+        Prefix + "/ProcessDefinitionResponse/list",
+        "Creates a digital-process definition. The request initiator automatically receives the system role type 'já'.",
+        DigitalProcessCreateForm.Text("name", "Name"),
+        DigitalProcessCreateForm.TextArea("description", "Description", false));
 
     public static Task<ProcessDefinitionResponse> CreateApi(CreateProcessDefinitionRequest request, IProcessDefinitionService service, CancellationToken ct)
         => service.CreateTypedAsync(request, ct);
@@ -27,15 +35,46 @@ public static class ProcessDefinitionResolvers
     public static async Task<IResult> CreateForm(HttpContext http, IProcessDefinitionService service, CancellationToken ct)
     {
         var f = await http.Request.ReadFormAsync(ct);
-        var created = await service.CreateTypedAsync(new CreateProcessDefinitionRequest(DigitalProcessCreateForm.Required(f,"name"),DigitalProcessCreateForm.GuidValue(f,"initiator_role_type_id"),DigitalProcessCreateForm.Optional(f,"description")), ct);
+        var created = await service.CreateTypedAsync(new CreateProcessDefinitionRequest(
+            DigitalProcessCreateForm.Required(f, "name"),
+            description: DigitalProcessCreateForm.Optional(f, "description")), ct);
         return Results.Redirect(Prefix + "/ProcessDefinitionResponse/view/" + created.id);
     }
 
+    public static async Task<DefinitionVersionsPageModel> Detail(Guid id, ISecurityLayer security, CancellationToken ct)
+    {
+        var definition = await security.GetByIdAsync<ProcessDefinitionModel>(id, SecurityOperations.Read, ct) ?? throw new KeyNotFoundException("Definition not found.");
+        var versions = security.Query<ProcessDefinitionVersionModel>(SecurityOperations.Read).Where(v => v.process_definition_id == id).OrderByDescending(v => v.version)
+            .Select(v => new DefinitionVersionItem(v.id, v.version, v.is_published, v.updated_at)).ToArray();
+        return new DefinitionVersionsPageModel(id, definition.name, "Process", versions);
+    }
+    public static async Task<IResult> PublishVersion(Guid id, Guid definitionId, IProcessDefinitionVersionService versions, CancellationToken ct)
+    {
+        var published = await versions.PublishAsync(id, ct);
+        if (published.process_definition_id != definitionId) return Results.BadRequest();
+        return Results.Redirect($"/digital-processes/ProcessDefinitionResponse/view/{definitionId}");
+    }
+    public static async Task<IResult> DeleteDraft(Guid id, Guid definitionId, IProcessDefinitionVersionService versions, CancellationToken ct)
+    {
+        await versions.DeleteDraftAsync(id, ct);
+        return Results.Redirect("/digital-processes/ProcessDefinitionResponse/view/" + definitionId);
+    }
+    public static async Task<IResult> CloneVersion(Guid id, IProcessDefinitionVersionService versions, CancellationToken ct)
+    {
+        var created = await versions.CloneLatestAsync(id, ct);
+        return Results.Redirect($"/digital-processes/ProcessDefinitionResponse/view/{id}");
+    }
     public static void Map(IEndpointRouteBuilder endpoints, string prefix)
     {
         var group = endpoints.MapGroup(prefix + "/ProcessDefinitionResponse").WithTags("DigitalProcesses.Process");
-        group.MapGet("/view/{id:guid}", ProcessDefinitionResolvers.Read)
-            .ApplyViewModel<DigitalProcessModelPage<ProcessDefinitionResponse>,ProcessDefinitionResponse>()
+        group.MapActions<ProcessDefinitionModel>("ProcessDefinitionResponse");
+        group.MapPost("/delete-version/{id:guid}", DeleteDraft)
+            .WithDescription("Deletes an unpublished version and its dependent records if no runtime or process references exist.");
+        group.MapPost("/new-version/{id:guid}", CloneVersion)
+            .WithDescription("Creates a draft copy of the most recent process version, retaining form and workflow version references.");
+        group.MapPost("/publish-version/{id:guid}", PublishVersion).WithDescription("Publishes one draft version through RBAC-checked services and returns to the parent definition.");
+        group.MapGet("/view/{id:guid}", ProcessDefinitionResolvers.Detail)
+            .ApplyViewModel<DefinitionVersionsPage,DefinitionVersionsPageModel>()
             .WithDescription("""
                 Returns one ProcessDefinition visible to the current actor through the standard RBAC read operation. HTML or JSON is selected by content negotiation.
                 """);
@@ -57,6 +96,7 @@ public static class ProcessDefinitionResolvers
                 """);
 
         group.MapGet("/create", ProcessDefinitionResolvers.CreatePage)
+            .ApplyViewModel<DigitalProcessCreatePage, DigitalProcessCreatePageModel>()
             .WithDescription("""
                 Renders the HTML form used to create ProcessDefinition.
                 """);

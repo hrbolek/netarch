@@ -47,7 +47,23 @@ public sealed class CoreDatabaseHostedService(
         }
 
         var securityProjection = scope.ServiceProvider.GetRequiredService<ISecurityProjectionService>();
-        await securityProjection.RebuildAllAsync(cancellationToken);
+        var hasProjection = await db.EffectiveAccesses.AnyAsync(cancellationToken);
+        var hasSecuritySources = await db.Roles.AnyAsync(cancellationToken)
+            || await db.RbacAccessBindings.AnyAsync(cancellationToken);
+
+        // Runtime mutations keep EffectiveAccess transactionally synchronized. A full
+        // rebuild is therefore needed only when bootstrapping an empty projection
+        // (fresh import/legacy database) or when explicitly requested for repair.
+        var forceRebuild = configuration.GetValue("SecurityProjection:RebuildOnStartup", false);
+        if (forceRebuild || (!hasProjection && hasSecuritySources))
+        {
+            logger.LogInformation("Rebuilding EffectiveAccess projection during startup bootstrap/repair.");
+            await securityProjection.RebuildAllAsync(cancellationToken);
+        }
+        else
+        {
+            logger.LogInformation("EffectiveAccess projection already present; full startup rebuild skipped.");
+        }
     }
 
     public async Task StopAsync(CancellationToken cancellationToken)

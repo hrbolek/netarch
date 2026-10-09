@@ -1,0 +1,73 @@
+@namespace WebAppArchitecture.DigitalProcesses.UI.Components
+@using WebAppArchitecture.DigitalProcesses.UI.Pages
+
+<div class="card shadow-sm">
+    <div class="card-header fw-semibold">@Model.Title</div>
+        <form method="post" action="@Model.Action" class="card-body">
+            @foreach (var field in Model.Fields)
+            {
+                @if (field.InputType == "checkbox")
+                {
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" name="@field.Name" value="true" id="field-@field.Name" checked="@field.Checked" />
+                        <label class="form-check-label" for="field-@field.Name">@field.Label</label>
+                        @if (!string.IsNullOrWhiteSpace(field.HelpText))
+                        {
+                            <div class="form-text">@field.HelpText</div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="mb-3">
+                        @if (field.InputType != "entity-select")
+                        {
+                            <label class="form-label" for="field-@field.Name">@field.Label</label>
+                        }
+                        @if (field.InputType == "entity-select" && !string.IsNullOrWhiteSpace(field.LookupUrl))
+                        {
+                            <EntityLookupSelect Name="@field.Name" Label="@field.Label" ListUrl="@field.LookupUrl" SearchFields="@(field.SearchFields ?? Array.Empty<string>())" Required="@field.Required" MinChars="2" Take="25" ParentField="@field.ParentField" ParentProperty="@field.ParentProperty" />
+                        }
+                        else if (field.InputType == "entity-select")
+                        {
+                            <label class="form-label" for="field-@field.Name">@field.Label</label>
+                            <select class="form-select" id="field-@field.Name" name="@field.Name" required="@field.Required">
+                                <option value="">Select an entity</option>
+                                @foreach (var option in (field.Options ?? Array.Empty<DigitalProcessSelectOption>()).Take(25))
+                                {
+                                    <option value="@option.Id">@option.Label</option>
+                                }
+                            </select>
+                        }
+                        else if (field.InputType == "textarea")
+                        {
+                            <textarea class="form-control" id="field-@field.Name" name="@field.Name" rows="@field.Rows" required="@field.Required">@field.DefaultValue</textarea>
+                        }
+                        else
+                        {
+                            <input class="form-control"
+                                   id="field-@field.Name"
+                                   name="@field.Name"
+                                   type="@field.InputType"
+                                   value="@field.DefaultValue"
+                                   required="@field.Required"
+                                   min="@field.Min"
+                                   max="@field.Max" />
+                        }
+                        @if (!string.IsNullOrWhiteSpace(field.HelpText))
+                        {
+                            <div class="form-text">@field.HelpText</div>
+                        }
+                    </div>
+                }
+            }
+            <div>
+                <button type="submit" class="btn btn-primary">@SubmitLabel</button>
+            </div>
+        </form>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public DigitalProcessCreatePageModel Model { get; set; } = default!;
+    [Parameter] public string SubmitLabel { get; set; } = "Create";
+}

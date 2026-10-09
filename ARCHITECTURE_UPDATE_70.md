@@ -1,0 +1,7 @@
+# Update 70 — shared response contracts
+
+- All 12 DigitalProcesses GET /create endpoints return the existing `DigitalProcessCreatePageModel` rather than a pre-rendered HTML `IResult`. They use `ApplyViewModel<DigitalProcessCreatePage, DigitalProcessCreatePageModel>()` and therefore support `Accept: application/json` and `Accept: text/html` with HTML as the default.
+- Existing single-generic `ApplyJsonModel<TModel>()` delegates to the two-representation pipeline using the shared generic Razor `JsonModelPreview<TModel>` (JSON-first). This creates no per-entity response DTO and gives a diagnostic HTML rendering to clients requesting it.
+- Existing `view`, `edit`, `list`, and `actions` mappings already using two-generic forms are preserved. Creation and update typed API calls already return their entity response DTO in many cases; existing form POST redirects, delete/publish commands, and other explicit `IResult` paths are NOT changed in this update.
+- Remaining architectural work: POST form mutations returning redirects and GET create pages in Core (User/Group/Role/Membership) still need shared page-descriptor models; commands returning only a redirect or status must be redesigned to return an entity DTO before full JSON/HTML negotiation can be guaranteed. These are NOT claimed as completed.
+- No .NET SDK is available to compile in this environment. Validate with `dotnet build src/Host/Host.csproj`.

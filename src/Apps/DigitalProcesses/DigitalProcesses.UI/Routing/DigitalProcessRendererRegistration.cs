@@ -10,9 +10,11 @@ public static class DigitalProcessRendererRegistration
         var registry = new FormNodeRendererRegistry();
         registry.Register<SectionRenderer>("section");
         registry.Register<TextInputRenderer>("input.text");
+        registry.Register<TextAreaRenderer>("input.textarea");
         registry.Register<NumberInputRenderer>("input.number");
         registry.Register<DateInputRenderer>("input.date");
         registry.Register<CheckboxRenderer>("input.checkbox");
+        registry.Register<SelectRenderer>("input.select");
         registry.Register<ActionButtonRenderer>("action.button");
         services.AddSingleton<IFormNodeRendererRegistry>(registry);
         return services;

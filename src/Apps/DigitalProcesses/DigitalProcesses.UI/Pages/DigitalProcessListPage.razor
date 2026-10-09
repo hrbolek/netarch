@@ -1,41 +1,49 @@
 @typeparam TModel where TModel : IEntityDTOModel
 @namespace WebAppArchitecture.DigitalProcesses.UI.Pages
+@using WebAppArchitecture.Base.UI.Pages
 @using WebAppArchitecture.DigitalProcesses.UI.Components
 @using WebAppArchitecture.DigitalProcesses.Models
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
-<Page Title="@($"{typeof(TModel).Name} list")">
-    <div class="container py-3">
-        <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
-            @if (ShowFilter)
-            {
-                <form method="get" class="card card-body flex-grow-1">
-                    <label class="form-label fw-semibold" for="where-filter">Filter (Hasura <code>where</code>)</label>
-                    <div class="input-group">
-                        <input id="where-filter" class="form-control font-monospace" name="where" value="@CurrentWhere"
-                               placeholder='{"name":{"_ilike":"%request%"}}' />
-                        <button class="btn btn-outline-primary" type="submit">Filter</button>
-                        <a class="btn btn-outline-secondary" href="@CurrentPath">Clear</a>
-                    </div>
-                    <div class="form-text">Applied to the secured IQueryable before the database SELECT.</div>
-                </form>
-            }
-            @if (CreateUrl is not null)
-            {
-                <a class="btn btn-primary text-nowrap" href="@CreateUrl">Create</a>
-            }
-        </div>
-        @foreach (var item in Model)
-        {
-            <DigitalProcessModelCard TModel="TModel" Model="@item" />
-        }
+@if (CreateUrl is not null)
+{
+    <div class="container-fluid pt-3 text-end">
+        <a class="btn btn-primary" href="@CreateUrl">Create @ListTitle</a>
     </div>
-</Page>
+}
+<PageViewList TModel="TModel" Items="@Model" Title="@ListTitle" ShowFilter="@ShowFilter">
+    <ChildContent Context="item">
+        <DigitalProcessMediumCard TModel="TModel" Model="@item" />
+    </ChildContent>
+</PageViewList>
 
 @code {
     [Parameter, EditorRequired] public TModel[] Model { get; set; } = Array.Empty<TModel>();
     [Parameter] public bool IsFragment { get; set; }
     [Parameter] public bool ShowFilter { get; set; } = true;
+
+
+    private string ListTitle => typeof(TModel).Name switch
+    {
+        nameof(FormDefinitionResponse) => "Form definitions",
+        nameof(FormVersionResponse) => "Form versions",
+        nameof(FormNodeTypeResponse) => "Form node types",
+        nameof(FormNodeResponse) => "Form nodes",
+        nameof(WorkflowDefinitionResponse) => "Workflow definitions",
+        nameof(WorkflowVersionResponse) => "Workflow versions",
+        nameof(WorkflowStateResponse) => "Workflow states",
+        nameof(WorkflowStateAccessRuleResponse) => "Workflow state access rules",
+        nameof(WorkflowTransitionResponse) => "Workflow transitions",
+        nameof(ProcessDefinitionResponse) => "Process definitions",
+        nameof(ProcessDefinitionVersionResponse) => "Process definition versions",
+        nameof(RequestResponse) => "Requests",
+        nameof(SubmissionResponse) => "Submissions",
+        nameof(SubmissionNodeResponse) => "Submission nodes",
+        nameof(RequestTransitionHistoryResponse) => "Request transition history",
+        _ => typeof(TModel).Name.EndsWith("Response", StringComparison.Ordinal)
+            ? typeof(TModel).Name[..^"Response".Length]
+            : typeof(TModel).Name
+    };
 
     private string CurrentWhere => HttpContextAccessor.HttpContext?.Request.Query["where"].ToString() ?? string.Empty;
     private string CurrentPath => HttpContextAccessor.HttpContext?.Request.Path.ToString() ?? string.Empty;

@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,6 +34,16 @@ public sealed class DigitalProcessesModule : IArchitectureModule
         services.AddScoped<ISubmissionNodeService, SubmissionNodeService>();
         services.AddScoped<IRequestTransitionHistoryService, RequestTransitionHistoryService>();
         services.AddSingleton<IDigitalProcessIntegration, UnconfiguredDigitalProcessIntegration>();
+        services.AddSingleton(new FormDataBackendOptions
+        {
+            Endpoint = configuration["DigitalProcesses:DataBackend:Endpoint"]
+        });
+        if (string.Equals(configuration["ASPNETCORE_ENVIRONMENT"], "Development", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(configuration["DOTNET_ENVIRONMENT"], "Development", StringComparison.OrdinalIgnoreCase))
+            services.AddScoped<IFormDataBackend, DummyJsonataCaller>();
+        else
+            services.AddHttpClient<IFormDataBackend, GraphqlLikeFormDataBackend>();
+        services.AddHostedService<DigitalProcessesBootstrapHostedService>();
         services.AddDigitalProcessRenderers();
     }
 

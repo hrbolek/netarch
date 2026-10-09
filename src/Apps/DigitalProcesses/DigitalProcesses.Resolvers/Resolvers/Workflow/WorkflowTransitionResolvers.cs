@@ -19,7 +19,7 @@ public static class WorkflowTransitionResolvers
     public static Task<IResult> List(HttpContext http, IWorkflowTransitionService service, CancellationToken ct) => BaseResolvers.List<WorkflowTransitionModel,WorkflowTransitionResponse,IWorkflowTransitionService>(http,service,ct);
     public static Task<IResult> Link(Guid id, HttpContext http, IWorkflowTransitionService service, CancellationToken ct) => BaseResolvers.Link<WorkflowTransitionModel,WorkflowTransitionResponse,IWorkflowTransitionService>(id,http,service,ct);
 
-    public static RazorComponentResult<DigitalProcessCreatePage> CreatePage() => DigitalProcessCreateForm.Page("Create workflow transition", Prefix+"/WorkflowTransitionResponse/create-form", Prefix+"/WorkflowTransitionResponse/list", "Adds a directed transition between two states of a draft workflow version.", DigitalProcessCreateForm.GuidField("workflow_version_id","Workflow version ID"),DigitalProcessCreateForm.GuidField("source_state_id","Source state ID"),DigitalProcessCreateForm.GuidField("target_state_id","Target state ID"),DigitalProcessCreateForm.Text("key","Key"),DigitalProcessCreateForm.Text("name","Name"),DigitalProcessCreateForm.Check("note_required","Transition note required"),DigitalProcessCreateForm.TextArea("condition_query","Condition query",false),DigitalProcessCreateForm.TextArea("action_query","Action query",false));
+    public static DigitalProcessCreatePageModel CreatePage() => DigitalProcessCreateForm.Page("Create workflow transition", Prefix+"/WorkflowTransitionResponse/create-form", Prefix+"/WorkflowTransitionResponse/list", "Adds a directed transition between two states of a draft workflow version.", DigitalProcessCreateForm.GuidField("workflow_version_id","Workflow version ID"),DigitalProcessCreateForm.GuidField("source_state_id","Source state ID"),DigitalProcessCreateForm.GuidField("target_state_id","Target state ID"),DigitalProcessCreateForm.Text("key","Key"),DigitalProcessCreateForm.Text("name","Name"),DigitalProcessCreateForm.Check("note_required","Transition note required"),DigitalProcessCreateForm.TextArea("condition_query","Condition query",false),DigitalProcessCreateForm.TextArea("action_query","Action query",false));
 
     public static Task<WorkflowTransitionResponse> CreateApi(CreateWorkflowTransitionRequest request, IWorkflowTransitionService service, CancellationToken ct)
         => service.CreateContainedAsync(request, ct);
@@ -34,6 +34,7 @@ public static class WorkflowTransitionResolvers
     public static void Map(IEndpointRouteBuilder endpoints, string prefix)
     {
         var group = endpoints.MapGroup(prefix + "/WorkflowTransitionResponse").WithTags("DigitalProcesses.Workflow");
+        group.MapActions<WorkflowTransitionModel>("WorkflowTransitionResponse");
         group.MapGet("/view/{id:guid}", WorkflowTransitionResolvers.Read)
             .ApplyViewModel<DigitalProcessModelPage<WorkflowTransitionResponse>,WorkflowTransitionResponse>()
             .WithDescription("""
@@ -57,6 +58,7 @@ public static class WorkflowTransitionResolvers
                 """);
 
         group.MapGet("/create", WorkflowTransitionResolvers.CreatePage)
+            .ApplyViewModel<DigitalProcessCreatePage, DigitalProcessCreatePageModel>()
             .WithDescription("""
                 Renders the HTML form used to create WorkflowTransition.
                 """);

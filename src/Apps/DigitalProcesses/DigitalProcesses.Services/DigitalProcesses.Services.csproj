@@ -9,6 +9,7 @@
     <ProjectReference Include="../../../Core/Base/Base.csproj" />
     <ProjectReference Include="../../../Core/DBLayer/DBLayer.csproj" />
     <ProjectReference Include="../../../Core/SecurityLayer/SecurityLayer.csproj" />
+    <ProjectReference Include="../../../Core/User/User.Services/User.Services.csproj" />
     <ProjectReference Include="../DigitalProcesses.Models/DigitalProcesses.Models.csproj" />
   </ItemGroup>
 </Project>

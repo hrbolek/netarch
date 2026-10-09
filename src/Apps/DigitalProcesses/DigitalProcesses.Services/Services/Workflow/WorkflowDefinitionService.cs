@@ -28,8 +28,11 @@ public sealed class WorkflowDefinitionService(ISecurityLayer security, ISecurity
                 Security, id, $"Workflow definition: {request.name}", catalog, true, now, actor, token);
             var model = new WorkflowDefinitionModel(id, request.name, request.description, id, now, now, actor, actor);
             var created = await Security.StageCreateAsync(model, token);
+            // The initial workflow draft is part of the same transaction as its definition.
+            await Security.StageCreateAsync(new WorkflowVersionModel(
+                Guid.NewGuid(), id, 1, false, null, id, now, now, actor, actor), token);
             await Security.SaveChangesAsync(token);
-            await securityProjection.RebuildAllAsync(token);
+            await securityProjection.SynchronizeRbacObjectAsync(id, token);
             return WorkflowDefinitionResponse.FromModel(created);
         }, ct);
     }

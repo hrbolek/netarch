@@ -36,7 +36,7 @@ public sealed class MembershipService : BaseService<MembershipModel, MembershipR
         {
             var entity = await Security.StageCreateAsync(model, ct);
             await Security.SaveChangesAsync(ct);
-            await _projection.RebuildAllAsync(ct);
+            await _projection.SynchronizeRbacObjectAsync(entity.user_id, ct);
             return MembershipResponse.FromModel(entity);
         }, cancellationToken);
     }
@@ -49,18 +49,24 @@ public sealed class MembershipService : BaseService<MembershipModel, MembershipR
         {
             var entity = await Security.StageUpdateAsync(model.ApplyTo(current), ct);
             await Security.SaveChangesAsync(ct);
-            await _projection.RebuildAllAsync(ct);
+            await _projection.SynchronizeRbacObjectsAsync(new[] { current.user_id, entity.user_id }, ct);
             return MembershipResponse.FromModel(entity);
         }, cancellationToken);
     }
 
-    public override Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
-        => Security.ExecuteInTransactionAsync(async ct =>
+    public override async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var current = await Security.GetByIdAsync<MembershipModel>(id, SecurityOperations.Delete, cancellationToken);
+        if (current is null)
+            return;
+
+        await Security.ExecuteInTransactionAsync(async ct =>
         {
             await Security.StageDeleteAsync<MembershipModel>(id, ct);
             await Security.SaveChangesAsync(ct);
-            await _projection.RebuildAllAsync(ct);
+            await _projection.SynchronizeRbacObjectAsync(current.user_id, ct);
         }, cancellationToken);
+    }
     public override Task<IReadOnlyCollection<MembershipResponse>> VectorAsync(
         System.Linq.Expressions.Expression<Func<MembershipModel, bool>> predicate,
         string operation,

@@ -23,31 +23,17 @@ public static class DigitalProcessNavigationRegistration
                 new("Processes", Children:
                 [
                     new("Definitions", "/digital-processes/ProcessDefinitionResponse/list"),
-                    new("New process", "/digital-processes/ProcessDefinitionResponse/create"),
-                    new("Versions", "/digital-processes/ProcessDefinitionVersionResponse/list"),
-                    new("New process version", "/digital-processes/ProcessDefinitionVersionResponse/create")
+                    new("New process", "/digital-processes/ProcessDefinitionResponse/create")
                 ]),
                 new("Forms", Children:
                 [
                     new("Definitions", "/digital-processes/FormDefinitionResponse/list"),
-                    new("New form", "/digital-processes/FormDefinitionResponse/create"),
-                    new("Versions", "/digital-processes/FormVersionResponse/list"),
-                    new("New form version", "/digital-processes/FormVersionResponse/create"),
-                    new("Nodes", "/digital-processes/FormNodeResponse/list"),
-                    new("New form node", "/digital-processes/FormNodeResponse/create")
+                    new("New form", "/digital-processes/FormDefinitionResponse/create")
                 ]),
                 new("Workflows", Children:
                 [
                     new("Definitions", "/digital-processes/WorkflowDefinitionResponse/list"),
-                    new("New workflow", "/digital-processes/WorkflowDefinitionResponse/create"),
-                    new("Versions", "/digital-processes/WorkflowVersionResponse/list"),
-                    new("New workflow version", "/digital-processes/WorkflowVersionResponse/create"),
-                    new("States", "/digital-processes/WorkflowStateResponse/list"),
-                    new("New state", "/digital-processes/WorkflowStateResponse/create"),
-                    new("Transitions", "/digital-processes/WorkflowTransitionResponse/list"),
-                    new("New transition", "/digital-processes/WorkflowTransitionResponse/create"),
-                    new("Access rules", "/digital-processes/WorkflowStateAccessRuleResponse/list"),
-                    new("New access rule", "/digital-processes/WorkflowStateAccessRuleResponse/create")
+                    new("New workflow", "/digital-processes/WorkflowDefinitionResponse/create")
                 ]),
                 new("Administration", Children:
                 [

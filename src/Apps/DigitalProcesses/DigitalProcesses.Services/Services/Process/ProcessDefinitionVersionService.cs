@@ -7,7 +7,6 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
-public interface IProcessDefinitionVersionService : IBaseService<ProcessDefinitionVersionModel, ProcessDefinitionVersionResponse> { Task<ProcessDefinitionVersionResponse> CreateContainedAsync(CreateProcessDefinitionVersionRequest request,CancellationToken ct=default); Task<ProcessDefinitionVersionResponse> PublishAsync(Guid id,CancellationToken ct=default); }
 public sealed class ProcessDefinitionVersionService(ISecurityLayer security) : BaseService<ProcessDefinitionVersionModel,ProcessDefinitionVersionResponse>(security),IProcessDefinitionVersionService
 {
     public async Task<ProcessDefinitionVersionResponse> CreateContainedAsync(CreateProcessDefinitionVersionRequest request, CancellationToken ct = default)
@@ -32,6 +31,31 @@ public sealed class ProcessDefinitionVersionService(ISecurityLayer security) : B
             return ProcessDefinitionVersionResponse.FromModel(x);
         }, ct);
         return request.publish ? await PublishAsync(created.id, ct) : created;
+    }
+
+    public async Task<ProcessDefinitionVersionResponse> CloneLatestAsync(Guid definitionId, CancellationToken ct = default)
+    {
+        _ = await Security.GetByIdAsync<ProcessDefinitionModel>(definitionId, SecurityOperations.Update, ct)
+            ?? throw new KeyNotFoundException("Process definition not found or not editable.");
+        var previous = Security.Query<ProcessDefinitionVersionModel>(SecurityOperations.Read)
+            .Where(v => v.process_definition_id == definitionId)
+            .OrderByDescending(v => v.version).FirstOrDefault()
+            ?? throw new InvalidOperationException("Process has no existing version to copy.");
+        return await CreateContainedAsync(new CreateProcessDefinitionVersionRequest(
+            definitionId, previous.form_version_id, previous.workflow_version_id, previous.version + 1), ct);
+    }
+
+    public async Task DeleteDraftAsync(Guid id, CancellationToken ct = default)
+    {
+        var version = await Security.GetByIdAsync<ProcessDefinitionVersionModel>(id, SecurityOperations.Delete, ct)
+            ?? throw new KeyNotFoundException("Process version not found or not deletable.");
+        if (version.is_published) throw new InvalidOperationException("Published versions cannot be deleted.");
+        if (Security.Query<RequestModel>(SecurityOperations.Read).Any(r => r.process_definition_version_id == id))
+            throw new InvalidOperationException("Process version is referenced by a request.");
+        await Security.ExecuteInTransactionAsync(async token => {
+            await Security.StageDeleteAsync<ProcessDefinitionVersionModel>(id, token);
+            await Security.SaveChangesAsync(token);
+        }, ct);
     }
 
     public async Task<ProcessDefinitionVersionResponse> PublishAsync(Guid id,CancellationToken ct=default){var model=await Security.GetByIdAsync<ProcessDefinitionVersionModel>(id,SecurityOperations.Update,ct)??throw new KeyNotFoundException();if(model.is_published)return ProcessDefinitionVersionResponse.FromModel(model);var form=await Security.GetByIdAsync<FormVersionModel>(model.form_version_id,SecurityOperations.Read,ct)??throw new KeyNotFoundException();var workflow=await Security.GetByIdAsync<WorkflowVersionModel>(model.workflow_version_id,SecurityOperations.Read,ct)??throw new KeyNotFoundException();if(!form.is_published||!workflow.is_published)throw new InvalidOperationException("Process version requires published form and workflow versions.");

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
 using WebAppArchitecture.Base.Endpoints;
+using WebAppArchitecture.Base.Security;
+using WebAppArchitecture.SecurityLayer;
 using WebAppArchitecture.Base.Resolvers;
 using WebAppArchitecture.Base.UI.Components;
 using WebAppArchitecture.DBLayer;
@@ -19,7 +21,16 @@ public static class WorkflowStateAccessRuleResolvers
     public static Task<IResult> List(HttpContext http, IWorkflowStateAccessRuleService service, CancellationToken ct) => BaseResolvers.List<WorkflowStateAccessRuleModel,WorkflowStateAccessRuleResponse,IWorkflowStateAccessRuleService>(http,service,ct);
     public static Task<IResult> Link(Guid id, HttpContext http, IWorkflowStateAccessRuleService service, CancellationToken ct) => BaseResolvers.Link<WorkflowStateAccessRuleModel,WorkflowStateAccessRuleResponse,IWorkflowStateAccessRuleService>(id,http,service,ct);
 
-    public static RazorComponentResult<DigitalProcessCreatePage> CreatePage() => DigitalProcessCreateForm.Page("Create workflow state access rule", Prefix+"/WorkflowStateAccessRuleResponse/create-form", Prefix+"/WorkflowStateAccessRuleResponse/list", "Defines how a source organizational role is compiled into an RBAC role for a request, submission or form-node scope.", DigitalProcessCreateForm.GuidField("workflow_state_id","Workflow state ID"),DigitalProcessCreateForm.GuidField("source_role_type_id","Source role type ID"),DigitalProcessCreateForm.GuidField("target_role_type_id","Target role type ID"),DigitalProcessCreateForm.Text("target_scope","Target scope",help:"request, submission, or form-node"),DigitalProcessCreateForm.GuidField("target_form_node_id","Target form node ID",false));
+    public static DigitalProcessCreatePageModel CreatePage(ISecurityLayer security)
+    {
+        return DigitalProcessCreateForm.Page("Create workflow state access rule", Prefix+"/WorkflowStateAccessRuleResponse/create-form", Prefix+"/WorkflowStateAccessRuleResponse/list",
+            "Defines how source roles are compiled into RBAC roles for a request, submission or form-node scope.",
+            DigitalProcessCreateForm.EntityLookup("workflow_state_id", "Workflow state", Prefix+"/WorkflowStateResponse/list", ["name", "key"]),
+            DigitalProcessCreateForm.EntityLookup("source_role_type_id", "Source role type", "/architecture/RoleTypeResponse/list", ["name"]),
+            DigitalProcessCreateForm.EntityLookup("target_role_type_id", "Target role type", "/architecture/RoleTypeResponse/list", ["name"]),
+            DigitalProcessCreateForm.Text("target_scope", "Target scope", help:"request, submission, or form-node"),
+            DigitalProcessCreateForm.EntityLookup("target_form_node_id", "Target form node", Prefix+"/FormNodeResponse/list", ["key", "label"], false));
+    }
 
     public static Task<WorkflowStateAccessRuleResponse> CreateApi(CreateWorkflowStateAccessRuleRequest request, IWorkflowStateAccessRuleService service, CancellationToken ct)
         => service.CreateContainedAsync(request, ct);
@@ -34,6 +45,7 @@ public static class WorkflowStateAccessRuleResolvers
     public static void Map(IEndpointRouteBuilder endpoints, string prefix)
     {
         var group = endpoints.MapGroup(prefix + "/WorkflowStateAccessRuleResponse").WithTags("DigitalProcesses.Workflow");
+        group.MapActions<WorkflowStateAccessRuleModel>("WorkflowStateAccessRuleResponse");
         group.MapGet("/view/{id:guid}", WorkflowStateAccessRuleResolvers.Read)
             .ApplyViewModel<DigitalProcessModelPage<WorkflowStateAccessRuleResponse>,WorkflowStateAccessRuleResponse>()
             .WithDescription("""
@@ -57,6 +69,7 @@ public static class WorkflowStateAccessRuleResolvers
                 """);
 
         group.MapGet("/create", WorkflowStateAccessRuleResolvers.CreatePage)
+            .ApplyViewModel<DigitalProcessCreatePage, DigitalProcessCreatePageModel>()
             .WithDescription("""
                 Renders the HTML form used to create WorkflowStateAccessRule.
                 """);

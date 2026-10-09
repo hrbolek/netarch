@@ -10,5 +10,6 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <ProjectReference Include="../../../Core/Base/Base.csproj" />
     <ProjectReference Include="../DigitalProcesses.Models/DigitalProcesses.Models.csproj" />
+    <ProjectReference Include="../DigitalProcesses.Services/DigitalProcesses.Services.csproj" />
   </ItemGroup>
 </Project>

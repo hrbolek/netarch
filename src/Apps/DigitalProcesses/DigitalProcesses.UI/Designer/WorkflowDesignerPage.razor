@@ -1,0 +1,138 @@
+@namespace WebAppArchitecture.DigitalProcesses.UI.Designer
+<Page Title="Workflow designer">
+<div class="container-fluid py-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div><h1 class="h4">Workflow editor · version @Model.version.version</h1><span class="text-muted">@(Model.version.is_published ? "Published (read-only)" : "Draft")</span></div>
+        <a href="/digital-processes/WorkflowDefinitionResponse/list" class="btn btn-outline-secondary">Workflow definitions</a>
+    </div>
+    <div class="card mb-3" id="workflow-preview-@Model.version.id">
+        <div class="card-header d-flex justify-content-between align-items-center"><strong>Workflow preview / test</strong><button class="btn btn-sm btn-outline-secondary" type="button" onclick="workflowPreviewReset(this)">Reset</button></div>
+        <div class="card-body">
+            <p class="small text-muted">Simulate state transitions without changing any Request. Conditions, permissions and actions are displayed but not executed.</p>
+            <div class="mb-2">Current state: <strong data-workflow-current></strong></div>
+            <div class="d-flex flex-wrap gap-2" data-workflow-transitions></div>
+            <div class="mt-2 text-muted small" data-workflow-history aria-live="polite"></div>
+            <script type="application/json" data-workflow-definition>@((Microsoft.AspNetCore.Components.MarkupString)WorkflowPreviewJson)</script>
+        </div>
+    </div>
+    <div class="row g-3">
+        <div class="col-lg-6">
+            <div class="card mb-3"><div class="card-header d-flex justify-content-between"><strong>States</strong>@if (!Model.version.is_published) { <button class="btn btn-sm btn-primary" onclick="document.getElementById('new-state').showModal()">Add state</button> }</div>
+                <div class="card-body">
+                @if (!Model.states.Any()) { <p class="text-muted">No states defined yet. Start with an initial state.</p> }
+                @foreach (var state in Model.states)
+                {
+                    <details class="border rounded p-2 mb-2" id="state-@state.id">
+                        <summary><strong>@state.name</strong> <span class="small text-muted">(@state.key)</span> @if (state.is_initial) { <span class="badge bg-success">Initial</span> } @if (state.is_terminal) { <span class="badge bg-secondary">Terminal</span> }</summary>
+                        <form method="post" action="/digital-processes/WorkflowVersionResponse/designer/update-state" class="mt-3">
+                            <input type="hidden" name="id" value="@state.id"/><input type="hidden" name="workflow_version_id" value="@Model.version.id"/>
+                            <label class="form-label">Key</label><input class="form-control mb-2" name="key" value="@state.key" required disabled="@Model.version.is_published"/>
+                            <label class="form-label">Name</label><input class="form-control mb-2" name="name" value="@state.name" required disabled="@Model.version.is_published"/>
+                            <label class="form-label">Description</label><textarea class="form-control mb-2" name="description" disabled="@Model.version.is_published">@state.description</textarea>
+                            <label class="form-label">Position</label><input class="form-control mb-2" type="number" name="position" value="@state.position" disabled="@Model.version.is_published"/>
+                            <label class="me-3"><input type="checkbox" name="is_initial" checked="@state.is_initial" disabled="@Model.version.is_published"/> Initial</label>
+                            <label><input type="checkbox" name="is_terminal" checked="@state.is_terminal" disabled="@Model.version.is_published"/> Terminal</label>
+                            @if (!Model.version.is_published) { <div class="mt-3"><button class="btn btn-sm btn-primary">Save state</button></div> }
+                        </form>
+                        @if (!Model.version.is_published)
+                        {
+                            <form class="mt-2" method="post" action="/digital-processes/WorkflowVersionResponse/designer/delete-state" onsubmit="return confirm('Delete state? Connected transitions must be deleted first.');">
+                                <input type="hidden" name="id" value="@state.id"/><input type="hidden" name="workflow_version_id" value="@Model.version.id"/>
+                                <button class="btn btn-sm btn-outline-danger">Delete state</button>
+                            </form>
+                        }
+                    </details>
+                }
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card"><div class="card-header d-flex justify-content-between"><strong>Transitions</strong>@if (!Model.version.is_published && Model.states.Count >= 2) { <button class="btn btn-sm btn-primary" onclick="document.getElementById('new-transition').showModal()">Add transition</button> }</div>
+                <div class="card-body">
+                    @if (!Model.transitions.Any()) { <p class="text-muted">No transitions. Add at least two states and connect them.</p> }
+                    @foreach (var transition in Model.transitions)
+                    {
+                        <details class="border rounded p-2 mb-2">
+                            <summary><strong>@transition.name</strong> · @StateName(transition.source_state_id) → @StateName(transition.target_state_id)</summary>
+                            <form method="post" action="/digital-processes/WorkflowVersionResponse/designer/update-transition" class="mt-3">
+                                <input type="hidden" name="id" value="@transition.id"/><input type="hidden" name="workflow_version_id" value="@Model.version.id"/>
+                                <label class="form-label">Key</label><input class="form-control mb-2" name="key" value="@transition.key" required disabled="@Model.version.is_published"/>
+                                <label class="form-label">Name</label><input class="form-control mb-2" name="name" value="@transition.name" required disabled="@Model.version.is_published"/>
+                                <label class="form-label">From</label><select class="form-select mb-2" name="source_state_id" disabled="@Model.version.is_published">@foreach (var state in Model.states) { <option value="@state.id" selected="@(state.id == transition.source_state_id)">@state.name</option> }</select>
+                                <label class="form-label">To</label><select class="form-select mb-2" name="target_state_id" disabled="@Model.version.is_published">@foreach (var state in Model.states) { <option value="@state.id" selected="@(state.id == transition.target_state_id)">@state.name</option> }</select>
+                                <label class="form-label">Condition query</label><textarea class="form-control mb-2" name="condition_query" disabled="@Model.version.is_published">@transition.condition_query</textarea>
+                                <label class="form-label">Action query</label><textarea class="form-control mb-2" name="action_query" disabled="@Model.version.is_published">@transition.action_query</textarea>
+                                <label><input type="checkbox" name="note_required" checked="@transition.note_required" disabled="@Model.version.is_published"/> Note required</label>
+                                @if (!Model.version.is_published) { <div class="mt-3"><button class="btn btn-sm btn-primary">Save transition</button></div> }
+                            </form>
+                            @if (!Model.version.is_published)
+                            {
+                                <form method="post" action="/digital-processes/WorkflowVersionResponse/designer/delete-transition" class="mt-2" onsubmit="return confirm('Delete transition?');"><input type="hidden" name="id" value="@transition.id"/><input type="hidden" name="workflow_version_id" value="@Model.version.id"/><button class="btn btn-sm btn-outline-danger">Delete transition</button></form>
+                            }
+                        </details>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    @if (!Model.version.is_published)
+    {
+        <dialog id="new-state" class="border rounded shadow p-4" style="width:min(95vw,480px)">
+            <h2 class="h5">Add workflow state</h2>
+            <form method="post" action="/digital-processes/WorkflowVersionResponse/designer/add-state">
+                <input type="hidden" name="workflow_version_id" value="@Model.version.id"/>
+                <label class="form-label">Key</label><input class="form-control mb-2" name="key" required/>
+                <label class="form-label">Name</label><input class="form-control mb-2" name="name" required/>
+                <label class="form-label">Description</label><textarea class="form-control mb-2" name="description"></textarea>
+                <label class="form-label">Position</label><input type="number" class="form-control mb-2" name="position" value="0"/>
+                <label class="me-3"><input type="checkbox" name="is_initial"/> Initial</label><label><input type="checkbox" name="is_terminal"/> Terminal</label>
+                <div class="mt-3"><button class="btn btn-primary">Add</button> <button class="btn btn-outline-secondary" type="button" onclick="this.closest('dialog').close()">Cancel</button></div>
+            </form>
+        </dialog>
+        <dialog id="new-transition" class="border rounded shadow p-4" style="width:min(95vw,480px)">
+            <h2 class="h5">Add workflow transition</h2>
+            <form method="post" action="/digital-processes/WorkflowVersionResponse/designer/add-transition">
+                <input type="hidden" name="workflow_version_id" value="@Model.version.id"/>
+                <label class="form-label">Key</label><input class="form-control mb-2" name="key" required/>
+                <label class="form-label">Name</label><input class="form-control mb-2" name="name" required/>
+                <label class="form-label">From</label><select class="form-select mb-2" name="source_state_id">@foreach (var state in Model.states) { <option value="@state.id">@state.name</option> }</select>
+                <label class="form-label">To</label><select class="form-select mb-2" name="target_state_id">@foreach (var state in Model.states) { <option value="@state.id">@state.name</option> }</select>
+                <label class="form-label">Condition query</label><textarea class="form-control mb-2" name="condition_query"></textarea>
+                <label class="form-label">Action query</label><textarea class="form-control mb-2" name="action_query"></textarea>
+                <label><input type="checkbox" name="note_required"/> Note required</label>
+                <div class="mt-3"><button class="btn btn-primary">Add</button> <button class="btn btn-outline-secondary" type="button" onclick="this.closest('dialog').close()">Cancel</button></div>
+            </form>
+        </dialog>
+    }
+</div>
+<script>
+window.workflowPreviewRender = function(root) {
+  if (!root) return;
+  const def = JSON.parse(root.querySelector('[data-workflow-definition]').textContent);
+  const current = root.dataset.state || (def.states.find(s => s.initial) || def.states[0])?.id;
+  root.dataset.state = current || '';
+  const state = def.states.find(s => s.id === current);
+  root.querySelector('[data-workflow-current]').textContent = state ? state.name : 'No state defined';
+  const target = root.querySelector('[data-workflow-transitions]'); target.replaceChildren();
+  for (const tr of def.transitions.filter(t => t.from === current)) {
+    const btn = document.createElement('button'); btn.type = 'button';
+    btn.className = 'btn btn-sm btn-outline-primary'; btn.textContent = tr.name + ' → ' + (def.states.find(s=>s.id===tr.to)?.name || tr.to);
+    btn.title = tr.condition ? 'Condition (not evaluated): ' + tr.condition : 'Unconditional';
+    btn.onclick = () => {root.dataset.state = tr.to; root.querySelector('[data-workflow-history]').textContent += ' / ' + tr.name; workflowPreviewRender(root);};
+    target.append(btn);
+  }
+  if (!target.children.length) target.textContent = 'No outgoing transitions from this state.';
+};
+window.workflowPreviewReset = btn => {const root = btn.closest('[id^=workflow-preview-]'); root.dataset.state = ''; root.querySelector('[data-workflow-history]').textContent = ''; workflowPreviewRender(root);};
+document.querySelectorAll('[id^=workflow-preview-]').forEach(workflowPreviewRender);
+</script>
+</Page>
+@code {
+    [Parameter, EditorRequired] public WorkflowDesignerResponse Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
+    private string WorkflowPreviewJson => System.Text.Json.JsonSerializer.Serialize(new {
+        states = Model.states.Select(s => new { id = s.id.ToString(), name = s.name, initial = s.is_initial }),
+        transitions = Model.transitions.Select(t => new { from = t.source_state_id.ToString(), to = t.target_state_id.ToString(), name = t.name, condition = t.condition_query })
+    }).Replace("<", "\\u003c");
+    private string StateName(Guid id) => Model.states.FirstOrDefault(x => x.id == id)?.name ?? id.ToString();
+}

@@ -16,10 +16,25 @@ else
     [Parameter, EditorRequired] public string RendererKey { get; set; } = default!;
     [Parameter, EditorRequired] public FormNodeResponse Definition { get; set; } = default!;
     [Parameter] public SubmissionNodeResponse? Value { get; set; }
+    [Parameter] public IReadOnlyCollection<FormNodeResponse> SectionNodes { get; set; } = Array.Empty<FormNodeResponse>();
+    [Parameter] public IReadOnlyDictionary<string, System.Text.Json.Nodes.JsonNode?> SectionValues { get; set; }
+        = new Dictionary<string, System.Text.Json.Nodes.JsonNode?>();
     private Type? ComponentType => Renderers.Resolve(RendererKey);
-    private IDictionary<string,object?> Parameters => new Dictionary<string,object?>
+    private IDictionary<string,object?> Parameters
     {
-        ["Definition"] = Definition,
-        ["Value"] = Value
-    };
+        get
+        {
+            var parameters = new Dictionary<string,object?>
+            {
+                ["Definition"] = Definition,
+                ["Value"] = Value
+            };
+            if (RendererKey == "input.select")
+            {
+                parameters["SectionNodes"] = SectionNodes;
+                parameters["SectionValues"] = SectionValues;
+            }
+            return parameters;
+        }
+    }
 }

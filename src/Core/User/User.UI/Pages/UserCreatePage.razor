@@ -16,3 +16,8 @@
         </form>
     </div>
 </Page>
+
+@code {
+    [Parameter] public CreatePageModel Model { get; set; } = new("User");
+    [Parameter] public bool IsFragment { get; set; }
+}

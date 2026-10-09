@@ -123,6 +123,20 @@ public sealed class ViewModelOptions
 public static class ViewModelEndpointExtensions
 {
     /// <summary>
+    /// Documents the two supported representations of an entity endpoint.
+    /// Content negotiation is performed by ApplyRepresentation, not by this metadata helper.
+    /// </summary>
+    public static RouteHandlerBuilder ProducesEntity<T>(this RouteHandlerBuilder builder)
+        // A single ProducesResponseTypeMetadata entry must declare both media types.
+        // Two separate Produces calls for status 200 can overwrite one another
+        // during ApiExplorer/OpenAPI generation, leaving only HTML in Swagger.
+        => builder.Produces<T>(
+            StatusCodes.Status200OK,
+            "application/json",
+            "text/html");
+
+
+    /// <summary>
     /// HTML-first endpoint.
     ///
     /// Default:
@@ -261,60 +275,18 @@ public static class ViewModelEndpointExtensions
             }
         );
 
-        return builder;
+        return builder.ProducesEntity<TModel>();
     }
 
 
     /// <summary>
-    /// Allways JSON
+    /// JSON-first endpoint with a shared diagnostic HTML rendering.
+    /// Prefer the two-parameter overload with a domain-specific Razor component
+    /// when a richer representation is available.
     /// </summary>
     public static RouteHandlerBuilder ApplyJsonModel<TModel>(
-        this RouteHandlerBuilder builder
-    )
-    {
-        builder.AddEndpointFilter(
-            async (
-                EndpointFilterInvocationContext context,
-                EndpointFilterDelegate next
-            ) =>
-            {
-                var result =
-                    await next(context);
-
-                // ApiResults.Ok(...) / ApiResults.Model(...)
-                // carry a model inside IResult. Unwrap them first.
-                if (result is IModelResult modelResult)
-                {
-                    result = modelResult.Model;
-                }
-
-                // Other explicit HTTP responses from resolver
-                // are already final (BadRequest, NotFound, File, ...).
-                if (result is IResult)
-                {
-                    return result;
-                }
-
-                if (result is null)
-                {
-                    return Results.NotFound();
-                }
-
-                if (result is not TModel model)
-                {
-                    throw new InvalidOperationException(
-                        $"Endpoint returned '{result.GetType().FullName}', " +
-                        $"but ApplyJsonModel<{typeof(TModel).Name}> expects " +
-                        $"'{typeof(TModel).FullName}'."
-                    );
-                }
-
-                return Results.Json(model);
-            }
-        );
-
-        return builder;
-    }
+        this RouteHandlerBuilder builder)
+        => builder.ApplyJsonModel<WebAppArchitecture.Base.UI.Components.JsonModelPreview<TModel>, TModel>();
 
     // =========================================================
     // Response negotiation

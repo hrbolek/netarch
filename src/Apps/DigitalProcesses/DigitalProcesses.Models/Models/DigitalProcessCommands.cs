@@ -64,7 +64,7 @@ public sealed record CreateWorkflowTransitionRequest(
 
 public sealed record CreateProcessDefinitionRequest(
     string name,
-    Guid initiator_role_type_id,
+    Guid? initiator_role_type_id = null,
     string? description = null);
 public sealed record CreateProcessDefinitionVersionRequest(
     Guid process_definition_id,
@@ -95,3 +95,33 @@ public sealed record RequestDetailResponse(
     WorkflowStateResponse state,
     SubmissionTreeResponse active_submission,
     IReadOnlyCollection<RequestTransitionHistoryResponse> history);
+
+public sealed record UpdateFormNodeRequest(
+    string key,
+    string? label = null,
+    string? description = null,
+    string? configuration_json = null,
+    int min_occurs = 1,
+    int max_occurs = 1);
+
+public sealed record ImportFormSubtreeRequest(
+    Guid source_node_id,
+    Guid target_form_version_id,
+    Guid? target_parent_id = null,
+    string? key_prefix = null,
+    int position = 0);
+
+public sealed record FormLibraryItemResponse(
+    Guid source_form_version_id,
+    Guid source_node_id,
+    string label,
+    string key,
+    string renderer_key);
+
+public sealed record FormDesignerResponse(
+    FormVersionResponse form,
+    IReadOnlyCollection<FormNodeResponse> nodes,
+    IReadOnlyCollection<FormNodeTypeResponse> node_types,
+    IReadOnlyCollection<FormLibraryItemResponse> library_items);
+
+public sealed record FormDesignerPageResponse(FormDesignerResponse designer, bool test_mode);

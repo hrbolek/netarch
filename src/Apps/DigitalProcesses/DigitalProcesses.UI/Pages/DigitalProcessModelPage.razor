@@ -1,14 +1,10 @@
 @typeparam TModel where TModel : IEntityDTOModel
 @namespace WebAppArchitecture.DigitalProcesses.UI.Pages
+@using WebAppArchitecture.Base.UI.Pages
 @using WebAppArchitecture.DigitalProcesses.UI.Components
-
-<Page Title="@typeof(TModel).Name">
-    <div class="container py-3">
-        <DigitalProcessModelCard TModel="TModel" Model="@Model" />
-    </div>
-</Page>
-
+<PageView TModel="TModel" TComponent="DigitalProcessLargeCard<TModel>" Model="@Model" Title="@Title" />
 @code {
     [Parameter, EditorRequired] public TModel Model { get; set; } = default!;
+    private string Title => typeof(TModel).Name.Replace("Response", "");
     [Parameter] public bool IsFragment { get; set; }
 }

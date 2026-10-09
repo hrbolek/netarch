@@ -28,6 +28,9 @@
 </Page>
 
 @code {
+    [Parameter] public CreatePageModel Model { get; set; } = new("Group");
+    [Parameter] public bool IsFragment { get; set; }
+
     private static readonly string[] GroupFields = ["Name"];
     private static readonly string[] GroupTypeFields = ["Name"];
     private Guid? ContextParentId => Guid.TryParse(HttpContextAccessor.HttpContext?.Request.Query["master_group_id"].ToString(), out var value) ? value : null;

@@ -14,6 +14,10 @@ public interface IFormNodeService : IBaseService<FormNodeModel, FormNodeResponse
     Task<FormNodeResponse> MoveAsync(Guid id, MoveFormNodeRequest request, CancellationToken ct = default);
     Task<IReadOnlyCollection<FormNodeResponse>> GetSubtreeAsync(Guid id, CancellationToken ct = default);
     Task<FormTreeResponse> GetTreeAsync(Guid formVersionId, CancellationToken ct = default);
+    Task<FormDesignerResponse> GetDesignerAsync(Guid formVersionId, CancellationToken ct = default);
+    Task<FormNodeResponse> UpdateDefinitionAsync(Guid id, UpdateFormNodeRequest request, CancellationToken ct = default);
+    Task DeleteSubtreeAsync(Guid id, CancellationToken ct = default);
+    Task<IReadOnlyCollection<FormNodeResponse>> ImportSubtreeAsync(ImportFormSubtreeRequest request, CancellationToken ct = default);
 }
 public sealed class FormNodeService(ISecurityLayer security) : BaseService<FormNodeModel, FormNodeResponse>(security), IFormNodeService
 {
@@ -45,6 +49,8 @@ public sealed class FormNodeService(ISecurityLayer security) : BaseService<FormN
             ?? throw new KeyNotFoundException("Node type not found.");
         if (request.max_occurs > 1 && !type.can_repeat)
             throw new InvalidOperationException("Selected node type is not repeatable.");
+        if (Security.Query<FormNodeModel>(SecurityOperations.Read).Any(x => x.form_version_id == request.form_version_id && x.key == request.key))
+            throw new InvalidOperationException($"Form node key '{request.key}' is already used in this form version.");
 
         FormNodeModel? parent = null;
         Guid creationRbac;
@@ -96,6 +102,187 @@ public sealed class FormNodeService(ISecurityLayer security) : BaseService<FormN
         var form=await Security.GetByIdAsync<FormVersionModel>(formVersionId,SecurityOperations.Read,ct) ?? throw new KeyNotFoundException("Form version not found.");
         var nodes=Security.Query<FormNodeModel>(SecurityOperations.Read).Where(x=>x.form_version_id==formVersionId).OrderBy(x=>x.path).ThenBy(x=>x.position).Select(FormNodeResponse.Projection).ToArray();
         return new(FormVersionResponse.FromModel(form),nodes);
+    }
+
+
+    public async Task<FormDesignerResponse> GetDesignerAsync(Guid formVersionId, CancellationToken ct = default)
+    {
+        var tree = await GetTreeAsync(formVersionId, ct);
+        var types = Security.Query<FormNodeTypeModel>(SecurityOperations.Read)
+            .OrderBy(x => x.name)
+            .Select(FormNodeTypeResponse.Projection)
+            .ToArray();
+
+        var typeMap = types.ToDictionary(x => x.id);
+        var libraryItems = Security.Query<FormNodeModel>(SecurityOperations.Read)
+            .Where(x => x.form_version_id != formVersionId)
+            .OrderBy(x => x.label ?? x.key)
+            .Select(FormNodeResponse.Projection)
+            .ToArray()
+            .Where(x => typeMap.TryGetValue(x.node_type_id, out var t) && t.can_have_children)
+            .Select(x => new FormLibraryItemResponse(
+                x.form_version_id, x.id, x.label ?? x.key, x.key, typeMap[x.node_type_id].renderer_key))
+            .ToArray();
+
+        return new FormDesignerResponse(tree.form, tree.nodes, types, libraryItems);
+    }
+
+    public async Task DeleteSubtreeAsync(Guid id, CancellationToken ct = default)
+    {
+        var root = await Security.GetByIdAsync<FormNodeModel>(id, SecurityOperations.Delete, ct)
+            ?? throw new KeyNotFoundException("Node not found or deletion denied.");
+        var version = await Security.GetByIdAsync<FormVersionModel>(root.form_version_id, SecurityOperations.Update, ct)
+            ?? throw new KeyNotFoundException("Form version not editable.");
+        if (version.is_published) throw new InvalidOperationException("Published version is immutable.");
+        var descendants = Security.Query<FormNodeModel>(SecurityOperations.Read)
+            .Where(x => x.form_version_id == root.form_version_id &&
+                (x.path == root.path || x.path.StartsWith(root.path + "/")))
+            .OrderByDescending(x => x.path.Length).Select(x => x.id).ToArray();
+        await Security.ExecuteInTransactionAsync(async token =>
+        {
+            foreach (var childId in descendants)
+            {
+                _ = await Security.GetByIdAsync<FormNodeModel>(childId, SecurityOperations.Delete, token)
+                    ?? throw new UnauthorizedAccessException("Cannot delete descendant node.");
+                await Security.StageDeleteAsync<FormNodeModel>(childId, token);
+            }
+            await Security.SaveChangesAsync(token);
+            return true;
+        }, ct);
+    }
+
+    public async Task<FormNodeResponse> UpdateDefinitionAsync(Guid id, UpdateFormNodeRequest request, CancellationToken ct = default)
+    {
+        if (string.IsNullOrWhiteSpace(request.key))
+            throw new ArgumentException("Key is required.", nameof(request));
+        if (request.min_occurs < 0 || request.max_occurs < 1 || request.min_occurs > request.max_occurs)
+            throw new ArgumentOutOfRangeException(nameof(request), "Require 0 <= min_occurs <= max_occurs and max_occurs >= 1.");
+
+        var node = await Security.GetByIdAsync<FormNodeModel>(id, SecurityOperations.Update, ct)
+            ?? throw new KeyNotFoundException("Form node not found or not editable.");
+        var version = await Security.GetByIdAsync<FormVersionModel>(node.form_version_id, SecurityOperations.Update, ct)
+            ?? throw new KeyNotFoundException("Form version not found.");
+        if (version.is_published)
+            throw new InvalidOperationException("Published form version is immutable.");
+
+        var duplicate = Security.Query<FormNodeModel>(SecurityOperations.Read)
+            .Any(x => x.form_version_id == node.form_version_id && x.id != id && x.key == request.key);
+        if (duplicate)
+            throw new InvalidOperationException($"Form node key '{request.key}' is already used in this form version.");
+
+        var now = DateTimeOffset.UtcNow;
+        var updated = node with
+        {
+            key = request.key.Trim(),
+            label = request.label,
+            description = request.description,
+            configuration_json = request.configuration_json,
+            min_occurs = request.min_occurs,
+            max_occurs = request.max_occurs,
+            updated_at = now,
+            updated_by = Security.CurrentUserId
+        };
+        await Security.StageUpdateAsync(updated, ct);
+        await Security.SaveChangesAsync(ct);
+        return FormNodeResponse.FromModel(updated);
+    }
+
+    public async Task<IReadOnlyCollection<FormNodeResponse>> ImportSubtreeAsync(ImportFormSubtreeRequest request, CancellationToken ct = default)
+    {
+        var targetVersion = await Security.GetByIdAsync<FormVersionModel>(request.target_form_version_id, SecurityOperations.Update, ct)
+            ?? throw new KeyNotFoundException("Target form version not found or not editable.");
+        if (targetVersion.is_published)
+            throw new InvalidOperationException("Published form version is immutable.");
+
+        var sourceRoot = await Security.GetByIdAsync<FormNodeModel>(request.source_node_id, SecurityOperations.Read, ct)
+            ?? throw new KeyNotFoundException("Library source node not found.");
+        var sourceNodes = Security.Query<FormNodeModel>(SecurityOperations.Read)
+            .Where(x => x.form_version_id == sourceRoot.form_version_id && (x.path == sourceRoot.path || x.path.StartsWith(sourceRoot.path + "/")))
+            .OrderBy(x => x.path)
+            .ThenBy(x => x.position)
+            .ToArray();
+
+        FormNodeModel? targetParent = null;
+        Guid targetRbac;
+        string? targetParentPath = null;
+        if (request.target_parent_id is Guid parentId)
+        {
+            targetParent = await Security.GetByIdAsync<FormNodeModel>(parentId, SecurityOperations.Update, ct)
+                ?? throw new KeyNotFoundException("Target parent not found or not editable.");
+            if (targetParent.form_version_id != request.target_form_version_id)
+                throw new InvalidOperationException("Target parent belongs to another form version.");
+            var parentType = await Security.GetByIdAsync<FormNodeTypeModel>(targetParent.node_type_id, SecurityOperations.Read, ct)
+                ?? throw new KeyNotFoundException("Target parent node type not found.");
+            if (!parentType.can_have_children)
+                throw new InvalidOperationException("Target parent cannot contain children.");
+            targetRbac = targetParent.rbacobject_id;
+            targetParentPath = targetParent.path;
+        }
+        else
+        {
+            targetRbac = targetVersion.rbacobject_id;
+        }
+
+        var existingKeys = Security.Query<FormNodeModel>(SecurityOperations.Read)
+            .Where(x => x.form_version_id == request.target_form_version_id)
+            .Select(x => x.key)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var prefix = string.IsNullOrWhiteSpace(request.key_prefix) ? null : request.key_prefix!.Trim().Trim('.');
+        string NewKey(string sourceKey) => prefix is null ? sourceKey : $"{prefix}.{sourceKey}";
+        foreach (var source in sourceNodes)
+            if (existingKeys.Contains(NewKey(source.key)))
+                throw new InvalidOperationException($"Import would create duplicate key '{NewKey(source.key)}'. Use a key prefix.");
+
+        var idMap = sourceNodes.ToDictionary(x => x.id, _ => Guid.NewGuid());
+        var pathMap = new Dictionary<Guid, string>();
+        var now = DateTimeOffset.UtcNow;
+        var actor = Security.CurrentUserId;
+        var created = new List<FormNodeModel>(sourceNodes.Length);
+
+        foreach (var source in sourceNodes)
+        {
+            var newId = idMap[source.id];
+            var isRoot = source.id == sourceRoot.id;
+            Guid? newParentId;
+            string newPath;
+            if (isRoot)
+            {
+                newParentId = request.target_parent_id;
+                newPath = targetParentPath is null ? MaterializedPath.Root(newId) : MaterializedPath.Child(targetParentPath, newId);
+            }
+            else
+            {
+                if (source.parent_id is not Guid oldParent || !idMap.TryGetValue(oldParent, out var mappedParent))
+                    throw new InvalidOperationException("Source subtree is structurally inconsistent.");
+                newParentId = mappedParent;
+                newPath = MaterializedPath.Child(pathMap[oldParent], newId);
+            }
+            pathMap[source.id] = newPath;
+            created.Add(source with
+            {
+                id = newId,
+                form_version_id = request.target_form_version_id,
+                parent_id = newParentId,
+                path = newPath,
+                key = NewKey(source.key),
+                position = isRoot ? request.position : source.position,
+                // Library import is a structural clone. Security is inherited from the target container.
+                own_security_scope = false,
+                rbacobject_id = targetRbac,
+                created_at = now,
+                updated_at = now,
+                created_by = actor,
+                updated_by = actor
+            });
+        }
+
+        return await Security.ExecuteInTransactionAsync(async token =>
+        {
+            foreach (var model in created)
+                await Security.StageCreateAsync(model, token);
+            await Security.SaveChangesAsync(token);
+            return (IReadOnlyCollection<FormNodeResponse>)created.Select(FormNodeResponse.FromModel).ToArray();
+        }, ct);
     }
 
     public async Task<FormNodeResponse> MoveAsync(Guid id, MoveFormNodeRequest request, CancellationToken ct = default)

@@ -1,3 +1,5 @@
+using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.Base.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -19,7 +21,12 @@ public static class RequestResolvers
     public static Task<IResult> List(HttpContext http, IRequestService service, CancellationToken ct) => BaseResolvers.List<RequestModel,RequestResponse,IRequestService>(http,service,ct);
     public static Task<IResult> Link(Guid id, HttpContext http, IRequestService service, CancellationToken ct) => BaseResolvers.Link<RequestModel,RequestResponse,IRequestService>(id,http,service,ct);
 
-    public static RazorComponentResult<DigitalProcessCreatePage> CreatePage() => DigitalProcessCreateForm.Page("Create request", Prefix+"/RequestResponse/create-form", Prefix+"/RequestResponse/list", "Starts a request from a published process-definition version. The current user becomes the immutable initiator.", DigitalProcessCreateForm.GuidField("process_definition_version_id","Process definition version ID"),DigitalProcessCreateForm.Text("subject","Subject",false));
+    public static DigitalProcessCreatePageModel CreatePage() => DigitalProcessCreateForm.Page(
+        "Create request", Prefix + "/RequestResponse/create-form", Prefix + "/RequestResponse/list",
+        "Select a process and its published version. The acting user becomes the initiator.",
+        DigitalProcessCreateForm.EntityLookup("process_definition_id", "Process", Prefix + "/ProcessDefinitionResponse/list", ["name"]),
+        DigitalProcessCreateForm.EntityLookup("process_definition_version_id", "Published process version", Prefix + "/ProcessDefinitionVersionResponse/list?where=%7B%22is_published%22%3A%7B%22_eq%22%3Atrue%7D%7D", [], parentField: "process_definition_id", parentProperty: "process_definition_id"),
+        DigitalProcessCreateForm.Text("subject", "Subject", false));
 
     public static async Task<IResult> CreateForm(HttpContext http, IRequestService service, CancellationToken ct)
     {
@@ -34,6 +41,7 @@ public static class RequestResolvers
     public static void Map(IEndpointRouteBuilder endpoints, string prefix)
     {
         var group = endpoints.MapGroup(prefix + "/RequestResponse").WithTags("DigitalProcesses.Runtime");
+        group.MapActions<RequestModel>("RequestResponse");
         group.MapGet("/view/{id:guid}", RequestResolvers.Read)
             .ApplyViewModel<DigitalProcessModelPage<RequestResponse>,RequestResponse>()
             .WithDescription("""
@@ -51,6 +59,7 @@ public static class RequestResolvers
                 """);
 
         group.MapGet("/create", RequestResolvers.CreatePage)
+            .ApplyViewModel<DigitalProcessCreatePage, DigitalProcessCreatePageModel>()
             .WithDescription("""
                 Renders the HTML form used to create Request.
                 """);

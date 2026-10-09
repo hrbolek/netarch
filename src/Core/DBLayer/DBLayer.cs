@@ -55,6 +55,9 @@ public sealed class DBLayer(ApplicationDbContext db, IServiceProvider services) 
         if (entities.Length > 0) db.Set<TEntity>().RemoveRange(entities);
     }
 
+    public Task<int> DeleteWhereAsync<TEntity>(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default) where TEntity : class, IEntityDBModel
+        => db.Set<TEntity>().Where(predicate).ExecuteDeleteAsync(cancellationToken);
+
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         => db.SaveChangesAsync(cancellationToken);
 

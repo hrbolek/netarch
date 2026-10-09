@@ -19,7 +19,7 @@ public static class FormNodeResolvers
     public static Task<IResult> List(HttpContext http, IFormNodeService service, CancellationToken ct) => BaseResolvers.List<FormNodeModel,FormNodeResponse,IFormNodeService>(http,service,ct);
     public static Task<IResult> Link(Guid id, HttpContext http, IFormNodeService service, CancellationToken ct) => BaseResolvers.Link<FormNodeModel,FormNodeResponse,IFormNodeService>(id,http,service,ct);
 
-    public static RazorComponentResult<DigitalProcessCreatePage> CreatePage() => DigitalProcessCreateForm.Page("Create form node", Prefix+"/FormNodeResponse/create-form", Prefix+"/FormNodeResponse/list", "Adds a node to a draft form-version tree. The materialized path is computed by the service.", DigitalProcessCreateForm.GuidField("form_version_id","Form version ID"), DigitalProcessCreateForm.Text("key","Key"), DigitalProcessCreateForm.GuidField("node_type_id","Node type ID"), DigitalProcessCreateForm.GuidField("parent_id","Parent node ID",false), DigitalProcessCreateForm.Text("label","Label",false), DigitalProcessCreateForm.TextArea("description","Description",false), DigitalProcessCreateForm.Number("position","Position","0"), DigitalProcessCreateForm.Number("min_occurs","Min occurs","1","0"), DigitalProcessCreateForm.Number("max_occurs","Max occurs","1","1"), DigitalProcessCreateForm.Check("own_security_scope","Own security scope"), DigitalProcessCreateForm.TextArea("configuration_json","Configuration JSON",false));
+    public static DigitalProcessCreatePageModel CreatePage() => DigitalProcessCreateForm.Page("Create form node", Prefix+"/FormNodeResponse/create-form", Prefix+"/FormNodeResponse/list", "Adds a node to a draft form-version tree. The materialized path is computed by the service.", DigitalProcessCreateForm.GuidField("form_version_id","Form version ID"), DigitalProcessCreateForm.Text("key","Key"), DigitalProcessCreateForm.GuidField("node_type_id","Node type ID"), DigitalProcessCreateForm.GuidField("parent_id","Parent node ID",false), DigitalProcessCreateForm.Text("label","Label",false), DigitalProcessCreateForm.TextArea("description","Description",false), DigitalProcessCreateForm.Number("position","Position","0"), DigitalProcessCreateForm.Number("min_occurs","Min occurs","1","0"), DigitalProcessCreateForm.Number("max_occurs","Max occurs","1","1"), DigitalProcessCreateForm.Check("own_security_scope","Own security scope"), DigitalProcessCreateForm.TextArea("configuration_json","Configuration JSON",false));
 
     public static Task<FormNodeResponse> CreateInVersion(CreateFormNodeRequest request, IFormNodeService service, CancellationToken ct)
         => service.CreateContainedInVersionAsync(request, ct);
@@ -43,6 +43,7 @@ public static class FormNodeResolvers
     public static void Map(IEndpointRouteBuilder endpoints, string prefix)
     {
         var group = endpoints.MapGroup(prefix + "/FormNodeResponse").WithTags("DigitalProcesses.Forms");
+        group.MapActions<FormNodeModel>("FormNodeResponse");
         group.MapGet("/view/{id:guid}", FormNodeResolvers.Read)
             .ApplyViewModel<DigitalProcessModelPage<FormNodeResponse>,FormNodeResponse>()
             .WithDescription("""
@@ -71,6 +72,7 @@ public static class FormNodeResolvers
                 """);
 
         group.MapGet("/create", FormNodeResolvers.CreatePage)
+            .ApplyViewModel<DigitalProcessCreatePage, DigitalProcessCreatePageModel>()
             .WithDescription("""
                 Renders the HTML form used to create FormNode.
                 """);

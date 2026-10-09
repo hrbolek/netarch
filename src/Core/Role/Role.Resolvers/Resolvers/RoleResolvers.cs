@@ -1,3 +1,4 @@
+using WebAppArchitecture.Base.UI.Pages;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -28,7 +29,7 @@ public static class RoleResolvers
         if (Guid.TryParse(httpContext.Request.Query["group_id"], out var groupId) &&
             !await authorizationService.IsAllowedAsync(actor.Value, groupId, RbacOperations.Create, cancellationToken))
             return Results.Forbid();
-        return new RazorComponentResult<RoleCreatePage>();
+        return ApiResults.Ok(new CreatePageModel("Role", httpContext.Request.Query["group_id"].ToString(), httpContext.Request.Query["return_url"].ToString()));
     }
 
     public static async Task<IResult> CreateContained(
@@ -65,9 +66,7 @@ public static class RoleResolvers
         var created = await service.CreateContainedAsync(
             new RoleCreateContainedRequest(groupId, userId, roleTypeId, isDeputy, validFrom, validTo), cancellationToken);
         var returnUrl = form["return_url"].ToString();
-        return Results.Redirect(string.IsNullOrWhiteSpace(returnUrl)
-            ? $"/architecture/RoleResponse/edit/{created.id}"
-            : returnUrl);
+        return ApiResults.Ok(created);
     }
 
     public static Task<IResult> Read(Guid id, HttpContext httpContext, IRoleService service, CancellationToken cancellationToken)
@@ -211,12 +210,14 @@ public static class RoleEndpointExtensions
 
         group.MapGet("/create", RoleResolvers.CreatePage)
             .WithName("RoleCreatePage")
+            .ApplyViewModel<RoleCreatePage, CreatePageModel>()
                 .WithDescription("""
                     GET /create. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
                     """);
 
         group.MapPost("/create-form", RoleResolvers.CreateForm)
             .WithName("RoleCreateForm")
+            .ApplyViewModel<RoleViewPage, RoleResponse>()
                 .WithDescription("""
                     POST /create-form. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
                     """);

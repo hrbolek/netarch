@@ -19,7 +19,7 @@ public static class FormNodeTypeResolvers
     public static Task<IResult> List(HttpContext http, IFormNodeTypeService service, CancellationToken ct) => BaseResolvers.List<FormNodeTypeModel,FormNodeTypeResponse,IFormNodeTypeService>(http,service,ct);
     public static Task<IResult> Link(Guid id, HttpContext http, IFormNodeTypeService service, CancellationToken ct) => BaseResolvers.Link<FormNodeTypeModel,FormNodeTypeResponse,IFormNodeTypeService>(id,http,service,ct);
 
-    public static RazorComponentResult<DigitalProcessCreatePage> CreatePage() => DigitalProcessCreateForm.Page("Create form node type", Prefix+"/FormNodeTypeResponse/create-form", Prefix+"/FormNodeTypeResponse/list", "Defines form-node capabilities and the renderer key used by the Razor renderer registry.", DigitalProcessCreateForm.Text("name","Name"), DigitalProcessCreateForm.Text("renderer_key","Renderer key",help:"Examples: section, input.text, input.number, input.date, input.checkbox, action.button"), DigitalProcessCreateForm.Check("can_have_children","Can have children"), DigitalProcessCreateForm.Check("can_have_value","Can have value"), DigitalProcessCreateForm.Check("can_repeat","Can repeat"), DigitalProcessCreateForm.GuidField("parent_type_id","Parent type ID",false), DigitalProcessCreateForm.TextArea("configuration_schema_json","Configuration schema JSON",false));
+    public static DigitalProcessCreatePageModel CreatePage() => DigitalProcessCreateForm.Page("Create form node type", Prefix+"/FormNodeTypeResponse/create-form", Prefix+"/FormNodeTypeResponse/list", "Defines form-node capabilities and the renderer key used by the Razor renderer registry.", DigitalProcessCreateForm.Text("name","Name"), DigitalProcessCreateForm.Text("renderer_key","Renderer key",help:"Examples: section, input.text, input.number, input.date, input.checkbox, action.button"), DigitalProcessCreateForm.Check("can_have_children","Can have children"), DigitalProcessCreateForm.Check("can_have_value","Can have value"), DigitalProcessCreateForm.Check("can_repeat","Can repeat"), DigitalProcessCreateForm.GuidField("parent_type_id","Parent type ID",false), DigitalProcessCreateForm.TextArea("configuration_schema_json","Configuration schema JSON",false));
 
     public static Task<FormNodeTypeResponse> CreateTyped(CreateFormNodeTypeRequest request, IFormNodeTypeService service, CancellationToken ct)
         => service.CreateTypedAsync(request, ct);
@@ -40,6 +40,7 @@ public static class FormNodeTypeResolvers
     public static void Map(IEndpointRouteBuilder endpoints, string prefix)
     {
         var group = endpoints.MapGroup(prefix + "/FormNodeTypeResponse").WithTags("DigitalProcesses.Forms");
+        group.MapActions<FormNodeTypeModel>("FormNodeTypeResponse");
         group.MapGet("/view/{id:guid}", FormNodeTypeResolvers.Read)
             .ApplyViewModel<DigitalProcessModelPage<FormNodeTypeResponse>,FormNodeTypeResponse>()
             .WithDescription("""
@@ -68,6 +69,7 @@ public static class FormNodeTypeResolvers
                 """);
 
         group.MapGet("/create", FormNodeTypeResolvers.CreatePage)
+            .ApplyViewModel<DigitalProcessCreatePage, DigitalProcessCreatePageModel>()
             .WithDescription("""
                 Renders the HTML form used to create FormNodeType.
                 """);
