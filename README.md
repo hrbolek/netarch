@@ -1509,3 +1509,84 @@ On a new database, the host initializes organization/security data from
 `_uois/systemdata.hk2026.json`. The default source is GitHub and can be changed
 with `SYSTEMDATA_SOURCE`; a local compact seed can be produced with
 `tools/extract_systemdata.py`. See `ARCHITECTURE_UPDATE_14.md`.
+
+
+## Spouštění Hostu a vývojového JsonataPlayground (77.14)
+
+`JsonataPlayground` je knihovna připojovaná do `Host` pouze volitelně. **Nespouštějte** `JsonataPlayground.csproj` pomocí `dotnet run` – nemá vlastní `Main`.
+
+### Lokální vývoj – Debug
+
+```bash
+ASPNETCORE_ENVIRONMENT=Development dotnet run --project src/Host/Host.csproj -c Debug
+```
+
+Výchozí Debug build připojí `JsonataPlayground`; při `Development` prostředí je UI na `http://localhost:8080/jsonata` a testovací API na `POST /jsonata/execute`. Port se řídí konfigurací Hostu. `ForwardHeaders` a GraphQL `Endpoint` nastavujte výhradně v konfiguraci Hostu (`DigitalProcesses:DataBackend`), ne ve formuláři.
+
+### Vývoj bez playgroundu
+
+```bash
+ASPNETCORE_ENVIRONMENT=Development dotnet run --project src/Host/Host.csproj -c Debug -p:EnableJsonataPlayground=false
+```
+
+### Produkční build a deployment – Release
+
+```bash
+dotnet publish src/Host/Host.csproj -c Release -p:EnableJsonataPlayground=false
+```
+
+Release bez explicitního přepnutí playground **nepřipojuje, nekompiluje ani nepublikuje** jako závislost Hostu. Endpointy `/jsonata` se navíc registrují jen když prostředí běží jako `Development`. Při nasazování nepovolujte volbu `EnableJsonataPlayground=true`.
+
+### Build celé solution
+
+```bash
+dotnet build SignFakeArchitecture.sln -c Debug
+```
+
+`JsonataPlayground.csproj` je nyní knihovna (`OutputType=Library`), takže jej lze sestavovat samostatně i v solution bez chyby CS5001. Stránka je určena pouze do důvěryhodného vývojového prostředí: zobrazované HTTP hlavičky mohou obsahovat cookies a přístupové tokeny.
+
+### Oprava 77.14
+
+Host/Program.cs odstranuje chybne `using WebAppArchitecture.Host;`; `ArchitectureHost` patri do `WebAppArchitecture.Hosting`.
+
+
+### JSONata import: hlavička Accept (77.15)
+
+Při každém serverovém volání z DigitalProcesses do nakonfigurovaného GraphQL/JSONata
+endpointu se nastavuje `Accept: application/json`, i pokud příchozí požadavek
+z prohlížeče obsahuje jiný `Accept` nebo žádný. Toto pravidlo sdílí
+import formuláře i diagnostická aplikace `/jsonata`; nemění se konfigurace
+jednotlivých formulářů ani ostatní přeposílané hlavičky.
+
+Pro kontrolu spusť v režimu Development `/jsonata`, proveď dotaz a v části
+„Odchozí HTTP požadavek“ ověř `headers.Accept: ["application/json"]`.
+
+## Import JSON polí a Export dat (77.16)
+
+Pro import kolekce například `query { groups: groupTypeList { id name } }` vytvořte ve **stejné rodičovské sekci jako tlačítko Import dat** sekci `key=groups` a pod ní pole `key=id` a `key=name`. U sekce `groups` nastavte `Max occurrences` na očekávaný maximální počet položek (např. `20`). Definice sekce a jejích polí je jediná; preview si vytváří instance s indexy `0..N-1` a pro každou instanci odděleně ukládá hodnoty dle `FormNode.Id` a cesty instance. JSON odpověď `{ "data": { "groups": [{"id":"1","name":"A"},{"id":"2","name":"B"}] } }` naplní dvě instance.
+
+Nový typ uzlu **Export dat (GraphQL)** (`action.export`) používá stejnou konfiguraci `{ "label", "query", "variables" }` i stejné serverové GraphQL spojení/hlavičky jako import. Před odesláním sesbírá hodnoty celé preview a rekonstruuje objekt `$form`, včetně opakovaných sekcí. Výchozí proměnná `form` se doplní automaticky, pokud ji konfigurace nedefinuje. Například:
+
+```json
+{
+  "label": "Export dat",
+  "query": "mutation Save($input: JSON!) { saveData(input: $input) }",
+  "variables": { "input": "$form" }
+}
+```
+
+Příklad je ilustrativní: názvy GraphQL mutace a skaláru (`JSON`) musí odpovídat schématu JSONata endpointu. Odpověď exportu se **nezapisuje** do polí. Pokud server nevrátí GraphQL `errors` a HTTP transport uspěje, zobrazí se zavíratelné zelené potvrzení; v opačném případě zavíratelné žluté upozornění. Detailní odpověď je v testovacím režimu nadále k dispozici.
+
+Podpora opakovaných instancí a HTTP akcí v této verzi se týká **preview/Test režimu**. Převod na trvale ukládané produkční `Submission` instance, stejně jako pravidla správy změn v čase, je oddělená část runtime implementace a tato verze ji nepřepisuje. Import pracuje s položkami objektových polí, jejichž cesty odpovídají existujícím definicím (např. `groups[0].id`).
+
+Spouštění se nemění:
+
+```bash
+ASPNETCORE_ENVIRONMENT=Development dotnet run --project src/Host/Host.csproj -c Debug
+```
+
+Při nasazování Release je JsonataPlayground nadále vypnut:
+
+```bash
+dotnet publish src/Host/Host.csproj -c Release -p:EnableJsonataPlayground=false
+```

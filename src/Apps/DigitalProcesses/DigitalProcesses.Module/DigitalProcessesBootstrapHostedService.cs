@@ -25,6 +25,8 @@ public sealed class DigitalProcessesBootstrapHostedService(IServiceScopeFactory 
             new FormNodeTypeModel(DigitalProcessWellKnown.FormNodeTypes.Number, null, "Number", "input.number", false, true, true, null, scopeId, now, now, actor, actor),
             new FormNodeTypeModel(DigitalProcessWellKnown.FormNodeTypes.Date, null, "Date", "input.date", false, true, true, null, scopeId, now, now, actor, actor),
             new FormNodeTypeModel(DigitalProcessWellKnown.FormNodeTypes.Checkbox, null, "Checkbox", "input.checkbox", false, true, true, null, scopeId, now, now, actor, actor),
+            new FormNodeTypeModel(DigitalProcessWellKnown.FormNodeTypes.Import, null, "Import dat (GraphQL)", "action.import", false, false, false, null, scopeId, now, now, actor, actor),
+            new FormNodeTypeModel(DigitalProcessWellKnown.FormNodeTypes.Export, null, "Export dat (GraphQL)", "action.export", false, false, false, null, scopeId, now, now, actor, actor),
             new FormNodeTypeModel(DigitalProcessWellKnown.FormNodeTypes.Select, null, "Select", "input.select", false, true, true, null, scopeId, now, now, actor, actor)
         };
 

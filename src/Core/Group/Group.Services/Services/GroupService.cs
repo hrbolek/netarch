@@ -5,12 +5,6 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.Group.Services;
 
-public interface IGroupService : IBaseService<GroupModel, GroupResponse>
-{
-    Task<GroupResponse> CreateContainedAsync(GroupCreateContainedRequest request, CancellationToken cancellationToken = default);
-    Task<GroupResponse> CreateTypedAsync(GroupCreateTypedRequest request, CancellationToken cancellationToken = default);
-}
-
 public sealed class GroupService : BaseService<GroupModel, GroupResponse>, IGroupService
 {
     private readonly ISecurityProjectionService _projection;
@@ -92,11 +86,4 @@ public sealed class GroupService : BaseService<GroupModel, GroupResponse>, IGrou
             await _projection.SynchronizeGroupSubtreeAsync(current.id, ct);
         }, cancellationToken);
     }
-}
-
-public interface IGroupTypeService : IBaseService<GroupTypeModel, GroupTypeResponse> { }
-
-public sealed class GroupTypeService : BaseService<GroupTypeModel, GroupTypeResponse>, IGroupTypeService
-{
-    public GroupTypeService(ISecurityLayer security) : base(security) { }
 }

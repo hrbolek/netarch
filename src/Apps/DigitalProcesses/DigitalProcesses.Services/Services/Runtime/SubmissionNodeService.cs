@@ -6,14 +6,6 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
-public interface ISubmissionNodeService : IBaseService<SubmissionNodeModel, SubmissionNodeResponse>
-{
-    Task<SubmissionNodeResponse> CreateInSubmissionAsync(CreateSubmissionNodeRequest request, CancellationToken ct = default);
-    Task<SubmissionNodeResponse> CreateInNodeAsync(CreateSubmissionNodeRequest request, CancellationToken ct = default);
-    Task<SubmissionNodeResponse> SetValueAsync(Guid id, SetSubmissionNodeValueRequest request, CancellationToken ct = default);
-    Task<IReadOnlyCollection<SubmissionNodeResponse>> GetSubtreeAsync(Guid id, CancellationToken ct = default);
-}
-
 public sealed class SubmissionNodeService(
     ISecurityLayer security,
     IRbacAccessBindingManager bindingManager,

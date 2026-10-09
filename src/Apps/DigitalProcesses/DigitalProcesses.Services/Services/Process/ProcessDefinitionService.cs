@@ -6,11 +6,6 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
-public interface IProcessDefinitionService : IBaseService<ProcessDefinitionModel, ProcessDefinitionResponse>
-{
-    Task<ProcessDefinitionResponse> CreateTypedAsync(CreateProcessDefinitionRequest request, CancellationToken ct = default);
-}
-
 public sealed class ProcessDefinitionService(ISecurityLayer security, ISecurityProjectionService securityProjection)
     : BaseService<ProcessDefinitionModel, ProcessDefinitionResponse>(security), IProcessDefinitionService
 {

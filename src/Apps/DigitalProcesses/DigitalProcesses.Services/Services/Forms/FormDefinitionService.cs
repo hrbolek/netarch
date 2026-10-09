@@ -7,12 +7,6 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
-public interface IFormDefinitionService : IBaseService<FormDefinitionModel, FormDefinitionResponse>
-{
-    Task<FormDefinitionResponse> CreateTypedAsync(CreateFormDefinitionRequest request, CancellationToken ct = default);
-    Task<FormDefinitionDetailResponse> GetDetailAsync(Guid id, CancellationToken ct = default);
-}
-
 public sealed class FormDefinitionService(ISecurityLayer security, ISecurityProjectionService securityProjection)
     : BaseService<FormDefinitionModel, FormDefinitionResponse>(security), IFormDefinitionService
 {

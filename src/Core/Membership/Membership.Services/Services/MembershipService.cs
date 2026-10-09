@@ -5,11 +5,6 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.Membership.Services;
 
-public interface IMembershipService : IBaseService<MembershipModel, MembershipResponse>
-{
-    Task<MembershipResponse> CreateContainedAsync(MembershipCreateContainedRequest request, CancellationToken cancellationToken = default);
-}
-
 public sealed class MembershipService : BaseService<MembershipModel, MembershipResponse>, IMembershipService
 {
     private readonly ISecurityProjectionService _projection;

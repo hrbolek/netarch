@@ -1,0 +1,1411 @@
+[
+  {
+    "name": "whoami",
+    "method": "GET",
+    "url": "http://whoami/api",
+    "forwardHeaders": true
+  },
+  {
+    "name": "healthOne",
+    "method": "POST",
+    "url": "http://localhost:3000/health",
+    "forwardHeaders": true,
+    "requestTransform": "{ \"id\": args.id, \"name\": args.name, \"source\": \"healthOne\", \"nested\": { \"value\": args.value } }",
+    "responseTransform": "{ \"ok\": ok, \"service\": \"self-health-one\", \"requestMethod\": method, \"originalPayload\": payload, \"payloadId\": payload.id, \"payloadName\": payload.name, \"payloadValue\": payload.nested.value, \"forwardedHeaders\": forwardedHeaders }",
+    "selectionMap": {
+      "ok": "ok",
+      "service": "service",
+      "method": "requestMethod",
+      "id": "payloadId",
+      "name": "payloadName",
+      "value": "payloadValue",
+      "payload": "originalPayload",
+      "forwardedHeaders": "forwardedHeaders"
+    }
+  },
+  {
+    "name": "healthTwo",
+    "method": "POST",
+    "url": "http://localhost:3000/health",
+    "forwardHeaders": true,
+    "requestTransform": "{ \"external_id\": args.id, \"display_name\": args.name, \"source\": \"healthTwo\", \"meta\": { \"amount\": args.value } }",
+    "responseTransform": "{ \"ok\": ok, \"service\": \"self-health-two\", \"requestMethod\": method, \"raw\": payload, \"id\": payload.external_id, \"title\": payload.display_name, \"amount\": payload.meta.amount, \"forwardedHeaders\": forwardedHeaders }",
+    "selectionMap": {
+      "ok": "ok",
+      "service": "service",
+      "method": "requestMethod",
+      "id": "id",
+      "name": "title",
+      "value": "amount",
+      "payload": "raw",
+      "forwardedHeaders": "forwardedHeaders"
+    }
+  },    
+  {
+    "name": "info",
+    "method": "GET",
+    "url": "http://app:8080/info",
+    "forwardHeaders": true
+  },
+  {
+    "name": "debug",
+    "method": "GET",
+    "url": "http://app:8080/debug",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formdefinitionresponseActionsById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/FormDefinitionResponse/actions/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formdefinitionresponseDeleteVersionById",
+    "method": "POST",
+    "urlTemplate": "http://app:8080/digital-processes/FormDefinitionResponse/delete-version/{id}",
+    "forwardHeaders": true,
+    "queryTransform": "{ \"definitionId\": args.definitionId }"
+  },
+  {
+    "name": "formdefinitionresponseNewVersionById",
+    "method": "POST",
+    "urlTemplate": "http://app:8080/digital-processes/FormDefinitionResponse/new-version/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formdefinitionresponsePublishVersionById",
+    "method": "POST",
+    "urlTemplate": "http://app:8080/digital-processes/FormDefinitionResponse/publish-version/{id}",
+    "forwardHeaders": true,
+    "queryTransform": "{ \"definitionId\": args.definitionId }"
+  },
+  {
+    "name": "formdefinitionresponseViewById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/FormDefinitionResponse/view/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formdefinitionresponseList",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/FormDefinitionResponse/list",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formdefinitionresponseLinkById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/FormDefinitionResponse/link/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formdefinitionresponseCreateTyped",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/FormDefinitionResponse/create-typed",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "formdefinitionresponseCreate",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/FormDefinitionResponse/create",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formdefinitionresponseCreateForm",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/FormDefinitionResponse/create-form",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formversionresponseActionsById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/FormVersionResponse/actions/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formversionresponseViewById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/FormVersionResponse/view/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formversionresponseList",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/FormVersionResponse/list",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formversionresponseLinkById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/FormVersionResponse/link/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formversionresponseCreateContained",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/FormVersionResponse/create-contained",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "formversionresponseCreate",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/FormVersionResponse/create",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formversionresponseCreateForm",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/FormVersionResponse/create-form",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formversionresponsePublishById",
+    "method": "POST",
+    "urlTemplate": "http://app:8080/digital-processes/FormVersionResponse/publish/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formversionresponseDesignerById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/FormVersionResponse/designer/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formversionresponseTestById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/FormVersionResponse/test/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formversionresponseDesignerAddForm",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/FormVersionResponse/designer/add-form",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formversionresponseDesignerUpdateForm",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/FormVersionResponse/designer/update-form",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formversionresponseDesignerDeleteForm",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/FormVersionResponse/designer/delete-form",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formversionresponseDesignerMoveForm",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/FormVersionResponse/designer/move-form",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formversionresponseDesignerImportForm",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/FormVersionResponse/designer/import-form",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formversionresponseTreeById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/FormVersionResponse/tree/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formnodetyperesponseActionsById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/FormNodeTypeResponse/actions/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formnodetyperesponseViewById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/FormNodeTypeResponse/view/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formnodetyperesponseList",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/FormNodeTypeResponse/list",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formnodetyperesponseLinkById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/FormNodeTypeResponse/link/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formnodetyperesponseCreateTyped",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/FormNodeTypeResponse/create-typed",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "formnodetyperesponseCreateContained",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/FormNodeTypeResponse/create-contained",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "formnodetyperesponseCreate",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/FormNodeTypeResponse/create",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formnodetyperesponseCreateForm",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/FormNodeTypeResponse/create-form",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formnoderesponseActionsById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/FormNodeResponse/actions/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formnoderesponseViewById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/FormNodeResponse/view/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formnoderesponseList",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/FormNodeResponse/list",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formnoderesponseLinkById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/FormNodeResponse/link/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formnoderesponseCreateInVersion",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/FormNodeResponse/create-in-version",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "formnoderesponseCreateInNode",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/FormNodeResponse/create-in-node",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "formnoderesponseCreate",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/FormNodeResponse/create",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formnoderesponseCreateForm",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/FormNodeResponse/create-form",
+    "forwardHeaders": true
+  },
+  {
+    "name": "formnoderesponseMoveById",
+    "method": "PUT",
+    "urlTemplate": "http://app:8080/digital-processes/FormNodeResponse/move/{id}",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "formnoderesponseSubtreeById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/FormNodeResponse/subtree/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "processdefinitionresponseActionsById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/ProcessDefinitionResponse/actions/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "processdefinitionresponseDeleteVersionById",
+    "method": "POST",
+    "urlTemplate": "http://app:8080/digital-processes/ProcessDefinitionResponse/delete-version/{id}",
+    "forwardHeaders": true,
+    "queryTransform": "{ \"definitionId\": args.definitionId }"
+  },
+  {
+    "name": "processdefinitionresponseNewVersionById",
+    "method": "POST",
+    "urlTemplate": "http://app:8080/digital-processes/ProcessDefinitionResponse/new-version/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "processdefinitionresponsePublishVersionById",
+    "method": "POST",
+    "urlTemplate": "http://app:8080/digital-processes/ProcessDefinitionResponse/publish-version/{id}",
+    "forwardHeaders": true,
+    "queryTransform": "{ \"definitionId\": args.definitionId }"
+  },
+  {
+    "name": "processdefinitionresponseViewById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/ProcessDefinitionResponse/view/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "processdefinitionresponseList",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/ProcessDefinitionResponse/list",
+    "forwardHeaders": true
+  },
+  {
+    "name": "processdefinitionresponseLinkById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/ProcessDefinitionResponse/link/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "processdefinitionresponseCreateTyped",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/ProcessDefinitionResponse/create-typed",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "processdefinitionresponseCreate",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/ProcessDefinitionResponse/create",
+    "forwardHeaders": true
+  },
+  {
+    "name": "processdefinitionresponseCreateForm",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/ProcessDefinitionResponse/create-form",
+    "forwardHeaders": true
+  },
+  {
+    "name": "processdefinitionversionresponseActionsById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/ProcessDefinitionVersionResponse/actions/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "processdefinitionversionresponseViewById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/ProcessDefinitionVersionResponse/view/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "processdefinitionversionresponseList",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/ProcessDefinitionVersionResponse/list",
+    "forwardHeaders": true
+  },
+  {
+    "name": "processdefinitionversionresponseLinkById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/ProcessDefinitionVersionResponse/link/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "processdefinitionversionresponseCreateContained",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/ProcessDefinitionVersionResponse/create-contained",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "processdefinitionversionresponseCreate",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/ProcessDefinitionVersionResponse/create",
+    "forwardHeaders": true
+  },
+  {
+    "name": "processdefinitionversionresponseCreateForm",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/ProcessDefinitionVersionResponse/create-form",
+    "forwardHeaders": true
+  },
+  {
+    "name": "processdefinitionversionresponsePublishById",
+    "method": "POST",
+    "urlTemplate": "http://app:8080/digital-processes/ProcessDefinitionVersionResponse/publish/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "requestresponseActionsById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/RequestResponse/actions/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "requestresponseViewById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/RequestResponse/view/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "requestresponseList",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/RequestResponse/list",
+    "forwardHeaders": true
+  },
+  {
+    "name": "requestresponseLinkById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/RequestResponse/link/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "requestresponseCreate",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/RequestResponse/create",
+    "forwardHeaders": true
+  },
+  {
+    "name": "requestresponseCreateForm",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/RequestResponse/create-form",
+    "forwardHeaders": true
+  },
+  {
+    "name": "requestresponseStart",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/RequestResponse/start",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "requestresponseTransitionById",
+    "method": "POST",
+    "urlTemplate": "http://app:8080/digital-processes/RequestResponse/transition/{id}",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "requestresponseDetailById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/RequestResponse/detail/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "submissionresponseActionsById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/SubmissionResponse/actions/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "submissionresponseViewById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/SubmissionResponse/view/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "submissionresponseList",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/SubmissionResponse/list",
+    "forwardHeaders": true
+  },
+  {
+    "name": "submissionresponseLinkById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/SubmissionResponse/link/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "submissionresponseTreeById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/SubmissionResponse/tree/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "submissionnoderesponseActionsById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/SubmissionNodeResponse/actions/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "submissionnoderesponseViewById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/SubmissionNodeResponse/view/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "submissionnoderesponseList",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/SubmissionNodeResponse/list",
+    "forwardHeaders": true
+  },
+  {
+    "name": "submissionnoderesponseLinkById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/SubmissionNodeResponse/link/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "submissionnoderesponseCreateInSubmission",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/SubmissionNodeResponse/create-in-submission",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "submissionnoderesponseCreateInNode",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/SubmissionNodeResponse/create-in-node",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "submissionnoderesponseValueById",
+    "method": "PUT",
+    "urlTemplate": "http://app:8080/digital-processes/SubmissionNodeResponse/value/{id}",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "submissionnoderesponseSubtreeById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/SubmissionNodeResponse/subtree/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "requesttransitionhistoryresponseActionsById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/RequestTransitionHistoryResponse/actions/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "requesttransitionhistoryresponseViewById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/RequestTransitionHistoryResponse/view/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "requesttransitionhistoryresponseList",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/RequestTransitionHistoryResponse/list",
+    "forwardHeaders": true
+  },
+  {
+    "name": "requesttransitionhistoryresponseLinkById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/RequestTransitionHistoryResponse/link/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowdefinitionresponseActionsById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/WorkflowDefinitionResponse/actions/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowdefinitionresponseDeleteVersionById",
+    "method": "POST",
+    "urlTemplate": "http://app:8080/digital-processes/WorkflowDefinitionResponse/delete-version/{id}",
+    "forwardHeaders": true,
+    "queryTransform": "{ \"definitionId\": args.definitionId }"
+  },
+  {
+    "name": "workflowdefinitionresponsePublishVersionById",
+    "method": "POST",
+    "urlTemplate": "http://app:8080/digital-processes/WorkflowDefinitionResponse/publish-version/{id}",
+    "forwardHeaders": true,
+    "queryTransform": "{ \"definitionId\": args.definitionId }"
+  },
+  {
+    "name": "workflowdefinitionresponseNewVersionById",
+    "method": "POST",
+    "urlTemplate": "http://app:8080/digital-processes/WorkflowDefinitionResponse/new-version/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowdefinitionresponseViewById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/WorkflowDefinitionResponse/view/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowdefinitionresponseList",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/WorkflowDefinitionResponse/list",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowdefinitionresponseLinkById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/WorkflowDefinitionResponse/link/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowdefinitionresponseCreateTyped",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/WorkflowDefinitionResponse/create-typed",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "workflowdefinitionresponseCreate",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/WorkflowDefinitionResponse/create",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowdefinitionresponseCreateForm",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/WorkflowDefinitionResponse/create-form",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowversionresponseActionsById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/WorkflowVersionResponse/actions/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowversionresponseDesignerById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/WorkflowVersionResponse/designer/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowversionresponseDesignerAddState",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/WorkflowVersionResponse/designer/add-state",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowversionresponseDesignerUpdateState",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/WorkflowVersionResponse/designer/update-state",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowversionresponseDesignerDeleteState",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/WorkflowVersionResponse/designer/delete-state",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowversionresponseDesignerAddTransition",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/WorkflowVersionResponse/designer/add-transition",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowversionresponseDesignerUpdateTransition",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/WorkflowVersionResponse/designer/update-transition",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowversionresponseDesignerDeleteTransition",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/WorkflowVersionResponse/designer/delete-transition",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowversionresponseViewById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/WorkflowVersionResponse/view/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowversionresponseList",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/WorkflowVersionResponse/list",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowversionresponseLinkById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/WorkflowVersionResponse/link/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowversionresponseCreateContained",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/WorkflowVersionResponse/create-contained",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "workflowversionresponseCreate",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/WorkflowVersionResponse/create",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowversionresponseCreateForm",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/WorkflowVersionResponse/create-form",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowversionresponsePublishById",
+    "method": "POST",
+    "urlTemplate": "http://app:8080/digital-processes/WorkflowVersionResponse/publish/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowstateresponseActionsById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/WorkflowStateResponse/actions/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowstateresponseViewById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/WorkflowStateResponse/view/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowstateresponseList",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/WorkflowStateResponse/list",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowstateresponseLinkById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/WorkflowStateResponse/link/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowstateresponseCreateContained",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/WorkflowStateResponse/create-contained",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "workflowstateresponseCreate",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/WorkflowStateResponse/create",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowstateresponseCreateForm",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/WorkflowStateResponse/create-form",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowstateaccessruleresponseActionsById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/WorkflowStateAccessRuleResponse/actions/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowstateaccessruleresponseViewById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/WorkflowStateAccessRuleResponse/view/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowstateaccessruleresponseList",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/WorkflowStateAccessRuleResponse/list",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowstateaccessruleresponseLinkById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/WorkflowStateAccessRuleResponse/link/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowstateaccessruleresponseCreateContained",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/WorkflowStateAccessRuleResponse/create-contained",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "workflowstateaccessruleresponseCreate",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/WorkflowStateAccessRuleResponse/create",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowstateaccessruleresponseCreateForm",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/WorkflowStateAccessRuleResponse/create-form",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowtransitionresponseActionsById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/WorkflowTransitionResponse/actions/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowtransitionresponseViewById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/WorkflowTransitionResponse/view/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowtransitionresponseList",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/WorkflowTransitionResponse/list",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowtransitionresponseLinkById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/digital-processes/WorkflowTransitionResponse/link/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowtransitionresponseCreateContained",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/WorkflowTransitionResponse/create-contained",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "workflowtransitionresponseCreate",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes/WorkflowTransitionResponse/create",
+    "forwardHeaders": true
+  },
+  {
+    "name": "workflowtransitionresponseCreateForm",
+    "method": "POST",
+    "url": "http://app:8080/digital-processes/WorkflowTransitionResponse/create-form",
+    "forwardHeaders": true
+  },
+  {
+    "name": "groupResponse",
+    "method": "GET",
+    "url": "http://app:8080/architecture/GroupResponse",
+    "forwardHeaders": true
+  },
+  {
+    "name": "groupresponseById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/GroupResponse/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "groupCreateContained",
+    "method": "POST",
+    "url": "http://app:8080/architecture/GroupResponse/create-contained",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "groupCreateTyped",
+    "method": "POST",
+    "url": "http://app:8080/architecture/GroupResponse/create-typed",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "groupCreatePage",
+    "method": "GET",
+    "url": "http://app:8080/architecture/GroupResponse/create",
+    "forwardHeaders": true
+  },
+  {
+    "name": "groupCreateForm",
+    "method": "POST",
+    "url": "http://app:8080/architecture/GroupResponse/create-form",
+    "forwardHeaders": true
+  },
+  {
+    "name": "groupLink",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/GroupResponse/link/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "groupActions",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/GroupResponse/actions/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "groupRead",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/GroupResponse/view/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "groupEdit",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/GroupResponse/edit/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "groupList",
+    "method": "GET",
+    "url": "http://app:8080/architecture/GroupResponse/list",
+    "forwardHeaders": true
+  },
+  {
+    "name": "groupRoles",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/GroupResponse/roles/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "groupMemberships",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/GroupResponse/memberships/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "groupMembershipsCards",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/GroupResponse/membershipscards/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "groupUpdate",
+    "method": "PUT",
+    "url": "http://app:8080/architecture/GroupResponse/update",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "groupUpdateForm",
+    "method": "POST",
+    "urlTemplate": "http://app:8080/architecture/GroupResponse/update/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "groupDelete",
+    "method": "DELETE",
+    "url": "http://app:8080/architecture/GroupResponse/delete",
+    "forwardHeaders": true,
+    "queryTransform": "{ \"id\": args.id }"
+  },
+  {
+    "name": "groupTypeLink",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/GroupTypeResponse/link/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "groupTypeRead",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/GroupTypeResponse/read/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "groupTypeList",
+    "method": "GET",
+    "url": "http://app:8080/architecture/GroupTypeResponse/list",
+    "forwardHeaders": true
+  },
+  {
+    "name": "groupTypeUpdate",
+    "method": "PUT",
+    "url": "http://app:8080/architecture/GroupTypeResponse/update",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "groupTypeDelete",
+    "method": "DELETE",
+    "urlTemplate": "http://app:8080/architecture/GroupTypeResponse/delete/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "applicationHome",
+    "method": "GET",
+    "url": "http://app:8080/",
+    "forwardHeaders": true
+  },
+  {
+    "name": "architectureHome",
+    "method": "GET",
+    "url": "http://app:8080/architecture",
+    "forwardHeaders": true
+  },
+  {
+    "name": "digitalProcessesHome",
+    "method": "GET",
+    "url": "http://app:8080/digital-processes",
+    "forwardHeaders": true
+  },
+  {
+    "name": "membershipResponse",
+    "method": "GET",
+    "url": "http://app:8080/architecture/MembershipResponse",
+    "forwardHeaders": true
+  },
+  {
+    "name": "membershipresponseById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/MembershipResponse/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "membershipCreateContained",
+    "method": "POST",
+    "url": "http://app:8080/architecture/MembershipResponse/create-contained",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "membershipCreatePage",
+    "method": "GET",
+    "url": "http://app:8080/architecture/MembershipResponse/create",
+    "forwardHeaders": true
+  },
+  {
+    "name": "membershipCreateForm",
+    "method": "POST",
+    "url": "http://app:8080/architecture/MembershipResponse/create-form",
+    "forwardHeaders": true
+  },
+  {
+    "name": "membershipLink",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/MembershipResponse/link/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "membershipActions",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/MembershipResponse/actions/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "membershipRead",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/MembershipResponse/view/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "membershipEdit",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/MembershipResponse/edit/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "membershipList",
+    "method": "GET",
+    "url": "http://app:8080/architecture/MembershipResponse/list",
+    "forwardHeaders": true
+  },
+  {
+    "name": "membershipUpdate",
+    "method": "PUT",
+    "url": "http://app:8080/architecture/MembershipResponse/update",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "membershipUpdateForm",
+    "method": "POST",
+    "urlTemplate": "http://app:8080/architecture/MembershipResponse/update/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "membershipDelete",
+    "method": "DELETE",
+    "url": "http://app:8080/architecture/MembershipResponse/delete",
+    "forwardHeaders": true,
+    "queryTransform": "{ \"id\": args.id }"
+  },
+  {
+    "name": "roleResponse",
+    "method": "GET",
+    "url": "http://app:8080/architecture/RoleResponse",
+    "forwardHeaders": true
+  },
+  {
+    "name": "roleresponseById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/RoleResponse/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "roleCreateContained",
+    "method": "POST",
+    "url": "http://app:8080/architecture/RoleResponse/create-contained",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "roleCreatePage",
+    "method": "GET",
+    "url": "http://app:8080/architecture/RoleResponse/create",
+    "forwardHeaders": true
+  },
+  {
+    "name": "roleCreateForm",
+    "method": "POST",
+    "url": "http://app:8080/architecture/RoleResponse/create-form",
+    "forwardHeaders": true
+  },
+  {
+    "name": "roleLink",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/RoleResponse/link/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "roleActions",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/RoleResponse/actions/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "roleRead",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/RoleResponse/view/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "roleEdit",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/RoleResponse/edit/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "roleList",
+    "method": "GET",
+    "url": "http://app:8080/architecture/RoleResponse/list",
+    "forwardHeaders": true
+  },
+  {
+    "name": "roleUpdate",
+    "method": "PUT",
+    "url": "http://app:8080/architecture/RoleResponse/update",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "roleUpdateForm",
+    "method": "POST",
+    "urlTemplate": "http://app:8080/architecture/RoleResponse/update/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "roleDelete",
+    "method": "DELETE",
+    "url": "http://app:8080/architecture/RoleResponse/delete",
+    "forwardHeaders": true,
+    "queryTransform": "{ \"id\": args.id }"
+  },
+  {
+    "name": "roleTypeResponse",
+    "method": "GET",
+    "url": "http://app:8080/architecture/RoleTypeResponse",
+    "forwardHeaders": true
+  },
+  {
+    "name": "roletyperesponseById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/RoleTypeResponse/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "roleTypeLink",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/RoleTypeResponse/link/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "roleTypeRead",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/RoleTypeResponse/view/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "roleTypeEdit",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/RoleTypeResponse/edit/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "roleTypeList",
+    "method": "GET",
+    "url": "http://app:8080/architecture/RoleTypeResponse/list",
+    "forwardHeaders": true
+  },
+  {
+    "name": "roleTypeUpdate",
+    "method": "PUT",
+    "url": "http://app:8080/architecture/RoleTypeResponse/update",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "roleTypeUpdateForm",
+    "method": "POST",
+    "urlTemplate": "http://app:8080/architecture/RoleTypeResponse/update/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "roleTypeDelete",
+    "method": "DELETE",
+    "url": "http://app:8080/architecture/RoleTypeResponse/delete",
+    "forwardHeaders": true,
+    "queryTransform": "{ \"id\": args.id }"
+  },
+  {
+    "name": "securityOperations",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/security/{rbacId}/operations",
+    "forwardHeaders": true,
+    "queryTransform": "{ \"userId\": args.userId }"
+  },
+  {
+    "name": "securityPermissions",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/RbacPermissionResponse/permissions/{rbacobjectId}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "securityCreateRoleAction",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/RbacPermissionResponse/create-role-action/{rbacobjectId}",
+    "forwardHeaders": true,
+    "queryTransform": "{ \"return_url\": args.return_url }"
+  },
+  {
+    "name": "securityCreateRoleDialog",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/RbacPermissionResponse/create-role/{rbacobjectId}",
+    "forwardHeaders": true,
+    "queryTransform": "{ \"return_url\": args.return_url }"
+  },
+  {
+    "name": "securityCreateRoleForm",
+    "method": "POST",
+    "urlTemplate": "http://app:8080/architecture/RbacPermissionResponse/create-role-form/{rbacobjectId}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "userResponse",
+    "method": "GET",
+    "url": "http://app:8080/architecture/UserResponse",
+    "forwardHeaders": true
+  },
+  {
+    "name": "userresponseById",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/UserResponse/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "userCreateContained",
+    "method": "POST",
+    "url": "http://app:8080/architecture/UserResponse/create-contained",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "userCreatePage",
+    "method": "GET",
+    "url": "http://app:8080/architecture/UserResponse/create",
+    "forwardHeaders": true
+  },
+  {
+    "name": "userCreateForm",
+    "method": "POST",
+    "url": "http://app:8080/architecture/UserResponse/create-form",
+    "forwardHeaders": true
+  },
+  {
+    "name": "userLink",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/UserResponse/link/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "userActions",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/UserResponse/actions/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "userRead",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/UserResponse/view/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "userEdit",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/UserResponse/edit/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "userList",
+    "method": "GET",
+    "url": "http://app:8080/architecture/UserResponse/list",
+    "forwardHeaders": true
+  },
+  {
+    "name": "userMemberships",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/UserResponse/memberships/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "userMembershipsCards",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/UserResponse/membershipscards/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "userRoles",
+    "method": "GET",
+    "urlTemplate": "http://app:8080/architecture/UserResponse/roles/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "userVector",
+    "method": "POST",
+    "url": "http://app:8080/architecture/UserResponse/vector",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "userUpdate",
+    "method": "PUT",
+    "url": "http://app:8080/architecture/UserResponse/update",
+    "forwardHeaders": true,
+    "requestTransform": "args.input"
+  },
+  {
+    "name": "userUpdateForm",
+    "method": "POST",
+    "urlTemplate": "http://app:8080/architecture/UserResponse/update/{id}",
+    "forwardHeaders": true
+  },
+  {
+    "name": "userDelete",
+    "method": "DELETE",
+    "url": "http://app:8080/architecture/UserResponse/delete",
+    "forwardHeaders": true,
+    "queryTransform": "{ \"id\": args.id }"
+  },
+  {
+    "name": "userByName",
+    "method": "GET",
+    "url": "http://app:8080/architecture/UserResponse/list",
+    "forwardHeaders": true,
+    "queryTransform": "{ \"skip\": 0, \"where\": { \"name\": { \"_ilike\": \"%\" & args.name & \"%\" } }, \"order_by\": \"\", \"take\": args.take ? args.take : 25 }"
+  },
+  {
+    "name": "groupByName",
+    "method": "GET",
+    "url": "http://app:8080/architecture/GroupResponse/list",
+    "forwardHeaders": true,
+    "queryTransform": "{ \"skip\": 0, \"where\": { \"name\": { \"_ilike\": \"%\" & args.name & \"%\" } }, \"order_by\": \"\", \"take\": args.take ? args.take : 25 }"
+  }
+]

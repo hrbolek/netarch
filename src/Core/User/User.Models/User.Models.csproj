@@ -10,4 +10,10 @@
     <ProjectReference Include="../../Base/Base.csproj" />
     <ProjectReference Include="../../DBLayer/DBLayer.csproj" />
   </ItemGroup>
+
+  <!-- Refactoring compatibility: exclude source files superseded by per-type files.
+       SDK default glob otherwise compiles stale sources when ZIPs are overlaid. -->
+  <ItemGroup>
+    <Compile Remove="Models/UserModel.cs" />
+  </ItemGroup>
 </Project>

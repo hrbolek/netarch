@@ -2,12 +2,6 @@ using Microsoft.AspNetCore.Components;
 
 namespace WebAppArchitecture.DigitalProcesses.UI.Routing;
 
-public interface IFormNodeRendererRegistry
-{
-    void Register<TComponent>(string rendererKey) where TComponent : IComponent;
-    Type? Resolve(string rendererKey);
-}
-
 public sealed class FormNodeRendererRegistry : IFormNodeRendererRegistry
 {
     private readonly Dictionary<string,Type> renderers=new(StringComparer.OrdinalIgnoreCase);

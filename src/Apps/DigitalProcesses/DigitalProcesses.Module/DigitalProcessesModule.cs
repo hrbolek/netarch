@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using WebAppArchitecture.Base.Endpoints;
 using WebAppArchitecture.Base.UI.Pages;
 using WebAppArchitecture.Base.UI.Routing;
@@ -18,6 +19,8 @@ public sealed class DigitalProcessesModule : IArchitectureModule
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
+        services.AddMemoryCache();
+        services.AddSingleton<PreviewFormInstanceStore>();
         services.AddScoped<IFormDefinitionService, FormDefinitionService>();
         services.AddScoped<IFormVersionService, FormVersionService>();
         services.AddScoped<IFormNodeTypeService, FormNodeTypeService>();
@@ -34,15 +37,21 @@ public sealed class DigitalProcessesModule : IArchitectureModule
         services.AddScoped<ISubmissionNodeService, SubmissionNodeService>();
         services.AddScoped<IRequestTransitionHistoryService, RequestTransitionHistoryService>();
         services.AddSingleton<IDigitalProcessIntegration, UnconfiguredDigitalProcessIntegration>();
+        services.AddHttpContextAccessor();
         services.AddSingleton(new FormDataBackendOptions
         {
-            Endpoint = configuration["DigitalProcesses:DataBackend:Endpoint"]
+            Endpoint = configuration["DigitalProcesses:DataBackend:Endpoint"],
+            ForwardHeaders = configuration.GetSection("DigitalProcesses:DataBackend:ForwardHeaders").Get<string[]>() ?? Array.Empty<string>()
         });
-        if (string.Equals(configuration["ASPNETCORE_ENVIRONMENT"], "Development", StringComparison.OrdinalIgnoreCase)
-            || string.Equals(configuration["DOTNET_ENVIRONMENT"], "Development", StringComparison.OrdinalIgnoreCase))
+        // Explicit provider selection: Development must be able to call the real JSONata container.
+        // Dummy is the safe default when no external backend is configured.
+        var provider = configuration["DigitalProcesses:DataBackend:Provider"] ?? "Dummy";
+        if (string.Equals(provider, "GraphQL", StringComparison.OrdinalIgnoreCase))
+            services.AddHttpClient<IFormDataBackend, GraphqlLikeFormDataBackend>();
+        else if (string.Equals(provider, "Dummy", StringComparison.OrdinalIgnoreCase))
             services.AddScoped<IFormDataBackend, DummyJsonataCaller>();
         else
-            services.AddHttpClient<IFormDataBackend, GraphqlLikeFormDataBackend>();
+            throw new InvalidOperationException($"Unsupported DigitalProcesses:DataBackend:Provider '{provider}'. Expected GraphQL or Dummy.");
         services.AddHostedService<DigitalProcessesBootstrapHostedService>();
         services.AddDigitalProcessRenderers();
     }
@@ -82,22 +91,12 @@ public sealed class DigitalProcessesModule : IArchitectureModule
                 workflows, submissions and Digital Processes administration.
                 """);
 
+        // Register preview routes in all environments so the designer never renders
+        // an HTMX action whose target route is absent (404). Preview remains
+        // experimental; protect access to the application until authorization
+        // and persistent form instances have been implemented.
+        PreviewFormEndpoints.Map(endpoints);
+
         endpoints.MapDigitalProcessEndpoints("/digital-processes");
     }
-}
-
-public static class DigitalProcessesModuleExtensions
-{
-    public static IServiceCollection AddDigitalProcesses(this IServiceCollection services)
-        => services.AddArchitectureModule<DigitalProcessesModule>();
-
-    public static IEndpointRouteBuilder MapDigitalProcesses(this IEndpointRouteBuilder endpoints)
-        => endpoints.MapArchitectureModule<DigitalProcessesModule>();
-}
-
-public static class DigitalProcessesModuleResolvers
-{
-    public static ApplicationDefinition Home(IApplicationNavigationRegistry navigation)
-        => navigation.Get("digital-processes")
-            ?? throw new InvalidOperationException("Digital Processes navigation is not registered.");
 }

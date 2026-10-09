@@ -4,11 +4,6 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.SecurityLayer;
 
-public interface ISecurityService : IRbacService
-{
-    Task<IReadOnlySet<string>> GetAllowedOperationsAsync(Guid userId, Guid rbacId, CancellationToken cancellationToken = default);
-}
-
 public sealed class SecurityService(IDBLayer db, ICurrentActorProvider actorProvider) : ISecurityService
 {
     public Task<IReadOnlySet<string>> GetAllowedOperationsAsync(Guid userId, Guid rbacId, CancellationToken cancellationToken = default)

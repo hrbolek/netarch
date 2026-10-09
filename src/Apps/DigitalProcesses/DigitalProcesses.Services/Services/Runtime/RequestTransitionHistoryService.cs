@@ -7,5 +7,4 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
-public interface IRequestTransitionHistoryService : IBaseService<RequestTransitionHistoryModel, RequestTransitionHistoryResponse> { }
 public sealed class RequestTransitionHistoryService(ISecurityLayer security) : BaseService<RequestTransitionHistoryModel,RequestTransitionHistoryResponse>(security),IRequestTransitionHistoryService { }

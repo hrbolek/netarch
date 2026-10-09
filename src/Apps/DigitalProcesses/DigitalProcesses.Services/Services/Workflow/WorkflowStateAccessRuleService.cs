@@ -6,11 +6,6 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
-public interface IWorkflowStateAccessRuleService : IBaseService<WorkflowStateAccessRuleModel, WorkflowStateAccessRuleResponse>
-{
-    Task<WorkflowStateAccessRuleResponse> CreateContainedAsync(CreateWorkflowStateAccessRuleRequest request, CancellationToken ct = default);
-}
-
 public sealed class WorkflowStateAccessRuleService(ISecurityLayer security)
     : BaseService<WorkflowStateAccessRuleModel, WorkflowStateAccessRuleResponse>(security), IWorkflowStateAccessRuleService
 {

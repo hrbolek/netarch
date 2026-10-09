@@ -7,18 +7,6 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
-public interface IFormNodeService : IBaseService<FormNodeModel, FormNodeResponse>
-{
-    Task<FormNodeResponse> CreateContainedInVersionAsync(CreateFormNodeRequest request, CancellationToken ct = default);
-    Task<FormNodeResponse> CreateContainedInNodeAsync(CreateFormNodeRequest request, CancellationToken ct = default);
-    Task<FormNodeResponse> MoveAsync(Guid id, MoveFormNodeRequest request, CancellationToken ct = default);
-    Task<IReadOnlyCollection<FormNodeResponse>> GetSubtreeAsync(Guid id, CancellationToken ct = default);
-    Task<FormTreeResponse> GetTreeAsync(Guid formVersionId, CancellationToken ct = default);
-    Task<FormDesignerResponse> GetDesignerAsync(Guid formVersionId, CancellationToken ct = default);
-    Task<FormNodeResponse> UpdateDefinitionAsync(Guid id, UpdateFormNodeRequest request, CancellationToken ct = default);
-    Task DeleteSubtreeAsync(Guid id, CancellationToken ct = default);
-    Task<IReadOnlyCollection<FormNodeResponse>> ImportSubtreeAsync(ImportFormSubtreeRequest request, CancellationToken ct = default);
-}
 public sealed class FormNodeService(ISecurityLayer security) : BaseService<FormNodeModel, FormNodeResponse>(security), IFormNodeService
 {
     public Task<FormNodeResponse> CreateContainedInVersionAsync(CreateFormNodeRequest request, CancellationToken ct = default)
@@ -49,8 +37,6 @@ public sealed class FormNodeService(ISecurityLayer security) : BaseService<FormN
             ?? throw new KeyNotFoundException("Node type not found.");
         if (request.max_occurs > 1 && !type.can_repeat)
             throw new InvalidOperationException("Selected node type is not repeatable.");
-        if (Security.Query<FormNodeModel>(SecurityOperations.Read).Any(x => x.form_version_id == request.form_version_id && x.key == request.key))
-            throw new InvalidOperationException($"Form node key '{request.key}' is already used in this form version.");
 
         FormNodeModel? parent = null;
         Guid creationRbac;
@@ -72,12 +58,19 @@ public sealed class FormNodeService(ISecurityLayer security) : BaseService<FormN
             creationRbac = scope.RbacObjectId;
         }
 
+        var normalizedKey = request.key?.Trim();
+        if (string.IsNullOrWhiteSpace(normalizedKey))
+            throw new ArgumentException("Key is required.", nameof(request));
+        if (Security.Query<FormNodeModel>(SecurityOperations.Read).Any(x =>
+                x.form_version_id == request.form_version_id && x.parent_id == parentId && x.key == normalizedKey))
+            throw new InvalidOperationException($"Form node key '{normalizedKey}' is already used in this section.");
+
         var id = Guid.NewGuid();
         var now = DateTimeOffset.UtcNow;
         var actor = Security.CurrentUserId;
         var path = parent is null ? MaterializedPath.Root(id) : MaterializedPath.Child(parent.path, id);
         var model = new FormNodeModel(
-            id, request.form_version_id, parentId, path, request.key, request.label, request.description,
+            id, request.form_version_id, parentId, path, normalizedKey, request.label, request.description,
             request.node_type_id, request.position, request.min_occurs, request.max_occurs,
             request.own_security_scope, request.configuration_json, creationRbac,
             now, now, actor, actor);
@@ -165,10 +158,11 @@ public sealed class FormNodeService(ISecurityLayer security) : BaseService<FormN
         if (version.is_published)
             throw new InvalidOperationException("Published form version is immutable.");
 
+        var normalizedKey = request.key.Trim();
         var duplicate = Security.Query<FormNodeModel>(SecurityOperations.Read)
-            .Any(x => x.form_version_id == node.form_version_id && x.id != id && x.key == request.key);
+            .Any(x => x.form_version_id == node.form_version_id && x.parent_id == node.parent_id && x.id != id && x.key == normalizedKey);
         if (duplicate)
-            throw new InvalidOperationException($"Form node key '{request.key}' is already used in this form version.");
+            throw new InvalidOperationException($"Form node key '{request.key}' is already used in this section.");
 
         var now = DateTimeOffset.UtcNow;
         var updated = node with
@@ -224,14 +218,15 @@ public sealed class FormNodeService(ISecurityLayer security) : BaseService<FormN
         }
 
         var existingKeys = Security.Query<FormNodeModel>(SecurityOperations.Read)
-            .Where(x => x.form_version_id == request.target_form_version_id)
+            .Where(x => x.form_version_id == request.target_form_version_id && x.parent_id == request.target_parent_id)
             .Select(x => x.key)
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
         var prefix = string.IsNullOrWhiteSpace(request.key_prefix) ? null : request.key_prefix!.Trim().Trim('.');
         string NewKey(string sourceKey) => prefix is null ? sourceKey : $"{prefix}.{sourceKey}";
-        foreach (var source in sourceNodes)
-            if (existingKeys.Contains(NewKey(source.key)))
-                throw new InvalidOperationException($"Import would create duplicate key '{NewKey(source.key)}'. Use a key prefix.");
+        // Only the imported root is a sibling of existing nodes in the target section.
+        // Child keys are scoped to their freshly created parent nodes.
+        if (existingKeys.Contains(NewKey(sourceRoot.key)))
+            throw new InvalidOperationException($"Import would create duplicate key '{NewKey(sourceRoot.key)}' in the target section. Use a key prefix.");
 
         var idMap = sourceNodes.ToDictionary(x => x.id, _ => Guid.NewGuid());
         var pathMap = new Dictionary<Guid, string>();
@@ -297,6 +292,10 @@ public sealed class FormNodeService(ISecurityLayer security) : BaseService<FormN
             if(parent.form_version_id!=node.form_version_id) throw new InvalidOperationException("Cannot move between form versions.");
             if(MaterializedPath.IsDescendantOrSelf(parent.path,node.path)) throw new InvalidOperationException("Cannot move a node below itself or its descendant.");
         }
+        if (Security.Query<FormNodeModel>(SecurityOperations.Read).Any(x =>
+                x.form_version_id == node.form_version_id && x.parent_id == request.parent_id &&
+                x.id != id && x.key == node.key))
+            throw new InvalidOperationException($"Form node key '{node.key}' is already used in the destination section.");
         var oldPath=node.path; var newPath=parent is null?MaterializedPath.Root(node.id):MaterializedPath.Child(parent.path,node.id); var now=DateTimeOffset.UtcNow; var actor=Security.CurrentUserId;
         return await Security.ExecuteInTransactionAsync(async token=>
         {

@@ -6,10 +6,6 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.RoleType.Services;
 
-public interface IRoleTypeService : IBaseService<RoleTypeModel, RoleTypeResponse>
-{
-}
-
 public sealed class RoleTypeService : BaseService<RoleTypeModel, RoleTypeResponse>, IRoleTypeService
 {
     public RoleTypeService(ISecurityLayer security) : base(security)

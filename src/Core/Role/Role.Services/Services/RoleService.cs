@@ -5,11 +5,6 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.Role.Services;
 
-public interface IRoleService : IBaseService<RoleModel, RoleResponse>
-{
-    Task<RoleResponse> CreateContainedAsync(RoleCreateContainedRequest request, CancellationToken cancellationToken = default);
-}
-
 public sealed class RoleService : BaseService<RoleModel, RoleResponse>, IRoleService
 {
     private readonly ISecurityProjectionService _projection;

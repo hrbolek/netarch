@@ -1,0 +1,21 @@
+using System.Text.Json;
+using WebAppArchitecture.Base.Security;
+using WebAppArchitecture.Base.Services;
+using WebAppArchitecture.DBLayer;
+using WebAppArchitecture.DigitalProcesses.Models;
+using WebAppArchitecture.SecurityLayer;
+
+namespace WebAppArchitecture.DigitalProcesses.Services;
+
+public interface IFormNodeService : IBaseService<FormNodeModel, FormNodeResponse>
+{
+    Task<FormNodeResponse> CreateContainedInVersionAsync(CreateFormNodeRequest request, CancellationToken ct = default);
+    Task<FormNodeResponse> CreateContainedInNodeAsync(CreateFormNodeRequest request, CancellationToken ct = default);
+    Task<FormNodeResponse> MoveAsync(Guid id, MoveFormNodeRequest request, CancellationToken ct = default);
+    Task<IReadOnlyCollection<FormNodeResponse>> GetSubtreeAsync(Guid id, CancellationToken ct = default);
+    Task<FormTreeResponse> GetTreeAsync(Guid formVersionId, CancellationToken ct = default);
+    Task<FormDesignerResponse> GetDesignerAsync(Guid formVersionId, CancellationToken ct = default);
+    Task<FormNodeResponse> UpdateDefinitionAsync(Guid id, UpdateFormNodeRequest request, CancellationToken ct = default);
+    Task DeleteSubtreeAsync(Guid id, CancellationToken ct = default);
+    Task<IReadOnlyCollection<FormNodeResponse>> ImportSubtreeAsync(ImportFormSubtreeRequest request, CancellationToken ct = default);
+}

@@ -12,4 +12,10 @@
     <ProjectReference Include="../../../Core/User/User.Services/User.Services.csproj" />
     <ProjectReference Include="../DigitalProcesses.Models/DigitalProcesses.Models.csproj" />
   </ItemGroup>
+
+  <!-- Refactoring compatibility: exclude source files superseded by per-type files.
+       SDK default glob otherwise compiles stale sources when ZIPs are overlaid. -->
+  <ItemGroup>
+    <Compile Remove="Services/Integration/FormDataBackend.cs" />
+  </ItemGroup>
 </Project>

@@ -5,13 +5,6 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
-public interface IWorkflowStateService : IBaseService<WorkflowStateModel, WorkflowStateResponse>
-{
-    Task<WorkflowStateResponse> CreateContainedAsync(CreateWorkflowStateRequest request, CancellationToken ct = default);
-    Task UpdateDefinitionAsync(Guid id, string key, string name, string? description, bool isInitial, bool isTerminal, int position, CancellationToken ct = default);
-    Task DeleteDefinitionAsync(Guid id, CancellationToken ct = default);
-}
-
 public sealed class WorkflowStateService(ISecurityLayer security)
     : BaseService<WorkflowStateModel, WorkflowStateResponse>(security), IWorkflowStateService
 {

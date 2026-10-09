@@ -15,9 +15,7 @@ public sealed class DummyJsonataCaller(IUserService users) : IFormDataBackend
         FormBackendOperationRequest request, FormValueSnapshot values, CancellationToken ct = default)
     {
         ct.ThrowIfCancellationRequested();
-        var variables = new JsonObject();
-        foreach (var binding in request.parameters)
-            variables[binding.parameter] = values.Resolve(binding);
+        var variables = FormVariableResolver.Resolve(request, values);
         return Task.FromResult(new FormBackendPreparedRequest(request.query, variables));
     }
 

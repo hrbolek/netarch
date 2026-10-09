@@ -16,8 +16,3 @@ public interface IDigitalProcessIntegration
 /// Safe default. A real JSONata/GraphQL sidecar adapter should replace this registration.
 /// Declared conditions/actions are never silently ignored.
 /// </summary>
-public sealed class UnconfiguredDigitalProcessIntegration : IDigitalProcessIntegration
-{
-    public Task<string?> ExecuteAsync(string query, string? inputJson, CancellationToken cancellationToken = default)
-        => throw new InvalidOperationException("DigitalProcesses integration sidecar is not configured.");
-}

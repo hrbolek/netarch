@@ -4,7 +4,7 @@
 {
     @if (NodeType.can_have_children)
     {
-        <section class="card mb-3" data-form-node-id="@Node.id" data-max-occurs="@Node.max_occurs">
+        <section class="card mb-3" data-form-node-id="@Node.id" data-max-occurs="@Node.max_occurs" data-repeat-section="@(Node.max_occurs > 1 ? "true" : "false")">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <strong>@(Node.label ?? Node.key)</strong>
                 @if (!TestMode)
@@ -16,8 +16,8 @@
             {
                 <div class="card-body pb-0 text-muted small">@Node.description</div>
             }
-            <div class="card-body" data-repeat-body>
-                <div data-repeat-instance>
+            <div class="card-body" data-repeat-body id="@($"repeat-body-{Node.id:N}")">
+                <div data-repeat-instance data-occurrence="0">
                 @foreach (var child in Children)
                 {
                     <FormNodeTreeItem Node="@child" Nodes="@Nodes" Types="@Types" TestMode="@TestMode" SectionValues="@SectionValues" />

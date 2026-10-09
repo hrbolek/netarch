@@ -1,8 +1,8 @@
 @namespace WebAppArchitecture.DigitalProcesses.UI.Renderers
 
-<div class="mb-3" data-form-node-id="@Definition.id">
+<div id="@($"form-field-{Definition.id:N}")" class="mb-3" data-form-node-id="@Definition.id">
     <label class="form-label" for="@InputId">@(Definition.label ?? Definition.key)</label>
-    <input id="@InputId" name="@Definition.key" class="form-control" type="number" value="@RendererValue.AsString(Value)" />
+    <input id="@InputId" name="@($"node-{Definition.id:N}")" class="form-control" type="number" value="@RendererValue.AsString(Value)" />
 </div>
 
 @code {

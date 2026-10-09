@@ -4,8 +4,6 @@ using WebAppArchitecture.Base.Services;
 
 namespace WebAppArchitecture.Base.UI.Vector;
 
-public sealed record VectorColumnDefinition(string PropertyName, string Label);
-
 public sealed record VectorContentViewModel(
     string Title,
     string EntityType,

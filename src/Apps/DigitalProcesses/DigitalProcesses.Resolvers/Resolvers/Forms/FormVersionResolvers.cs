@@ -51,7 +51,9 @@ public static class FormVersionResolvers
             DigitalProcessCreateForm.OptionalGuid(f, "parent_id"),
             DigitalProcessCreateForm.Optional(f, "label"),
             null,
-            DigitalProcessCreateForm.IntValue(f, "position"));
+            DigitalProcessCreateForm.IntValue(f, "position"),
+            configuration_json: DigitalProcessCreateForm.GuidValue(f, "node_type_id") == DigitalProcessWellKnown.FormNodeTypes.Import
+                ? DigitalProcessCreateForm.Optional(f, "configuration_json") : null);
         if (request.parent_id is null)
             await service.CreateContainedInVersionAsync(request, ct);
         else

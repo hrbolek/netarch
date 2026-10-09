@@ -7,8 +7,19 @@
     <RazorLangVersion>8.0</RazorLangVersion>
   </PropertyGroup>
 
+  <!-- Development-only optional app. Release has no compilation or reference to it. -->
+  <PropertyGroup>
+    <EnableJsonataPlayground Condition="'$(EnableJsonataPlayground)' == '' and '$(Configuration)' == 'Debug'">true</EnableJsonataPlayground>
+    <EnableJsonataPlayground Condition="'$(EnableJsonataPlayground)' == ''">false</EnableJsonataPlayground>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(EnableJsonataPlayground)' == 'true'">
+    <DefineConstants>$(DefineConstants);JSONATA_PLAYGROUND</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Core/Hosting/Core.Hosting.csproj" />
     <ProjectReference Include="../Apps/DigitalProcesses/DigitalProcesses.Module/DigitalProcesses.Module.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(EnableJsonataPlayground)' == 'true'">
+    <ProjectReference Include="../Apps/JsonataPlayground/JsonataPlayground.csproj" />
   </ItemGroup>
 </Project>

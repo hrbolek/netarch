@@ -5,11 +5,6 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.User.Services;
 
-public interface IUserService : IBaseService<UserModel, UserResponse>
-{
-    Task<UserResponse> CreateContainedAsync(UserCreateContainedRequest request, CancellationToken cancellationToken = default);
-}
-
 public sealed class UserService : BaseService<UserModel, UserResponse>, IUserService
 {
     private readonly ISecurityProjectionService _projection;

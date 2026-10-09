@@ -15,13 +15,23 @@
 
     @if (Model.test_mode)
     {
-        <div class="alert alert-info py-2">Test mode uses the same form renderers as runtime. Entered values are dummy browser data and do not create a Submission.</div>
-        <form onsubmit="return false;">
+        <div class="alert alert-info py-2">Preview uses temporary server state (40-minute sliding expiry), not a Submission. Changes are saved on the server; Import saves current values before executing.</div>
+        <CascadingValue Name="PreviewInstanceId" Value="@PreviewInstanceId">
+        <CascadingValue Name="PreviewFormVersionId" Value="@Model.designer.form.id">
+        <form id="dp-preview-form" onsubmit="return false;"
+              data-preview-version="@Model.designer.form.id"
+              hx-post="/digital-processes/form-preview/values"
+              hx-trigger="change delay:300ms"
+              hx-swap="none">
+            <input type="hidden" name="previewInstanceId" value="@PreviewInstanceId" />
+            <input type="hidden" name="formVersionId" value="@Model.designer.form.id" />
             @foreach (var node in Roots)
             {
                 <FormNodeTreeItem Node="@node" Nodes="@Model.designer.nodes" Types="@Model.designer.node_types" TestMode="true" />
             }
         </form>
+        </CascadingValue>
+        </CascadingValue>
     }
     else if (Model.designer.form.is_published)
     {
@@ -123,6 +133,8 @@
                             <input class="form-control mb-2" name="key" required />
                             <label class="form-label">Label</label>
                             <input class="form-control mb-2" name="label" />
+                            <label class="form-label">Configuration JSON (for Import/Export dat)</label>
+                            <textarea class="form-control mb-2" name="configuration_json" rows="3" placeholder="{&quot;label&quot;:&quot;Import dat&quot;,&quot;query&quot;:&quot;query { whoami { hostname } }&quot;,&quot;variables&quot;:{}}"></textarea>
                             <label class="form-label">Position</label>
                             <input class="form-control mb-3" type="number" name="position" value="0" />
                             <button class="btn btn-primary" type="submit">Add</button>
@@ -147,7 +159,7 @@
                                 <label class="form-label">Description</label><textarea class="form-control form-control-sm mb-2" name="description">@node.description</textarea>
                                 <div class="row g-2 mb-2"><div class="col"><label class="form-label">Min</label><input class="form-control form-control-sm" type="number" name="min_occurs" value="@node.min_occurs" min="0" /></div><div class="col"><label class="form-label">Max</label><input class="form-control form-control-sm" type="number" name="max_occurs" value="@node.max_occurs" min="1" /></div></div>
                                 <label class="form-label">Configuration JSON</label><textarea class="form-control form-control-sm mb-2" name="configuration_json" rows="5" placeholder="@ConfigurationPlaceholder(node)">@node.configuration_json</textarea>
-                                <div class="form-text mb-2">JSON object; for Select, use a dataSource query. Repeated sections use Min/Max above.</div>
+                                <div class="form-text mb-2">JSON object; for Import/Export dat, configure label, GraphQL query and variables. Repeated sections use Min/Max above.</div>
                                 <button class="btn btn-sm btn-outline-primary" type="submit">Save</button>
                             </form></div>
                         <div class="modal-footer border-top p-3"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button></div>
@@ -182,6 +194,7 @@
                     <label class="form-label">Type</label><select class="form-select mb-2" name="node_type_id" required>@foreach (var type in OrderedNodeTypes) { <option value="@type.id">@type.name</option> }</select>
                     <label class="form-label">Key</label><input class="form-control mb-2" name="key" required />
                     <label class="form-label">Label</label><input class="form-control mb-2" name="label" />
+                    <label class="form-label">Configuration JSON (for Import/Export dat)</label><textarea class="form-control mb-2" name="configuration_json" rows="3" placeholder="{&quot;label&quot;:&quot;Import dat&quot;,&quot;query&quot;:&quot;query { whoami { hostname } }&quot;,&quot;variables&quot;:{}}"></textarea>
                     <label class="form-label">Position</label><input class="form-control mb-3" name="position" type="number" value="0" />
                     <button type="submit" class="btn btn-primary">Add node</button>
                     <button type="button" class="btn btn-outline-secondary" onclick="this.closest('dialog').close()">Cancel</button>
@@ -193,6 +206,30 @@
 </Page>
 
 <script>
+window.digitalProcessesRenumber = function(root) {
+  document.querySelectorAll('[data-repeat-body]').forEach(body => {
+    body.querySelectorAll(':scope > [data-repeat-instance]').forEach((instance, index) => {
+      instance.dataset.occurrence = String(index);
+    });
+  });
+  (root || document).querySelectorAll('input[name^="node-"],textarea[name^="node-"],select[name^="node-"]').forEach(el => {
+    const base = el.dataset.nodeBase || el.name.split('__')[0];
+    el.dataset.nodeBase = base;
+    const chain = [];
+    let current = el;
+    while (current) {
+      const instance = current.closest('[data-repeat-instance]');
+      if (!instance) break;
+      const section = instance.closest('section[data-repeat-section="true"]');
+      if (section) chain.unshift(instance.dataset.occurrence || '0');
+      current = section?.parentElement || null;
+    }
+    el.name = base + (chain.length ? '__' + chain.join('_') : '');
+    el.id = el.name;
+    const label = el.closest('[data-form-node-id]')?.querySelector(':scope > label');
+    if (label) label.htmlFor = el.id;
+  });
+};
 window.digitalProcessesAddOccurrence = function(button) {
   const section = button.closest('section[data-form-node-id]');
   const body = button.closest('[data-repeat-body]');
@@ -202,29 +239,33 @@ window.digitalProcessesAddOccurrence = function(button) {
   const instances = body.querySelectorAll(':scope > [data-repeat-instance]');
   if (instances.length >= max) return;
   const clone = first.cloneNode(true);
+  clone.dataset.occurrence = String(instances.length);
   clone.querySelectorAll('input,textarea,select').forEach(el => {
     if (el.type === 'checkbox' || el.type === 'radio') el.checked = false;
     else if (el.tagName === 'SELECT') el.selectedIndex = 0;
     else el.value = '';
-    if (el.id) el.id += '-occ-' + instances.length;
   });
   const remove = document.createElement('button');
   remove.type = 'button'; remove.className = 'btn btn-sm btn-outline-danger mb-2';
   remove.textContent = 'Remove occurrence';
-  remove.onclick = () => { clone.remove(); button.disabled = false; };
+  remove.onclick = () => { clone.remove(); window.digitalProcessesRenumber(document); button.disabled = false; if (window.htmx) htmx.trigger('#dp-preview-form', 'change'); };
   clone.prepend(remove);
   first.parentNode.append(clone);
   button.disabled = instances.length + 1 >= max;
+  window.digitalProcessesRenumber(document);
 };
+document.addEventListener('DOMContentLoaded', () => window.digitalProcessesRenumber(document));
+document.addEventListener('htmx:afterSwap', () => window.digitalProcessesRenumber(document));
 </script>
 @code {
     [Parameter, EditorRequired] public FormDesignerPageResponse Model { get; set; } = default!;
     [Parameter] public bool IsFragment { get; set; }
+    private readonly Guid PreviewInstanceId = Guid.NewGuid();
     private string DesignerUrl => $"/digital-processes/FormVersionResponse/designer/{Model.designer.form.id}";
     private static string ConfigurationPlaceholder(FormNodeResponse node) =>
         node.key.Contains("select", StringComparison.OrdinalIgnoreCase)
             ? "{\"dataSource\":{\"query\":\"query { users { id name surname } }\",\"variables\":\"section\"}}"
-            : "{\"description\":\"Optional renderer settings\"}";
+            : "{\"label\":\"Import dat\",\"query\":\"query { whoami { hostname } }\",\"variables\":{}}";
     private string TestUrl => $"/digital-processes/FormVersionResponse/test/{Model.designer.form.id}";
     private IEnumerable<FormNodeResponse> Roots => Model.designer.nodes.Where(x => x.parent_id == null).OrderBy(x => x.position).ThenBy(x => x.key);
     private IEnumerable<FormNodeResponse> Containers
@@ -245,6 +286,8 @@ window.digitalProcessesAddOccurrence = function(button) {
             "input.date" => 40,
             "input.checkbox" => 50,
             "input.select" => 60,
+            "action.import" => 70,
+            "action.export" => 71,
             _ => 100
         })
         .ThenBy(x => x.name);

@@ -6,7 +6,7 @@
 
 <div class="mb-3" data-form-node-id="@Definition.id" data-form-backend-kind="select">
     <label class="form-label" for="@InputId">@(Definition.label ?? Definition.key)</label>
-    <select id="@InputId" name="@Definition.key" class="form-select">
+    <select id="@InputId" name="@($"node-{Definition.id:N}")" class="form-select">
         <option value="">-- select --</option>
         @foreach (var option in Options)
         {
