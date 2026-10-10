@@ -142,6 +142,32 @@
                     </div>
                 </div>
 
+                <div class="card mb-3" data-template-management-form-version="@Model.designer.form.id">
+                    <div class="card-header"><strong>Dokumentové šablony</strong></div>
+                    <div class="card-body">
+                        <p class="small text-muted">Šablony jsou uloženy u této verze formuláře v PostgreSQL. Nová revize uchová původní RTF pro audit a naváže placeholdery na stabilní ID polí.</p>
+                        <div class="d-grid gap-2">
+                            <a class="btn btn-sm btn-outline-primary" href="@($"/digital-processes/FormVersionResponse/rtf-templates/{Model.designer.form.id}")">Seznam šablon (API)</a>
+                            <a class="btn btn-sm btn-outline-secondary" href="@($"/digital-processes/document-templates/form-schema/{Model.designer.form.id}")">Schéma pro tvorbu šablon</a>
+                        </div>
+                        <hr />
+                        <div class="text-muted small" data-ai-placeholder="template-designer">
+                            <strong>AI návrh šablony ze vzorového dokumentu</strong><br />
+                            Budoucí MCP agent porovná DOCX/RTF/PDF vzor se schématem FormNodes a navrhne RTF a vazby ke schválení.
+                        </div>
+                        <input class="form-control form-control-sm my-2" type="file" accept=".docx,.rtf,.pdf" disabled aria-label="Vzorový dokument pro budoucího AI agenta" />
+                        <button type="button" class="btn btn-sm btn-outline-secondary" disabled>Navrhnout šablonu pomocí AI</button>
+                    </div>
+                </div>
+
+                <div class="card mb-3 border-info" data-ai-placeholder="form-designer" data-form-version-id="@Model.designer.form.id">
+                    <div class="card-header"><strong>AI poradce návrhu formuláře</strong> <span class="badge text-bg-secondary">Připravuje se</span></div>
+                    <div class="card-body">
+                        <p class="small text-muted">Budoucí MCP poradce bude moci navrhnout nové sekce, pole a pravidla a předložit jejich rozdíly ke schválení.</p>
+                        <textarea class="form-control mb-2" rows="3" disabled placeholder="Například: Přidej část Vyjádření nadřízeného…"></textarea>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" disabled>Navrhnout změny</button>
+                    </div>
+                </div>
                 <div class="card">
                     <div class="card-header"><strong>Node properties</strong></div>
                     <div class="card-body small text-muted">Select a node from Structure to navigate to it. Use the kebab menu on a node to edit its properties or position.</div>
@@ -286,6 +312,7 @@ document.addEventListener('htmx:afterSwap', () => window.digitalProcessesRenumbe
             "input.date" => 40,
             "input.checkbox" => 50,
             "input.select" => 60,
+            "action.document" => 72,
             "action.import" => 70,
             "action.export" => 71,
             _ => 100

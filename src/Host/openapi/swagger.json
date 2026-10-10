@@ -3318,6 +3318,110 @@
         }
       }
     },
+    "/digital-processes/document-templates/{id}/revisions": {
+      "get": {
+        "tags": [
+          "DigitalProcesses.Templates"
+        ],
+        "description": "List immutable revisions of a template; requires Read on its FormVersion.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "DigitalProcesses.Templates"
+        ],
+        "description": "Create a new RTF revision with verified FormNode bindings; requires Update on FormVersion.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewRevisionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/digital-processes/document-templates/revisions/{revisionId}/content": {
+      "get": {
+        "tags": [
+          "DigitalProcesses.Templates"
+        ],
+        "description": "Download an exact immutable RTF revision.",
+        "parameters": [
+          {
+            "name": "revisionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/digital-processes/document-templates/form-schema/{formVersionId}": {
+      "get": {
+        "tags": [
+          "DigitalProcesses.Templates"
+        ],
+        "description": "Schema context for future AI template design. Returns only readable FormNodes.",
+        "parameters": [
+          {
+            "name": "formVersionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/digital-processes/WorkflowDefinitionResponse/actions/{id}": {
       "get": {
         "tags": [
@@ -8017,6 +8121,20 @@
         },
         "additionalProperties": false
       },
+      "FieldBindingRequest": {
+        "type": "object",
+        "properties": {
+          "placeholder": {
+            "type": "string",
+            "nullable": true
+          },
+          "formNodeId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
       "FormDefinitionDetailResponse": {
         "type": "object",
         "properties": {
@@ -8782,6 +8900,23 @@
           "position": {
             "type": "integer",
             "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "NewRevisionRequest": {
+        "type": "object",
+        "properties": {
+          "rtfBase64": {
+            "type": "string",
+            "nullable": true
+          },
+          "bindings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FieldBindingRequest"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false

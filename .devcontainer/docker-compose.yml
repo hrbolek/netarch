@@ -94,6 +94,7 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: anoyne@anywhere.com
       PGADMIN_DEFAULT_PASSWORD: example
+      PGADMIN_CONFIG_SESSION_COOKIE_NAME: "'pgadmin_za78_session'"
     ports:
       - "9080:80"
     depends_on:

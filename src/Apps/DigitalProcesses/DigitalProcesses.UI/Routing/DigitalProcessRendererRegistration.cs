@@ -17,6 +17,7 @@ public static class DigitalProcessRendererRegistration
         registry.Register<SelectRenderer>("input.select");
         registry.Register<ActionButtonRenderer>("action.button");
         registry.Register<ExternalDataImportNodeRenderer>("action.import");
+        registry.Register<DocumentActionNodeRenderer>("action.document");
         registry.Register<ExternalDataExportNodeRenderer>("action.export");
         services.AddSingleton<IFormNodeRendererRegistry>(registry);
         return services;

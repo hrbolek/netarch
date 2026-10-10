@@ -1,4 +1,7 @@
 using System.Net;
+using System.Net.Http.Headers;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Text;
@@ -70,16 +73,17 @@ internal static class PreviewFormEndpoints
                     ?? throw new InvalidOperationException("Action is not part of this form version.");
                 var type = designer.node_types.SingleOrDefault(t => t.id == action.node_type_id);
                 var isExport = type?.renderer_key == "action.export";
-                if (!isExport && type?.renderer_key != "action.import")
+                var isDocument = type?.renderer_key == "action.document";
+                if (!isExport && !isDocument && type?.renderer_key != "action.import")
                     throw new InvalidOperationException("Requested node is neither an import nor an export action.");
                 var configuration = JsonNode.Parse(action.configuration_json ?? "{}") as JsonObject
                     ?? throw new InvalidOperationException("Invalid action configuration.");
                 var query = configuration["query"]?.GetValue<string>();
-                if (string.IsNullOrWhiteSpace(query))
+                if (!isDocument && string.IsNullOrWhiteSpace(query))
                     throw new InvalidOperationException("Missing GraphQL query in saved action configuration.");
                 var variables = configuration["variables"] as JsonObject;
                 log.LogInformation("Import definition loaded: action={ActionId}, queryLength={QueryLength}, variableNames={VariableNames}",
-                    actionId, query.Length, variables is null ? "(none)" : string.Join(",", variables.Select(x => x.Key)));
+                    actionId, query?.Length ?? 0, variables is null ? "(none)" : string.Join(",", variables.Select(x => x.Key)));
                 // Capture and preflight use the same state; keep snapshot ownership server-side.
                 var snapshot = store.WithInstance(instance, version, state =>
                 {
@@ -96,8 +100,42 @@ internal static class PreviewFormEndpoints
                     if (!variables.ContainsKey("form"))
                         variables["form"] = BuildStructuredJson(snapshot.Values);
                 }
-                var result = await backend.ExecuteAsync(
-                    new FormBackendOperationRequest(query, Array.Empty<FormBackendParameterBinding>(), variables), snapshot, ct);
+                JsonNode? result;
+                if (isDocument)
+                {
+                    // URL is deployment configuration, never supplied by the form designer.
+                    var config = http.RequestServices.GetRequiredService<IConfiguration>();
+                    var endpoint = config["DigitalProcesses:DocumentProcessing:Endpoint"];
+                    if (!Uri.TryCreate(endpoint, UriKind.Absolute, out var target) ||
+                        target.Scheme is not ("http" or "https"))
+                        throw new InvalidOperationException("DocumentProcessing:Endpoint must be configured as an HTTP(S) URL.");
+                    if (!Guid.TryParse(configuration["templateId"]?.ToString(), out var templateId))
+                        throw new InvalidOperationException("action.document requires a templateId in configuration_json.");
+                    var templates = http.RequestServices.GetRequiredService<RtfTemplateStore>();
+                    var template = templates.Find(templateId);
+                    if (template is null || template.FormVersionId != version)
+                        throw new InvalidOperationException("Document template does not belong to this form version.");
+                    var document = RtfTemplateEngine.Render(templates.Read(templateId),
+                        BuildStructuredJson(snapshot.Values), instance);
+                    using var multipart = new MultipartFormDataContent();
+                    using var file = new ByteArrayContent(document);
+                    file.Headers.ContentType = new MediaTypeHeaderValue("application/rtf");
+                    multipart.Add(file, "file", $"form-{version:N}.rtf");
+                    // Forward only explicit form metadata, not arbitrary client-supplied URLs or credentials.
+                    multipart.Add(new StringContent(version.ToString("D")), "formVersionId");
+                    multipart.Add(new StringContent(instance.ToString("D")), "previewInstanceId");
+                    var clients = http.RequestServices.GetRequiredService<IHttpClientFactory>();
+                    using var client = clients.CreateClient("digital-process-documents");
+                    using var backendResponse = await client.PostAsync(target, multipart, ct);
+                    backendResponse.EnsureSuccessStatusCode();
+                    var body = await backendResponse.Content.ReadAsStringAsync(ct);
+                    result = JsonNode.Parse(body);
+                }
+                else
+                {
+                    result = await backend.ExecuteAsync(
+                        new FormBackendOperationRequest(query!, Array.Empty<FormBackendParameterBinding>(), variables), snapshot, ct);
+                }
                 log.LogInformation("Import backend finished: action={ActionId}", actionId);
                 if (result is not JsonObject response)
                 {

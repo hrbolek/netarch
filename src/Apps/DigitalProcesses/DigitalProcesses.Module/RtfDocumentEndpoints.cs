@@ -1,4 +1,5 @@
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
@@ -107,50 +108,47 @@ public static class RtfDocumentEndpoints
 
 public sealed record RtfTemplateInfo(Guid Id, Guid FormVersionId, string Name, DateTimeOffset CreatedAt);
 
-/// <summary>Filesystem-backed persistent template store. Configure DigitalProcesses:RtfTemplates:Directory as a persistent mounted volume.</summary>
-public sealed class RtfTemplateStore
+/// <summary>PostgreSQL-backed template store. Scoped to the request DbContext.</summary>
+public sealed class RtfTemplateStore(ApplicationDbContext db)
 {
-    private readonly string _directory;
-    private readonly object _gate = new();
-    private static readonly JsonSerializerOptions Options = new(JsonSerializerDefaults.Web);
-    public RtfTemplateStore(IConfiguration configuration, IHostEnvironment environment)
-    {
-        var configured = configuration["DigitalProcesses:RtfTemplates:Directory"];
-        _directory = Path.GetFullPath(string.IsNullOrWhiteSpace(configured)
-            ? Path.Combine(environment.ContentRootPath, "app_data", "rtf-templates") : configured);
-        Directory.CreateDirectory(_directory);
-    }
-    private string Metadata(Guid id) => Path.Combine(_directory, $"{id:N}.json");
-    private string Content(Guid id) => Path.Combine(_directory, $"{id:N}.rtf");
-    public IReadOnlyList<RtfTemplateInfo> List(Guid version) => Directory.EnumerateFiles(_directory, "*.json")
-        .Select(x => TryRead(x)).OfType<RtfTemplateInfo>().Where(x => x.FormVersionId == version)
-        .OrderBy(x => x.CreatedAt).ToArray();
-    private static RtfTemplateInfo? TryRead(string path)
-    {
-        try { return JsonSerializer.Deserialize<RtfTemplateInfo>(File.ReadAllText(path), Options); }
-        catch (IOException) { return null; }
-        catch (JsonException) { return null; }
-    }
-    public RtfTemplateInfo? Find(Guid id) => File.Exists(Metadata(id)) ? TryRead(Metadata(id)) : null;
+    public IReadOnlyList<RtfTemplateInfo> List(Guid version) => db.DocumentTemplates.AsNoTracking()
+        .Where(x => x.form_version_id == version).OrderBy(x => x.created_at)
+        .Select(x => new RtfTemplateInfo(x.id, x.form_version_id, x.name, x.created_at)).ToArray();
+
+    public RtfTemplateInfo? Find(Guid id) => db.DocumentTemplates.AsNoTracking()
+        .Where(x => x.id == id)
+        .Select(x => new RtfTemplateInfo(x.id, x.form_version_id, x.name, x.created_at))
+        .SingleOrDefault();
+
     public RtfTemplateInfo Save(Guid version, string name, byte[] bytes)
     {
-        lock (_gate)
+        var entity = new DocumentTemplateModel
         {
-            var item = new RtfTemplateInfo(Guid.NewGuid(), version, name[..Math.Min(name.Length, 200)], DateTimeOffset.UtcNow);
-            var content = Content(item.Id);
-            File.WriteAllBytes(content, bytes);
-            File.WriteAllText(Metadata(item.Id), JsonSerializer.Serialize(item, Options));
-            return item;
-        }
+            id = Guid.NewGuid(), form_version_id = version,
+            name = name[..Math.Min(name.Length, 200)],
+            content_type = "application/rtf", content = bytes,
+            created_at = DateTimeOffset.UtcNow
+        };
+        db.DocumentTemplates.Add(entity);
+        db.DocumentTemplateRevisions.Add(new DocumentTemplateRevisionModel
+        {
+            id = Guid.NewGuid(), template_id = entity.id, revision = 1,
+            content = bytes.ToArray(), content_type = "application/rtf",
+            created_at = entity.created_at
+        });
+        db.SaveChanges();
+        return new RtfTemplateInfo(entity.id, version, entity.name, entity.created_at);
     }
-    public byte[] Read(Guid id) => File.ReadAllBytes(Content(id));
+
+    public byte[] Read(Guid id) => db.DocumentTemplates.AsNoTracking()
+        .Where(x => x.id == id).Select(x => x.content).Single();
+
     public void Delete(Guid id)
     {
-        lock (_gate)
-        {
-            File.Delete(Metadata(id));
-            File.Delete(Content(id));
-        }
+        var entity = db.DocumentTemplates.SingleOrDefault(x => x.id == id);
+        if (entity is null) return;
+        db.DocumentTemplates.Remove(entity);
+        db.SaveChanges();
     }
 }
 

@@ -5,12 +5,6 @@
 @using WebAppArchitecture.DigitalProcesses.Models
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
-@if (CreateUrl is not null)
-{
-    <div class="container-fluid pt-3 text-end">
-        <a class="btn btn-primary" href="@CreateUrl">Create @ListTitle</a>
-    </div>
-}
 <PageViewList TModel="TModel" Items="@Model" Title="@ListTitle" ShowFilter="@ShowFilter">
     <ChildContent Context="item">
         <DigitalProcessMediumCard TModel="TModel" Model="@item" />
@@ -48,20 +42,5 @@
     private string CurrentWhere => HttpContextAccessor.HttpContext?.Request.Query["where"].ToString() ?? string.Empty;
     private string CurrentPath => HttpContextAccessor.HttpContext?.Request.Path.ToString() ?? string.Empty;
 
-    private string? CreateUrl => typeof(TModel).Name switch
-    {
-        nameof(FormDefinitionResponse) => "/digital-processes/FormDefinitionResponse/create",
-        nameof(FormVersionResponse) => "/digital-processes/FormVersionResponse/create",
-        nameof(FormNodeTypeResponse) => "/digital-processes/FormNodeTypeResponse/create",
-        nameof(FormNodeResponse) => "/digital-processes/FormNodeResponse/create",
-        nameof(WorkflowDefinitionResponse) => "/digital-processes/WorkflowDefinitionResponse/create",
-        nameof(WorkflowVersionResponse) => "/digital-processes/WorkflowVersionResponse/create",
-        nameof(WorkflowStateResponse) => "/digital-processes/WorkflowStateResponse/create",
-        nameof(WorkflowStateAccessRuleResponse) => "/digital-processes/WorkflowStateAccessRuleResponse/create",
-        nameof(WorkflowTransitionResponse) => "/digital-processes/WorkflowTransitionResponse/create",
-        nameof(ProcessDefinitionResponse) => "/digital-processes/ProcessDefinitionResponse/create",
-        nameof(ProcessDefinitionVersionResponse) => "/digital-processes/ProcessDefinitionVersionResponse/create",
-        nameof(RequestResponse) => "/digital-processes/RequestResponse/create",
-        _ => null
-    };
+
 }

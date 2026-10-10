@@ -21,8 +21,9 @@ public sealed class DigitalProcessesModule : IArchitectureModule
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddMemoryCache();
+        services.AddHttpClient("digital-process-documents");
         services.AddSingleton<PreviewFormInstanceStore>();
-        services.AddSingleton<RtfTemplateStore>();
+        services.AddScoped<RtfTemplateStore>();
         services.AddScoped<IFormDefinitionService, FormDefinitionService>();
         services.AddScoped<IFormVersionService, FormVersionService>();
         services.AddScoped<IFormNodeTypeService, FormNodeTypeService>();
@@ -102,6 +103,7 @@ public sealed class DigitalProcessesModule : IArchitectureModule
         PreviewFormEndpoints.Map(endpoints);
         FormDocumentEndpoints.Map(endpoints);
         RtfDocumentEndpoints.Map(endpoints);
+        TemplateManagementEndpoints.Map(endpoints);
         ApplicantPolicyEndpoints.Map(endpoints);
 
         endpoints.MapDigitalProcessEndpoints("/digital-processes");

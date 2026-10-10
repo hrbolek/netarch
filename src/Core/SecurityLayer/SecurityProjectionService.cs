@@ -12,11 +12,10 @@ public sealed class SecurityProjectionService(IDBLayer db) : ISecurityProjection
     public Task RebuildAllAsync(CancellationToken cancellationToken = default)
         => db.ExecuteInTransactionAsync(async ct =>
         {
-            // Projection rebuild is a replacement operation, not an entity-by-entity
-            // update. Delete directly in SQL inside the same transaction before
-            // inserting the freshly calculated projection. This avoids EF change
-            // tracker ordering issues when composite keys are reused.
-            await db.DeleteWhereAsync<EffectiveAccessModel>(_ => true, ct);
+            // Two-phase deletion lets EF detach old tracked projection rows before
+            // creating replacement rows with the same composite key.
+            await db.StageDeleteWhereAsync<EffectiveAccessModel>(_ => true, ct);
+            await db.SaveChangesAsync(ct);
             var desired = BuildDesiredRows(null, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
             if (desired.Length > 0)
                 await db.StageCreateRangeAsync(desired, ct);

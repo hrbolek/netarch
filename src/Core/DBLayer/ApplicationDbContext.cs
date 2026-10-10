@@ -21,6 +21,9 @@ public sealed class ApplicationDbContext : DbContext
     public DbSet<RbacDenyRuleModel> RbacDenyRules => Set<RbacDenyRuleModel>();
     public DbSet<FormNodeApplicantAccessModel> FormNodeApplicantAccess => Set<FormNodeApplicantAccessModel>();
 
+    public DbSet<DocumentTemplateModel> DocumentTemplates => Set<DocumentTemplateModel>();
+    public DbSet<DocumentTemplateRevisionModel> DocumentTemplateRevisions => Set<DocumentTemplateRevisionModel>();
+    public DbSet<TemplateFieldBindingModel> TemplateFieldBindings => Set<TemplateFieldBindingModel>();
     public DbSet<FormDefinitionModel> FormDefinitions => Set<FormDefinitionModel>();
     public DbSet<FormVersionModel> FormVersions => Set<FormVersionModel>();
     public DbSet<FormNodeTypeModel> FormNodeTypes => Set<FormNodeTypeModel>();
@@ -162,6 +165,32 @@ public sealed class ApplicationDbContext : DbContext
             e.HasOne<GroupModel>().WithMany().HasForeignKey(x => x.group_id).OnDelete(DeleteBehavior.Restrict);
             e.HasOne<RoleTypeModel>().WithMany().HasForeignKey(x => x.role_type_id).OnDelete(DeleteBehavior.Restrict);
             ConfigureSecured(e);
+        });
+        modelBuilder.Entity<DocumentTemplateModel>(e =>
+        {
+            e.ToTable("dp_document_templates");
+            e.HasKey(x => x.id);
+            e.HasIndex(x => x.form_version_id);
+            e.HasOne<FormVersionModel>().WithMany().HasForeignKey(x => x.form_version_id)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+        modelBuilder.Entity<DocumentTemplateRevisionModel>(e =>
+        {
+            e.ToTable("dp_document_template_revisions");
+            e.HasKey(x => x.id);
+            e.HasIndex(x => new { x.template_id, x.revision }).IsUnique();
+            e.HasOne<DocumentTemplateModel>().WithMany().HasForeignKey(x => x.template_id)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+        modelBuilder.Entity<TemplateFieldBindingModel>(e =>
+        {
+            e.ToTable("dp_template_field_bindings");
+            e.HasKey(x => x.id);
+            e.HasIndex(x => new { x.revision_id, x.placeholder }).IsUnique();
+            e.HasOne<DocumentTemplateRevisionModel>().WithMany().HasForeignKey(x => x.revision_id)
+                .OnDelete(DeleteBehavior.Cascade);
+            e.HasOne<FormNodeModel>().WithMany().HasForeignKey(x => x.form_node_id)
+                .OnDelete(DeleteBehavior.Restrict);
         });
         modelBuilder.ConfigureDigitalProcesses();
 

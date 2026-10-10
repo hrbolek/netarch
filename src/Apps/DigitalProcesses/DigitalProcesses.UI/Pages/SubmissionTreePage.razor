@@ -7,6 +7,13 @@
         {
             <div class="alert alert-secondary">Archived submission — immutable snapshot.</div>
         }
+        <div class="card border-info mb-3" data-ai-placeholder="submission-assistant" data-submission-id="@Model.submission.id">
+            <div class="card-header"><strong>AI asistent vyplňování</strong> <span class="badge text-bg-secondary">Připravuje se</span></div>
+            <div class="card-body">
+                <p class="small text-muted mb-2">Budoucí poradce navrhne text rozhodnutí, prověří úplnost a porovná oprávněně dostupné předchozí případy. Navržené hodnoty budou vyžadovat potvrzení.</p>
+                <button type="button" class="btn btn-sm btn-outline-secondary" disabled>Připravit návrh rozhodnutí</button>
+            </div>
+        </div>
         <div class="list-group">
             @foreach (var node in Model.nodes.OrderBy(x => x.path).ThenBy(x => x.position))
             {
