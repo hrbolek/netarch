@@ -128,7 +128,8 @@ public static class DatabaseInitializer
         {
             RbacOperations.Create, RbacOperations.Read, RbacOperations.Update, RbacOperations.Delete,
             RbacOperations.List, RbacOperations.Vector, RbacOperations.ManageGroups,
-            RbacOperations.ManageMemberships, RbacOperations.ManageRoles, RbacOperations.ManageSecurityObjects
+            RbacOperations.ManageMemberships, RbacOperations.ManageRoles, RbacOperations.ManageSecurityObjects,
+            RbacOperations.StartProcess
         }.Select(x => x.Trim().ToLowerInvariant()).Distinct().ToArray();
 
         // Operation ids became deterministic in Update 19 because runtime authorization
@@ -167,10 +168,44 @@ public static class DatabaseInitializer
 
         if (byName is null)
         {
-            db.Operations.Add(new OperationModel(operationId, operationName, now, now,
-                RbacWellKnown.BootstrapAdminUserId, RbacWellKnown.BootstrapAdminUserId));
-            await db.SaveChangesAsync(cancellationToken);
-            return;
+            if (db.Database.IsSqlite())
+            {
+                // Bootstrap must be safe even when the database already has the name.
+                // The unique index is the ultimate arbiter; a preceding SELECT alone
+                // is not an atomic insert-if-absent operation.
+                await db.Database.ExecuteSqlInterpolatedAsync($"""
+                    INSERT OR IGNORE INTO operations
+                        (id, name, created_at, updated_at, created_by, updated_by)
+                    VALUES ({operationId}, {operationName}, {now}, {now},
+                            {RbacWellKnown.BootstrapAdminUserId}, {RbacWellKnown.BootstrapAdminUserId})
+                    """, cancellationToken);
+
+                // Raw SQL bypasses the EF change tracker. Read back both unique
+                // keys and explicitly validate the canonical operation identity.
+                var inserted = await db.Operations.AsNoTracking()
+                    .SingleOrDefaultAsync(x => x.id == operationId, cancellationToken);
+                if (inserted is not null)
+                {
+                    if (!string.Equals(inserted.name, operationName, StringComparison.OrdinalIgnoreCase))
+                        throw new InvalidOperationException(
+                            $"Operation ID {operationId} is occupied by '{inserted.name}', expected '{operationName}'.");
+                    return;
+                }
+
+                byName = await db.Operations
+                    .SingleOrDefaultAsync(x => x.name == operationName, cancellationToken);
+                if (byName is null)
+                    throw new InvalidOperationException(
+                        $"Could not create or resolve operation '{operationName}' (id {operationId}).");
+                // Existing name has a legacy ID: continue to the reconciliation below.
+            }
+            else
+            {
+                db.Operations.Add(new OperationModel(operationId, operationName, now, now,
+                    RbacWellKnown.BootstrapAdminUserId, RbacWellKnown.BootstrapAdminUserId));
+                await db.SaveChangesAsync(cancellationToken);
+                return;
+            }
         }
 
         var oldOperationId = byName.id;

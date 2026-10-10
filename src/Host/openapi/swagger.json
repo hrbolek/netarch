@@ -1002,6 +1002,45 @@
       }
     },
     "/digital-processes/FormVersionResponse/tree/{id}": {
+      "put": {
+        "tags": [
+          "DigitalProcesses.Forms"
+        ],
+        "description": "Atomically create/update supplied form nodes. Omitted nodes are preserved; publishing locks the form. Authorization is verified per existing node.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkFormTreeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FormTreeResponse"
+                }
+              }
+            }
+          }
+        }
+      },
       "get": {
         "tags": [
           "DigitalProcesses.Forms"
@@ -2769,6 +2808,45 @@
       }
     },
     "/digital-processes/SubmissionResponse/tree/{id}": {
+      "put": {
+        "tags": [
+          "DigitalProcesses.Runtime"
+        ],
+        "description": "Atomically update supplied submission-node values; omitted nodes retain their data. Deny and RBAC Update are enforced per node; archived submissions cannot be edited.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkSubmissionValuesRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmissionTreeResponse"
+                }
+              }
+            }
+          }
+        }
+      },
       "get": {
         "tags": [
           "DigitalProcesses.Runtime"
@@ -7242,6 +7320,96 @@
         },
         "additionalProperties": false
       },
+      "BulkFormTreeNode": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "key": {
+            "type": "string",
+            "nullable": true
+          },
+          "node_type_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "label": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "min_occurs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "max_occurs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "configuration_json": {
+            "type": "string",
+            "nullable": true
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BulkFormTreeNode"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BulkFormTreeRequest": {
+        "type": "object",
+        "properties": {
+          "nodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BulkFormTreeNode"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BulkSubmissionValue": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "value_json": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BulkSubmissionValuesRequest": {
+        "type": "object",
+        "properties": {
+          "nodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BulkSubmissionValue"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "CreateFormDefinitionRequest": {
         "type": "object",
         "properties": {
@@ -7413,6 +7581,11 @@
           },
           "publish": {
             "type": "boolean"
+          },
+          "target_group_type_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -8713,6 +8886,11 @@
           "visual_label": {
             "type": "string",
             "nullable": true
+          },
+          "target_group_type_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -9240,6 +9418,11 @@
           },
           "subject": {
             "type": "string",
+            "nullable": true
+          },
+          "target_group_id": {
+            "type": "string",
+            "format": "uuid",
             "nullable": true
           }
         },

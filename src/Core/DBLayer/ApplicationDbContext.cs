@@ -1,3 +1,5 @@
+using System.Globalization;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.EntityFrameworkCore;
 
 namespace WebAppArchitecture.DBLayer;
@@ -66,6 +68,7 @@ public sealed class ApplicationDbContext : DbContext
             e.Property(x => x.master_group_id).HasColumnName("master_group_id");
             e.Property(x => x.path).HasColumnName("path").IsRequired();
             e.Property(x => x.inherit_roles).HasColumnName("inherit_roles").HasDefaultValue(true);
+            e.Property(x => x.valid).HasColumnName("valid").HasDefaultValue(true);
             e.Ignore(x => x.master_group_name);
             e.Ignore(x => x.group_type_name);
             e.HasIndex(x => x.path);
@@ -161,6 +164,35 @@ public sealed class ApplicationDbContext : DbContext
             ConfigureSecured(e);
         });
         modelBuilder.ConfigureDigitalProcesses();
+
+        // SQLite has no native DateTimeOffset comparison/order semantics.
+        // Store ISO 8601 text normalized to UTC so lexical SQL ordering is
+        // identical to chronological ordering. Other providers are unchanged.
+        if (Database.IsSqlite())
+        {
+            var utcConverter = new ValueConverter<DateTimeOffset, string>(
+                value => value.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture),
+                // Read canonical round-trip text and the legacy SQLite text
+                // emitted by EF Core (yyyy-MM-dd HH:mm:ss.fffffff+00:00).
+                // Existing rows are not rewritten by this converter.
+                value => DateTimeOffset.Parse(
+                    value, CultureInfo.InvariantCulture,
+                    DateTimeStyles.AllowWhiteSpaces));
+
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                foreach (var property in entityType.GetProperties())
+                {
+                    if (property.ClrType == typeof(DateTimeOffset) ||
+                        property.ClrType == typeof(DateTimeOffset?))
+                    {
+                        // EF Core automatically lifts non-nullable converters
+                        // to nullable properties (null stays null).
+                        property.SetValueConverter(utcConverter);
+                    }
+                }
+            }
+        }
     }
 
     private static void ConfigureSecured<TEntity>(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<TEntity> e)

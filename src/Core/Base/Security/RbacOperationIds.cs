@@ -24,8 +24,11 @@ public static class RbacOperationIds
     public static readonly Guid ManageRoles = Guid.Parse("20000000-0000-0000-0000-000000000009");
     public static readonly Guid ManageSecurityObjects = Guid.Parse("20000000-0000-0000-0000-000000000010");
 
+    public static readonly Guid StartProcess = Guid.Parse("20000000-0000-0000-0000-000000000011");
+
     public static Guid FromName(string operation) => operation.Trim().ToLowerInvariant() switch
     {
+        RbacOperations.StartProcess => StartProcess,
         RbacOperations.Create => Create,
         RbacOperations.Read => Read,
         RbacOperations.Update => Update,
@@ -42,6 +45,7 @@ public static class RbacOperationIds
     public static IReadOnlyDictionary<string, Guid> All { get; } =
         new Dictionary<string, Guid>(StringComparer.OrdinalIgnoreCase)
         {
+            [RbacOperations.StartProcess] = StartProcess,
             [RbacOperations.Create] = Create,
             [RbacOperations.Read] = Read,
             [RbacOperations.Update] = Update,

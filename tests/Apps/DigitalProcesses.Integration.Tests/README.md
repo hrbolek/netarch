@@ -14,3 +14,7 @@ Only DigitalProcesses HTTP behavior belongs here. Uses shared test Host with a f
 ## Etapa 3 — doplněné HTTP kontrakty
 
 `DigitalProcessesLifecycleContractTests` ověřují GUID routing, rozdílné HTTP metody, izolaci testovacích Hostů a zápisové endpointy ve Swaggeru. **Neověřují** úspěšný přechod procesu. Pozitivní E2E fixture musí obsahovat publikovanou ProcessDefinitionVersion, FormVersion, WorkflowVersion/States/Transition, role a účinná RBAC oprávnění. Teprve následně je možné testovat StartAsync -> TransitionAsync, neměnný archiv starého Submission a utajení FormNode dat.
+
+## Nové scénáře
+
+Viz [SCENARIO_PLAN.md](SCENARIO_PLAN.md). DP01–DP03 pokrývají neúspěšné příkazy bez viditelného zápisu. Pozitivní lifecycle DP04–DP15 zůstává explicitně nepokrytý.

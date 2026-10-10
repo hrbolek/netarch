@@ -5,6 +5,7 @@ namespace WebAppArchitecture.SecurityLayer;
 /// </summary>
 public static class SecurityOperations
 {
+    public const string StartProcess = "start_process";
     public const string Read = "read";
     public const string List = "list";
     public const string Create = "create";

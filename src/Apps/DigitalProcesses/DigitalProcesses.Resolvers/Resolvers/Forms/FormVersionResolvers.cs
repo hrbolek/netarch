@@ -109,6 +109,9 @@ public static class FormVersionResolvers
         return Results.Redirect($"{Prefix}/FormVersionResponse/designer/{versionId}");
     }
 
+    public static Task<FormTreeResponse> BulkTree(Guid id, BulkFormTreeRequest request, IBulkTreeService service, CancellationToken ct)
+        => service.UpsertFormTreeAsync(id, request, ct);
+
     public static void Map(IEndpointRouteBuilder endpoints, string prefix)
     {
         var group = endpoints.MapGroup(prefix + "/FormVersionResponse").WithTags("DigitalProcesses.Forms");
@@ -177,6 +180,8 @@ public static class FormVersionResolvers
             .DisableAntiforgery()
             .WithDescription("Deep-clones a reusable FormNode subtree into the target draft form version.");
 
+        group.MapPut("/tree/{id:guid}", FormVersionResolvers.BulkTree)
+            .WithDescription("Atomically create/update supplied form nodes. Omitted nodes are preserved; publishing locks the form. Authorization is verified per existing node.");
         group.MapGet("/tree/{id:guid}", FormVersionResolvers.Tree)
             .ApplyViewModel<FormTreePage,FormTreeResponse>()
             .WithDescription("""

@@ -26,12 +26,13 @@ public static class RequestResolvers
         "Select a process and its published version. The acting user becomes the initiator.",
         DigitalProcessCreateForm.EntityLookup("process_definition_id", "Process", Prefix + "/ProcessDefinitionResponse/list", ["name"]),
         DigitalProcessCreateForm.EntityLookup("process_definition_version_id", "Published process version", Prefix + "/ProcessDefinitionVersionResponse/list?where=%7B%22is_published%22%3A%7B%22_eq%22%3Atrue%7D%7D", [], parentField: "process_definition_id", parentProperty: "process_definition_id"),
+        DigitalProcessCreateForm.EntityLookup("target_group_id", "Target organisation", "/architecture/GroupResponse/list", ["Name"]),
         DigitalProcessCreateForm.Text("subject", "Subject", false));
 
     public static async Task<IResult> CreateForm(HttpContext http, IRequestService service, CancellationToken ct)
     {
         var f = await http.Request.ReadFormAsync(ct);
-        var created = await service.StartAsync(new StartRequestRequest(DigitalProcessCreateForm.GuidValue(f,"process_definition_version_id"),DigitalProcessCreateForm.Optional(f,"subject")), ct);
+        var created = await service.StartAsync(new StartRequestRequest(DigitalProcessCreateForm.GuidValue(f,"process_definition_version_id"),DigitalProcessCreateForm.Optional(f,"subject"),DigitalProcessCreateForm.GuidValue(f,"target_group_id")), ct);
         return Results.Redirect(Prefix + "/RequestResponse/detail/" + created.id);
     }
     public static Task<RequestResponse> Start(StartRequestRequest request, IRequestService service, CancellationToken ct) => service.StartAsync(request, ct);

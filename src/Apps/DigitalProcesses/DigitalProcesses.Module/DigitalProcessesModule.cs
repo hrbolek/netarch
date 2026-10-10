@@ -12,6 +12,7 @@ using WebAppArchitecture.DigitalProcesses.Resolvers;
 using WebAppArchitecture.DigitalProcesses.Services;
 using WebAppArchitecture.DigitalProcesses.UI.Routing;
 using WebAppArchitecture.Hosting;
+using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses;
 
@@ -26,6 +27,7 @@ public sealed class DigitalProcessesModule : IArchitectureModule
         services.AddScoped<IFormVersionService, FormVersionService>();
         services.AddScoped<IFormNodeTypeService, FormNodeTypeService>();
         services.AddScoped<IFormNodeService, FormNodeService>();
+        services.AddScoped<IBulkTreeService, BulkTreeService>();
         services.AddScoped<IWorkflowDefinitionService, WorkflowDefinitionService>();
         services.AddScoped<IWorkflowVersionService, WorkflowVersionService>();
         services.AddScoped<IWorkflowStateService, WorkflowStateService>();
@@ -33,6 +35,7 @@ public sealed class DigitalProcessesModule : IArchitectureModule
         services.AddScoped<IWorkflowTransitionService, WorkflowTransitionService>();
         services.AddScoped<IProcessDefinitionService, ProcessDefinitionService>();
         services.AddScoped<IProcessDefinitionVersionService, ProcessDefinitionVersionService>();
+        services.AddScoped<IProcessRequestProvisioner, ProcessRequestProvisioner>();
         services.AddScoped<IRequestService, RequestService>();
         services.AddScoped<ISubmissionService, SubmissionService>();
         services.AddScoped<ISubmissionNodeService, SubmissionNodeService>();

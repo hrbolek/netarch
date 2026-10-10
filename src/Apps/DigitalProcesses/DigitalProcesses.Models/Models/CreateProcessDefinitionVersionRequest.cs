@@ -5,4 +5,5 @@ public sealed record CreateProcessDefinitionVersionRequest(
     Guid form_version_id,
     Guid workflow_version_id,
     int version,
-    bool publish = false);
+    bool publish = false,
+    Guid? target_group_type_id = null);

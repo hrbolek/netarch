@@ -26,7 +26,14 @@ public sealed class EfGroupStore(ApplicationDbContext db) : EfStore<GroupModel>(
     private async Task<string> BuildPathAsync(Guid id, Guid? parentId, CancellationToken ct)
     {
         if (parentId is null) return $"/{id:D}/";
-        var parent = await Db.Groups.AsNoTracking().SingleAsync(x => x.id == parentId, ct);
+        // A process request can create multiple nested RBAC groups within one
+        // transaction. The parent might still be tracked as Added and therefore
+        // is not visible to an EF query against the database yet.
+        var parent = Db.Groups.Local.FirstOrDefault(x => x.id == parentId.Value)
+            ?? await Db.Groups.AsNoTracking().SingleOrDefaultAsync(x => x.id == parentId.Value, ct)
+            ?? throw new InvalidOperationException($"Parent group {parentId:D} does not exist.");
+        if (string.IsNullOrWhiteSpace(parent.path))
+            throw new InvalidOperationException($"Parent group {parentId:D} has no materialized path.");
         return $"{parent.path}{id:D}/";
     }
 

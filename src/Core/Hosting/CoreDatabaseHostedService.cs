@@ -1,3 +1,4 @@
+using System.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +23,16 @@ public sealed class CoreDatabaseHostedService(
         await using var scope = scopeFactory.CreateAsyncScope();
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         await db.Database.EnsureCreatedAsync(cancellationToken);
+        // EnsureCreated does not add columns to an existing database. Run safe,
+        // additive SQLite schema upgrades before any initializer/query touches the models.
+        // This does not rebuild or delete historical Requests or Submissions.
+        if (db.Database.IsSqlite())
+        {
+            await EnsureSqliteColumnAsync(db, "groups", "valid",
+                "ALTER TABLE groups ADD COLUMN valid INTEGER NOT NULL DEFAULT 1", cancellationToken);
+            await EnsureSqliteColumnAsync(db, "dp_process_definition_versions", "target_group_type_id",
+                "ALTER TABLE dp_process_definition_versions ADD COLUMN target_group_type_id TEXT NULL", cancellationToken);
+        }
         // EnsureCreated does not add tables to an existing SQLite database.
         // Keep developer databases and historical submissions intact when introducing
         // persistent Applicant policies and RBAC Deny rules.
@@ -104,6 +115,50 @@ public sealed class CoreDatabaseHostedService(
         else
         {
             logger.LogInformation("EffectiveAccess projection already present; full startup rebuild skipped.");
+        }
+    }
+
+    /// <summary>
+    /// Additive compatibility upgrade for pre-existing SQLite developer/test databases.
+    /// Names and DDL are fixed internal constants; no user-controlled SQL is accepted.
+    /// For PostgreSQL / SQL Server use provider migrations (stage 99).
+    /// </summary>
+    private static async Task EnsureSqliteColumnAsync(
+        ApplicationDbContext db, string table, string column, string alterSql,
+        CancellationToken cancellationToken)
+    {
+        var connection = db.Database.GetDbConnection();
+        var openHere = connection.State != ConnectionState.Open;
+        if (openHere)
+            await connection.OpenAsync(cancellationToken);
+        try
+        {
+            await using var inspect = connection.CreateCommand();
+            inspect.CommandText = $"PRAGMA table_info(\"{table}\")";
+            var tableExists = false;
+            var columnExists = false;
+            await using (var reader = await inspect.ExecuteReaderAsync(cancellationToken))
+            {
+                while (await reader.ReadAsync(cancellationToken))
+                {
+                    tableExists = true;
+                    if (string.Equals(reader.GetString(1), column, StringComparison.OrdinalIgnoreCase))
+                        columnExists = true;
+                }
+            }
+            if (!tableExists)
+                throw new InvalidOperationException($"Expected SQLite table '{table}' does not exist after EnsureCreated.");
+            if (!columnExists)
+            {
+                await using var alter = connection.CreateCommand();
+                alter.CommandText = alterSql;
+                await alter.ExecuteNonQueryAsync(cancellationToken);
+            }
+        }
+        finally
+        {
+            if (openHere)
+                await connection.CloseAsync();
         }
     }
 

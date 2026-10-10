@@ -30,6 +30,7 @@ public static class ProcessDefinitionVersionResolvers
         DigitalProcessCreateForm.EntityLookup("form_version_id", "Published form version", Prefix + "/FormVersionResponse/list?where=%7B%22is_published%22%3A%7B%22_eq%22%3Atrue%7D%7D", [], parentField: "form_definition_id", parentProperty: "form_definition_id"),
         DigitalProcessCreateForm.EntityLookup("workflow_definition_id", "Workflow", Prefix + "/WorkflowDefinitionResponse/list", ["name"]),
         DigitalProcessCreateForm.EntityLookup("workflow_version_id", "Published workflow version", Prefix + "/WorkflowVersionResponse/list?where=%7B%22is_published%22%3A%7B%22_eq%22%3Atrue%7D%7D", [], parentField: "workflow_definition_id", parentProperty: "workflow_definition_id"),
+        DigitalProcessCreateForm.EntityLookup("target_group_type_id", "Allowed target group type", "/architecture/GroupTypeResponse/list", ["name"]),
         DigitalProcessCreateForm.Check("publish", "Publish immediately"));
 
     public static Task<ProcessDefinitionVersionResponse> CreateApi(CreateProcessDefinitionVersionRequest request, IProcessDefinitionVersionService service, CancellationToken ct)
@@ -38,7 +39,7 @@ public static class ProcessDefinitionVersionResolvers
     public static async Task<IResult> CreateForm(HttpContext http, IProcessDefinitionVersionService service, ISecurityLayer security, CancellationToken ct)
     {
         var f = await http.Request.ReadFormAsync(ct);
-        var created = await service.CreateContainedAsync(new CreateProcessDefinitionVersionRequest(DigitalProcessCreateForm.GuidValue(f,"process_definition_id"),DigitalProcessCreateForm.GuidValue(f,"form_version_id"),DigitalProcessCreateForm.GuidValue(f,"workflow_version_id"),security.Query<ProcessDefinitionVersionModel>(SecurityOperations.Read).Where(x => x.process_definition_id == DigitalProcessCreateForm.GuidValue(f,"process_definition_id")).Select(x => x.version).ToArray().DefaultIfEmpty(0).Max()+1,DigitalProcessCreateForm.BoolValue(f,"publish")), ct);
+        var created = await service.CreateContainedAsync(new CreateProcessDefinitionVersionRequest(DigitalProcessCreateForm.GuidValue(f,"process_definition_id"),DigitalProcessCreateForm.GuidValue(f,"form_version_id"),DigitalProcessCreateForm.GuidValue(f,"workflow_version_id"),security.Query<ProcessDefinitionVersionModel>(SecurityOperations.Read).Where(x => x.process_definition_id == DigitalProcessCreateForm.GuidValue(f,"process_definition_id")).Select(x => x.version).ToArray().DefaultIfEmpty(0).Max()+1,DigitalProcessCreateForm.BoolValue(f,"publish"),DigitalProcessCreateForm.GuidValue(f,"target_group_type_id")), ct);
         return Results.Redirect(Prefix + "/ProcessDefinitionResponse/view/" + created.process_definition_id);
     }
     public static Task<ProcessDefinitionVersionResponse> Publish(Guid id, IProcessDefinitionVersionService service, CancellationToken ct) => service.PublishAsync(id, ct);

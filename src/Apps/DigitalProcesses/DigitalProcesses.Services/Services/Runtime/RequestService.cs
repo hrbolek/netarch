@@ -11,7 +11,8 @@ public sealed class RequestService(
     IDigitalProcessIntegration integration,
     IRbacAccessBindingManager bindingManager,
     ISecurityProjectionService securityProjection,
-    ITrustedSubmissionSnapshotReader snapshots)
+    ITrustedSubmissionSnapshotReader snapshots,
+    IProcessRequestProvisioner provisioner)
     : BaseService<RequestModel, RequestResponse>(security), IRequestService
 {
     public async Task<RequestResponse> StartAsync(StartRequestRequest r, CancellationToken ct = default)
@@ -26,12 +27,18 @@ public sealed class RequestService(
             definition.process_definition_id, SecurityOperations.Read, ct)
             ?? throw new KeyNotFoundException("Process definition not found.");
 
-        // ProcessDefinition.rbacobject_id is an existing RBAC Group below e.g.
-        // FacultyRequestsRBACGroup. Request gets its own inheritance boundary below it.
-        var processGroup = Security.Query<GroupModel>(SecurityOperations.Create)
-            .SingleOrDefault(x => x.id == process.rbacobject_id)
+        // The published version fixes WHERE new requests may be started.
+        // Group validity and type are checked against the actual DB row, never user-supplied data.
+        if (r.target_group_id is not Guid targetId || targetId == Guid.Empty)
+            throw new InvalidOperationException("TargetGroupId must be specified.");
+        if (definition.target_group_type_id is not Guid permittedType || permittedType == Guid.Empty)
+            throw new InvalidOperationException("Published process version has no TargetGroupTypeId.");
+
+        // Starting a process is a separate operation, not general Create on the faculty.
+        var processGroup = Security.Query<GroupModel>(SecurityOperations.StartProcess)
+            .SingleOrDefault(x => x.id == targetId && x.valid && x.group_type_id == permittedType)
             ?? throw new InvalidOperationException(
-                "ProcessDefinition.rbacobject_id must reference a Group on which the caller may create requests.");
+                "Target group is absent, retired, has the wrong type, or caller lacks start_process.");
 
         var initial = Security.Query<WorkflowStateModel>(SecurityOperations.Read)
             .SingleOrDefault(x => x.workflow_version_id == definition.workflow_version_id && x.is_initial)
@@ -60,25 +67,25 @@ public sealed class RequestService(
 
         return await Security.ExecuteInTransactionAsync(async token =>
         {
-            await Security.StageCreateAsync(requestGroup, token);
-            await Security.StageCreateAsync(submissionGroup, token);
+            var writer = await provisioner.BeginStartAsync(processGroup.id, requestGroup, token);
+            await writer.StageCreateAsync(submissionGroup, token);
 
             // Initiator identity is anchored on Request, not in form values.
-            await Security.StageCreateAsync(new RoleModel(
+            await writer.StageCreateAsync(new RoleModel(
                 Guid.NewGuid(), requestGroup.id, actor, process.initiator_role_type_id,
                 false, now, null, null, requestGroup.id, now, now, actor, actor), token);
 
-            await Security.StageCreateAsync(request, token);
-            await Security.StageCreateAsync(submission, token);
+            await writer.StageCreateAsync(request, token);
+            await writer.StageCreateAsync(submission, token);
 
             var policy = LoadApplicantPolicy(definition.id, initial.id, formNodes);
             var instantiated = await InstantiateMinimumTreeAsync(
-                formNodes, submission, submissionGroup, requestGroup, actor, now, policy, token);
+                formNodes, submission, submissionGroup, requestGroup, actor, now, policy, writer, token);
 
             await ApplyStateAccessRulesAsync(
                 initial.id, request, submission, instantiated, now, actor, token);
             await ApplyApplicantAccessAsync(policy, process.initiator_role_type_id,
-                request, submission, instantiated, actor, now, token);
+                request, submission, instantiated, actor, now, writer, token);
 
             await Security.SaveChangesAsync(token);
             await securityProjection.SynchronizeGroupSubtreeAsync(requestGroup.id, token);
@@ -161,26 +168,27 @@ public sealed class RequestService(
             await bindingManager.ExpireManagedBindingsAsync(
                 currentRequest.id, currentRequest.rbacobject_id, now, actor, token);
 
-            await Security.StageCreateAsync(newSubmissionGroup, token);
-            await Security.StageCreateAsync(newSubmission, token);
+            var writer = await provisioner.BeginTransitionAsync(requestGroup.id, token);
+            await writer.StageCreateAsync(newSubmissionGroup, token);
+            await writer.StageCreateAsync(newSubmission, token);
 
             var cloned = await CloneSubmissionTreeAsync(
                 oldNodes, definitions, newSubmission, newSubmissionGroup,
-                requestGroup, actor, now, applicantPolicy, token);
+                requestGroup, actor, now, applicantPolicy, writer, token);
 
             await ApplyStateAccessRulesAsync(
                 transition.target_state_id, currentRequest, newSubmission, cloned,
                 now, actor, token);
 
             await ApplyApplicantAccessAsync(applicantPolicy, process.initiator_role_type_id,
-                currentRequest, newSubmission, cloned, actor, now, token);
+                currentRequest, newSubmission, cloned, actor, now, writer, token);
 
             var history = new RequestTransitionHistoryModel(
                 Guid.NewGuid(), currentRequest.id, transition.id,
                 currentRequest.current_state_id, transition.target_state_id,
                 currentSubmission.id, actor, r.note, now,
                 currentRequest.rbacobject_id, now, now, actor, actor);
-            await Security.StageCreateAsync(history, token);
+            await writer.StageCreateAsync(history, token);
 
             var updatedRequest = currentRequest with
             {
@@ -247,7 +255,7 @@ public sealed class RequestService(
     private async Task ApplyApplicantAccessAsync(
         IReadOnlyDictionary<Guid, bool> policy, Guid applicantRoleTypeId,
         RequestModel request, SubmissionModel submission,
-        IReadOnlyCollection<SubmissionNodeModel> nodes, Guid actor, DateTimeOffset now, CancellationToken ct)
+        IReadOnlyCollection<SubmissionNodeModel> nodes, Guid actor, DateTimeOffset now, IProcessRequestWriteScope writer, CancellationToken ct)
     {
         // Applicant's role is anchored on Request; the Submission Group is a
         // role-inheritance boundary. Create explicit bindings to accessible scopes.
@@ -271,7 +279,7 @@ public sealed class RequestService(
             .Where(x => policy.TryGetValue(x.form_node_id, out var canRead) && !canRead)
             .Select(x => x.rbacobject_id).Distinct().ToArray();
         foreach (var groupId in deniedGroupIds)
-            await Security.StageCreateAsync(new RbacDenyRuleModel(
+            await writer.StageCreateAsync(new RbacDenyRuleModel(
                 Guid.NewGuid(), groupId, applicantRoleTypeId, true,
                 groupId, now, now, actor, actor), ct);
     }
@@ -292,6 +300,7 @@ public sealed class RequestService(
         Guid actor,
         DateTimeOffset now,
         IReadOnlyDictionary<Guid, bool> applicantPolicy,
+        IProcessRequestWriteScope writer,
         CancellationToken ct)
     {
         var result = new List<SubmissionNodeModel>();
@@ -313,14 +322,14 @@ public sealed class RequestService(
                         securityGroup = NewBoundaryGroup(
                             Guid.NewGuid(), $"{def.key} [{occurrence}]", inheritedSecurityGroup, actor, now);
                         if (!def.own_security_scope) securityGroup = securityGroup with { inherit_roles = true };
-                        await Security.StageCreateAsync(securityGroup, ct);
+                        await writer.StageCreateAsync(securityGroup, ct);
                     }
 
                     var node = new SubmissionNodeModel(
                         id, submission.id, def.id, submissionParent?.id, path,
                         occurrence, def.position, null, securityGroup.id,
                         now, now, actor, actor);
-                    await Security.StageCreateAsync(node, ct);
+                    await writer.StageCreateAsync(node, ct);
                     result.Add(node);
                     await AddChildren(def.id, node, securityGroup);
                 }
@@ -340,6 +349,7 @@ public sealed class RequestService(
         Guid actor,
         DateTimeOffset now,
         IReadOnlyDictionary<Guid, bool> applicantPolicy,
+        IProcessRequestWriteScope writer,
         CancellationToken ct)
     {
         var clones = new List<SubmissionNodeModel>();
@@ -364,14 +374,14 @@ public sealed class RequestService(
                 securityGroup = NewBoundaryGroup(
                     Guid.NewGuid(), $"{def.key} [{old.occurrence}]", inheritedSecurityGroup, actor, now);
                 if (!def.own_security_scope) securityGroup = securityGroup with { inherit_roles = true };
-                await Security.StageCreateAsync(securityGroup, ct);
+                await writer.StageCreateAsync(securityGroup, ct);
             }
 
             var clone = new SubmissionNodeModel(
                 id, newSubmission.id, old.form_node_id, parent?.id, path,
                 old.occurrence, old.position, old.value_json, securityGroup.id,
                 now, now, actor, actor);
-            await Security.StageCreateAsync(clone, ct);
+            await writer.StageCreateAsync(clone, ct);
             idMap[old.id] = clone;
             securityGroupByOldNode[old.id] = securityGroup;
             clones.Add(clone);

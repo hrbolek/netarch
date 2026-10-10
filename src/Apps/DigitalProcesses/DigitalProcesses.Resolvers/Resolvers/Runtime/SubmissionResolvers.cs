@@ -19,6 +19,9 @@ public static class SubmissionResolvers
     public static Task<IResult> Link(Guid id, HttpContext http, ISubmissionService service, CancellationToken ct) => BaseResolvers.Link<SubmissionModel,SubmissionResponse,ISubmissionService>(id,http,service,ct);
     public static Task<SubmissionTreeResponse> Tree(Guid id, ISubmissionService service, CancellationToken ct) => service.GetTreeAsync(id, ct);
 
+    public static Task<SubmissionTreeResponse> BulkValues(Guid id, BulkSubmissionValuesRequest request, IBulkTreeService service, CancellationToken ct)
+        => service.UpdateSubmissionValuesAsync(id, request, ct);
+
     public static void Map(IEndpointRouteBuilder endpoints, string prefix)
     {
         var group = endpoints.MapGroup(prefix + "/SubmissionResponse").WithTags("DigitalProcesses.Runtime");
@@ -38,6 +41,8 @@ public static class SubmissionResolvers
             .WithDescription("""
                 Returns the entity reference used by lazy EntityLink rendering or JSON clients.
                 """);
+        group.MapPut("/tree/{id:guid}", SubmissionResolvers.BulkValues)
+            .WithDescription("Atomically update supplied submission-node values; omitted nodes retain their data. Deny and RBAC Update are enforced per node; archived submissions cannot be edited.");
         group.MapGet("/tree/{id:guid}", SubmissionResolvers.Tree)
             .ApplyViewModel<SubmissionTreePage,SubmissionTreeResponse>()
             .WithDescription("""

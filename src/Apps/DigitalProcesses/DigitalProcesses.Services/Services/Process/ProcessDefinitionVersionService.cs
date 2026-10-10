@@ -23,7 +23,7 @@ public sealed class ProcessDefinitionVersionService(ISecurityLayer security) : B
         var model = new ProcessDefinitionVersionModel(
             Guid.NewGuid(), process.id, request.form_version_id, request.workflow_version_id,
             request.version, false, null, process.rbacobject_id,
-            now, now, actor, actor);
+            now, now, actor, actor) { target_group_type_id = request.target_group_type_id };
         var created = await Security.ExecuteInTransactionAsync(async token =>
         {
             var x = await Security.StageCreateAsync(model, token);
@@ -42,7 +42,7 @@ public sealed class ProcessDefinitionVersionService(ISecurityLayer security) : B
             .OrderByDescending(v => v.version).FirstOrDefault()
             ?? throw new InvalidOperationException("Process has no existing version to copy.");
         var created = await CreateContainedAsync(new CreateProcessDefinitionVersionRequest(
-            definitionId, previous.form_version_id, previous.workflow_version_id, previous.version + 1), ct);
+            definitionId, previous.form_version_id, previous.workflow_version_id, previous.version + 1, target_group_type_id: previous.target_group_type_id), ct);
         var rules = Security.Query<FormNodeApplicantAccessModel>(SecurityOperations.Read)
             .Where(x => x.process_definition_version_id == previous.id).ToArray();
         var now = DateTimeOffset.UtcNow;
@@ -79,6 +79,7 @@ public sealed class ProcessDefinitionVersionService(ISecurityLayer security) : B
     }
 
     public async Task<ProcessDefinitionVersionResponse> PublishAsync(Guid id,CancellationToken ct=default){var model=await Security.GetByIdAsync<ProcessDefinitionVersionModel>(id,SecurityOperations.Update,ct)??throw new KeyNotFoundException();if(model.is_published)return ProcessDefinitionVersionResponse.FromModel(model);var form=await Security.GetByIdAsync<FormVersionModel>(model.form_version_id,SecurityOperations.Read,ct)??throw new KeyNotFoundException();var workflow=await Security.GetByIdAsync<WorkflowVersionModel>(model.workflow_version_id,SecurityOperations.Read,ct)??throw new KeyNotFoundException();if(!form.is_published||!workflow.is_published)throw new InvalidOperationException("Process version requires published form and workflow versions.");
+        if(model.target_group_type_id is not Guid targetType || targetType == Guid.Empty) throw new InvalidOperationException("A TargetGroupTypeId is required before publishing the process version.");
         var stateIds=Security.Query<WorkflowStateModel>(SecurityOperations.Read).Where(x=>x.workflow_version_id==workflow.id).Select(x=>x.id).ToArray();
         var targetNodeIds=Security.Query<WorkflowStateAccessRuleModel>(SecurityOperations.Read).Where(x=>stateIds.Contains(x.workflow_state_id)&&x.target_scope==WorkflowAccessTargetScopes.FormNode&&x.target_form_node_id!=null).Select(x=>x.target_form_node_id!.Value).Distinct().ToArray();
         if(targetNodeIds.Length>0 && Security.Query<FormNodeModel>(SecurityOperations.Read).Any(x=>targetNodeIds.Contains(x.id)&&x.form_version_id!=form.id))

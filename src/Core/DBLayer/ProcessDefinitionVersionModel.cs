@@ -19,4 +19,8 @@ public sealed record ProcessDefinitionVersionModel(
     DateTimeOffset updated_at,
     Guid created_by,
     Guid updated_by
-) : ISecuredEntityDBModel;
+) : ISecuredEntityDBModel
+{
+    /// <summary>Published versions restrict new requests to this exact target group type.</summary>
+    public Guid? target_group_type_id { get; init; }
+}

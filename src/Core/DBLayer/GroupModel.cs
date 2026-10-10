@@ -17,6 +17,9 @@ public sealed record GroupModel(
     Guid updated_by
 ) : ISecuredEntityDBModel, IEntityWithTree
 {
+    /// <summary>False if the organisational group is retired; historical RBAC rows stay intact.</summary>
+    public bool valid { get; init; } = true;
+
     [NotMapped]
     public string? master_group_name { get; init; }
 
