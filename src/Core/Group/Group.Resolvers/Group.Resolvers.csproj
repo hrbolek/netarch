@@ -3,6 +3,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- ASP.NET Core RouteHandlerAnalyzer throws AD0001 on generic minimal API resolver mappings; suppress only this analyzer exception. -->
+    <NoWarn>$(NoWarn);AD0001</NoWarn>
     <RootNamespace>WebAppArchitecture.Group.Resolvers</RootNamespace>
   </PropertyGroup>
 

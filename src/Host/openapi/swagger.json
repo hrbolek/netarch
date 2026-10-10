@@ -69,6 +69,41 @@
         }
       }
     },
+    "/digital-processes/form-preview/data/{formVersionId}/{previewInstanceId}": {
+      "get": {
+        "tags": [
+          "DigitalProcesses",
+          "Preview"
+        ],
+        "description": "Returns the JSON document of a temporary form preview, using the same reconstruction as export ($form). Preview state expires after inactivity.",
+        "operationId": "PreviewFormJsonData",
+        "parameters": [
+          {
+            "name": "formVersionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "previewInstanceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/digital-processes/form-preview/values": {
       "post": {
         "tags": [
@@ -104,6 +139,111 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/digital-processes/FormVersionResponse/schema/{id}": {
+      "get": {
+        "tags": [
+          "DigitalProcesses.FormDocuments"
+        ],
+        "description": "Builds a JSON Schema representation of a form version from its saved FormNode definitions. Repeated sections produce arrays.",
+        "operationId": "FormVersionJsonSchema",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/JsonNode"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digital-processes/SubmissionResponse/data/{id}": {
+      "get": {
+        "tags": [
+          "DigitalProcesses.FormDocuments"
+        ],
+        "description": "Reconstructs a submission's JSON document from the saved SubmissionNode tree, including repeated sections and nested keys.",
+        "operationId": "SubmissionJsonData",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/JsonNode"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digital-processes/FormResponse/data/{id}": {
+      "get": {
+        "tags": [
+          "DigitalProcesses.FormDocuments"
+        ],
+        "description": "Returns reconstructed JSON data of readable submissions belonging to the given form definition across all its readable versions. The id is FormDefinitionModel.id, not FormVersionModel.id.",
+        "operationId": "FormJsonSubmissionDataList",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JsonNode"
+                  }
+                }
+              }
+            }
           }
         }
       }

@@ -17,6 +17,19 @@ internal static class PreviewFormEndpoints
 {
     public static void Map(IEndpointRouteBuilder endpoints)
     {
+        endpoints.MapGet("/digital-processes/form-preview/data/{formVersionId:guid}/{previewInstanceId:guid}", async (
+            Guid formVersionId, Guid previewInstanceId, IFormNodeService nodes,
+            PreviewFormInstanceStore store, CancellationToken ct) =>
+        {
+            // GetDesignerAsync checks access to the source definition before revealing preview values.
+            var designer = await nodes.GetDesignerAsync(formVersionId, ct);
+            var flat = store.WithInstance(previewInstanceId, formVersionId,
+                state => BuildQualifiedValues(state.Values, designer.nodes));
+            return Results.Json(BuildStructuredJson(flat));
+        }).WithTags("DigitalProcesses", "Preview")
+          .WithName("PreviewFormJsonData")
+          .WithDescription("Returns the JSON document of a temporary form preview, using the same reconstruction as export ($form). Preview state expires after inactivity.");
+
         endpoints.MapPost("/digital-processes/form-preview/values", async (
             HttpContext http, IFormNodeService nodeService, PreviewFormInstanceStore store, ILoggerFactory logs, CancellationToken ct) =>
         {
@@ -246,7 +259,6 @@ internal static class PreviewFormEndpoints
     {
         var template = RelativeKey(node, scopeParent, nodes) ?? node.key;
         var suffix = new List<string>();
-        var ti = 0;
         foreach (Match match in Regex.Matches(incoming, @"\[(\d+)\]")) suffix.Add(match.Groups[1].Value);
         return node.id.ToString("N") + (suffix.Count > 0 ? "__" + string.Join("_", suffix) : "");
     }

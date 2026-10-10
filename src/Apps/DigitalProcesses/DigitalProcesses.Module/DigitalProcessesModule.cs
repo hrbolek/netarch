@@ -96,6 +96,7 @@ public sealed class DigitalProcessesModule : IArchitectureModule
         // experimental; protect access to the application until authorization
         // and persistent form instances have been implemented.
         PreviewFormEndpoints.Map(endpoints);
+        FormDocumentEndpoints.Map(endpoints);
 
         endpoints.MapDigitalProcessEndpoints("/digital-processes");
     }

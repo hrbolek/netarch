@@ -1590,3 +1590,55 @@ Při nasazování Release je JsonataPlayground nadále vypnut:
 ```bash
 dotnet publish src/Host/Host.csproj -c Release -p:EnableJsonataPlayground=false
 ```
+
+## JSON schema a data formulářů (77.17)
+
+Všechny následující endpointy vracejí `application/json` bez ohledu na hlavičku `Accept`:
+
+```http
+GET /digital-processes/FormVersionResponse/schema/{formVersionId}
+GET /digital-processes/form-preview/data/{formVersionId}/{previewInstanceId}
+GET /digital-processes/SubmissionResponse/data/{submissionId}
+GET /digital-processes/FormResponse/data/{formDefinitionId}
+```
+
+`schema` sestavuje JSON Schema draft 2020-12 z databázových definic FormNode (lokální `key`, rodičovské vazby, `min_occurs`, `max_occurs`, typ uzlu). Příslušné opakované sekce se mapují na `array` s `items`. Návratová data submission používají konkrétní uložené instance SubmissionNode; jejich `parent_id` a `occurrence` určují hierarchii a pořadí, `form_node_id` určuje klíč z definice. Pro opakované struktury vznikají JSON pole.
+
+Testovací endpoint čte dočasný stav preview a rekonstruuje jej stejnou funkcí jako export (`$form`); stav preview není Submission a po expiraci zanikne. Endpoint kolekce `/digital-processes/FormResponse/data/{formDefinitionId}` vyžaduje ID definice formuláře (`FormDefinition.id`), najde všechny její čitelné verze (`FormVersion.form_definition_id`) a vrátí pouze čitelná Submission těchto verzí. Bez ID formuláře není kolekční endpoint dostupný. Jednotlivé záznamy pole jsou rekonstruované JSON dokumenty bez metadat Submission. Vždy je třeba vhodně omezit přístup k osobním údajům. Poznámka: podrobnější JSON Schema validace specifická pro vlastní widgety nemusí být z pouhé definice uzlu odvoditelná.
+
+Vývojové spuštění:
+
+```bash
+ASPNETCORE_ENVIRONMENT=Development dotnet run --project src/Host/Host.csproj -c Debug
+```
+
+
+## Rekonstruovaná data podle formuláře (77.18)
+
+```http
+GET /digital-processes/FormResponse/data/{formDefinitionId}
+Accept: application/json
+```
+
+`formDefinitionId` je UUID `FormDefinition`, nikoli UUID `FormVersion` nebo `Submission`.
+Endpoint vrací pole rekonstruovaných JSON dokumentů ze všech čitelných uložených
+Submission vztahujících se k libovolné čitelné verzi této definice formuláře.
+Pro neexistující nebo nepřístupnou definici vrací HTTP 404; pro definici bez
+čitelných Submission vrací `[]`. Původní nefiltrované
+`/digital-processes/SubmissionResponse/data` bylo odstraněno.
+Samostatný endpoint `/digital-processes/SubmissionResponse/data/{submissionId}`
+zůstává zachován.
+
+
+## Oprava sestavení 77.19
+
+- `FormDocumentEndpoints.cs`: import `Microsoft.AspNetCore.Builder` pro Minimal API `MapGet`, oprava CS1929.
+- `PreviewFormEndpoints.cs`: odstraněna nepoužívaná proměnná `ti` (CS0219).
+- Pět `*.Resolvers.csproj` (Role, RoleType, Membership, Group, User): cílené potlačení AD0001 způsobeného pádem `Microsoft.AspNetCore.Analyzers.RouteHandlers.RouteHandlerAnalyzer`. Stejný postup jako v DigitalProcesses.Resolvers. Nejde o opravu příčiny v Microsoft analyzátoru a ostatní analyzátory zůstávají aktivní.
+
+Ověření v devcontaineru:
+
+```bash
+dotnet clean src/Host/Host.csproj -c Debug
+ASPNETCORE_ENVIRONMENT=Development dotnet run --project src/Host/Host.csproj -c Debug
+```
