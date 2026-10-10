@@ -15,7 +15,7 @@ public sealed record GroupModel(
     DateTimeOffset updated_at,
     Guid created_by,
     Guid updated_by
-) : ISecuredEntityDBModel
+) : ISecuredEntityDBModel, IEntityWithTree
 {
     [NotMapped]
     public string? master_group_name { get; init; }

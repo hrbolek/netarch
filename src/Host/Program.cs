@@ -33,3 +33,6 @@ if (!string.Equals(Environment.GetEnvironmentVariable("SWAGGER_EXPORT"), "false"
 }
 
 await app.WaitForShutdownAsync();
+
+// Expose the entry-point type to ASP.NET Core WebApplicationFactory integration tests.
+public partial class Program { }
