@@ -16,6 +16,8 @@ public sealed class ApplicationDbContext : DbContext
     public DbSet<RoleTypeOperationModel> RoleTypeOperations => Set<RoleTypeOperationModel>();
     public DbSet<EffectiveAccessModel> EffectiveAccesses => Set<EffectiveAccessModel>();
     public DbSet<RbacAccessBindingModel> RbacAccessBindings => Set<RbacAccessBindingModel>();
+    public DbSet<RbacDenyRuleModel> RbacDenyRules => Set<RbacDenyRuleModel>();
+    public DbSet<FormNodeApplicantAccessModel> FormNodeApplicantAccess => Set<FormNodeApplicantAccessModel>();
 
     public DbSet<FormDefinitionModel> FormDefinitions => Set<FormDefinitionModel>();
     public DbSet<FormVersionModel> FormVersions => Set<FormVersionModel>();
@@ -150,6 +152,14 @@ public sealed class ApplicationDbContext : DbContext
             ConfigureSecured(e);
         });
 
+        modelBuilder.Entity<RbacDenyRuleModel>(e =>
+        {
+            e.ToTable("rbac_deny_rules"); e.HasKey(x => x.id);
+            e.HasIndex(x => new { x.group_id, x.role_type_id }).IsUnique();
+            e.HasOne<GroupModel>().WithMany().HasForeignKey(x => x.group_id).OnDelete(DeleteBehavior.Restrict);
+            e.HasOne<RoleTypeModel>().WithMany().HasForeignKey(x => x.role_type_id).OnDelete(DeleteBehavior.Restrict);
+            ConfigureSecured(e);
+        });
         modelBuilder.ConfigureDigitalProcesses();
     }
 

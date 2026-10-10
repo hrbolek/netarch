@@ -41,8 +41,24 @@ public sealed class ProcessDefinitionVersionService(ISecurityLayer security) : B
             .Where(v => v.process_definition_id == definitionId)
             .OrderByDescending(v => v.version).FirstOrDefault()
             ?? throw new InvalidOperationException("Process has no existing version to copy.");
-        return await CreateContainedAsync(new CreateProcessDefinitionVersionRequest(
+        var created = await CreateContainedAsync(new CreateProcessDefinitionVersionRequest(
             definitionId, previous.form_version_id, previous.workflow_version_id, previous.version + 1), ct);
+        var rules = Security.Query<FormNodeApplicantAccessModel>(SecurityOperations.Read)
+            .Where(x => x.process_definition_version_id == previous.id).ToArray();
+        var now = DateTimeOffset.UtcNow;
+        await Security.ExecuteInTransactionAsync(async token =>
+        {
+            foreach (var rule in rules)
+                await Security.StageCreateAsync(rule with
+                {
+                    id = Guid.NewGuid(), process_definition_version_id = created.id,
+                    rbacobject_id = created.rbacobject_id,
+                    created_at = now, updated_at = now,
+                    created_by = Security.CurrentUserId, updated_by = Security.CurrentUserId
+                }, token);
+            await Security.SaveChangesAsync(token);
+        }, ct);
+        return created;
     }
 
     public async Task DeleteDraftAsync(Guid id, CancellationToken ct = default)
@@ -53,6 +69,10 @@ public sealed class ProcessDefinitionVersionService(ISecurityLayer security) : B
         if (Security.Query<RequestModel>(SecurityOperations.Read).Any(r => r.process_definition_version_id == id))
             throw new InvalidOperationException("Process version is referenced by a request.");
         await Security.ExecuteInTransactionAsync(async token => {
+            var policies = Security.Query<FormNodeApplicantAccessModel>(SecurityOperations.Delete)
+                .Where(x => x.process_definition_version_id == id).Select(x => x.id).ToArray();
+            foreach (var policyId in policies)
+                await Security.StageDeleteAsync<FormNodeApplicantAccessModel>(policyId, token);
             await Security.StageDeleteAsync<ProcessDefinitionVersionModel>(id, token);
             await Security.SaveChangesAsync(token);
         }, ct);

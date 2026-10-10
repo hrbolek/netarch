@@ -57,6 +57,7 @@ public sealed class CoreModule : IArchitectureModule
         services.AddHostedService<EffectiveAccessCleanupHostedService>();
         services.AddScoped<ISecurityProjectionService, SecurityProjectionService>();
         services.AddScoped<IRbacAccessBindingManager, RbacAccessBindingManager>();
+        services.AddScoped<ITrustedSubmissionSnapshotReader, TrustedSubmissionSnapshotReader>();
         services.AddScoped<ISecurityLayer, SecurityLayerImplementation>();
 
         services.AddScoped<IUserStore, EfUserStore>();

@@ -143,6 +143,72 @@
         }
       }
     },
+    "/digital-processes/ProcessDefinitionVersionResponse/applicant-access/{processVersionId}": {
+      "get": {
+        "tags": [
+          "DigitalProcesses.ApplicantVisibility"
+        ],
+        "description": "Lists Applicant visibility rules for the process version. Optional query parameter stateId filters by state.",
+        "operationId": "ApplicantAccessList",
+        "parameters": [
+          {
+            "name": "processVersionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "stateId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "DigitalProcesses.ApplicantVisibility"
+        ],
+        "description": "Sets Applicant visibility for a node in a workflow state of a draft process version. Pass stateId, formNodeId and canRead in the JSON body. Requires Update on the process version.",
+        "operationId": "ApplicantAccessSet",
+        "parameters": [
+          {
+            "name": "processVersionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetApplicantVisibilityRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/digital-processes/FormVersionResponse/schema/{id}": {
       "get": {
         "tags": [
@@ -2099,6 +2165,172 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/digital-processes/FormVersionResponse/rtf-templates/{id}": {
+      "get": {
+        "tags": [
+          "DigitalProcesses.Rtf"
+        ],
+        "description": "Lists stored RTF templates associated with this form version, subject to RBAC Read.",
+        "operationId": "FormRtfTemplateList",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "DigitalProcesses.Rtf"
+        ],
+        "description": "Stores an RTF template. Send raw application/rtf bytes; optional ?name=... . Requires Update on the form version.",
+        "operationId": "FormRtfTemplateUpload",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/rtf": {
+              "schema": {
+                "type": "string",
+                "format": "byte"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/digital-processes/FormVersionResponse/rtf-template/generate/{id}": {
+      "post": {
+        "tags": [
+          "DigitalProcesses.Rtf"
+        ],
+        "description": "Generates and persists a starter RTF template from saved FormNodes, including nested objects and repeated sections. Requires Update.",
+        "operationId": "FormRtfTemplateGenerate",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/digital-processes/RtfTemplate/{id}": {
+      "get": {
+        "tags": [
+          "DigitalProcesses.Rtf"
+        ],
+        "description": "Downloads the source RTF template, subject to form-version Read.",
+        "operationId": "RtfTemplateDownload",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "DigitalProcesses.Rtf"
+        ],
+        "description": "Deletes a stored template. Requires form-version Update.",
+        "operationId": "RtfTemplateDelete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/digital-processes/RtfTemplate/{id}/submission/{submissionId}": {
+      "get": {
+        "tags": [
+          "DigitalProcesses.Rtf"
+        ],
+        "description": "Downloads an RTF document rendered using this template and a readable Submission of the same form version. Reads values from SubmissionNodes.",
+        "operationId": "SubmissionRenderRtf",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "submissionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -8968,6 +9200,23 @@
             "type": "string",
             "format": "uuid",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SetApplicantVisibilityRequest": {
+        "type": "object",
+        "properties": {
+          "stateId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "formNodeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "canRead": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false

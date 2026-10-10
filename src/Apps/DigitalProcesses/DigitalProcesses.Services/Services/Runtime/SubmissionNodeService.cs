@@ -67,6 +67,39 @@ public sealed class SubmissionNodeService(
 
         var request = await Security.GetByIdAsync<RequestModel>(submission.request_id, SecurityOperations.Read, ct)
             ?? throw new KeyNotFoundException("Request not found.");
+        // New repeated nodes must enforce the published Applicant policy too.
+        var processVersion = Security.Query<ProcessDefinitionVersionModel>(SecurityOperations.Read)
+            .SingleOrDefault(x => x.id == request.process_definition_version_id)
+            ?? throw new KeyNotFoundException("Process version not found.");
+        var process = Security.Query<ProcessDefinitionModel>(SecurityOperations.Read)
+            .SingleOrDefault(x => x.id == processVersion.process_definition_id)
+            ?? throw new KeyNotFoundException("Process not found.");
+        var explicitRules = Security.Query<FormNodeApplicantAccessModel>(SecurityOperations.Read)
+            .Where(x => x.process_definition_version_id == processVersion.id
+                && x.workflow_state_id == request.current_state_id)
+            .ToDictionary(x => x.form_node_id, x => x.can_read);
+        bool applicantDenied = false;
+        if (explicitRules.Count > 0)
+        {
+            var definitionAncestors = Security.Query<FormNodeModel>(SecurityOperations.Read)
+                .Where(x => x.form_version_id == submission.form_version_id)
+                .ToDictionary(x => x.id);
+            var ancestry = new List<FormNodeModel>();
+            var currentDefinition = formNode;
+            while (true)
+            {
+                ancestry.Add(currentDefinition);
+                if (currentDefinition.parent_id is not Guid ancestorId) break;
+                if (!definitionAncestors.TryGetValue(ancestorId, out var found))
+                    throw new InvalidOperationException("Incomplete FormNode hierarchy.");
+                currentDefinition = found;
+            }
+            ancestry.Reverse();
+            bool allowed = explicitRules.TryGetValue(ancestry[0].id, out var rootAllowed) && rootAllowed;
+            foreach (var item in ancestry.Skip(1))
+                if (explicitRules.TryGetValue(item.id, out var value)) allowed &= value;
+            applicantDenied = !allowed;
+        }
         var parentRbac = parent?.rbacobject_id ?? submission.rbacobject_id;
         var parentSecurityGroup = Security.Query<GroupModel>(SecurityOperations.Read)
             .SingleOrDefault(x => x.id == parentRbac)
@@ -79,10 +112,11 @@ public sealed class SubmissionNodeService(
         var nodeRbac = parentRbac;
         GroupModel? ownScopeGroup = null;
 
-        if (formNode.own_security_scope)
+        if (formNode.own_security_scope || applicantDenied)
         {
             ownScopeGroup = NewBoundaryGroup(
                 Guid.NewGuid(), $"{formNode.key} [{r.occurrence}]", parentSecurityGroup, actor, now);
+            if (!formNode.own_security_scope) ownScopeGroup = ownScopeGroup with { inherit_roles = true };
             nodeRbac = ownScopeGroup.id;
         }
 
@@ -96,6 +130,16 @@ public sealed class SubmissionNodeService(
             if (ownScopeGroup is not null)
             {
                 await Security.StageCreateAsync(ownScopeGroup, token);
+                if (!applicantDenied)
+                    await bindingManager.StageCreateAsync(new RbacAccessBindingModel(
+                        Guid.NewGuid(), request.rbacobject_id, process.initiator_role_type_id,
+                        ownScopeGroup.id, process.initiator_role_type_id,
+                        now, null, submission.id, ownScopeGroup.id,
+                        now, now, actor, actor), token);
+                if (applicantDenied)
+                    await Security.StageCreateAsync(new RbacDenyRuleModel(
+                        Guid.NewGuid(), ownScopeGroup.id, process.initiator_role_type_id, true,
+                        ownScopeGroup.id, now, now, actor, actor), token);
                 var rules = Security.Query<WorkflowStateAccessRuleModel>(SecurityOperations.Read)
                     .Where(x => x.workflow_state_id == request.current_state_id
                         && x.target_scope == WorkflowAccessTargetScopes.FormNode

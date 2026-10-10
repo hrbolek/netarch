@@ -63,6 +63,15 @@ internal static class DigitalProcessesModelBuilderExtensions
         });
 
 
+        modelBuilder.Entity<FormNodeApplicantAccessModel>(e =>
+        {
+            e.ToTable("dp_form_node_applicant_access"); e.HasKey(x => x.id);
+            e.HasIndex(x => new { x.process_definition_version_id, x.workflow_state_id, x.form_node_id }).IsUnique();
+            e.HasOne<ProcessDefinitionVersionModel>().WithMany().HasForeignKey(x => x.process_definition_version_id).OnDelete(DeleteBehavior.Restrict);
+            e.HasOne<WorkflowStateModel>().WithMany().HasForeignKey(x => x.workflow_state_id).OnDelete(DeleteBehavior.Restrict);
+            e.HasOne<FormNodeModel>().WithMany().HasForeignKey(x => x.form_node_id).OnDelete(DeleteBehavior.Restrict);
+            ConfigureSecured(e);
+        });
         modelBuilder.Entity<WorkflowStateAccessRuleModel>(e =>
         {
             e.ToTable("dp_workflow_state_access_rules"); e.HasKey(x => x.id);

@@ -21,6 +21,7 @@ public sealed class DigitalProcessesModule : IArchitectureModule
     {
         services.AddMemoryCache();
         services.AddSingleton<PreviewFormInstanceStore>();
+        services.AddSingleton<RtfTemplateStore>();
         services.AddScoped<IFormDefinitionService, FormDefinitionService>();
         services.AddScoped<IFormVersionService, FormVersionService>();
         services.AddScoped<IFormNodeTypeService, FormNodeTypeService>();
@@ -97,6 +98,8 @@ public sealed class DigitalProcessesModule : IArchitectureModule
         // and persistent form instances have been implemented.
         PreviewFormEndpoints.Map(endpoints);
         FormDocumentEndpoints.Map(endpoints);
+        RtfDocumentEndpoints.Map(endpoints);
+        ApplicantPolicyEndpoints.Map(endpoints);
 
         endpoints.MapDigitalProcessEndpoints("/digital-processes");
     }

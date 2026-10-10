@@ -1642,3 +1642,99 @@ Ověření v devcontaineru:
 dotnet clean src/Host/Host.csproj -c Debug
 ASPNETCORE_ENVIRONMENT=Development dotnet run --project src/Host/Host.csproj -c Debug
 ```
+
+### RTF templates and submission documents (77.20)
+
+RTF template tags supported by the server-side renderer:
+
+- `[[W:key]] ... [[E]]` selects a nested JSON object.
+- `[[F:key]] ... [[E]]` repeats content for an array of JSON objects (nested repeats are supported).
+- `[[I:key]]` inserts a scalar from the current JSON object, escaped as RTF.
+- `[[CLASSNAME]]` and `[[FILLEDID]]` insert a document label and submission UUID.
+
+Routes (all start with `/digital-processes`):
+
+| Method | Route | Description |
+|---|---|---|
+| GET | `/FormVersionResponse/rtf-templates/{id}` | List templates for **FormVersion.id** |
+| POST | `/FormVersionResponse/rtf-templates/{id}?name=MyTemplate` | Upload raw `application/rtf` (max 5 MB) |
+| POST | `/FormVersionResponse/rtf-template/generate/{id}` | Generate and persist an editable starter template from FormNodes |
+| GET | `/RtfTemplate/{id}` | Download original template |
+| DELETE | `/RtfTemplate/{id}` | Delete template |
+| GET | `/RtfTemplate/{id}/submission/{submissionId}` | Render RTF using persisted Submission data |
+
+Example:
+
+```bash
+curl -X POST -H 'Content-Type: application/rtf' \
+  --data-binary '@template.rtf' \
+  'http://localhost:8080/digital-processes/FormVersionResponse/rtf-templates/FORM_VERSION_UUID?name=Custom'
+curl -o result.rtf \
+  'http://localhost:8080/digital-processes/RtfTemplate/TEMPLATE_UUID/submission/SUBMISSION_UUID'
+```
+
+**Persistence:** `DigitalProcesses:RtfTemplates:Directory` specifies a writable *persistent volume* for stored RTFs and their JSON metadata. Default: `app_data/rtf-templates` under the Host content root. This storage is deliberately separate from the EF database; its backup and container volume mount must be configured for production. Each operation checks `FormVersion` Read/Update rights through `ISecurityLayer`. Rendering additionally checks the Submission Read permission (`rbacobject_id`) and requires matching form-version ID.
+
+RTF templates in older formats that use other marker conventions, split placeholders across RTF runs, or embed non-text objects may require further compatibility work. Rendering uses the saved SubmissionNode JSON reconstruction and does not call an external service.
+
+## ZArchitecture 77.21 – Applicant visibility, Deny and state transition archive
+
+New policies are authored **in the context of a draft ProcessDefinitionVersion**
+(its workflow state and form node), never on the reusable FormNode independently.
+The policy is a positive `can_read` flag: an explicitly allowed root section
+allows its descendants unless a child explicitly says `false`.
+If a state has at least one policy row, root sections without `can_read=true`
+are hidden (fail-closed). If it has no rows, legacy visibility is retained.
+
+Endpoints (JSON, normal authentication/RBAC required):
+
+- `GET /digital-processes/ProcessDefinitionVersionResponse/applicant-access/{processVersionId}?stateId={stateId}` – current explicit rules.
+- `PUT /digital-processes/ProcessDefinitionVersionResponse/applicant-access/{processVersionId}` with `{"stateId":"<UUID>","formNodeId":"<UUID>","canRead":true}` (or `false`) – update rules for a **draft** process version. Note that the property name in JSON is `canRead` (C# request record).
+
+**Configuration example**: for the `Podano` state, set the root form section
+`canRead=true`, then set its `InterniPosouzeni` child `canRead=false`.
+Do this before publishing. A new Request / state transition creates a new
+Submission RBAC subtree. The Applicant receives explicit bindings to visible
+scopes; denied branches get a persistent `RbacDenyRule` on their own Group,
+which propagates to all nested Groups. `EffectiveAccess` is reconciled in the
+same transactional workflow; normal `SecurityLayer.Query(Read)` remains an
+indexed SQL filter with no per-node DB round-trips. Existing archived
+Submissions retain their original nodes, Groups and Deny records.
+
+The new `RbacDenyRule` also filters derived access obtained through functional
+`RbacAccessBinding` (source role Applicant mapped to another operational role).
+It does not suppress independent access derived from an unrelated role of the
+same user. Other process participants continue to require their appropriate
+workflow access rules or inherited scope permissions.
+
+On transition, a privileged, **internal-only** snapshot reader clones the full
+submission data even if some nodes are not readable to the acting user. This
+reader is not mapped to HTTP; user-facing HTML, JSON and RTF reads must continue
+using RBAC-filtered queries. Historical submissions are immutable.
+
+**SQLite upgrade**: startup creates the two new tables on existing SQLite
+files using idempotent `CREATE TABLE/INDEX IF NOT EXISTS`; other database
+providers require a corresponding deployment migration. Always back up
+`data/dump.json` and the database before updating. Running `EnsureCreated`
+alone does *not* migrate tables in existing EF Core databases.
+
+**Validation**: Build with `dotnet build src/Host/Host.csproj -c Debug` and test
+(1) Applicant visible section; (2) Applicant hidden section and all descendants
+on `/SubmissionResponse/data/{id}`; (3) Dean/referent access as configured;
+(4) transition creates a fully populated next Submission but preserves archived
+RBAC restrictions; (5) repeated child sections created after Request start.
+The ZIP was statically inspected; no .NET SDK is installed in the packaging environment.
+
+
+## ZArchitecture 78 – sjednocení URI přístupové politiky
+
+- `GET /digital-processes/ProcessDefinitionVersionResponse/applicant-access/{processVersionId}` vrací všechna explicitní pravidla Applicant pro danou verzi procesu. Nepovinný query parametr `stateId` filtruje na konkrétní stav.
+- `PUT /digital-processes/ProcessDefinitionVersionResponse/applicant-access/{processVersionId}` nastavuje jedno pravidlo. Tělo JSON: `{"stateId":"<UUID>","formNodeId":"<UUID>","canRead":false}`.
+- Oba endpointy odpovídají konvenci `/{app}/{entity}/{operation}/{id}`; předchozí trasy pro `applicant-access` byly odstraněny.
+- `RbacDenyRuleModel` je obecný pro jakýkoliv `role_type_id`; Applicant je specializace konfigurace pravidel formuláře, nikoliv omezení RBAC jádra.
+- Stávající jiné historické endpointy nejsou touto změnou přejmenovány, aby se nerozbili jejich klienti.
+
+
+## Core security test suites (verze 78)
+
+Testovací plán, bezpečnostní invarianty, implementované scénáře a backlog jsou v [`tests/README.md`](tests/README.md). První implementovaná sada je v `tests/Core.SecurityLayer.Tests` a spouští se `dotnet test tests/Core.SecurityLayer.Tests/Core.SecurityLayer.Tests.csproj -c Debug`.

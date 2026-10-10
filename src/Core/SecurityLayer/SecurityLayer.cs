@@ -31,17 +31,21 @@ public sealed class SecurityLayer(
         var nowUnixMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         var operationId = RbacOperationIds.FromName(operation);
 
+        // Keep the RBAC lookup in SQL, using the same role-to-operation
+        // mapping as SecurityService.GetAllowedOperationsAsync. A subquery
+        // over permitted object IDs also composes with caller Where/Count/etc.
+        var accessibleObjects =
+            from access in db.Query<EffectiveAccessModel>()
+            join mapping in db.Query<RoleTypeOperationModel>()
+                on access.role_type_id equals mapping.role_type_id
+            where access.user_id == userId
+                && access.valid_from_unix_ms <= nowUnixMs
+                && (access.valid_to_unix_ms == null || access.valid_to_unix_ms >= nowUnixMs)
+                && mapping.operation_id == operationId
+            select access.rbacobject_id;
+
         return db.Query<TEntity>()
-            .Where(entity => db.Query<EffectiveAccessModel>()
-                .Where(access =>
-                    access.rbacobject_id == entity.rbacobject_id
-                    && access.user_id == userId
-                    && access.valid_from_unix_ms <= nowUnixMs
-                    && (access.valid_to_unix_ms == null || access.valid_to_unix_ms >= nowUnixMs))
-                .Any(access => db.Query<RoleTypeOperationModel>()
-                    .Any(mapping =>
-                        mapping.role_type_id == access.role_type_id
-                        && mapping.operation_id == operationId)));
+            .Where(entity => accessibleObjects.Contains(entity.rbacobject_id));
     }
 
     public Task<TEntity?> GetByIdAsync<TEntity>(Guid id, string operation = SecurityOperations.Read, CancellationToken cancellationToken = default)

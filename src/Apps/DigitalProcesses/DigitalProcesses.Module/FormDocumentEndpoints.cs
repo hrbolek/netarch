@@ -109,7 +109,7 @@ public static class FormDocumentEndpoints
         return Results.Json(result);
     }
 
-    private static JsonObject Reconstruct(SubmissionModel submission, ISecurityLayer security)
+    internal static JsonObject Reconstruct(SubmissionModel submission, ISecurityLayer security)
     {
         var nodes = security.Query<SubmissionNodeModel>(SecurityOperations.Read)
             .Where(n => n.submission_id == submission.id).ToArray();

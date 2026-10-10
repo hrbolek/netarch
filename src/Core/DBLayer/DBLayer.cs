@@ -34,6 +34,24 @@ public sealed class DBLayer(ApplicationDbContext db, IServiceProvider services) 
     {
         var store = Store<TEntity>();
         if (store is not null) return await store.UpdateAsync(entity, cancellationToken);
+        // Records returned by AsNoTracking can share a key with an instance
+        // still tracked from a previous write in this unit of work. Update the
+        // tracked instance instead of attaching a second copy with the same key.
+        var key = db.Model.FindEntityType(typeof(TEntity))?.FindPrimaryKey();
+        if (key is not null)
+        {
+            var entityEntry = db.Entry(entity);
+            var local = db.ChangeTracker.Entries<TEntity>().FirstOrDefault(tracked =>
+                tracked.State != EntityState.Detached &&
+                key.Properties.All(property => Equals(
+                    tracked.Property(property.Name).CurrentValue,
+                    entityEntry.Property(property.Name).CurrentValue)));
+            if (local is not null)
+            {
+                local.CurrentValues.SetValues(entity);
+                return entity;
+            }
+        }
         db.Set<TEntity>().Update(entity);
         return entity;
     }

@@ -12,7 +12,10 @@ public sealed class SecurityProjectionService(IDBLayer db) : ISecurityProjection
     public Task RebuildAllAsync(CancellationToken cancellationToken = default)
         => db.ExecuteInTransactionAsync(async ct =>
         {
-            await db.DeleteWhereAsync<EffectiveAccessModel>(_ => true, ct);
+            // Two-phase deletion lets EF detach old tracked projection rows before
+            // creating replacement rows with the same composite key.
+            await db.StageDeleteWhereAsync<EffectiveAccessModel>(_ => true, ct);
+            await db.SaveChangesAsync(ct);
             var desired = BuildDesiredRows(null, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
             if (desired.Length > 0)
                 await db.StageCreateRangeAsync(desired, ct);
@@ -30,8 +33,8 @@ public sealed class SecurityProjectionService(IDBLayer db) : ISecurityProjection
 
     /// <summary>
     /// Synchronizes all RBAC objects that can be affected by roles rooted in the
-    /// supplied groups: group descendants, User scopes reached through Memberships,
-    /// and exact targets of functional access bindings sourced from those descendants.
+    /// supplied groups: group descendants and exact targets of functional access bindings
+    /// sourced from those descendants. Membership never affects roles or EffectiveAccess.
     /// </summary>
     public Task SynchronizeRoleImpactAsync(IEnumerable<Guid> sourceGroupIds, CancellationToken cancellationToken = default)
     {
@@ -70,12 +73,6 @@ public sealed class SecurityProjectionService(IDBLayer db) : ISecurityProjection
 
         if (ids.Length > 0)
         {
-            var memberUserIds = db.Query<MembershipModel>()
-                .Where(x => ids.Contains(x.group_id))
-                .Select(x => x.user_id)
-                .ToArray();
-            result.UnionWith(memberUserIds);
-
             var bindingTargets = db.Query<RbacAccessBindingModel>()
                 .Where(x => ids.Contains(x.source_group_id))
                 .Select(x => x.target_rbacobject_id)
@@ -141,17 +138,12 @@ public sealed class SecurityProjectionService(IDBLayer db) : ISecurityProjection
             .Select(x => new GroupProjection(x.id, x.path, x.inherit_roles))
             .ToArray();
 
-        var targetMemberships = db.Query<MembershipModel>()
-            .Where(x => targetIds.Contains(x.user_id))
-            .Select(x => new MembershipProjection(x.id, x.group_id, x.user_id, x.valid_from, x.valid_to))
-            .ToArray();
-
         var targetBindings = db.Query<RbacAccessBindingModel>()
             .Where(x => targetIds.Contains(x.target_rbacobject_id))
             .ToArray();
 
-        var referencedGroupIds = targetMemberships.Select(x => x.GroupId)
-            .Concat(targetBindings.Select(x => x.source_group_id))
+        var referencedGroupIds = targetBindings
+            .Select(x => x.source_group_id)
             .Distinct()
             .ToArray();
 
@@ -187,14 +179,14 @@ public sealed class SecurityProjectionService(IDBLayer db) : ISecurityProjection
                 .Where(x => ancestorIds.Contains(x.group_id))
                 .ToArray();
 
+        var denies = LoadRelevantDenyRules(groupById.Values);
         return CalculateRows(
             roles,
             targetGroups,
             groupById,
-            targetMemberships,
             targetBindings,
             targetRbacObjectIds,
-            nowMs);
+            nowMs, denies);
     }
 
     private EffectiveAccessModel[] BuildDesiredRowsFull(long nowMs)
@@ -204,21 +196,25 @@ public sealed class SecurityProjectionService(IDBLayer db) : ISecurityProjection
             .ToArray();
         var groupById = groups.ToDictionary(x => x.Id);
         var roles = db.Query<RoleModel>().ToArray();
-        var memberships = db.Query<MembershipModel>()
-            .Select(x => new MembershipProjection(x.id, x.group_id, x.user_id, x.valid_from, x.valid_to))
-            .ToArray();
         var bindings = db.Query<RbacAccessBindingModel>().ToArray();
-        return CalculateRows(roles, groups, groupById, memberships, bindings, null, nowMs);
+        var denies = LoadRelevantDenyRules(groups);
+        return CalculateRows(roles, groups, groupById, bindings, null, nowMs, denies);
+    }
+
+    private RbacDenyRuleModel[] LoadRelevantDenyRules(IEnumerable<GroupProjection> groups)
+    {
+        var ids = groups.Select(x => x.Id).Distinct().ToArray();
+        return ids.Length == 0 ? [] : db.Query<RbacDenyRuleModel>()
+            .Where(x => ids.Contains(x.group_id)).ToArray();
     }
 
     private static EffectiveAccessModel[] CalculateRows(
         IReadOnlyCollection<RoleModel> roles,
         IReadOnlyCollection<GroupProjection> candidateTargetGroups,
         IReadOnlyDictionary<Guid, GroupProjection> groupById,
-        IReadOnlyCollection<MembershipProjection> memberships,
         IReadOnlyCollection<RbacAccessBindingModel> bindings,
         IReadOnlySet<Guid>? targetRbacObjectIds,
-        long nowMs)
+        long nowMs, IReadOnlyCollection<RbacDenyRuleModel> denyRules)
     {
         var rows = new List<EffectiveAccessModel>();
         bool Wants(Guid rbacObjectId) => targetRbacObjectIds is null || targetRbacObjectIds.Contains(rbacObjectId);
@@ -242,22 +238,7 @@ public sealed class SecurityProjectionService(IDBLayer db) : ISecurityProjection
                     role.valid_from.ToUnixTimeMilliseconds(), role.valid_to?.ToUnixTimeMilliseconds()));
             }
 
-            foreach (var membership in memberships)
-            {
-                if (!Wants(membership.UserId)) continue;
-                if (!groupById.TryGetValue(membership.GroupId, out var membershipGroup)) continue;
-                if (!RoleFlowsToTarget(sourceGroup, membershipGroup, groupById)) continue;
 
-                var validFrom = Max(role.valid_from, membership.ValidFrom);
-                var validTo = MinNullable(role.valid_to, membership.ValidTo);
-                if (validTo is not null && validTo.Value < validFrom) continue;
-                if (validTo is not null && validTo.Value.ToUnixTimeMilliseconds() < nowMs) continue;
-
-                rows.Add(new EffectiveAccessModel(
-                    role.user_id, membership.UserId, role.role_type_id,
-                    role.id, membership.GroupId, membership.Id, Guid.Empty,
-                    validFrom.ToUnixTimeMilliseconds(), validTo?.ToUnixTimeMilliseconds()));
-            }
         }
 
         foreach (var binding in bindings)
@@ -282,7 +263,21 @@ public sealed class SecurityProjectionService(IDBLayer db) : ISecurityProjection
             }
         }
 
+        // A binding may map Applicant -> Reader. Match the source role as well as
+        // the projected target role, without denying Reader to the Dean.
+        var sourceRoleTypes = roles.ToDictionary(x => x.id, x => x.role_type_id);
+        bool IsDenied(EffectiveAccessModel row)
+        {
+            if (!groupById.TryGetValue(row.rbacobject_id, out var target)) return false;
+            return denyRules.Any(rule =>
+                (rule.role_type_id == row.role_type_id ||
+                 (sourceRoleTypes.TryGetValue(row.source_role_id, out var sourceRoleType) &&
+                  sourceRoleType == rule.role_type_id)) &&
+                (rule.group_id == target.Id ||
+                 (rule.include_descendants && PathContainsGroup(target.Path, rule.group_id))));
+        }
         return rows
+            .Where(row => !IsDenied(row))
             .GroupBy(KeyOf)
             .Select(g => g.OrderByDescending(x => x.valid_from_unix_ms).First())
             .ToArray();
@@ -336,5 +331,4 @@ public sealed class SecurityProjectionService(IDBLayer db) : ISecurityProjection
         Guid SourceAccessBindingId);
 
     private sealed record GroupProjection(Guid Id, string Path, bool InheritRoles);
-    private sealed record MembershipProjection(Guid Id, Guid GroupId, Guid UserId, DateTimeOffset ValidFrom, DateTimeOffset? ValidTo);
 }

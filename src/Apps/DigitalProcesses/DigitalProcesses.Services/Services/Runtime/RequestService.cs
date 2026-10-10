@@ -10,7 +10,8 @@ public sealed class RequestService(
     ISecurityLayer security,
     IDigitalProcessIntegration integration,
     IRbacAccessBindingManager bindingManager,
-    ISecurityProjectionService securityProjection)
+    ISecurityProjectionService securityProjection,
+    ITrustedSubmissionSnapshotReader snapshots)
     : BaseService<RequestModel, RequestResponse>(security), IRequestService
 {
     public async Task<RequestResponse> StartAsync(StartRequestRequest r, CancellationToken ct = default)
@@ -70,11 +71,14 @@ public sealed class RequestService(
             await Security.StageCreateAsync(request, token);
             await Security.StageCreateAsync(submission, token);
 
+            var policy = LoadApplicantPolicy(definition.id, initial.id, formNodes);
             var instantiated = await InstantiateMinimumTreeAsync(
-                formNodes, submission, submissionGroup, requestGroup, actor, now, token);
+                formNodes, submission, submissionGroup, requestGroup, actor, now, policy, token);
 
             await ApplyStateAccessRulesAsync(
                 initial.id, request, submission, instantiated, now, actor, token);
+            await ApplyApplicantAccessAsync(policy, process.initiator_role_type_id,
+                request, submission, instantiated, actor, now, token);
 
             await Security.SaveChangesAsync(token);
             await securityProjection.SynchronizeGroupSubtreeAsync(requestGroup.id, token);
@@ -109,9 +113,9 @@ public sealed class RequestService(
             .SingleOrDefault(x => x.id == currentRequest.rbacobject_id)
             ?? throw new InvalidOperationException("Request RBAC group is missing or not editable.");
 
-        var oldNodes = Security.Query<SubmissionNodeModel>(SecurityOperations.Read)
-            .Where(x => x.submission_id == currentSubmission.id)
-            .OrderBy(x => x.path).ToArray();
+        // Authorized Request transition is checked above. A trusted copy MUST retain
+        // data hidden from the actor's read view, otherwise archival loses values.
+        var oldNodes = snapshots.ReadCompleteTree(currentSubmission.id);
         var definitions = Security.Query<FormNodeModel>(SecurityOperations.Read)
             .Where(x => x.form_version_id == currentSubmission.form_version_id)
             .ToDictionary(x => x.id);
@@ -123,6 +127,14 @@ public sealed class RequestService(
             if (!IsTruthy(result))
                 throw new InvalidOperationException("Workflow transition condition rejected the transition.");
         }
+
+        var processVersion = await Security.GetByIdAsync<ProcessDefinitionVersionModel>(
+            currentRequest.process_definition_version_id, SecurityOperations.Read, ct)
+            ?? throw new KeyNotFoundException("Process version not found.");
+        var process = await Security.GetByIdAsync<ProcessDefinitionModel>(
+            processVersion.process_definition_id, SecurityOperations.Read, ct)
+            ?? throw new KeyNotFoundException("Process not found.");
+        var applicantPolicy = LoadApplicantPolicy(processVersion.id, transition.target_state_id, definitions.Values);
 
         var now = DateTimeOffset.UtcNow;
         var actor = Security.CurrentUserId;
@@ -154,11 +166,14 @@ public sealed class RequestService(
 
             var cloned = await CloneSubmissionTreeAsync(
                 oldNodes, definitions, newSubmission, newSubmissionGroup,
-                requestGroup, actor, now, token);
+                requestGroup, actor, now, applicantPolicy, token);
 
             await ApplyStateAccessRulesAsync(
                 transition.target_state_id, currentRequest, newSubmission, cloned,
                 now, actor, token);
+
+            await ApplyApplicantAccessAsync(applicantPolicy, process.initiator_role_type_id,
+                currentRequest, newSubmission, cloned, actor, now, token);
 
             var history = new RequestTransitionHistoryModel(
                 Guid.NewGuid(), currentRequest.id, transition.id,
@@ -207,6 +222,68 @@ public sealed class RequestService(
             new(SubmissionResponse.FromModel(submission), nodes), history);
     }
 
+    // An explicit applicant policy is opt-in at the process version/state level.
+    // Nodes without a rule inherit their parent policy; when no policy exists, legacy behavior stays unchanged.
+    private Dictionary<Guid, bool> LoadApplicantPolicy(Guid processVersionId, Guid stateId, IEnumerable<FormNodeModel> nodes)
+    {
+        var items = nodes.ToArray();
+        var configured = Security.Query<FormNodeApplicantAccessModel>(SecurityOperations.Read)
+            .Where(x => x.process_definition_version_id == processVersionId && x.workflow_state_id == stateId)
+            .ToDictionary(x => x.form_node_id, x => x.can_read);
+        if (configured.Count == 0) return configured;
+        // Fail closed at top-level: when any policy is configured, only explicitly allowed branches are visible.
+        var output = new Dictionary<Guid, bool>();
+        foreach (var node in items.OrderBy(x => x.path))
+        {
+            bool inherited = node.parent_id is Guid pid && output.TryGetValue(pid, out var parentAllowed) && parentAllowed;
+            var hasOwnRule = configured.TryGetValue(node.id, out var ownAllowed);
+            output[node.id] = node.parent_id is null
+                ? hasOwnRule && ownAllowed
+                : inherited && (!hasOwnRule || ownAllowed);
+        }
+        return output;
+    }
+
+    private async Task ApplyApplicantAccessAsync(
+        IReadOnlyDictionary<Guid, bool> policy, Guid applicantRoleTypeId,
+        RequestModel request, SubmissionModel submission,
+        IReadOnlyCollection<SubmissionNodeModel> nodes, Guid actor, DateTimeOffset now, CancellationToken ct)
+    {
+        // Applicant's role is anchored on Request; the Submission Group is a
+        // role-inheritance boundary. Create explicit bindings to accessible scopes.
+        // Bindings are scoped to this Submission and retained on archive.
+        var grantedGroups = nodes
+            .Where(x => policy.Count == 0 ||
+                (policy.TryGetValue(x.form_node_id, out var canRead) && canRead))
+            .Select(x => x.rbacobject_id)
+            .Append(submission.rbacobject_id)
+            .Distinct().ToArray();
+        foreach (var groupId in grantedGroups)
+            await bindingManager.StageCreateAsync(new RbacAccessBindingModel(
+                Guid.NewGuid(), request.rbacobject_id, applicantRoleTypeId,
+                groupId, applicantRoleTypeId, now, null, submission.id,
+                groupId, now, now, actor, actor), ct);
+
+        if (policy.Count == 0) return;
+        // Only the first hidden group in a branch needs a persistent Deny.
+        // Its descendants are filtered by their materialized RBAC paths.
+        var deniedGroupIds = nodes
+            .Where(x => policy.TryGetValue(x.form_node_id, out var canRead) && !canRead)
+            .Select(x => x.rbacobject_id).Distinct().ToArray();
+        foreach (var groupId in deniedGroupIds)
+            await Security.StageCreateAsync(new RbacDenyRuleModel(
+                Guid.NewGuid(), groupId, applicantRoleTypeId, true,
+                groupId, now, now, actor, actor), ct);
+    }
+
+    private static bool IsDeniedBoundary(FormNodeModel node,
+        IReadOnlyDictionary<Guid, bool> policy, IEnumerable<FormNodeModel> definitions)
+    {
+        if (!policy.TryGetValue(node.id, out var allowed) || allowed) return false;
+        return node.parent_id is null ||
+            !policy.TryGetValue(node.parent_id.Value, out var parentAllowed) || parentAllowed;
+    }
+
     private async Task<SubmissionNodeModel[]> InstantiateMinimumTreeAsync(
         FormNodeModel[] definitions,
         SubmissionModel submission,
@@ -214,6 +291,7 @@ public sealed class RequestService(
         GroupModel requestGroup,
         Guid actor,
         DateTimeOffset now,
+        IReadOnlyDictionary<Guid, bool> applicantPolicy,
         CancellationToken ct)
     {
         var result = new List<SubmissionNodeModel>();
@@ -230,10 +308,11 @@ public sealed class RequestService(
                         : MaterializedPath.Child(submissionParent.path, id);
                     var securityGroup = inheritedSecurityGroup;
 
-                    if (def.own_security_scope)
+                    if (def.own_security_scope || IsDeniedBoundary(def, applicantPolicy, definitions))
                     {
                         securityGroup = NewBoundaryGroup(
                             Guid.NewGuid(), $"{def.key} [{occurrence}]", inheritedSecurityGroup, actor, now);
+                        if (!def.own_security_scope) securityGroup = securityGroup with { inherit_roles = true };
                         await Security.StageCreateAsync(securityGroup, ct);
                     }
 
@@ -260,6 +339,7 @@ public sealed class RequestService(
         GroupModel requestGroup,
         Guid actor,
         DateTimeOffset now,
+        IReadOnlyDictionary<Guid, bool> applicantPolicy,
         CancellationToken ct)
     {
         var clones = new List<SubmissionNodeModel>();
@@ -279,10 +359,11 @@ public sealed class RequestService(
             var securityGroup = inheritedSecurityGroup;
             var path = parent is null ? MaterializedPath.Root(id) : MaterializedPath.Child(parent.path, id);
 
-            if (def.own_security_scope)
+            if (def.own_security_scope || IsDeniedBoundary(def, applicantPolicy, definitions.Values))
             {
                 securityGroup = NewBoundaryGroup(
                     Guid.NewGuid(), $"{def.key} [{old.occurrence}]", inheritedSecurityGroup, actor, now);
+                if (!def.own_security_scope) securityGroup = securityGroup with { inherit_roles = true };
                 await Security.StageCreateAsync(securityGroup, ct);
             }
 

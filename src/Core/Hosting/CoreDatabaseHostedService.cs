@@ -22,6 +22,47 @@ public sealed class CoreDatabaseHostedService(
         await using var scope = scopeFactory.CreateAsyncScope();
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         await db.Database.EnsureCreatedAsync(cancellationToken);
+        // EnsureCreated does not add tables to an existing SQLite database.
+        // Keep developer databases and historical submissions intact when introducing
+        // persistent Applicant policies and RBAC Deny rules.
+        if (db.Database.IsSqlite())
+        {
+            await db.Database.ExecuteSqlRawAsync("""
+                CREATE TABLE IF NOT EXISTS rbac_deny_rules (
+                    id TEXT NOT NULL PRIMARY KEY,
+                    group_id TEXT NOT NULL,
+                    role_type_id TEXT NOT NULL,
+                    include_descendants INTEGER NOT NULL,
+                    rbacobject_id TEXT NOT NULL,
+                    created_at TEXT NOT NULL,
+                    updated_at TEXT NOT NULL,
+                    created_by TEXT NOT NULL,
+                    updated_by TEXT NOT NULL
+                );
+                """, cancellationToken);
+            await db.Database.ExecuteSqlRawAsync("""
+                CREATE UNIQUE INDEX IF NOT EXISTS IX_rbac_deny_rules_group_id_role_type_id
+                ON rbac_deny_rules (group_id, role_type_id);
+                """, cancellationToken);
+            await db.Database.ExecuteSqlRawAsync("""
+                CREATE TABLE IF NOT EXISTS dp_form_node_applicant_access (
+                    id TEXT NOT NULL PRIMARY KEY,
+                    process_definition_version_id TEXT NOT NULL,
+                    workflow_state_id TEXT NOT NULL,
+                    form_node_id TEXT NOT NULL,
+                    can_read INTEGER NOT NULL,
+                    rbacobject_id TEXT NOT NULL,
+                    created_at TEXT NOT NULL,
+                    updated_at TEXT NOT NULL,
+                    created_by TEXT NOT NULL,
+                    updated_by TEXT NOT NULL
+                );
+                """, cancellationToken);
+            await db.Database.ExecuteSqlRawAsync("""
+                CREATE UNIQUE INDEX IF NOT EXISTS IX_dp_form_node_applicant_access_process_definition_version_id_workflow_state_id_form_node_id
+                ON dp_form_node_applicant_access (process_definition_version_id, workflow_state_id, form_node_id);
+                """, cancellationToken);
+        }
 
         var dumpPath = configuration["DatabaseDump:Path"]
             ?? Environment.GetEnvironmentVariable("DATABASE_DUMP_PATH")
