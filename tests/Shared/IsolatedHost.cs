@@ -5,20 +5,20 @@ using Microsoft.Extensions.Configuration;
 
 namespace WebAppArchitecture.Tests.Shared;
 
-/// <summary>HTTP integration host shared by Core and app suites; isolated SQLite file per host.</summary>
+/// <summary>HTTP integration host with one disposable PostgreSQL database per host.</summary>
 public sealed class IsolatedHost : WebApplicationFactory<Program>
 {
-    private readonly string directory = Path.Combine(Path.GetTempPath(), "za78-stage3-" + Guid.NewGuid().ToString("N"));
+    private readonly PostgresTestDatabase database = new();
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        Directory.CreateDirectory(directory);
+
         builder.UseEnvironment("Development");
         builder.ConfigureAppConfiguration((_, configuration) =>
         {
             configuration.AddInMemoryCollection(new Dictionary<string,string?>
             {
-                ["ConnectionStrings:DefaultConnection"] = $"Data Source={Path.Combine(directory,"test.db")}",
-                ["DatabaseDump:Path"] = Path.Combine(directory,"no-dump.json"),
+                ["ConnectionStrings:DefaultConnection"] = database.ConnectionString,
+                
                 ["SystemData:Import"] = "false",
                 ["SecurityProjection:RebuildOnStartup"] = "false",
                 ["SWAGGER_EXPORT"] = "false"
@@ -28,10 +28,7 @@ public sealed class IsolatedHost : WebApplicationFactory<Program>
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);
-        if (disposing)
-        {
-            try { Directory.Delete(directory, recursive:true); } catch (IOException) { } catch (UnauthorizedAccessException) { }
-        }
+        if (disposing) database.Dispose();
     }
 }
 

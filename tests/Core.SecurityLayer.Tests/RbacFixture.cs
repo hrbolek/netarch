@@ -1,4 +1,4 @@
-using Microsoft.Data.Sqlite;
+using WebAppArchitecture.Tests.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
@@ -11,7 +11,7 @@ namespace Core.SecurityLayer.Tests;
 /// <summary>Fresh, isolated, real relational database per test; never use EF InMemory provider.</summary>
 public sealed class RbacFixture : IDisposable
 {
-    private readonly SqliteConnection connection = new("Data Source=:memory:;Foreign Keys=True");
+    private readonly PostgresTestDatabase database = new();
     private readonly ServiceProvider services;
     public ApplicationDbContext Context { get; }
     public IDBLayer Db { get; }
@@ -33,10 +33,9 @@ public sealed class RbacFixture : IDisposable
     public DateTimeOffset Now { get; } = DateTimeOffset.UtcNow;
     public RbacFixture(Microsoft.EntityFrameworkCore.Diagnostics.DbCommandInterceptor? interceptor = null)
     {
-        connection.Open();
         var servicesCollection = new ServiceCollection();
         services = servicesCollection.BuildServiceProvider();
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlite(connection);
+        var options = new DbContextOptionsBuilder<ApplicationDbContext>().UseNpgsql(database.ConnectionString);
         if (interceptor is not null) options.AddInterceptors(interceptor);
         Context = new ApplicationDbContext(options.Options);
         Context.Database.EnsureCreated();
@@ -83,5 +82,5 @@ public sealed class RbacFixture : IDisposable
         return Context.EffectiveAccesses.AsNoTracking().Any(x=>x.user_id==user && x.rbacobject_id==group && x.role_type_id==roleType && x.valid_from_unix_ms<=now && (x.valid_to_unix_ms==null || x.valid_to_unix_ms>=now));
     }
     public async Task Sync() => await Projection.RebuildAllAsync();
-    public void Dispose(){Context.Dispose();services.Dispose();connection.Dispose();}
+    public void Dispose(){Context.Dispose();services.Dispose();database.Dispose();}
 }

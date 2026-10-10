@@ -7,5 +7,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.10" />
     <ProjectReference Include="../../../src/Host/Host.csproj" />
     <Compile Include="../../Shared/IsolatedHost.cs" Link="Shared/IsolatedHost.cs" />
+    <Compile Include="../../Shared/PostgresTestDatabase.cs" Link="Shared/PostgresTestDatabase.cs" />
   </ItemGroup>
 </Project>

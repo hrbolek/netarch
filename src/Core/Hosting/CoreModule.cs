@@ -37,22 +37,12 @@ public sealed class CoreModule : IArchitectureModule
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
-        var configuredConnectionString =
-            configuration.GetConnectionString("DefaultConnection")
-            ?? "Data Source=./data/application.db";
-
-        var connectionString = configuredConnectionString.Contains("Default Timeout=", StringComparison.OrdinalIgnoreCase)
-            ? configuredConnectionString
-            : configuredConnectionString.TrimEnd(';') + ";Default Timeout=5;Foreign Keys=True";
-
-        Directory.CreateDirectory("./data");
-
-        services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlite(connectionString));
+        var connectionString = configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException("Missing ConnectionStrings:DefaultConnection (PostgreSQL).");
+        services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
 
         services.AddHttpContextAccessor();
         services.AddScoped<IDBLayer, DBLayerImplementation>();
-        services.AddScoped<IDatabaseDumpService, DatabaseDumpService>();
         services.AddHostedService<CoreDatabaseHostedService>();
         services.AddHostedService<EffectiveAccessCleanupHostedService>();
         services.AddScoped<ISecurityProjectionService, SecurityProjectionService>();

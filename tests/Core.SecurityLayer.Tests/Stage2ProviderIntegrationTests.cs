@@ -1,3 +1,4 @@
+using WebAppArchitecture.Tests.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,11 +20,11 @@ public sealed class Stage2ProviderIntegrationTests
 {
     private sealed class FileDatabase : IDisposable
     {
-        private readonly string path = Path.Combine(Path.GetTempPath(), $"security-stage2-{Guid.NewGuid():N}.sqlite");
+        private readonly PostgresTestDatabase database = new();
         private readonly ServiceProvider services = new ServiceCollection().BuildServiceProvider();
         private DbContextOptions<ApplicationDbContext> Options =>
             new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseSqlite($"Data Source={path};Foreign Keys=True;Pooling=False")
+                .UseNpgsql(database.ConnectionString)
                 .Options;
 
         public FileDatabase()
@@ -37,7 +38,7 @@ public sealed class Stage2ProviderIntegrationTests
         public void Dispose()
         {
             services.Dispose();
-            if (File.Exists(path)) File.Delete(path);
+            database.Dispose();
         }
     }
 

@@ -165,34 +165,7 @@ public sealed class ApplicationDbContext : DbContext
         });
         modelBuilder.ConfigureDigitalProcesses();
 
-        // SQLite has no native DateTimeOffset comparison/order semantics.
-        // Store ISO 8601 text normalized to UTC so lexical SQL ordering is
-        // identical to chronological ordering. Other providers are unchanged.
-        if (Database.IsSqlite())
-        {
-            var utcConverter = new ValueConverter<DateTimeOffset, string>(
-                value => value.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture),
-                // Read canonical round-trip text and the legacy SQLite text
-                // emitted by EF Core (yyyy-MM-dd HH:mm:ss.fffffff+00:00).
-                // Existing rows are not rewritten by this converter.
-                value => DateTimeOffset.Parse(
-                    value, CultureInfo.InvariantCulture,
-                    DateTimeStyles.AllowWhiteSpaces));
 
-            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-            {
-                foreach (var property in entityType.GetProperties())
-                {
-                    if (property.ClrType == typeof(DateTimeOffset) ||
-                        property.ClrType == typeof(DateTimeOffset?))
-                    {
-                        // EF Core automatically lifts non-nullable converters
-                        // to nullable properties (null stays null).
-                        property.SetValueConverter(utcConverter);
-                    }
-                }
-            }
-        }
     }
 
     private static void ConfigureSecured<TEntity>(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<TEntity> e)
