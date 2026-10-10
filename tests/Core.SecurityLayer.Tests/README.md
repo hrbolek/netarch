@@ -112,3 +112,12 @@ Opraveno šest testů T04 v `Stage2LifecycleTests.cs`. Membership je pouze člen
 ### Stage 2 – oprava projekce Membership (fix3)
 
 Po běhu 72/75 byly tři neúspěšné případy T04 způsobeny produkční větví `CalculateRows()`, která vytvářela oprávnění přes `Membership`. Větev i související čtení Membership při cíleném a úplném rebuild byly odstraněny. `Role`, `RbacAccessBinding`, hierarchické dědění a `Deny` zůstaly zachovány. SQLite a xUnit testy musí potvrdit 75/75; v tomto balíčku nebyly spouštěny.
+
+### Etapa 2 – completion
+
+`Stage2CompletionTests.cs` ověřuje zákaz vytvoření v cizím RBAC kontextu,
+kontrolu původního i cílového kontextu při přesunu entity, kontrolu původu
+zastupující role, časové meze zástupu a rollback role společně s projekcí.
+Negativní testy kontrolují také nepřítomnost nepovoleného zápisu v DB.
+Testy souběhu přes nezávislá SQLite spojení zůstávají samostatným úkolem;
+test na jednu transakci není důkazem bezpečného paralelního provozu.

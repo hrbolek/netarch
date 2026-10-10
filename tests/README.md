@@ -121,3 +121,57 @@ Průchod Etapou 1 **57/57** oznámil uživatel pro fix6. Nové testy Etapy 2 v t
 ### Stage 2 – oprava projekce Membership (fix3)
 
 Po běhu 72/75 byly tři neúspěšné případy T04 způsobeny produkční větví `CalculateRows()`, která vytvářela oprávnění přes `Membership`. Větev i související čtení Membership při cíleném a úplném rebuild byly odstraněny. `Role`, `RbacAccessBinding`, hierarchické dědění a `Deny` zůstaly zachovány. SQLite a xUnit testy musí potvrdit 75/75; v tomto balíčku nebyly spouštěny.
+
+## Stage 2 completion — security regressions (T05/T10/T12)
+
+`Core.SecurityLayer.Tests/Stage2CompletionTests.cs` adds authorization-sensitive integration cases:
+
+- **T10 (Create):** `Read` alone never authorizes creation. New Group RBAC scopes
+  are authorized against their **existing parent**; foreign organizational scopes
+  are rejected. Tests check that rejected writes do not persist.
+- **T10 (Update):** an entity's original RBAC scope must authorize Update; moving
+  it to a different scope additionally requires Create on that destination. A
+  caller cannot grant themselves Update merely by changing `rbacobject_id`.
+- **T05 (Deputies):** delegated Role creation requires an explicit source Role
+  belonging to the acting user, matching group and RoleType, a direct
+  (non-deputy) source and a validity interval contained in that source. This
+  guards against role elevation, extension and deputy chains via the secured
+  creation boundary. Direct DB writes are trusted infrastructure operations.
+- **T12 (Atomicity):** rollback after a Role write and nested projection
+  synchronization must revert both the Role and its effective permissions.
+
+### Boundaries and remaining risks
+
+- These tests exercise relational SQLite and the **SecurityLayer** mutation API;
+  they do not certify all callers that bypass it and use `DBLayer` directly.
+- Full multi-connection SQLite contention tests require a file-backed fixture
+  with separate DbContexts; do not infer concurrent safety from an in-memory
+  SQLite transaction test.
+- Existing tests T04 enforce the strict invariant that Membership does not
+  contribute to or revoke Role/EffectiveAccess.
+- Bulk imports and provisioning workflows that create a new scope and assign
+  the first administrator must use a trusted, audited bootstrap path; the
+  ordinary secured Create API intentionally requires an existing authorization.
+
+**Change management:** New checks in `SecurityLayer.StageCreateAsync` and
+`StageUpdateAsync` are intentional security-breaking changes for callers that
+previously relied on unchecked writes. Integration deployments must audit
+Request/Submission bootstrap and any system-data seeding which creates a new
+RBAC scope before an effective Create grant exists. A trusted provisioning path
+must not silently fall back to unguarded, user-controlled input.
+
+## Stage 2 – provider-neutral integration checks (T10/T12)
+
+`Stage2ProviderIntegrationTests.cs` adds four scenarios: transaction commit and rollback
+observed from independent EF Core `DbContext` connections; writes by two independent
+contexts in sequence; and a secured creation of an RBAC child followed by projection
+rebuild and authorized reading. All operations use `DbContext`, `IDBLayer`, and LINQ;
+there are no SQLite-specific SQL statements, locks, or exception-code assumptions.
+
+The current executable fixture uses a temporary SQLite **file** rather than the
+single-connection in-memory fixture. PostgreSQL and SQL Server require distinct
+provider-specific fixture implementations/CI jobs and are **not yet verified**.
+The sequential-writer test is not evidence of correct behavior under simultaneously
+contending writers; a stress suite with provider-specific isolation, retries and
+expected transient failures remains separate. Likewise these tests do not establish
+end-to-end authorization of the entire DigitalProcesses request lifecycle.

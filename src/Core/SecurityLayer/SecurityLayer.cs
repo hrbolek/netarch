@@ -52,15 +52,52 @@ public sealed class SecurityLayer(
         where TEntity : class, ISecuredEntityDBModel
         => Task.FromResult(Query<TEntity>(operation).SingleOrDefault(x => x.id == id));
 
-    public Task<TEntity> StageCreateAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default)
+    /// <summary>
+    /// Creation is authorized on the target security scope, not on the new row id.
+    /// New RBAC groups are authorized against their existing parent scope.
+    /// </summary>
+    public async Task<TEntity> StageCreateAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default)
         where TEntity : class, ISecuredEntityDBModel
-        => db.StageCreateAsync(entity, cancellationToken);
+    {
+        var scope = entity is GroupModel group && group.master_group_id.HasValue
+            ? group.master_group_id.Value : entity.rbacobject_id;
+        if (scope == Guid.Empty || !await IsAllowedAsync(scope, SecurityOperations.Create, cancellationToken))
+            throw new UnauthorizedAccessException("Create operation is not allowed for the target RBAC context.");
+
+        if (entity is RoleModel role && role.is_deputy)
+        {
+            // A deputy must be delegated by an active, direct role held by the current actor.
+            // A deputy cannot create additional deputies and cannot extend the source period.
+            if (!role.delegated_by_role_id.HasValue)
+                throw new UnauthorizedAccessException("Deputy role requires a source role.");
+            var source = await db.GetByIdAsync<RoleModel>(role.delegated_by_role_id.Value, cancellationToken);
+            var now = DateTimeOffset.UtcNow;
+            if (source is null || source.user_id != CurrentUserId || source.is_deputy ||
+                source.valid_from > now || source.valid_to is not null && source.valid_to < now ||
+                source.group_id != role.group_id || source.role_type_id != role.role_type_id ||
+                source.valid_from > role.valid_from || role.valid_to is null && source.valid_to is not null ||
+                source.valid_to is not null && role.valid_to > source.valid_to ||
+                role.valid_to is not null && role.valid_to < role.valid_from)
+                throw new UnauthorizedAccessException("Invalid deputy delegation scope or validity.");
+        }
+        return await db.StageCreateAsync(entity, cancellationToken);
+    }
 
     public async Task<TEntity> StageUpdateAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default)
         where TEntity : class, ISecuredEntityDBModel
     {
-        if (!await IsAllowedAsync(entity.rbacobject_id, SecurityOperations.Update, cancellationToken))
-            throw new UnauthorizedAccessException("Update operation is not allowed for this RBAC context.");
+        var current = await db.GetByIdAsync<TEntity>(entity.id, cancellationToken)
+            ?? throw new InvalidOperationException("Cannot update a missing secured entity.");
+        if (!await IsAllowedAsync(current.rbacobject_id, SecurityOperations.Update, cancellationToken))
+            throw new UnauthorizedAccessException("Update operation is not allowed for the original RBAC context.");
+        if (current.rbacobject_id != entity.rbacobject_id &&
+            !await IsAllowedAsync(entity.rbacobject_id, SecurityOperations.Create, cancellationToken))
+            throw new UnauthorizedAccessException("Moving a secured row requires Create on the target RBAC context.");
+        if (current is RoleModel oldRole && entity is RoleModel newRole &&
+            (oldRole.user_id != newRole.user_id || oldRole.role_type_id != newRole.role_type_id ||
+             oldRole.group_id != newRole.group_id || oldRole.is_deputy != newRole.is_deputy ||
+             oldRole.delegated_by_role_id != newRole.delegated_by_role_id))
+            throw new UnauthorizedAccessException("Role identity and delegation cannot be modified through generic Update; revoke and issue a new role.");
         return await db.StageUpdateAsync(entity, cancellationToken);
     }
 
