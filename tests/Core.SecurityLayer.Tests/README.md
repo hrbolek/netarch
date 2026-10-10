@@ -121,3 +121,21 @@ zastupující role, časové meze zástupu a rollback role společně s projekc�
 Negativní testy kontrolují také nepřítomnost nepovoleného zápisu v DB.
 Testy souběhu přes nezávislá SQLite spojení zůstávají samostatným úkolem;
 test na jednu transakci není důkazem bezpečného paralelního provozu.
+
+
+## Stage 4 / T14 — large permissions & provider-neutral instrumentation
+
+`Stage4LargeAccessTests.cs` checks one EF database command per secure list/count,
+model-level `EffectiveAccess`/`RoleTypeOperation` indexes, and an opt-in
+**1500-user stress fixture** with 1500 direct roles, inherited scopes and
+materialized access rows. Membership is intentionally not a source of rights.
+
+Normal: `dotnet test tests/Core.SecurityLayer.Tests/Core.SecurityLayer.Tests.csproj -c Debug`
+
+Stress: `STAGE4_STRESS=1 dotnet test tests/Core.SecurityLayer.Tests/Core.SecurityLayer.Tests.csproj -c Release --filter FullyQualifiedName~T14_LargePopulation --logger 'console;verbosity=normal'`
+
+The stress case measures full rebuild, single-user secure read, and incremental
+resynchronization separately; timings are diagnostic, not pass/fail limits.
+Do not interpret SQLite timings as PostgreSQL/SQL Server performance. Cross-provider
+validation is deferred to Stage 99. This scenario does not import the production
+1500-user JSON seed; it creates controlled synthetic data so that counts are known.

@@ -31,12 +31,14 @@ public sealed class RbacFixture : IDisposable
     public Guid SecretChild { get; } = Guid.NewGuid();
     public Guid Sibling { get; } = Guid.NewGuid();
     public DateTimeOffset Now { get; } = DateTimeOffset.UtcNow;
-    public RbacFixture()
+    public RbacFixture(Microsoft.EntityFrameworkCore.Diagnostics.DbCommandInterceptor? interceptor = null)
     {
         connection.Open();
         var servicesCollection = new ServiceCollection();
         services = servicesCollection.BuildServiceProvider();
-        Context = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlite(connection).Options);
+        var options = new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlite(connection);
+        if (interceptor is not null) options.AddInterceptors(interceptor);
+        Context = new ApplicationDbContext(options.Options);
         Context.Database.EnsureCreated();
         Db = new DBLayer(Context, services);
         Projection = new SecurityProjectionService(Db);
