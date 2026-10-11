@@ -72,12 +72,30 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Hosting", "src\Core\Ho
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalProcesses.Module", "src\Apps\DigitalProcesses\DigitalProcesses.Module\DigitalProcesses.Module.csproj", "{D2500005-0000-4000-8000-000000000005}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.SecurityLayer.Tests", "tests\Core.SecurityLayer.Tests\Core.SecurityLayer.Tests.csproj", "{C5637A95-4AC2-551E-9CE1-6CC92AC191A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Host.Integration.Tests", "tests\Core\Host.Integration.Tests\Host.Integration.Tests.csproj", "{C8336A7B-0108-5447-B955-F0CBE40DDE96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalProcesses.Integration.Tests", "tests\Apps\DigitalProcesses.Integration.Tests\DigitalProcesses.Integration.Tests.csproj", "{18F11BC6-C486-501F-8EE9-2717797F1658}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C5637A95-4AC2-551E-9CE1-6CC92AC191A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5637A95-4AC2-551E-9CE1-6CC92AC191A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5637A95-4AC2-551E-9CE1-6CC92AC191A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5637A95-4AC2-551E-9CE1-6CC92AC191A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8336A7B-0108-5447-B955-F0CBE40DDE96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8336A7B-0108-5447-B955-F0CBE40DDE96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8336A7B-0108-5447-B955-F0CBE40DDE96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8336A7B-0108-5447-B955-F0CBE40DDE96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18F11BC6-C486-501F-8EE9-2717797F1658}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18F11BC6-C486-501F-8EE9-2717797F1658}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18F11BC6-C486-501F-8EE9-2717797F1658}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18F11BC6-C486-501F-8EE9-2717797F1658}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D2500001-0000-4000-8000-000000000001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D2500001-0000-4000-8000-000000000001}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2500001-0000-4000-8000-000000000001}.Release|Any CPU.ActiveCfg = Release|Any CPU

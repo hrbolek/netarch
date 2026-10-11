@@ -1,0 +1,64 @@
+@using System.Text.Json.Nodes
+@using WebAppArchitecture.DigitalProcesses.Services
+@inject IFormDataContextBuilder ContextBuilder
+@inject IFormUrlTemplateRenderer UrlTemplates
+@namespace WebAppArchitecture.DigitalProcesses.UI.Renderers
+
+<div class="mb-3" data-form-node-id="@Definition.id" data-form-backend-kind="display-url">
+    <span class="form-label d-block">@(Definition.label ?? Definition.key)</span>
+    @if (_url is not null)
+    {
+        <a href="@_url" target="@_target" rel="noopener noreferrer">@(_text ?? _url)</a>
+    }
+    else
+    {
+        <span class="text-muted small" title="@_error">Odkaz není k dispozici.</span>
+    }
+    @if (!string.IsNullOrWhiteSpace(Definition.description))
+    {
+        <div class="form-text">@Definition.description</div>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public FormNodeResponse Definition { get; set; } = default!;
+    [Parameter] public SubmissionNodeResponse? Value { get; set; }
+    [Parameter] public IReadOnlyCollection<FormNodeResponse> FormNodes { get; set; } = Array.Empty<FormNodeResponse>();
+    [Parameter] public IReadOnlyCollection<FormNodeResponse> SectionNodes { get; set; } = Array.Empty<FormNodeResponse>();
+    [Parameter] public IReadOnlyDictionary<string, JsonNode?> SectionValues { get; set; } = new Dictionary<string, JsonNode?>();
+    [Parameter] public JsonObject? FormContext { get; set; }
+
+    private string? _url;
+    private string? _text;
+    private string? _error;
+    private string _target = "_blank";
+
+    protected override void OnParametersSet()
+    {
+        _url = null; _text = null; _error = null;
+        try
+        {
+            var configuration = JsonNode.Parse(Definition.configuration_json ?? "{}") as JsonObject;
+            var template = configuration?["template"]?.ToString();
+            if (string.IsNullOrWhiteSpace(template))
+            {
+                _error = "Missing display.url template configuration.";
+                return;
+            }
+            // The hosting page may pass an already filtered full runtime context; otherwise
+            // build from the visible FormNodes/values (not from a backend JSONata query).
+            var context = FormContext ?? ContextBuilder.Build(FormNodes, SectionValues);
+            var result = UrlTemplates.Render(template, context);
+            _url = result.Url;
+            _error = result.Error;
+            _text = configuration?["label"]?.ToString() ?? configuration?["text"]?.ToString();
+            _target = configuration?["target"]?.ToString() == "_self" ? "_self" : "_blank";
+        }
+        catch (Exception)
+        {
+            // Malformed designer configuration must never crash the whole form.
+            _url = null;
+            _error = "Unable to evaluate URL; inspect the node configuration and form paths.";
+        }
+    }
+}

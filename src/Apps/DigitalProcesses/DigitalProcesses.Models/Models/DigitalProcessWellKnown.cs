@@ -22,6 +22,7 @@ public static class DigitalProcessWellKnown
         public static readonly Guid Document = Guid.Parse("7d80c90b-f7b3-45f2-a5c8-7e54d23d1010");
         public static readonly Guid Export = Guid.Parse("7d80c90b-f7b3-45f2-a5c8-7e54d23d1009");
         public static readonly Guid Import = Guid.Parse("7d80c90b-f7b3-45f2-a5c8-7e54d23d1008");
+        public static readonly Guid DisplayUrl = Guid.Parse("7d80c90b-f7b3-45f2-a5c8-7e54d23d1011");
         public static readonly Guid Select = Guid.Parse("7d80c90b-f7b3-45f2-a5c8-7e54d23d1007");
     }
 

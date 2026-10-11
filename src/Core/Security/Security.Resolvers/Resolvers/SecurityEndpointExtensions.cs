@@ -36,6 +36,12 @@ public static class SecurityEndpointExtensions
             .MapGroup(prefix.TrimEnd('/') + "/RbacPermissionResponse")
             .WithTags("Security");
 
+        // Secured administration view; uses the exact EntityPermissions component from entity detail pages.
+        endpoints.MapGet(prefix.TrimEnd('/') + "/root-permissions", SecurityResolvers.RootPermissions)
+            .WithName("SecurityRootPermissions")
+            .WithDescription("Shows root RBAC role assignments and creation scopes; only readable by an actor with Read on Root.")
+            .ApplyViewModel<RootPermissionAdministrationPage, RbacPermissionResponse>();
+
         permissions.MapGet("/permissions/{rbacobjectId:guid}", SecurityResolvers.Permissions)
             .WithName("SecurityPermissions")
             .ApplyViewModel<RbacPermissionView, RbacPermissionResponse>()

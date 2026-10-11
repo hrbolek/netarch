@@ -1,5 +1,9 @@
 @namespace WebAppArchitecture.DigitalProcesses.UI.Pages
 <Page Title="@Model.Name">
+@if (Model.WorkflowDefinition is not null)
+{
+<DigitalProcessLargeCard TModel="WorkflowDefinitionResponse" Model="@Model.WorkflowDefinition">
+<ChildContent Context="definition">
 <div class="container py-3">
  <div class="d-flex justify-content-between align-items-center mb-3"><h1 class="h4">@Model.Name</h1><a class="btn btn-outline-secondary" href="@($"/digital-processes/{Model.Kind}DefinitionResponse/list")">Back</a></div>
  <div class="card mb-3"><div class="card-header d-flex justify-content-between align-items-center"><strong>Versions</strong>
@@ -11,10 +15,36 @@
  @if(Model.Kind == "Workflow") {<a class="btn btn-sm btn-outline-primary me-2" href="@($"/digital-processes/WorkflowVersionResponse/designer/{v.Id}")">@(v.Published ? "View workflow" : "Edit states and transitions")</a>}
  else if(Model.Kind == "Form") {<a class="btn btn-sm btn-outline-primary me-2" href="@($"/digital-processes/FormVersionResponse/{(v.Published ? "test" : "designer")}/{v.Id}")">@(v.Published ? "Test" : "Designer")</a>}
  else {<a class="btn btn-sm btn-outline-primary me-2" href="@($"/digital-processes/ProcessDefinitionVersionResponse/view/{v.Id}")">View</a>}
+ @if(Model.Kind == "Form") {<a class="btn btn-sm btn-outline-secondary me-2" href="@($"/digital-processes/form-versions/{v.Id}/templates")">RTF šablony</a>}
+ @if(Model.Kind == "Process") {<a class="btn btn-sm btn-outline-secondary me-2" href="@($"/digital-processes/process-versions/{v.Id}/permissions")">Oprávnění polí</a>}
  @if (!v.Published) {<form class="d-inline" method="post" action="@($"/digital-processes/{Model.Kind}DefinitionResponse/publish-version/{v.Id}?definitionId={Model.Id}")"><button class="btn btn-sm btn-success" type="submit">Publish</button></form>
  <form method="post" class="d-inline" action="@($"/digital-processes/{Model.Kind}DefinitionResponse/delete-version/{v.Id}?definitionId={Model.Id}")" onsubmit="return confirm('Delete draft version?');"><button class="btn btn-sm btn-outline-danger" type="submit">Delete draft</button></form>}
  </td></tr>}
  </tbody></table></div>
  @if(Model.Versions.Count == 0) {<div class="alert alert-warning">No versions yet. Create a draft to begin.</div>}
-</div></Page>
+</div></ChildContent>
+</DigitalProcessLargeCard>
+}
+else
+{
+<div class="container py-3">
+ <div class="d-flex justify-content-between align-items-center mb-3"><h1 class="h4">@Model.Name</h1><a class="btn btn-outline-secondary" href="@($"/digital-processes/{Model.Kind}DefinitionResponse/list")">Back</a></div>
+ <div class="card mb-3"><div class="card-header d-flex justify-content-between align-items-center"><strong>Versions</strong>
+ @if (Model.Kind != "Process") { <form method="post" action="@($"/digital-processes/{Model.Kind}DefinitionResponse/new-version/{Model.Id}")"><button class="btn btn-sm btn-primary" type="submit">Copy to new draft</button></form> }
+ else if (Model.Versions.Count > 0) { <form method="post" action="@($"/digital-processes/ProcessDefinitionResponse/new-version/{Model.Id}")"><button class="btn btn-sm btn-primary" type="submit">Copy to new draft</button></form> }
+ else { <a class="btn btn-sm btn-primary" href="@($"/digital-processes/ProcessDefinitionVersionResponse/create?processId={Model.Id}")">Create first version</a> }
+ </div><table class="table table-hover mb-0"><thead><tr><th>Version</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+ @foreach(var v in Model.Versions.OrderByDescending(x=>x.Number)) {<tr><td>Version @v.Number</td><td>@(v.Published ? "Published" : "Draft")</td><td>
+ @if(Model.Kind == "Workflow") {<a class="btn btn-sm btn-outline-primary me-2" href="@($"/digital-processes/WorkflowVersionResponse/designer/{v.Id}")">@(v.Published ? "View workflow" : "Edit states and transitions")</a>}
+ else if(Model.Kind == "Form") {<a class="btn btn-sm btn-outline-primary me-2" href="@($"/digital-processes/FormVersionResponse/{(v.Published ? "test" : "designer")}/{v.Id}")">@(v.Published ? "Test" : "Designer")</a>}
+ else {<a class="btn btn-sm btn-outline-primary me-2" href="@($"/digital-processes/ProcessDefinitionVersionResponse/view/{v.Id}")">View</a>}
+ @if(Model.Kind == "Form") {<a class="btn btn-sm btn-outline-secondary me-2" href="@($"/digital-processes/form-versions/{v.Id}/templates")">RTF šablony</a>}
+ @if(Model.Kind == "Process") {<a class="btn btn-sm btn-outline-secondary me-2" href="@($"/digital-processes/process-versions/{v.Id}/permissions")">Oprávnění polí</a>}
+ @if (!v.Published) {<form class="d-inline" method="post" action="@($"/digital-processes/{Model.Kind}DefinitionResponse/publish-version/{v.Id}?definitionId={Model.Id}")"><button class="btn btn-sm btn-success" type="submit">Publish</button></form>
+ <form method="post" class="d-inline" action="@($"/digital-processes/{Model.Kind}DefinitionResponse/delete-version/{v.Id}?definitionId={Model.Id}")" onsubmit="return confirm('Delete draft version?');"><button class="btn btn-sm btn-outline-danger" type="submit">Delete draft</button></form>}
+ </td></tr>}
+ </tbody></table></div>
+ @if(Model.Versions.Count == 0) {<div class="alert alert-warning">No versions yet. Create a draft to begin.</div>}
+</div>}
+</Page>
 @code {[Parameter,EditorRequired] public DefinitionVersionsPageModel Model {get;set;}=default!; [Parameter]public bool IsFragment{get;set;}}

@@ -38,7 +38,7 @@ public static class WorkflowDefinitionResolvers
         var definition = await security.GetByIdAsync<WorkflowDefinitionModel>(id, SecurityOperations.Read, ct) ?? throw new KeyNotFoundException("Definition not found.");
         var versions = security.Query<WorkflowVersionModel>(SecurityOperations.Read).Where(v => v.workflow_definition_id == id).OrderByDescending(v => v.version)
             .Select(v => new DefinitionVersionItem(v.id, v.version, v.is_published, v.updated_at)).ToArray();
-        return new DefinitionVersionsPageModel(id, definition.name, "Workflow", versions);
+        return new DefinitionVersionsPageModel(id, definition.name, "Workflow", versions, WorkflowDefinitionResponse.FromModel(definition));
     }
     public static async Task<IResult> PublishVersion(Guid id, Guid definitionId, IWorkflowVersionService versions, CancellationToken ct)
     {

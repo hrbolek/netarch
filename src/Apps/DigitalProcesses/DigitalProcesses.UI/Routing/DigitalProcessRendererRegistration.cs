@@ -15,6 +15,7 @@ public static class DigitalProcessRendererRegistration
         registry.Register<DateInputRenderer>("input.date");
         registry.Register<CheckboxRenderer>("input.checkbox");
         registry.Register<SelectRenderer>("input.select");
+        registry.Register<ComputedUrlRenderer>("display.url");
         registry.Register<ActionButtonRenderer>("action.button");
         registry.Register<ExternalDataImportNodeRenderer>("action.import");
         registry.Register<DocumentActionNodeRenderer>("action.document");

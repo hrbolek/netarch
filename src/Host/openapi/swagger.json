@@ -143,6 +143,65 @@
         }
       }
     },
+    "/digital-processes/form-component-catalog": {
+      "get": {
+        "tags": [
+          "DigitalProcesses.AI"
+        ],
+        "description": "Returns readable, implemented form node types and complete example configurations for schema-generating agents. RBAC-filtered.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/digital-processes/ai/form-design/approve": {
+      "post": {
+        "tags": [
+          "DigitalProcesses.AI"
+        ],
+        "description": "Apply an explicitly approved AI form proposal to an editable form version; validates components, keys and RBAC.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApproveRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/digital-processes/ai/form-design": {
+      "post": {
+        "tags": [
+          "DigitalProcesses.AI"
+        ],
+        "description": "Propose a form schema via configured FastAPI/PydanticAI agent. Checks Read on form version, sends only readable nodes, returns an unpersisted proposal. Never stores agent output.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DesignRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/digital-processes/ProcessDefinitionVersionResponse/applicant-access/{processVersionId}": {
       "get": {
         "tags": [
@@ -202,6 +261,30 @@
           },
           "required": true
         },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/digital-processes/process-versions/{id}/permissions": {
+      "get": {
+        "tags": [
+          "DigitalProcesses.Designer"
+        ],
+        "description": "Editable Applicant visibility / explicit deny matrix by workflow state and FormNode. Draft process versions only.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -599,6 +682,19 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/digital-processes/FormDefinitionResponse/create-permission": {
+      "get": {
+        "tags": [
+          "DigitalProcesses.Forms"
+        ],
+        "description": "Checks effective Create permission on the well-known FormDefinition creation RBAC scope; returns the scope and administrator guidance.",
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -3407,6 +3503,30 @@
         "parameters": [
           {
             "name": "formVersionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/digital-processes/form-versions/{id}/templates": {
+      "get": {
+        "tags": [
+          "DigitalProcesses.Templates"
+        ],
+        "description": "Contextual RTF template and immutable revision management for a FormVersion.",
+        "parameters": [
+          {
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {
@@ -6808,6 +6928,32 @@
         }
       }
     },
+    "/architecture/root-permissions": {
+      "get": {
+        "tags": [
+          "SecurityResolvers"
+        ],
+        "description": "Shows root RBAC role assignments and creation scopes; only readable by an actor with Read on Root.",
+        "operationId": "SecurityRootPermissions",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RbacPermissionResponse"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/RbacPermissionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/architecture/UserResponse": {
       "get": {
         "tags": [
@@ -7424,6 +7570,17 @@
         },
         "additionalProperties": false
       },
+      "ApproveRequest": {
+        "type": "object",
+        "properties": {
+          "formVersionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "schema": { }
+        },
+        "additionalProperties": false
+      },
       "BulkFormTreeNode": {
         "type": "object",
         "properties": {
@@ -7893,6 +8050,23 @@
             "items": {
               "$ref": "#/components/schemas/DefinitionVersionItem"
             },
+            "nullable": true
+          },
+          "workflowDefinition": {
+            "$ref": "#/components/schemas/WorkflowDefinitionResponse"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DesignRequest": {
+        "type": "object",
+        "properties": {
+          "formVersionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "instruction": {
+            "type": "string",
             "nullable": true
           }
         },

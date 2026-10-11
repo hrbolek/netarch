@@ -49,6 +49,24 @@ else
                 </div>
 
                 <div class="small text-muted">@Validity(permission)</div>
+                @if (permission.group_id == Model.rbacobject_id)
+                {
+                    <div class="mt-2 d-flex gap-2 align-items-center">
+                        <a class="btn btn-sm btn-outline-primary"
+                           href="@($"/architecture/RoleResponse/edit/{permission.role_id}")"
+                           title="Upravit platnost nebo typ přímo přiřazené role; operaci autorizuje server">
+                            Upravit roli / platnost
+                        </a>
+                        <a class="btn btn-sm btn-outline-secondary"
+                           href="@($"/architecture/RoleResponse/view/{permission.role_id}")">
+                            Detail a odebrání
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="small text-muted mt-1">Zděděné přiřazení – úprava se provádí ve zdrojové skupině.</div>
+                }
 
                 @if (permission.source_membership_id is Guid membershipId)
                 {

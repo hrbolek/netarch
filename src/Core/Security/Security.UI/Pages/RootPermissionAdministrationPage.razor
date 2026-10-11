@@ -1,0 +1,41 @@
+@namespace WebAppArchitecture.Security.UI.Pages
+@using WebAppArchitecture.Base.Security
+@using WebAppArchitecture.Base.UI.Components
+
+<Page Title="Správa kořenových oprávnění">
+    <div class="container py-3">
+        <h1 class="h4">Správa kořenových oprávnění</h1>
+        <p class="text-muted">Přiřazení rolí se dědí v hierarchii RBAC skupin. Změna oprávnění na kořeni může ovlivnit celou aplikaci.</p>
+        <div class="alert alert-warning">Změny provádějte jen s oprávněním Create nad příslušnou RBAC skupinou. Tato stránka nepřiděluje automaticky práva administrátorovi a neobchází bezpečnostní kontrolu.</div>
+        <p class="small">U rolí přiřazených přímo zvolte <strong>Upravit roli / platnost</strong> pro změnu typu a časového intervalu, nebo <strong>Detail a odebrání</strong> pro existující autorizované operace. Zděděné role upravujte na jejich zdrojové skupině. Pro zrušení přístupu je zpravidla vhodnější ukončit platnost role než ji odstranit a ztratit historii.</p>
+        <div class="mb-4">
+            <a class="btn btn-sm btn-outline-secondary" href="/architecture/GroupResponse/view/@RbacWellKnown.RootGroupId">Zobrazit kořenovou skupinu</a>
+            <a class="btn btn-sm btn-outline-secondary" href="/architecture/RoleTypeResponse/list">Typy rolí a operace</a>
+        </div>
+        <h2 class="h5">Kořenová skupina Root</h2>
+        <EntityPermissions RbacId="@RbacWellKnown.RootGroupId" App="architecture" />
+        <h2 class="h5 mt-4">Oprávnění pro vytváření objektů</h2>
+        <p class="small text-muted">Pokud nejde vytvořit formulář nebo workflow, zkontrolujte příslušnou skupinu i zděděná oprávnění z Root.</p>
+        @foreach (var scope in CreationScopes)
+        {
+            <details class="mb-3">
+                <summary>@scope.Name <code class="small ms-2">@scope.Id</code></summary>
+                <a class="small" href="@($"/architecture/GroupResponse/view/{scope.Id}")">Otevřít RBAC skupinu</a>
+                <EntityPermissions RbacId="@scope.Id" App="architecture" />
+            </details>
+        }
+    </div>
+</Page>
+
+@code {
+    [Parameter, EditorRequired]
+    public WebAppArchitecture.Security.Models.RbacPermissionResponse Model { get; set; } = default!;
+
+    private static readonly (Guid Id, string Name)[] CreationScopes =
+    [
+        (RbacWellKnown.FormDefinitionCreationScopeId, "Create Form Definitions"),
+        (RbacWellKnown.WorkflowDefinitionCreationScopeId, "Create Workflow Definitions"),
+        (RbacWellKnown.ProcessDefinitionCreationScopeId, "Create Process Definitions"),
+        (RbacWellKnown.FormNodeTypeCreationScopeId, "Create Form Node Types")
+    ];
+}

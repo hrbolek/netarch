@@ -1,6 +1,8 @@
 @namespace WebAppArchitecture.DigitalProcesses.UI.Designer
 
 <Page Title="Form designer">
+<DigitalProcessLargeCard TModel="FormVersionResponse" Model="@Model.designer.form">
+<ChildContent Context="version">
 <div class="container-fluid py-3">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
@@ -12,6 +14,12 @@
             <a class="btn @(Model.test_mode ? "btn-primary" : "btn-outline-primary")" href="@TestUrl">Test</a>
         </div>
     </div>
+
+    <details class="mb-3">
+        <summary class="fw-semibold">Oprávnění verze formuláře</summary>
+        <p class="small text-muted mb-0">Role se vyhodnocují vůči RBAC objektu této verze. Nastavení vyžaduje odpovídající oprávnění.</p>
+        <EntityPermissions RbacId="@Model.designer.form.rbacobject_id" App="architecture" />
+    </details>
 
     @if (Model.test_mode)
     {
@@ -48,7 +56,7 @@
                 <div class="card mb-3">
                     <div class="card-header"><strong>Structure</strong></div>
                     <div class="list-group list-group-flush">
-                        @foreach (var node in Model.designer.nodes.OrderBy(x => x.path).ThenBy(x => x.position))
+                        @foreach (var node in OrderedNodes)
                         {
                             var depth = Math.Max(0, node.path.Count(c => c == '/') - 1);
                             <div class="list-group-item py-2 d-flex justify-content-between align-items-center" style="padding-left:@(1 + depth * 1.15)rem">
@@ -160,12 +168,20 @@
                     </div>
                 </div>
 
-                <div class="card mb-3 border-info" data-ai-placeholder="form-designer" data-form-version-id="@Model.designer.form.id">
-                    <div class="card-header"><strong>AI poradce návrhu formuláře</strong> <span class="badge text-bg-secondary">Připravuje se</span></div>
+                <div class="card mb-3 border-info" data-ai-form-version="@Model.designer.form.id">
+                    <div class="card-header"><strong>AI návrh formuláře</strong></div>
                     <div class="card-body">
-                        <p class="small text-muted">Budoucí MCP poradce bude moci navrhnout nové sekce, pole a pravidla a předložit jejich rozdíly ke schválení.</p>
-                        <textarea class="form-control mb-2" rows="3" disabled placeholder="Například: Přidej část Vyjádření nadřízeného…"></textarea>
-                        <button type="button" class="btn btn-outline-secondary btn-sm" disabled>Navrhnout změny</button>
+                        <label class="form-label" for="dp-ai-instruction">Pokyn pro agenta</label>
+                        <textarea id="dp-ai-instruction" class="form-control mb-2" rows="4" maxlength="8000" placeholder="Například: Přidej sekci Vyjádření nadřízeného se dvěma poli…"></textarea>
+                        <button id="dp-ai-propose" type="button" class="btn btn-sm btn-outline-primary">Navrhnout změny</button>
+                        <p id="dp-ai-status" class="small mt-2" role="status"></p>
+                        <div id="dp-ai-result" hidden>
+                            <div id="dp-ai-diff" class="small alert alert-info" role="status"></div>
+                            <label class="form-label" for="dp-ai-json">Návrh schématu (JSON) – před uložením lze upravit</label>
+                            <textarea id="dp-ai-json" class="form-control font-monospace mb-2" rows="16" spellcheck="false"></textarea>
+                            <button id="dp-ai-approve" type="button" class="btn btn-sm btn-primary">Potvrdit a uložit návrh</button>
+                            <div class="form-text">Zápis je možný pouze do rozpracované verze; vynechané stávající uzly se nemažou. Po uložení se obnoví návrhář.</div>
+                        </div>
                     </div>
                 </div>
                 <div class="card">
@@ -173,7 +189,7 @@
                     <div class="card-body small text-muted">Select a node from Structure to navigate to it. Use the kebab menu on a node to edit its properties or position.</div>
                 </div>
 
-                @foreach (var node in Model.designer.nodes.OrderBy(x => x.path).ThenBy(x => x.position))
+                @foreach (var node in OrderedNodes)
                 {
                     <div class="modal fade" id="edit-node-@node.id" tabindex="-1" aria-label="Edit node"><div class="modal-dialog modal-dialog-centered modal-lg"><div class="modal-content">
                         <div class="modal-header border-bottom p-3"><h2 class="modal-title fs-5">Edit @node.key</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
@@ -181,6 +197,12 @@
                                 <input type="hidden" name="id" value="@node.id" />
                                 <input type="hidden" name="form_version_id" value="@Model.designer.form.id" />
                                 <label class="form-label">Key</label><input class="form-control form-control-sm mb-2" name="key" value="@node.key" required />
+                                <label class="form-label">Cesta uzlu (strukturální)</label>
+                                <div class="input-group input-group-sm mb-1">
+                                    <input class="form-control form-node-path" value="@NodePath(node)" readonly aria-label="Cesta FormNode" />
+                                    <button class="btn btn-outline-secondary" type="button" onclick="navigator.clipboard?.writeText(this.previousElementSibling.value)">Kopírovat</button>
+                                </div>
+                                <div class="form-text mb-2">Cesta odpovídá aktuální hierarchii. Pro nevstupní uzly jde o strukturální umístění, nikoli hodnotu v kontextu.</div>
                                 <label class="form-label">Label</label><input class="form-control form-control-sm mb-2" name="label" value="@node.label" />
                                 <label class="form-label">Description</label><textarea class="form-control form-control-sm mb-2" name="description">@node.description</textarea>
                                 <div class="row g-2 mb-2"><div class="col"><label class="form-label">Min</label><input class="form-control form-control-sm" type="number" name="min_occurs" value="@node.min_occurs" min="0" /></div><div class="col"><label class="form-label">Max</label><input class="form-control form-control-sm" type="number" name="max_occurs" value="@node.max_occurs" min="1" /></div></div>
@@ -229,7 +251,85 @@
         }
     }
 </div>
+</ChildContent>
+</DigitalProcessLargeCard>
 </Page>
+
+
+<script>
+(function () {
+  function initAiDesigner() {
+    const root = document.querySelector('[data-ai-form-version]');
+    if (!root || root.dataset.aiReady === '1') return;
+    root.dataset.aiReady = '1';
+    const id = root.dataset.aiFormVersion;
+    const instruction = document.getElementById('dp-ai-instruction');
+    const status = document.getElementById('dp-ai-status');
+    const box = document.getElementById('dp-ai-result');
+    const json = document.getElementById('dp-ai-json');
+    const diff = document.getElementById('dp-ai-diff');
+    const propose = document.getElementById('dp-ai-propose');
+    const approve = document.getElementById('dp-ai-approve');
+    const existingPaths = new Set();
+    // The designer contains the current node hierarchy and shows key/path per node.
+    document.querySelectorAll('input.form-node-path').forEach(el => {
+      if (el.value.startsWith('$.form.')) existingPaths.add(el.value.slice(7));
+    });
+    function collect(children, prefix, added) {
+      Object.entries(children || {}).forEach(([key, node]) => {
+        const path = prefix ? prefix + '.' + key : key;
+        if (!existingPaths.has(path)) added.push(path);
+        collect(node.children, path, added);
+      });
+    }
+    function explain(schema) {
+      const added = [];
+      collect(schema.children, '', added);
+      diff.textContent = added.length ? 'Nové uzly (' + added.length + '): ' + added.join(', ') :
+        'Nebyly rozpoznány nové uzly. Zkontrolujte změny vlastností ve výsledném JSON.';
+    }
+    async function readResponse(response) {
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.error || payload.title || ('HTTP ' + response.status));
+      return payload;
+    }
+    propose.addEventListener('click', async () => {
+      const prompt = instruction.value.trim();
+      if (!prompt) { status.textContent = 'Nejprve zadejte pokyn.'; return; }
+      propose.disabled = true; box.hidden = true; status.textContent = 'Vyhodnocování pokynu…';
+      try {
+        const response = await fetch('/digital-processes/ai/form-design', {
+          method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({formVersionId: id, instruction: prompt})
+        });
+        const payload = await readResponse(response);
+        if (!payload.result || typeof payload.result.children !== 'object') throw new Error('Agent nevrátil strom formuláře.');
+        json.value = JSON.stringify(payload.result, null, 2);
+        explain(payload.result); box.hidden = false; status.textContent = 'Návrh je připraven. Před uložením jej zkontrolujte.';
+      } catch (error) { status.textContent = 'Návrh selhal: ' + error.message; }
+      finally { propose.disabled = false; }
+    });
+    approve.addEventListener('click', async () => {
+      let schema;
+      try { schema = JSON.parse(json.value); explain(schema); }
+      catch (error) { status.textContent = 'Neplatný JSON: ' + error.message; return; }
+      if (!confirm('Opravdu uložit schválený návrh do této FormVersion?')) return;
+      approve.disabled = true; status.textContent = 'Ukládání…';
+      try {
+        const response = await fetch('/digital-processes/ai/form-design/approve', {
+          method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({formVersionId: id, schema})
+        });
+        await readResponse(response);
+        location.reload();
+      } catch (error) { status.textContent = 'Uložení selhalo: ' + error.message; approve.disabled = false; }
+    });
+  }
+  document.addEventListener('DOMContentLoaded', initAiDesigner);
+  document.addEventListener('htmx:afterSwap', initAiDesigner);
+  initAiDesigner();
+})();
+</script>
 
 <script>
 window.digitalProcessesRenumber = function(root) {
@@ -288,11 +388,45 @@ document.addEventListener('htmx:afterSwap', () => window.digitalProcessesRenumbe
     [Parameter] public bool IsFragment { get; set; }
     private readonly Guid PreviewInstanceId = Guid.NewGuid();
     private string DesignerUrl => $"/digital-processes/FormVersionResponse/designer/{Model.designer.form.id}";
+    private string NodePath(FormNodeResponse node)
+    {
+        var nodes = Model.designer.nodes.ToDictionary(x => x.id);
+        var keys = new List<string>();
+        var visited = new HashSet<Guid>();
+        FormNodeResponse? current = node;
+        while (current is not null && visited.Add(current.id) && keys.Count < 64)
+        {
+            keys.Add(current.key);
+            current = current.parent_id.HasValue && nodes.TryGetValue(current.parent_id.Value, out var parent) ? parent : null;
+        }
+        keys.Reverse();
+        return "$.form." + string.Join(".", keys);
+    }
+
     private static string ConfigurationPlaceholder(FormNodeResponse node) =>
         node.key.Contains("select", StringComparison.OrdinalIgnoreCase)
             ? "{\"dataSource\":{\"query\":\"query { users { id name surname } }\",\"variables\":\"section\"}}"
             : "{\"label\":\"Import dat\",\"query\":\"query { whoami { hostname } }\",\"variables\":{}}";
     private string TestUrl => $"/digital-processes/FormVersionResponse/test/{Model.designer.form.id}";
+    private IEnumerable<FormNodeResponse> OrderedNodes => OrderTree(Model.designer.nodes);
+    private static IEnumerable<FormNodeResponse> OrderTree(IReadOnlyCollection<FormNodeResponse> nodes)
+    {
+        var byParent = nodes.ToLookup(n => n.parent_id);
+        var visited = new HashSet<Guid>();
+        IEnumerable<FormNodeResponse> Visit(Guid? parent)
+        {
+            foreach (var node in byParent[parent].OrderBy(n => n.position).ThenBy(n => n.key))
+            {
+                if (!visited.Add(node.id)) continue;
+                yield return node;
+                foreach (var child in Visit(node.id)) yield return child;
+            }
+        }
+        foreach (var node in Visit(null)) yield return node;
+        // Keep orphaned nodes visible instead of silently dropping them.
+        foreach (var node in nodes.OrderBy(n => n.position).ThenBy(n => n.key))
+            if (visited.Add(node.id)) yield return node;
+    }
     private IEnumerable<FormNodeResponse> Roots => Model.designer.nodes.Where(x => x.parent_id == null).OrderBy(x => x.position).ThenBy(x => x.key);
     private IEnumerable<FormNodeResponse> Containers
     {
@@ -313,6 +447,7 @@ document.addEventListener('htmx:afterSwap', () => window.digitalProcessesRenumbe
             "input.checkbox" => 50,
             "input.select" => 60,
             "action.document" => 72,
+            "display.url" => 65,
             "action.import" => 70,
             "action.export" => 71,
             _ => 100

@@ -22,6 +22,7 @@ public sealed class DigitalProcessesModule : IArchitectureModule
     {
         services.AddMemoryCache();
         services.AddHttpClient("digital-process-documents");
+        services.AddHttpClient("digital-process-ai-agents");
         services.AddSingleton<PreviewFormInstanceStore>();
         services.AddScoped<RtfTemplateStore>();
         services.AddScoped<IFormDefinitionService, FormDefinitionService>();
@@ -57,6 +58,10 @@ public sealed class DigitalProcessesModule : IArchitectureModule
             services.AddScoped<IFormDataBackend, DummyJsonataCaller>();
         else
             throw new InvalidOperationException($"Unsupported DigitalProcesses:DataBackend:Provider '{provider}'. Expected GraphQL or Dummy.");
+        services.AddScoped<IFormCalculationService, FormCalculationService>();
+        services.AddScoped<IFormDataContextBuilder, FormDataContextBuilder>();
+        services.AddSingleton<IFormExpressionEvaluator, FormExpressionEvaluator>();
+        services.AddSingleton<IFormUrlTemplateRenderer, FormUrlTemplateRenderer>();
         services.AddHostedService<DigitalProcessesBootstrapHostedService>();
         services.AddDigitalProcessRenderers();
     }
@@ -104,6 +109,9 @@ public sealed class DigitalProcessesModule : IArchitectureModule
         FormDocumentEndpoints.Map(endpoints);
         RtfDocumentEndpoints.Map(endpoints);
         TemplateManagementEndpoints.Map(endpoints);
+        FormComponentCatalogEndpoints.Map(endpoints);
+        FormDesignAiEndpoints.Map(endpoints);
+        DigitalProcessesManagementPages.Map(endpoints);
         ApplicantPolicyEndpoints.Map(endpoints);
 
         endpoints.MapDigitalProcessEndpoints("/digital-processes");

@@ -1,7 +1,7 @@
 @using System.Text.Json
 @using System.Text.Json.Nodes
 @using WebAppArchitecture.DigitalProcesses.Services
-@inject IFormDataBackend DataBackend
+@inject IFormCalculationService Calculations
 @namespace WebAppArchitecture.DigitalProcesses.UI.Renderers
 
 <div class="mb-3" data-form-node-id="@Definition.id" data-form-backend-kind="select">
@@ -43,20 +43,9 @@
                 || queryElement.ValueKind != JsonValueKind.String) return;
             var query = queryElement.GetString();
             if (string.IsNullOrWhiteSpace(query)) return;
-            // The production contract takes variables from the containing section.
-            // A missing section value is represented as null at initial render time.
-            var parameters = SectionNodes
-                .Where(node => node.id != Definition.id && !string.IsNullOrWhiteSpace(node.key))
-                .GroupBy(node => node.key, StringComparer.Ordinal)
-                .Select(group => new FormBackendParameterBinding(
-                    group.Key, FormBackendParameterSource.FormValue, group.Key))
-                .ToArray();
-            var variables = SectionValues.ToDictionary(pair => pair.Key, pair => pair.Value?.DeepClone(), StringComparer.Ordinal);
-            foreach (var binding in parameters)
-                if (!variables.ContainsKey(binding.key)) variables[binding.key] = null;
-            var operation = new FormBackendOperationRequest(query, parameters);
-            var snapshot = new FormValueSnapshot(variables, new Dictionary<string, JsonNode?>());
-            var result = await DataBackend.ExecuteAsync(operation, snapshot);
+            var configuration = JsonNode.Parse(Definition.configuration_json) as JsonObject
+                ?? new JsonObject();
+            var result = await Calculations.EvaluateAsync(configuration, SectionValues);
             if (result is JsonArray array)
                 _dynamicOptions = array.OfType<JsonObject>().Select(user => new SelectOption(
                     user["value"]?.ToString() ?? "", user["label"]?.ToString() ?? "")).ToArray();

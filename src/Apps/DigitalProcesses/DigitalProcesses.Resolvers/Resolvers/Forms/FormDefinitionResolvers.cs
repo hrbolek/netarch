@@ -1,4 +1,8 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Logging;
+using System.Net;
+using WebAppArchitecture.Base.Security;
+using WebAppArchitecture.SecurityLayer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
@@ -25,11 +29,48 @@ public static class FormDefinitionResolvers
     public static Task<FormDefinitionResponse> CreateApi(CreateFormDefinitionRequest request, IFormDefinitionService service, CancellationToken ct)
         => service.CreateTypedAsync(request, ct);
 
-    public static async Task<IResult> CreateForm(HttpContext http, IFormDefinitionService service, CancellationToken ct)
+    // This page form is a browser navigation, so an authorization failure must be
+    // understandable HTML with HTTP 403 rather than a raw ASP.NET exception page.
+    public static async Task<IResult> CreateForm(HttpContext http, IFormDefinitionService service, ILoggerFactory loggerFactory, CancellationToken ct)
     {
-        var f = await http.Request.ReadFormAsync(ct);
-        var created = await service.CreateTypedAsync(new CreateFormDefinitionRequest(DigitalProcessCreateForm.Required(f,"name"),DigitalProcessCreateForm.Optional(f,"description")), ct);
-        return Results.Redirect(Prefix + "/FormDefinitionResponse/view/" + created.id);
+        try
+        {
+            var f = await http.Request.ReadFormAsync(ct);
+            var created = await service.CreateTypedAsync(new CreateFormDefinitionRequest(DigitalProcessCreateForm.Required(f,"name"),DigitalProcessCreateForm.Optional(f,"description")), ct);
+            return Results.Redirect(Prefix + "/FormDefinitionResponse/view/" + created.id);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            loggerFactory.CreateLogger("FormDefinition.CreateForm").LogWarning(ex,
+                "Form definition creation denied for actor {Actor}; required scope {Scope}",
+                http.User.FindFirst("oid")?.Value ?? http.User.Identity?.Name ?? "unknown",
+                RbacWellKnown.FormDefinitionCreationScopeId);
+            return Results.Content(FormCreateAuthorizationMessage.Html, "text/html; charset=utf-8", statusCode: StatusCodes.Status403Forbidden);
+        }
+    }
+
+    public static async Task<IResult> CreatePermission(ISecurityLayer security, CancellationToken ct)
+    {
+        try
+        {
+            var allowed = await security.IsAllowedAsync(RbacWellKnown.FormDefinitionCreationScopeId, SecurityOperations.Create, ct);
+            return Results.Ok(new {
+                allowed,
+                operation = SecurityOperations.Create,
+                scope_id = RbacWellKnown.FormDefinitionCreationScopeId,
+                scope_name = "Create Form Definitions",
+                guidance = allowed ? "Form definition creation is permitted." : FormCreateAuthorizationMessage.Guidance
+            });
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Results.Json(new {
+                allowed = false,
+                operation = SecurityOperations.Create,
+                scope_id = RbacWellKnown.FormDefinitionCreationScopeId,
+                guidance = FormCreateAuthorizationMessage.Guidance
+            }, statusCode: StatusCodes.Status403Forbidden);
+        }
     }
 
     public static async Task<IResult> NewVersion(Guid id, IFormDefinitionService definitions, IFormVersionService versions, WebAppArchitecture.SecurityLayer.ISecurityLayer security, CancellationToken ct)
@@ -85,6 +126,8 @@ public static class FormDefinitionResolvers
             .WithDescription("""
                 Renders the HTML form used to create FormDefinition.
                 """);
+        group.MapGet("/create-permission", FormDefinitionResolvers.CreatePermission)
+            .WithDescription("Checks effective Create permission on the well-known FormDefinition creation RBAC scope; returns the scope and administrator guidance.");
         group.MapPost("/create-form", FormDefinitionResolvers.CreateForm)
             .DisableAntiforgery()
             .WithDescription("""

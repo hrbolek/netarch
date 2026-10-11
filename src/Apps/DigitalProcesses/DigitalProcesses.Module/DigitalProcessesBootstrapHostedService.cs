@@ -28,6 +28,7 @@ public sealed class DigitalProcessesBootstrapHostedService(IServiceScopeFactory 
             new FormNodeTypeModel(DigitalProcessWellKnown.FormNodeTypes.Import, null, "Import dat (GraphQL)", "action.import", false, false, false, null, scopeId, now, now, actor, actor),
             new FormNodeTypeModel(DigitalProcessWellKnown.FormNodeTypes.Document, null, "Create document and import", "action.document", false, false, false, null, scopeId, now, now, actor, actor),
             new FormNodeTypeModel(DigitalProcessWellKnown.FormNodeTypes.Export, null, "Export dat (GraphQL)", "action.export", false, false, false, null, scopeId, now, now, actor, actor),
+            new FormNodeTypeModel(DigitalProcessWellKnown.FormNodeTypes.DisplayUrl, null, "Computed link", "display.url", false, false, false, null, scopeId, now, now, actor, actor),
             new FormNodeTypeModel(DigitalProcessWellKnown.FormNodeTypes.Select, null, "Select", "input.select", false, true, true, null, scopeId, now, now, actor, actor)
         };
 

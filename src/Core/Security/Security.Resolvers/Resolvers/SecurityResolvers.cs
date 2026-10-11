@@ -67,6 +67,20 @@ public static class SecurityResolvers
 
         return ApiResults.Ok(model);
     }
+    public static Task<IResult> RootPermissions(
+        HttpContext httpContext,
+        ISecurityService securityService,
+        ISecurityPermissionService permissionService,
+        ICurrentActorProvider actorProvider,
+        CancellationToken cancellationToken)
+        => Permissions(
+            RbacWellKnown.RootGroupId,
+            httpContext,
+            securityService,
+            permissionService,
+            actorProvider,
+            cancellationToken);
+
     public static async Task<IResult> CreateRoleAction(
         Guid rbacobjectId,
         string? return_url,

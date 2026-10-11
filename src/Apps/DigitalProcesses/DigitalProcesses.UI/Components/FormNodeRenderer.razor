@@ -19,6 +19,7 @@ else
     [Parameter] public IReadOnlyCollection<FormNodeResponse> SectionNodes { get; set; } = Array.Empty<FormNodeResponse>();
     [Parameter] public IReadOnlyDictionary<string, System.Text.Json.Nodes.JsonNode?> SectionValues { get; set; }
         = new Dictionary<string, System.Text.Json.Nodes.JsonNode?>();
+    [Parameter] public IReadOnlyCollection<FormNodeResponse> FormNodes { get; set; } = Array.Empty<FormNodeResponse>();
     private Type? ComponentType => Renderers.Resolve(RendererKey);
     private IDictionary<string,object?> Parameters
     {
@@ -29,9 +30,10 @@ else
                 ["Definition"] = Definition,
                 ["Value"] = Value
             };
-            if (RendererKey == "input.select")
+            if (RendererKey is "input.select" or "display.url")
             {
                 parameters["SectionNodes"] = SectionNodes;
+                if (RendererKey == "display.url") parameters["FormNodes"] = FormNodes;
                 parameters["SectionValues"] = SectionValues;
             }
             return parameters;
