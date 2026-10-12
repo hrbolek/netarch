@@ -4,6 +4,9 @@ using WebAppArchitecture.Base.Services;
 
 namespace WebAppArchitecture.SecurityLayer;
 
+/// <summary>
+/// Služba Base Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public class BaseService<TDBModel, TDTOModel> : IBaseService<TDBModel, TDTOModel>
     where TDBModel : class, ISecuredEntityDBModel
     where TDTOModel : IEntityDTOModel<TDBModel, TDTOModel>
@@ -11,13 +14,22 @@ public class BaseService<TDBModel, TDTOModel> : IBaseService<TDBModel, TDTOModel
     protected readonly ISecurityLayer Security;
     public BaseService(ISecurityLayer security) => Security = security;
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: Query; pořadí a parametry viz implementace.
+    /// </summary>
     public virtual IQueryable<TDTOModel> Query() => Security.Query<TDBModel>(SecurityOperations.List).Select(TDTOModel.Projection);
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: Query; pořadí a parametry viz implementace.
+    /// </summary>
     public virtual Task<TDTOModel?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         => Task.FromResult(
             Security.Query<TDBModel>(SecurityOperations.Read)
                 .Where(entity => entity.id == id)
                 .Select(TDTOModel.Projection)
                 .SingleOrDefault());
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: Query; pořadí a parametry viz implementace.
+    /// </summary>
     public virtual Task<IReadOnlyCollection<TDTOModel>> GetAllAsync(CancellationToken cancellationToken = default)
         => Task.FromResult<IReadOnlyCollection<TDTOModel>>(
             Security.Query<TDBModel>(SecurityOperations.List)
@@ -136,6 +148,9 @@ public class BaseService<TDBModel, TDTOModel> : IBaseService<TDBModel, TDTOModel
             return TDTOModel.FromModel(updated);
         }, cancellationToken);
     }
+    /// <summary>
+    /// Požaduje odstranění entity; pravidla mazání závislostí a RBAC se uplatňují ve službě. Volání: ExecuteInTransactionAsync, StageDeleteAsync, SaveChangesAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public virtual Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         => Security.ExecuteInTransactionAsync(async ct =>
         {

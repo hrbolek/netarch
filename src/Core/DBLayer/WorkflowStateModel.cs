@@ -6,6 +6,9 @@ namespace WebAppArchitecture.DBLayer;
 // Digital Processes - definition models
 // ============================================================
 
+/// <summary>
+/// Stav stavového automatu jedné verze workflow, na který mohou odkazovat pravidla přístupu, přechody a běžící žádosti.
+/// </summary>
 public sealed record WorkflowStateModel(
     Guid id,
     Guid workflow_version_id,

@@ -12,21 +12,45 @@ using WebAppArchitecture.DigitalProcesses.UI.Pages;
 
 namespace WebAppArchitecture.DigitalProcesses.Resolvers;
 
+/// <summary>
+/// HTTP resolver pro Form Node Resolvers. Překládá požadavky Minimal API na volání služeb a návratové modely; obchodní pravidla a perzistence patří do Services/DBLayer.
+/// </summary>
 public static class FormNodeResolvers
 {
     private const string Prefix = "/digital-processes";
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: Read, List, Link, CreateContainedInVersionAsync, CreateContainedInNodeAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> Read(Guid id, HttpContext http, IFormNodeService service, CancellationToken ct) => BaseResolvers.Read<FormNodeModel,FormNodeResponse,IFormNodeService>(id,http,service,ct);
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: List, Link, CreateContainedInVersionAsync, CreateContainedInNodeAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> List(HttpContext http, IFormNodeService service, CancellationToken ct) => BaseResolvers.List<FormNodeModel,FormNodeResponse,IFormNodeService>(http,service,ct);
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: Link, CreateContainedInVersionAsync, CreateContainedInNodeAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> Link(Guid id, HttpContext http, IFormNodeService service, CancellationToken ct) => BaseResolvers.Link<FormNodeModel,FormNodeResponse,IFormNodeService>(id,http,service,ct);
 
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateContainedInVersionAsync, CreateContainedInNodeAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static DigitalProcessCreatePageModel CreatePage() => DigitalProcessCreateForm.Page("Create form node", Prefix+"/FormNodeResponse/create-form", Prefix+"/FormNodeResponse/list", "Adds a node to a draft form-version tree. The materialized path is computed by the service.", DigitalProcessCreateForm.GuidField("form_version_id","Form version ID"), DigitalProcessCreateForm.Text("key","Key"), DigitalProcessCreateForm.GuidField("node_type_id","Node type ID"), DigitalProcessCreateForm.GuidField("parent_id","Parent node ID",false), DigitalProcessCreateForm.Text("label","Label",false), DigitalProcessCreateForm.TextArea("description","Description",false), DigitalProcessCreateForm.Number("position","Position","0"), DigitalProcessCreateForm.Number("min_occurs","Min occurs","1","0"), DigitalProcessCreateForm.Number("max_occurs","Max occurs","1","1"), DigitalProcessCreateForm.Check("own_security_scope","Own security scope"), DigitalProcessCreateForm.TextArea("configuration_json","Configuration JSON",false));
 
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateContainedInVersionAsync, CreateContainedInNodeAsync, MoveAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<FormNodeResponse> CreateInVersion(CreateFormNodeRequest request, IFormNodeService service, CancellationToken ct)
         => service.CreateContainedInVersionAsync(request, ct);
 
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateContainedInNodeAsync, CreateContainedInVersionAsync, MoveAsync, GetSubtreeAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<FormNodeResponse> CreateInNode(CreateFormNodeRequest request, IFormNodeService service, CancellationToken ct)
         => service.CreateContainedInNodeAsync(request, ct);
 
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateContainedInVersionAsync, CreateContainedInNodeAsync, MoveAsync, GetSubtreeAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static async Task<IResult> CreateForm(HttpContext http, IFormNodeService service, CancellationToken ct)
     {
         var f = await http.Request.ReadFormAsync(ct);
@@ -36,10 +60,19 @@ public static class FormNodeResolvers
             : await service.CreateContainedInNodeAsync(request, ct);
         return Results.Redirect(Prefix + "/FormNodeResponse/view/" + created.id);
     }
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: MoveAsync, GetSubtreeAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public static Task<FormNodeResponse> Move(Guid id, MoveFormNodeRequest request, IFormNodeService service, CancellationToken ct) => service.MoveAsync(id, request, ct);
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: GetSubtreeAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public static async Task<FormNodeResponse[]> Subtree(Guid id, IFormNodeService service, CancellationToken ct)
         => (await service.GetSubtreeAsync(id, ct)).ToArray();
 
+    /// <summary>
+    /// Registruje routy Minimal API a vazbu endpointů na Razor/JSON reprezentaci; samotné požadavky zpracovávají příslušné resolver metody.
+    /// </summary>
     public static void Map(IEndpointRouteBuilder endpoints, string prefix)
     {
         var group = endpoints.MapGroup(prefix + "/FormNodeResponse").WithTags("DigitalProcesses.Forms");

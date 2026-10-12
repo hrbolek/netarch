@@ -8,8 +8,14 @@ using WebAppArchitecture.DigitalProcesses.Models;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
+/// <summary>
+/// Typ Graphql Like Form Data Backend ve vrstvě Apps; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public sealed class GraphqlLikeFormDataBackend(HttpClient http, FormDataBackendOptions options, ILogger<GraphqlLikeFormDataBackend> logger, IHttpContextAccessor contextAccessor) : IFormDataBackend
 {
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public Task<FormBackendPreparedRequest> PreprocessAsync(FormBackendOperationRequest request, FormValueSnapshot values, CancellationToken ct = default)
     {
         logger.LogInformation("GraphQL preflight start: expressionCount={ExpressionCount}, snapshotFields={FieldCount}", request.Variables?.Count ?? 0, values.Values.Count);
@@ -20,6 +26,9 @@ public sealed class GraphqlLikeFormDataBackend(HttpClient http, FormDataBackendO
         return Task.FromResult(new FormBackendPreparedRequest(request.query, variables));
     }
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public async Task<FormBackendRawResponse> FetchAsync(FormBackendPreparedRequest request, CancellationToken ct = default)
     {
         var endpoint = options.Endpoint;
@@ -47,9 +56,15 @@ public sealed class GraphqlLikeFormDataBackend(HttpClient http, FormDataBackendO
         return new FormBackendRawResponse(payload);
     }
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public Task<JsonNode?> PostprocessAsync(FormBackendOperationRequest request, FormBackendRawResponse response, CancellationToken ct = default)
         => Task.FromResult(response.payload?.DeepClone());
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public async Task<JsonNode?> ExecuteAsync(FormBackendOperationRequest request, FormValueSnapshot values, CancellationToken ct = default)
     {
         var prepared = await PreprocessAsync(request, values, ct);

@@ -1,5 +1,8 @@
 namespace WebAppArchitecture.DigitalProcesses.Models;
 
+/// <summary>
+/// Typ Workflow Access Target Scopes ve vrstvě Apps; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public static class WorkflowAccessTargetScopes
 {
     public const string Request = "request";

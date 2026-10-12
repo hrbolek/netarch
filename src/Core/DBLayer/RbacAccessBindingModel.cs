@@ -3,6 +3,9 @@ using WebAppArchitecture.Base.Data;
 
 namespace WebAppArchitecture.DBLayer;
 
+/// <summary>
+/// Typ Rbac Access Binding ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public sealed record RbacAccessBindingModel(
     Guid id,
     Guid source_group_id,

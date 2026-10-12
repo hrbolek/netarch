@@ -5,6 +5,9 @@ namespace WebAppArchitecture.DigitalProcesses.Models;
 /// not WHO is allowed to start it. StartAsync must separately demand Create authorization.
 /// This policy is intentionally independent of a persistence provider.
 /// </summary>
+/// <summary>
+/// Typ Process Target Group Policy ve vrstvě Apps; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public static class ProcessTargetGroupPolicy
 {
     public static bool IsAllowed(

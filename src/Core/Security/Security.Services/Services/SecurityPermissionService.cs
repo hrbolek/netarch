@@ -3,6 +3,9 @@ using WebAppArchitecture.Security.Models;
 
 namespace WebAppArchitecture.Security.Services;
 
+/// <summary>
+/// Služba Security Permission Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public sealed class SecurityPermissionService(IDBLayer db) : ISecurityPermissionService
 {
     public Task<RbacPermissionResponse> GetPermissionsAsync(

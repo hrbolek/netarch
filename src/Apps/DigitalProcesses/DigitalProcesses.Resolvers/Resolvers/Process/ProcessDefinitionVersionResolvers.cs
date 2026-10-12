@@ -14,13 +14,28 @@ using WebAppArchitecture.DigitalProcesses.UI.Pages;
 
 namespace WebAppArchitecture.DigitalProcesses.Resolvers;
 
+/// <summary>
+/// HTTP resolver pro Process Definition Version Resolvers. Překládá požadavky Minimal API na volání služeb a návratové modely; obchodní pravidla a perzistence patří do Services/DBLayer.
+/// </summary>
 public static class ProcessDefinitionVersionResolvers
 {
     private const string Prefix = "/digital-processes";
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: Read, List, Link; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> Read(Guid id, HttpContext http, IProcessDefinitionVersionService service, CancellationToken ct) => BaseResolvers.Read<ProcessDefinitionVersionModel,ProcessDefinitionVersionResponse,IProcessDefinitionVersionService>(id,http,service,ct);
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: List, Link; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> List(HttpContext http, IProcessDefinitionVersionService service, CancellationToken ct) => BaseResolvers.List<ProcessDefinitionVersionModel,ProcessDefinitionVersionResponse,IProcessDefinitionVersionService>(http,service,ct);
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: Link, CreateContainedAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> Link(Guid id, HttpContext http, IProcessDefinitionVersionService service, CancellationToken ct) => BaseResolvers.Link<ProcessDefinitionVersionModel,ProcessDefinitionVersionResponse,IProcessDefinitionVersionService>(id,http,service,ct);
 
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateContainedAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public static DigitalProcessCreatePageModel CreatePage() => DigitalProcessCreateForm.Page(
         "Create process definition version", Prefix + "/ProcessDefinitionVersionResponse/create-form",
         Prefix + "/ProcessDefinitionVersionResponse/list",
@@ -33,17 +48,29 @@ public static class ProcessDefinitionVersionResolvers
         DigitalProcessCreateForm.EntityLookup("target_group_type_id", "Allowed target group type", "/architecture/GroupTypeResponse/list", ["name"]),
         DigitalProcessCreateForm.Check("publish", "Publish immediately"));
 
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateContainedAsync, PublishAsync, Query, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<ProcessDefinitionVersionResponse> CreateApi(CreateProcessDefinitionVersionRequest request, IProcessDefinitionVersionService service, CancellationToken ct)
         => service.CreateContainedAsync(request, ct);
 
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateContainedAsync, PublishAsync, Query, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static async Task<IResult> CreateForm(HttpContext http, IProcessDefinitionVersionService service, ISecurityLayer security, CancellationToken ct)
     {
         var f = await http.Request.ReadFormAsync(ct);
         var created = await service.CreateContainedAsync(new CreateProcessDefinitionVersionRequest(DigitalProcessCreateForm.GuidValue(f,"process_definition_id"),DigitalProcessCreateForm.GuidValue(f,"form_version_id"),DigitalProcessCreateForm.GuidValue(f,"workflow_version_id"),security.Query<ProcessDefinitionVersionModel>(SecurityOperations.Read).Where(x => x.process_definition_id == DigitalProcessCreateForm.GuidValue(f,"process_definition_id")).Select(x => x.version).ToArray().DefaultIfEmpty(0).Max()+1,DigitalProcessCreateForm.BoolValue(f,"publish"),DigitalProcessCreateForm.GuidValue(f,"target_group_type_id")), ct);
         return Results.Redirect(Prefix + "/ProcessDefinitionResponse/view/" + created.process_definition_id);
     }
+    /// <summary>
+    /// Provádí přechod životního cyklu; služba ověřuje stavové předpoklady a oprávnění před uložením změn. Volání: PublishAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public static Task<ProcessDefinitionVersionResponse> Publish(Guid id, IProcessDefinitionVersionService service, CancellationToken ct) => service.PublishAsync(id, ct);
 
+    /// <summary>
+    /// Registruje routy Minimal API a vazbu endpointů na Razor/JSON reprezentaci; samotné požadavky zpracovávají příslušné resolver metody.
+    /// </summary>
     public static void Map(IEndpointRouteBuilder endpoints, string prefix)
     {
         var group = endpoints.MapGroup(prefix + "/ProcessDefinitionVersionResponse").WithTags("DigitalProcesses.Process");

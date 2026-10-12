@@ -6,6 +6,9 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
+/// <summary>
+/// Služba I Workflow Definition Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public interface IWorkflowDefinitionService : IBaseService<WorkflowDefinitionModel, WorkflowDefinitionResponse>
 {
     Task<WorkflowDefinitionResponse> CreateTypedAsync(CreateWorkflowDefinitionRequest request, CancellationToken ct = default);

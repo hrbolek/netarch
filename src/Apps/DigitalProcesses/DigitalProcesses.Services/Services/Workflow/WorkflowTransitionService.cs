@@ -5,9 +5,15 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
+/// <summary>
+/// Služba Workflow Transition Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public sealed class WorkflowTransitionService(ISecurityLayer security)
     : BaseService<WorkflowTransitionModel, WorkflowTransitionResponse>(security), IWorkflowTransitionService
 {
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: GetByIdAsync, CurrentUserId; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<WorkflowTransitionResponse> CreateContainedAsync(CreateWorkflowTransitionRequest request, CancellationToken ct = default)
     {
         var (workflowVersion, _) = await CreationScopeGuard.RequireEntityAsync<WorkflowVersionModel>(
@@ -35,6 +41,9 @@ public sealed class WorkflowTransitionService(ISecurityLayer security)
             return WorkflowTransitionResponse.FromModel(x);
         }, ct);
     }
+    /// <summary>
+    /// Zpracovává změnu existující entity; ověření oprávnění a integrity musí probíhat ve službě, ne pouze v UI. Volání: GetByIdAsync, StageUpdateAsync, CurrentUserId, SaveChangesAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task UpdateDefinitionAsync(Guid id, Guid sourceId, Guid targetId, string key, string name, bool noteRequired, string? condition, string? action, CancellationToken ct = default)
     {
         var transition = await Security.GetByIdAsync<WorkflowTransitionModel>(id, SecurityOperations.Update, ct)
@@ -53,6 +62,9 @@ public sealed class WorkflowTransitionService(ISecurityLayer security)
         await Security.SaveChangesAsync(ct);
     }
 
+    /// <summary>
+    /// Požaduje odstranění entity; pravidla mazání závislostí a RBAC se uplatňují ve službě. Volání: GetByIdAsync, StageDeleteAsync, SaveChangesAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task DeleteDefinitionAsync(Guid id, CancellationToken ct = default)
     {
         var transition = await Security.GetByIdAsync<WorkflowTransitionModel>(id, SecurityOperations.Delete, ct)

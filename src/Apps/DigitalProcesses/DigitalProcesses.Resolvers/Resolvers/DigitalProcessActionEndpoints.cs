@@ -13,6 +13,9 @@ namespace WebAppArchitecture.DigitalProcesses.Resolvers;
 /// Never expose an action for a record which is not readable through RBAC.
 /// Entity-specific actions (publish, clone, transitions) remain on their owning editors.
 /// </summary>
+/// <summary>
+/// Typ Digital Process Action Endpoints ve vrstvě Apps; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public static class DigitalProcessActionEndpoints
 {
     public static RouteHandlerBuilder MapActions<TEntity>(

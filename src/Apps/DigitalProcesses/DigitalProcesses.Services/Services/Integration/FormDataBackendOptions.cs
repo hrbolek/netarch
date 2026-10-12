@@ -5,6 +5,9 @@ using WebAppArchitecture.DigitalProcesses.Models;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
+/// <summary>
+/// Typ Form Data Backend Options ve vrstvě Apps; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public sealed class FormDataBackendOptions
 {
     public string? Endpoint { get; set; }

@@ -3,6 +3,9 @@ using WebAppArchitecture.Base.Data;
 
 namespace WebAppArchitecture.DBLayer;
 
+/// <summary>
+/// Časově omezené členství uživatele ve skupině. Je nezávislé na udělených rolích; skončení členství automaticky neruší přístupová práva z rolí.
+/// </summary>
 public sealed record MembershipModel(
     Guid id,
     Guid group_id,

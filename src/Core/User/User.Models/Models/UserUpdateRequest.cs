@@ -4,6 +4,9 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.User.Models;
 
+/// <summary>
+/// Vstupní kontrakt User Update Request. Přijímá pouze údaje od klienta; identita konajícího uživatele a bezpečnostní kontext se ověřují na serveru.
+/// </summary>
 public sealed record UserUpdateRequest(
     Guid id,
     string Name,
@@ -13,9 +16,15 @@ public sealed record UserUpdateRequest(
     string? surname = null
 ) : IUpdateDTOModel<UserModel>
 {
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public static UserUpdateRequest FromModel(UserModel model)
         => new(model.id, model.Name, model.updated_at, model.updated_by, model.email, model.surname);
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: RbacWellKnown; pořadí a parametry viz implementace.
+    /// </summary>
     public UserModel ApplyTo(UserModel model) => model with
     {
         Name = Name,
@@ -25,6 +34,9 @@ public sealed record UserUpdateRequest(
         updated_by = updated_by ?? model.updated_by
     };
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: RbacWellKnown; pořadí a parametry viz implementace.
+    /// </summary>
     public UserModel ToModel() => new(
         id,
         Name,

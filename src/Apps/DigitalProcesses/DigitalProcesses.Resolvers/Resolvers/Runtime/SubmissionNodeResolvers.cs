@@ -11,20 +11,47 @@ using WebAppArchitecture.DigitalProcesses.UI.Pages;
 
 namespace WebAppArchitecture.DigitalProcesses.Resolvers;
 
+/// <summary>
+/// HTTP resolver pro Submission Node Resolvers. Překládá požadavky Minimal API na volání služeb a návratové modely; obchodní pravidla a perzistence patří do Services/DBLayer.
+/// </summary>
 public static class SubmissionNodeResolvers
 {
     private const string Prefix = "/digital-processes";
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: Read, List, Link, CreateInSubmissionAsync, CreateInNodeAsync, SetValueAsync, GetSubtreeAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> Read(Guid id, HttpContext http, ISubmissionNodeService service, CancellationToken ct) => BaseResolvers.Read<SubmissionNodeModel,SubmissionNodeResponse,ISubmissionNodeService>(id,http,service,ct);
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: List, Link, CreateInSubmissionAsync, CreateInNodeAsync, SetValueAsync, GetSubtreeAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> List(HttpContext http, ISubmissionNodeService service, CancellationToken ct) => BaseResolvers.List<SubmissionNodeModel,SubmissionNodeResponse,ISubmissionNodeService>(http,service,ct);
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: Link, CreateInSubmissionAsync, CreateInNodeAsync, SetValueAsync, GetSubtreeAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> Link(Guid id, HttpContext http, ISubmissionNodeService service, CancellationToken ct) => BaseResolvers.Link<SubmissionNodeModel,SubmissionNodeResponse,ISubmissionNodeService>(id,http,service,ct);
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateInSubmissionAsync, CreateInNodeAsync, SetValueAsync, GetSubtreeAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public static Task<SubmissionNodeResponse> CreateInSubmission(CreateSubmissionNodeRequest request, ISubmissionNodeService service, CancellationToken ct)
         => service.CreateInSubmissionAsync(request, ct);
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateInNodeAsync, SetValueAsync, GetSubtreeAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public static Task<SubmissionNodeResponse> CreateInNode(CreateSubmissionNodeRequest request, ISubmissionNodeService service, CancellationToken ct)
         => service.CreateInNodeAsync(request, ct);
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: SetValueAsync, GetSubtreeAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public static Task<SubmissionNodeResponse> SetValue(Guid id, SetSubmissionNodeValueRequest request, ISubmissionNodeService service, CancellationToken ct) => service.SetValueAsync(id, request, ct);
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: GetSubtreeAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public static async Task<SubmissionNodeResponse[]> Subtree(Guid id, ISubmissionNodeService service, CancellationToken ct)
         => (await service.GetSubtreeAsync(id, ct)).ToArray();
 
+    /// <summary>
+    /// Registruje routy Minimal API a vazbu endpointů na Razor/JSON reprezentaci; samotné požadavky zpracovávají příslušné resolver metody.
+    /// </summary>
     public static void Map(IEndpointRouteBuilder endpoints, string prefix)
     {
         var group = endpoints.MapGroup(prefix + "/SubmissionNodeResponse").WithTags("DigitalProcesses.Runtime");

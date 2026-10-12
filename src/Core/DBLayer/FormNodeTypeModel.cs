@@ -6,6 +6,9 @@ namespace WebAppArchitecture.DBLayer;
 // Digital Processes - definition models
 // ============================================================
 
+/// <summary>
+/// Typ Form Node Type ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public sealed record FormNodeTypeModel(
     Guid id,
     Guid? parent_type_id,

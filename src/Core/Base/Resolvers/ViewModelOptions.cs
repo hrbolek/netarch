@@ -11,6 +11,9 @@ namespace WebAppArchitecture.Base.Endpoints;
 // Response mode
 // ============================================================
 
+/// <summary>
+/// Typ View Options ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public sealed class ViewModelOptions
 {
     /// <summary>

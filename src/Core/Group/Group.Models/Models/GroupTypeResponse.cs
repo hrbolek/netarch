@@ -5,6 +5,9 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.Group.Models;
 
+/// <summary>
+/// Výstupní DTO entity Group Type response. Odděluje datový model od kontraktu API a Razor pohledů; vytváří se mapováním doménového/databázového modelu.
+/// </summary>
 public sealed record GroupTypeResponse(
     Guid id,
     string Name,
@@ -19,6 +22,9 @@ public sealed record GroupTypeResponse(
     string visual_label = ""
 ) : IEntityDTOModel<GroupTypeModel, GroupTypeResponse>, ISecuredEntityDTOModel
 {
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public static GroupTypeResponse FromModel(GroupTypeModel model) => new(
         model.id, model.Name, model.parent_group_type_id, model.path, model.rbacobject_id,
         model.created_at, model.updated_at, model.created_by, model.updated_by, model.parent_group_type_name, model.Name);
@@ -27,6 +33,9 @@ public sealed record GroupTypeResponse(
         model.id, model.Name, model.parent_group_type_id, model.path, model.rbacobject_id,
         model.created_at, model.updated_at, model.created_by, model.updated_by, model.parent_group_type_name, model.Name);
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public GroupTypeModel ToModel() => new(id, Name, parent_group_type_id, path, rbacobject_id,
         created_at, updated_at, created_by, updated_by)
     {

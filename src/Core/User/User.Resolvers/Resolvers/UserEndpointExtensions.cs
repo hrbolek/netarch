@@ -27,8 +27,14 @@ using WebAppArchitecture.Group.Services;
 
 namespace WebAppArchitecture.User.Resolvers;
 
+/// <summary>
+/// Typ User Endpoint Extensions ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public static class UserEndpointExtensions
 {
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public static IEndpointRouteBuilder MapUserEndpoints(this IEndpointRouteBuilder endpoints, string prefix)
     {
         var group = endpoints

@@ -5,6 +5,9 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.SecurityLayer;
 
+/// <summary>
+/// Typ Security Layer ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public sealed class SecurityLayer(
     IDBLayer db,
     ISecurityService securityService,
@@ -112,15 +115,24 @@ public sealed class SecurityLayer(
     }
 
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: SaveChangesAsync, ExecuteInTransactionAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         => db.SaveChangesAsync(cancellationToken);
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: ExecuteInTransactionAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public Task ExecuteInTransactionAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default)
         => db.ExecuteInTransactionAsync(action, cancellationToken);
 
     public Task<TResult> ExecuteInTransactionAsync<TResult>(Func<CancellationToken, Task<TResult>> action, CancellationToken cancellationToken = default)
         => db.ExecuteInTransactionAsync(action, cancellationToken);
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public Task<bool> IsAllowedAsync(Guid rbacId, string operation, CancellationToken cancellationToken = default)
         => securityService.IsAllowedAsync(CurrentUserId, rbacId, operation, cancellationToken);
 

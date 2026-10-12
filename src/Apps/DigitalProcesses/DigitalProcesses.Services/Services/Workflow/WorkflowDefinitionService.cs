@@ -6,9 +6,15 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
+/// <summary>
+/// Služba Workflow Definition Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public sealed class WorkflowDefinitionService(ISecurityLayer security, ISecurityProjectionService securityProjection)
     : BaseService<WorkflowDefinitionModel, WorkflowDefinitionResponse>(security), IWorkflowDefinitionService
 {
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CurrentUserId, ExecuteInTransactionAsync, StageCreateAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<WorkflowDefinitionResponse> CreateTypedAsync(CreateWorkflowDefinitionRequest request, CancellationToken ct = default)
     {
         var (catalog, _) = await CreationScopeGuard.RequireEntityAsync<GroupModel>(

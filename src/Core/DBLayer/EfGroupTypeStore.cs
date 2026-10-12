@@ -5,14 +5,23 @@ using WebAppArchitecture.Base.Security;
 
 namespace WebAppArchitecture.DBLayer;
 
+/// <summary>
+/// Datová komponenta Ef Group Type Store. Připravuje dotazy a zápisy pro vyšší vrstvy bez vykreslování HTML a bez HTTP odpovědností.
+/// </summary>
 public sealed class EfGroupTypeStore(ApplicationDbContext db) : EfStore<GroupTypeModel>(db), IGroupTypeStore
 {
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách.
+    /// </summary>
     public override async Task<GroupTypeModel> CreateAsync(GroupTypeModel model, CancellationToken cancellationToken = default)
     {
         var path = await BuildPathAsync(model.id, model.parent_group_type_id, cancellationToken);
         return await base.CreateAsync(model with { path = path }, cancellationToken);
     }
 
+    /// <summary>
+    /// Zpracovává změnu existující entity; ověření oprávnění a integrity musí probíhat ve službě, ne pouze v UI.
+    /// </summary>
     public override async Task<GroupTypeModel> UpdateAsync(GroupTypeModel model, CancellationToken cancellationToken = default)
     {
         await EnsureNoCycleAsync(model.id, model.parent_group_type_id, cancellationToken);

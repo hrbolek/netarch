@@ -11,6 +11,9 @@ namespace WebAppArchitecture.Base.Endpoints;
 // Response mode
 // ============================================================
 
+/// <summary>
+/// Typ View Default Representation ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public enum ViewModelDefaultRepresentation
 {
     Html,

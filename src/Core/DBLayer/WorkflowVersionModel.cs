@@ -6,6 +6,9 @@ namespace WebAppArchitecture.DBLayer;
 // Digital Processes - definition models
 // ============================================================
 
+/// <summary>
+/// Konkrétní verze definice workflow. Stavy a přechody patří k této verzi; proces vybírá explicitní workflow verzi.
+/// </summary>
 public sealed record WorkflowVersionModel(
     Guid id,
     Guid workflow_definition_id,

@@ -12,18 +12,39 @@ using WebAppArchitecture.DigitalProcesses.UI.Pages;
 
 namespace WebAppArchitecture.DigitalProcesses.Resolvers;
 
+/// <summary>
+/// HTTP resolver pro Workflow State Resolvers. Překládá požadavky Minimal API na volání služeb a návratové modely; obchodní pravidla a perzistence patří do Services/DBLayer.
+/// </summary>
 public static class WorkflowStateResolvers
 {
     private const string Prefix = "/digital-processes";
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: Read, List, Link, CreateContainedAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> Read(Guid id, HttpContext http, IWorkflowStateService service, CancellationToken ct) => BaseResolvers.Read<WorkflowStateModel,WorkflowStateResponse,IWorkflowStateService>(id,http,service,ct);
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: List, Link, CreateContainedAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> List(HttpContext http, IWorkflowStateService service, CancellationToken ct) => BaseResolvers.List<WorkflowStateModel,WorkflowStateResponse,IWorkflowStateService>(http,service,ct);
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: Link, CreateContainedAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> Link(Guid id, HttpContext http, IWorkflowStateService service, CancellationToken ct) => BaseResolvers.Link<WorkflowStateModel,WorkflowStateResponse,IWorkflowStateService>(id,http,service,ct);
 
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateContainedAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static DigitalProcessCreatePageModel CreatePage() => DigitalProcessCreateForm.Page("Create workflow state", Prefix+"/WorkflowStateResponse/create-form", Prefix+"/WorkflowStateResponse/list", "Adds a state to a draft workflow version.", DigitalProcessCreateForm.GuidField("workflow_version_id","Workflow version ID"),DigitalProcessCreateForm.Text("key","Key"),DigitalProcessCreateForm.Text("name","Name"),DigitalProcessCreateForm.TextArea("description","Description",false),DigitalProcessCreateForm.Check("is_initial","Initial state"),DigitalProcessCreateForm.Check("is_terminal","Terminal state"),DigitalProcessCreateForm.Number("position","Position","0"));
 
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateContainedAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<WorkflowStateResponse> CreateApi(CreateWorkflowStateRequest request, IWorkflowStateService service, CancellationToken ct)
         => service.CreateContainedAsync(request, ct);
 
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateContainedAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static async Task<IResult> CreateForm(HttpContext http, IWorkflowStateService service, CancellationToken ct)
     {
         var f = await http.Request.ReadFormAsync(ct);
@@ -31,6 +52,9 @@ public static class WorkflowStateResolvers
         return Results.Redirect(Prefix + "/WorkflowStateResponse/view/" + created.id);
     }
 
+    /// <summary>
+    /// Registruje routy Minimal API a vazbu endpointů na Razor/JSON reprezentaci; samotné požadavky zpracovávají příslušné resolver metody.
+    /// </summary>
     public static void Map(IEndpointRouteBuilder endpoints, string prefix)
     {
         var group = endpoints.MapGroup(prefix + "/WorkflowStateResponse").WithTags("DigitalProcesses.Workflow");

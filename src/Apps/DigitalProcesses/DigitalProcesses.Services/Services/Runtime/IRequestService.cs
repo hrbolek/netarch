@@ -6,6 +6,9 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
+/// <summary>
+/// Vstupní kontrakt I Request Service. Přijímá pouze údaje od klienta; identita konajícího uživatele a bezpečnostní kontext se ověřují na serveru.
+/// </summary>
 public interface IRequestService : IBaseService<RequestModel, RequestResponse>
 {
     Task<RequestResponse> StartAsync(StartRequestRequest request, CancellationToken ct = default);

@@ -7,8 +7,14 @@ namespace WebAppArchitecture.SecurityLayer;
 /// Runtime mutations use impact-based synchronization. Full rebuild is reserved for
 /// bootstrap/restore/repair scenarios.
 /// </summary>
+/// <summary>
+/// Služba Security Projection Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public sealed class SecurityProjectionService(IDBLayer db) : ISecurityProjectionService
 {
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: ExecuteInTransactionAsync, StageDeleteWhereAsync, SaveChangesAsync, StageCreateRangeAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public Task RebuildAllAsync(CancellationToken cancellationToken = default)
         => db.ExecuteInTransactionAsync(async ct =>
         {
@@ -22,9 +28,15 @@ public sealed class SecurityProjectionService(IDBLayer db) : ISecurityProjection
             await db.SaveChangesAsync(ct);
         }, cancellationToken);
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public Task SynchronizeRbacObjectAsync(Guid rbacObjectId, CancellationToken cancellationToken = default)
         => SynchronizeRbacObjectsAsync([rbacObjectId], cancellationToken);
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public Task SynchronizeRbacObjectsAsync(IEnumerable<Guid> rbacObjectIds, CancellationToken cancellationToken = default)
     {
         var ids = rbacObjectIds.Where(x => x != Guid.Empty).Distinct().ToArray();
@@ -35,6 +47,9 @@ public sealed class SecurityProjectionService(IDBLayer db) : ISecurityProjection
     /// Synchronizes all RBAC objects that can be affected by roles rooted in the
     /// supplied groups: group descendants and exact targets of functional access bindings
     /// sourced from those descendants. Membership never affects roles or EffectiveAccess.
+    /// </summary>
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
     /// </summary>
     public Task SynchronizeRoleImpactAsync(IEnumerable<Guid> sourceGroupIds, CancellationToken cancellationToken = default)
     {
@@ -47,6 +62,9 @@ public sealed class SecurityProjectionService(IDBLayer db) : ISecurityProjection
     /// <summary>
     /// Synchronizes one group subtree and all User/binding targets whose effective
     /// rights can be changed by that subtree.
+    /// </summary>
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: Query; pořadí a parametry viz implementace.
     /// </summary>
     public Task SynchronizeGroupSubtreeAsync(Guid rootGroupId, CancellationToken cancellationToken = default)
         => SynchronizeRoleImpactAsync([rootGroupId], cancellationToken);

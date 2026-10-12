@@ -6,6 +6,9 @@ namespace WebAppArchitecture.DBLayer;
 // Digital Processes - definition models
 // ============================================================
 
+/// <summary>
+/// Uzel stromu konkrétní verze formuláře; reprezentuje pole, sekci či zobrazovací prvek. Pořadí sourozenců je dáno pozicí, ne lexikografickým pořadím cesty.
+/// </summary>
 public sealed record FormNodeModel(
     Guid id,
     Guid form_version_id,

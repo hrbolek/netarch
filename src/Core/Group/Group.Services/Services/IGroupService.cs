@@ -5,6 +5,9 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.Group.Services;
 
+/// <summary>
+/// Služba I Group Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public interface IGroupService : IBaseService<GroupModel, GroupResponse>
 {
     Task<GroupResponse> CreateContainedAsync(GroupCreateContainedRequest request, CancellationToken cancellationToken = default);

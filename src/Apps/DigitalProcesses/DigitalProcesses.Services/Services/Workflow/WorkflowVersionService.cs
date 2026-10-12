@@ -5,9 +5,15 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
+/// <summary>
+/// Služba Workflow Version Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public sealed class WorkflowVersionService(ISecurityLayer security)
     : BaseService<WorkflowVersionModel, WorkflowVersionResponse>(security), IWorkflowVersionService
 {
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CurrentUserId, ExecuteInTransactionAsync, StageCreateAsync, Query; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<WorkflowVersionResponse> CreateContainedAsync(CreateWorkflowVersionRequest request, CancellationToken ct = default)
     {
         var (definition, _) = await CreationScopeGuard.RequireEntityAsync<WorkflowDefinitionModel>(
@@ -61,6 +67,9 @@ public sealed class WorkflowVersionService(ISecurityLayer security)
         return request.publish ? await PublishAsync(created.id, ct) : created;
     }
 
+    /// <summary>
+    /// Požaduje odstranění entity; pravidla mazání závislostí a RBAC se uplatňují ve službě. Volání: GetByIdAsync, Query; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task DeleteDraftAsync(Guid id, CancellationToken ct = default)
     {
         var version = await Security.GetByIdAsync<WorkflowVersionModel>(id, SecurityOperations.Delete, ct)
@@ -89,6 +98,9 @@ public sealed class WorkflowVersionService(ISecurityLayer security)
         }, ct);
     }
 
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: GetByIdAsync, Query; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<WorkflowDesignerResponse> GetDesignerAsync(Guid id, CancellationToken ct = default)
     {
         var version = await Security.GetByIdAsync<WorkflowVersionModel>(id, SecurityOperations.Read, ct)
@@ -104,6 +116,9 @@ public sealed class WorkflowVersionService(ISecurityLayer security)
         return new(WorkflowVersionResponse.FromModel(version), states, transitions);
     }
 
+    /// <summary>
+    /// Provádí přechod životního cyklu; služba ověřuje stavové předpoklady a oprávnění před uložením změn. Volání: GetByIdAsync, Query, CurrentUserId, ExecuteInTransactionAsync, StageUpdateAsync, SaveChangesAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<WorkflowVersionResponse> PublishAsync(Guid id, CancellationToken ct = default)
     {
         var model = await Security.GetByIdAsync<WorkflowVersionModel>(id, SecurityOperations.Update, ct)

@@ -15,6 +15,9 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.Security.Resolvers;
 
+/// <summary>
+/// HTTP resolver pro Security Resolvers. Překládá požadavky Minimal API na volání služeb a návratové modely; obchodní pravidla a perzistence patří do Services/DBLayer.
+/// </summary>
 public static class SecurityResolvers
 {
     public static async Task<IResult> Operations(

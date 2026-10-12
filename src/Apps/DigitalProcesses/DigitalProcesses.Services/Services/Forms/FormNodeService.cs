@@ -7,8 +7,14 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
+/// <summary>
+/// Služba Form Node Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public sealed class FormNodeService(ISecurityLayer security) : BaseService<FormNodeModel, FormNodeResponse>(security), IFormNodeService
 {
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách.
+    /// </summary>
     public Task<FormNodeResponse> CreateContainedInVersionAsync(CreateFormNodeRequest request, CancellationToken ct = default)
     {
         if (request.parent_id is not null)
@@ -16,6 +22,9 @@ public sealed class FormNodeService(ISecurityLayer security) : BaseService<FormN
         return CreateCoreAsync(request, null, ct);
     }
 
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: GetByIdAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<FormNodeResponse> CreateContainedInNodeAsync(CreateFormNodeRequest request, CancellationToken ct = default)
     {
         if (request.parent_id is not Guid parentId)
@@ -83,6 +92,9 @@ public sealed class FormNodeService(ISecurityLayer security) : BaseService<FormN
         }, ct);
     }
 
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: Query, GetByIdAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public Task<IReadOnlyCollection<FormNodeResponse>> GetSubtreeAsync(Guid id, CancellationToken ct = default)
     {
         var root=Security.Query<FormNodeModel>(SecurityOperations.Read).SingleOrDefault(x=>x.id==id) ?? throw new KeyNotFoundException("Form node not found.");
@@ -90,6 +102,9 @@ public sealed class FormNodeService(ISecurityLayer security) : BaseService<FormN
         return Task.FromResult(result);
     }
 
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: GetByIdAsync, Query; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<FormTreeResponse> GetTreeAsync(Guid formVersionId, CancellationToken ct = default)
     {
         var form=await Security.GetByIdAsync<FormVersionModel>(formVersionId,SecurityOperations.Read,ct) ?? throw new KeyNotFoundException("Form version not found.");
@@ -98,6 +113,9 @@ public sealed class FormNodeService(ISecurityLayer security) : BaseService<FormN
     }
 
 
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: Query; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<FormDesignerResponse> GetDesignerAsync(Guid formVersionId, CancellationToken ct = default)
     {
         var tree = await GetTreeAsync(formVersionId, ct);
@@ -120,6 +138,9 @@ public sealed class FormNodeService(ISecurityLayer security) : BaseService<FormN
         return new FormDesignerResponse(tree.form, tree.nodes, types, libraryItems);
     }
 
+    /// <summary>
+    /// Požaduje odstranění entity; pravidla mazání závislostí a RBAC se uplatňují ve službě. Volání: GetByIdAsync, Query, ExecuteInTransactionAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task DeleteSubtreeAsync(Guid id, CancellationToken ct = default)
     {
         var root = await Security.GetByIdAsync<FormNodeModel>(id, SecurityOperations.Delete, ct)
@@ -144,6 +165,9 @@ public sealed class FormNodeService(ISecurityLayer security) : BaseService<FormN
         }, ct);
     }
 
+    /// <summary>
+    /// Zpracovává změnu existující entity; ověření oprávnění a integrity musí probíhat ve službě, ne pouze v UI. Volání: GetByIdAsync, Query; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<FormNodeResponse> UpdateDefinitionAsync(Guid id, UpdateFormNodeRequest request, CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(request.key))
@@ -181,6 +205,9 @@ public sealed class FormNodeService(ISecurityLayer security) : BaseService<FormN
         return FormNodeResponse.FromModel(updated);
     }
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: GetByIdAsync, Query; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<IReadOnlyCollection<FormNodeResponse>> ImportSubtreeAsync(ImportFormSubtreeRequest request, CancellationToken ct = default)
     {
         var targetVersion = await Security.GetByIdAsync<FormVersionModel>(request.target_form_version_id, SecurityOperations.Update, ct)
@@ -280,6 +307,9 @@ public sealed class FormNodeService(ISecurityLayer security) : BaseService<FormN
         }, ct);
     }
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: GetByIdAsync, Query; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<FormNodeResponse> MoveAsync(Guid id, MoveFormNodeRequest request, CancellationToken ct = default)
     {
         var node=await Security.GetByIdAsync<FormNodeModel>(id,SecurityOperations.Update,ct) ?? throw new KeyNotFoundException("Form node not found or not editable.");

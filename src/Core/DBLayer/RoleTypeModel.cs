@@ -3,6 +3,9 @@ using WebAppArchitecture.Base.Data;
 
 namespace WebAppArchitecture.DBLayer;
 
+/// <summary>
+/// Definice druhu role a jejího oprávnění k operacím; konkrétní přidělení role se odkazuje na tento typ.
+/// </summary>
 public sealed record RoleTypeModel(
     Guid id,
     string name,

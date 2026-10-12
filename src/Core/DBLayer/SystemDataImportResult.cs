@@ -5,6 +5,9 @@ using WebAppArchitecture.Base.Security;
 
 namespace WebAppArchitecture.DBLayer;
 
+/// <summary>
+/// Typ System Data Import Result ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public sealed record SystemDataImportResult(
     int Users,
     int Groups,

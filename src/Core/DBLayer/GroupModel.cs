@@ -3,6 +3,9 @@ using WebAppArchitecture.Base.Data;
 
 namespace WebAppArchitecture.DBLayer;
 
+/// <summary>
+/// Uzel hierarchie skupin a RBAC objektů. Materializovaná cesta urychluje hledání předků a dědičnosti oprávnění; role a členství jsou samostatné vazby.
+/// </summary>
 public sealed record GroupModel(
     Guid id,
     string Name,

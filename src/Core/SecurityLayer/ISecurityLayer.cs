@@ -5,6 +5,9 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.SecurityLayer;
 
+/// <summary>
+/// Typ I Security Layer ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public interface ISecurityLayer
 {
     Guid CurrentUserId { get; }

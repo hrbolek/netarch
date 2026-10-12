@@ -6,6 +6,9 @@ using WebAppArchitecture.Base.Services;
 
 namespace WebAppArchitecture.Base.Resolvers;
 
+/// <summary>
+/// Typ Vector Query Parser ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public static class VectorQueryParser
 {
     public const int DefaultTake = 25;
@@ -121,6 +124,9 @@ public static class VectorQueryParser
         return true;
     }
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public static VectorPageInfo WithRequestState(HttpContext httpContext, VectorPageInfo pageInfo)
         => pageInfo with
         {
@@ -128,6 +134,9 @@ public static class VectorQueryParser
             HasOrderBy = !string.IsNullOrWhiteSpace(httpContext.Request.Query["order_by"].ToString())
         };
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public static void WritePagingHeaders(HttpContext httpContext, VectorPageInfo pageInfo)
     {
         httpContext.Response.Headers["X-Vector-Take"] = pageInfo.Take.ToString();
@@ -149,6 +158,9 @@ public static class VectorQueryParser
     private sealed class ReplaceParameterVisitor(ParameterExpression from, ParameterExpression to)
         : ExpressionVisitor
     {
+        /// <summary>
+        /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+        /// </summary>
         protected override Expression VisitParameter(ParameterExpression node)
             => node == from ? to : base.VisitParameter(node);
     }

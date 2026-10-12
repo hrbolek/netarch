@@ -6,6 +6,9 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
+/// <summary>
+/// Služba I Bulk Tree Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public interface IBulkTreeService
 {
     Task<FormTreeResponse> UpsertFormTreeAsync(Guid versionId, BulkFormTreeRequest request, CancellationToken ct = default);
@@ -16,8 +19,14 @@ public interface IBulkTreeService
 /// Batch, all-or-nothing commands for UIs and delegated AI agents. Omission never means deletion.
 /// The caller's identity is resolved by ISecurityLayer, not supplied in the request body.
 /// </summary>
+/// <summary>
+/// Služba Bulk Tree Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public sealed class BulkTreeService(ISecurityLayer security) : IBulkTreeService
 {
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: GetByIdAsync, Query; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<FormTreeResponse> UpsertFormTreeAsync(Guid versionId, BulkFormTreeRequest request, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(request);
@@ -108,6 +117,9 @@ public sealed class BulkTreeService(ISecurityLayer security) : IBulkTreeService
         return new FormTreeResponse(FormVersionResponse.FromModel(version), rows);
     }
 
+    /// <summary>
+    /// Zpracovává změnu existující entity; ověření oprávnění a integrity musí probíhat ve službě, ne pouze v UI. Volání: GetByIdAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<SubmissionTreeResponse> UpdateSubmissionValuesAsync(Guid submissionId, BulkSubmissionValuesRequest request, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(request);

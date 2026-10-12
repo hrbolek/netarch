@@ -5,6 +5,9 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.Group.Services;
 
+/// <summary>
+/// Služba Group Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public sealed class GroupService : BaseService<GroupModel, GroupResponse>, IGroupService
 {
     private readonly ISecurityProjectionService _projection;
@@ -73,6 +76,9 @@ public sealed class GroupService : BaseService<GroupModel, GroupResponse>, IGrou
         }, cancellationToken);
     }
 
+    /// <summary>
+    /// Požaduje odstranění entity; pravidla mazání závislostí a RBAC se uplatňují ve službě. Volání: GetByIdAsync, ExecuteInTransactionAsync, StageDeleteAsync, SaveChangesAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public override async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var current = await Security.GetByIdAsync<GroupModel>(id, SecurityOperations.Delete, cancellationToken);

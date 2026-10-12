@@ -1,5 +1,8 @@
 namespace WebAppArchitecture.Security.Models;
 
+/// <summary>
+/// Výstupní DTO entity Rbac Permission Item response. Odděluje datový model od kontraktu API a Razor pohledů; vytváří se mapováním doménového/databázového modelu.
+/// </summary>
 public sealed record RbacPermissionItemResponse(
     Guid role_id,
     Guid group_id,

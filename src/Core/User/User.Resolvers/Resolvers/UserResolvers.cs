@@ -27,8 +27,14 @@ using WebAppArchitecture.Group.Services;
 
 namespace WebAppArchitecture.User.Resolvers;
 
+/// <summary>
+/// HTTP resolver pro User Resolvers. Překládá požadavky Minimal API na volání služeb a návratové modely; obchodní pravidla a perzistence patří do Services/DBLayer.
+/// </summary>
 public static class UserResolvers
 {
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateContainedAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static IResult CreatePage(ICurrentActorProvider actorProvider, HttpContext httpContext)
     {
         if (actorProvider.TryGetActorUserId(httpContext) is null)

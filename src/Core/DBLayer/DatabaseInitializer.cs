@@ -3,6 +3,9 @@ using WebAppArchitecture.Base.Security;
 
 namespace WebAppArchitecture.DBLayer;
 
+/// <summary>
+/// Typ Database Initializer ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public static class DatabaseInitializer
 {
     public static async Task InitializeAsync(
@@ -12,11 +15,6 @@ public static class DatabaseInitializer
         CancellationToken cancellationToken = default)
     {
         await db.Database.EnsureCreatedAsync(cancellationToken);
-
-        // WAL persists in the SQLite database and allows readers to continue while
-        // a writer transaction is active. Foreign keys are also enabled on the
-        // initialization connection; normal runtime connections enable them via
-        // the connection string configured by Host.
 
         var now = DateTimeOffset.UtcNow;
 

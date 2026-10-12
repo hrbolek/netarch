@@ -5,8 +5,14 @@ using WebAppArchitecture.Base.Security;
 
 namespace WebAppArchitecture.DBLayer;
 
+/// <summary>
+/// Datová komponenta Ef Group Store. Připravuje dotazy a zápisy pro vyšší vrstvy bez vykreslování HTML a bez HTTP odpovědností.
+/// </summary>
 public sealed class EfGroupStore(ApplicationDbContext db) : EfStore<GroupModel>(db), IGroupStore
 {
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách.
+    /// </summary>
     public override async Task<GroupModel> CreateAsync(GroupModel model, CancellationToken cancellationToken = default)
     {
         var path = await BuildPathAsync(model.id, model.master_group_id, cancellationToken);
@@ -14,6 +20,9 @@ public sealed class EfGroupStore(ApplicationDbContext db) : EfStore<GroupModel>(
         return await base.CreateAsync(normalized, cancellationToken);
     }
 
+    /// <summary>
+    /// Zpracovává změnu existující entity; ověření oprávnění a integrity musí probíhat ve službě, ne pouze v UI.
+    /// </summary>
     public override async Task<GroupModel> UpdateAsync(GroupModel model, CancellationToken cancellationToken = default)
     {
         await EnsureNoCycleAsync(model.id, model.master_group_id, cancellationToken);

@@ -27,6 +27,9 @@ using WebAppArchitecture.Group.Services;
 
 namespace WebAppArchitecture.User.Resolvers;
 
+/// <summary>
+/// Vstupní kontrakt User Vector Request. Přijímá pouze údaje od klienta; identita konajícího uživatele a bezpečnostní kontext se ověřují na serveru.
+/// </summary>
 public sealed record UserVectorRequest(
     [property: System.Text.Json.Serialization.JsonPropertyName("where")]
     Dictionary<string, object?>? Where);

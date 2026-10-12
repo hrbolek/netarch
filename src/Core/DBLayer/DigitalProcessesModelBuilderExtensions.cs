@@ -4,8 +4,14 @@ using WebAppArchitecture.Base.Data;
 
 namespace WebAppArchitecture.DBLayer;
 
+/// <summary>
+/// Typ Digital Processes Builder Extensions ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 internal static class DigitalProcessesModelBuilderExtensions
 {
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public static void ConfigureDigitalProcesses(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<FormDefinitionModel>(e => { e.ToTable("dp_form_definitions"); e.HasKey(x => x.id); e.HasIndex(x => x.name); ConfigureSecured(e); });

@@ -7,6 +7,9 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 /// Shared read-only computation for form renderers. External evaluations use the
 /// existing secured IFormDataBackend/JSONata contract; no direct outbound URL is accepted.
 /// </summary>
+/// <summary>
+/// Služba I Form Calculation Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public interface IFormCalculationService
 {
     Task<JsonNode?> EvaluateAsync(JsonObject configuration,
@@ -14,6 +17,9 @@ public interface IFormCalculationService
         CancellationToken ct = default);
 }
 
+/// <summary>
+/// Služba Form Calculation Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public sealed class FormCalculationService(IFormDataBackend backend) : IFormCalculationService
 {
     public async Task<JsonNode?> EvaluateAsync(JsonObject configuration,
@@ -44,6 +50,9 @@ public sealed class FormCalculationService(IFormDataBackend backend) : IFormCalc
         return SelectPath(response, path)?.DeepClone();
     }
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public static JsonNode? SelectPath(JsonNode? value, string path)
     {
         foreach (var part in path.Split('.', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))

@@ -5,9 +5,15 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
+/// <summary>
+/// Služba Workflow State Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public sealed class WorkflowStateService(ISecurityLayer security)
     : BaseService<WorkflowStateModel, WorkflowStateResponse>(security), IWorkflowStateService
 {
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: Query, CurrentUserId; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<WorkflowStateResponse> CreateContainedAsync(CreateWorkflowStateRequest request, CancellationToken ct = default)
     {
         var (workflowVersion, _) = await CreationScopeGuard.RequireEntityAsync<WorkflowVersionModel>(
@@ -31,6 +37,9 @@ public sealed class WorkflowStateService(ISecurityLayer security)
             return WorkflowStateResponse.FromModel(x);
         }, ct);
     }
+    /// <summary>
+    /// Zpracovává změnu existující entity; ověření oprávnění a integrity musí probíhat ve službě, ne pouze v UI. Volání: GetByIdAsync, Query, StageUpdateAsync, CurrentUserId, SaveChangesAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task UpdateDefinitionAsync(Guid id, string key, string name, string? description, bool isInitial, bool isTerminal, int position, CancellationToken ct = default)
     {
         var state = await Security.GetByIdAsync<WorkflowStateModel>(id, SecurityOperations.Update, ct)
@@ -49,6 +58,9 @@ public sealed class WorkflowStateService(ISecurityLayer security)
         await Security.SaveChangesAsync(ct);
     }
 
+    /// <summary>
+    /// Požaduje odstranění entity; pravidla mazání závislostí a RBAC se uplatňují ve službě. Volání: GetByIdAsync, Query, StageDeleteAsync, SaveChangesAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task DeleteDefinitionAsync(Guid id, CancellationToken ct = default)
     {
         var state = await Security.GetByIdAsync<WorkflowStateModel>(id, SecurityOperations.Delete, ct)

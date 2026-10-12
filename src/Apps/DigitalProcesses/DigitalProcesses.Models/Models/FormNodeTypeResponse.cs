@@ -4,6 +4,9 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Models;
 
+/// <summary>
+/// Výstupní DTO entity Form Node Type response. Odděluje datový model od kontraktu API a Razor pohledů; vytváří se mapováním doménového/databázového modelu.
+/// </summary>
 public sealed record FormNodeTypeResponse(
     Guid id,
     Guid? parent_type_id,
@@ -21,7 +24,13 @@ public sealed record FormNodeTypeResponse(
     string visual_label = ""
 ) : IEntityDTOModel<FormNodeTypeModel, FormNodeTypeResponse>, ISecuredEntityDTOModel
 {
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public static FormNodeTypeResponse FromModel(FormNodeTypeModel model) => new(model.id, model.parent_type_id, model.name, model.renderer_key, model.can_have_children, model.can_have_value, model.can_repeat, model.configuration_schema_json, model.rbacobject_id, model.created_at, model.updated_at, model.created_by, model.updated_by, model.name);
     public static Expression<Func<FormNodeTypeModel, FormNodeTypeResponse>> Projection => model => new(model.id, model.parent_type_id, model.name, model.renderer_key, model.can_have_children, model.can_have_value, model.can_repeat, model.configuration_schema_json, model.rbacobject_id, model.created_at, model.updated_at, model.created_by, model.updated_by, model.name);
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public FormNodeTypeModel ToModel() => new(id, parent_type_id, name, renderer_key, can_have_children, can_have_value, can_repeat, configuration_schema_json, rbacobject_id, created_at, updated_at, created_by, updated_by);
 }

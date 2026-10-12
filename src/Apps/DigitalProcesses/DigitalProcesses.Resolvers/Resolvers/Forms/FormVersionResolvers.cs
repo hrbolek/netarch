@@ -13,33 +13,69 @@ using WebAppArchitecture.DigitalProcesses.UI.Designer;
 
 namespace WebAppArchitecture.DigitalProcesses.Resolvers;
 
+/// <summary>
+/// HTTP resolver pro Form Version Resolvers. Překládá požadavky Minimal API na volání služeb a návratové modely; obchodní pravidla a perzistence patří do Services/DBLayer.
+/// </summary>
 public static class FormVersionResolvers
 {
     private const string Prefix = "/digital-processes";
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: Read, List, Link, CreateContainedAsync, PublishAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> Read(Guid id, HttpContext http, IFormVersionService service, CancellationToken ct) => BaseResolvers.Read<FormVersionModel,FormVersionResponse,IFormVersionService>(id,http,service,ct);
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: List, Link, CreateContainedAsync, PublishAsync, GetTreeAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> List(HttpContext http, IFormVersionService service, CancellationToken ct) => BaseResolvers.List<FormVersionModel,FormVersionResponse,IFormVersionService>(http,service,ct);
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: Link, CreateContainedAsync, PublishAsync, GetTreeAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> Link(Guid id, HttpContext http, IFormVersionService service, CancellationToken ct) => BaseResolvers.Link<FormVersionModel,FormVersionResponse,IFormVersionService>(id,http,service,ct);
 
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateContainedAsync, PublishAsync, GetTreeAsync, GetDesignerAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static DigitalProcessCreatePageModel CreatePage() => DigitalProcessCreateForm.Page("Create form version", Prefix+"/FormVersionResponse/create-form", Prefix+"/FormVersionResponse/list", "Creates a draft version of an existing form definition.", DigitalProcessCreateForm.GuidField("form_definition_id","Form definition ID"), DigitalProcessCreateForm.Number("version","Version","1","1"), DigitalProcessCreateForm.Check("publish","Publish immediately"));
 
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateContainedAsync, PublishAsync, GetTreeAsync, GetDesignerAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<FormVersionResponse> CreateApi(CreateFormVersionRequest request, IFormVersionService service, CancellationToken ct)
         => service.CreateContainedAsync(request, ct);
 
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateContainedAsync, PublishAsync, GetTreeAsync, GetDesignerAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static async Task<IResult> CreateForm(HttpContext http, IFormVersionService service, CancellationToken ct)
     {
         var f = await http.Request.ReadFormAsync(ct);
         var created = await service.CreateContainedAsync(new CreateFormVersionRequest(DigitalProcessCreateForm.GuidValue(f,"form_definition_id"),DigitalProcessCreateForm.IntValue(f,"version"),DigitalProcessCreateForm.BoolValue(f,"publish")), ct);
         return Results.Redirect(Prefix + "/FormVersionResponse/designer/" + created.id);
     }
+    /// <summary>
+    /// Provádí přechod životního cyklu; služba ověřuje stavové předpoklady a oprávnění před uložením změn. Volání: PublishAsync, GetTreeAsync, GetDesignerAsync, ReadFormAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public static Task<FormVersionResponse> Publish(Guid id, IFormVersionService service, CancellationToken ct) => service.PublishAsync(id, ct);
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: GetTreeAsync, GetDesignerAsync, ReadFormAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public static Task<FormTreeResponse> Tree(Guid id, IFormNodeService service, CancellationToken ct) => service.GetTreeAsync(id, ct);
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: GetDesignerAsync, ReadFormAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public static async Task<FormDesignerPageResponse> Designer(Guid id, IFormNodeService service, CancellationToken ct)
         => new(await service.GetDesignerAsync(id, ct), false);
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: GetDesignerAsync, ReadFormAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public static async Task<FormDesignerPageResponse> Test(Guid id, IFormNodeService service, CancellationToken ct)
         => new(await service.GetDesignerAsync(id, ct), true);
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: CreateContainedInVersionAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static async Task<IResult> DesignerAddForm(HttpContext http, IFormNodeService service, CancellationToken ct)
     {
         var f = await http.Request.ReadFormAsync(ct);
@@ -61,6 +97,9 @@ public static class FormVersionResolvers
         return Results.Redirect($"{Prefix}/FormVersionResponse/designer/{versionId}");
     }
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: UpdateDefinitionAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static async Task<IResult> DesignerUpdateForm(HttpContext http, IFormNodeService service, CancellationToken ct)
     {
         var f = await http.Request.ReadFormAsync(ct);
@@ -76,6 +115,9 @@ public static class FormVersionResolvers
         return Results.Redirect($"{Prefix}/FormVersionResponse/designer/{versionId}#node-{id}");
     }
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: MoveAsync, ImportSubtreeAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static async Task<IResult> DesignerMoveForm(HttpContext http, IFormNodeService service, CancellationToken ct)
     {
         var f = await http.Request.ReadFormAsync(ct);
@@ -87,6 +129,9 @@ public static class FormVersionResolvers
         return Results.Redirect($"{Prefix}/FormVersionResponse/designer/{versionId}#node-{id}");
     }
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: ImportSubtreeAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static async Task<IResult> DesignerImportForm(HttpContext http, IFormNodeService service, CancellationToken ct)
     {
         var f = await http.Request.ReadFormAsync(ct);
@@ -100,6 +145,9 @@ public static class FormVersionResolvers
         return Results.Redirect($"{Prefix}/FormVersionResponse/designer/{versionId}");
     }
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: DeleteSubtreeAsync, UpsertFormTreeAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static async Task<IResult> DesignerDeleteForm(HttpContext http, IFormNodeService service, CancellationToken ct)
     {
         var f = await http.Request.ReadFormAsync(ct);
@@ -109,9 +157,15 @@ public static class FormVersionResolvers
         return Results.Redirect($"{Prefix}/FormVersionResponse/designer/{versionId}");
     }
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: UpsertFormTreeAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public static Task<FormTreeResponse> BulkTree(Guid id, BulkFormTreeRequest request, IBulkTreeService service, CancellationToken ct)
         => service.UpsertFormTreeAsync(id, request, ct);
 
+    /// <summary>
+    /// Registruje routy Minimal API a vazbu endpointů na Razor/JSON reprezentaci; samotné požadavky zpracovávají příslušné resolver metody.
+    /// </summary>
     public static void Map(IEndpointRouteBuilder endpoints, string prefix)
     {
         var group = endpoints.MapGroup(prefix + "/FormVersionResponse").WithTags("DigitalProcesses.Forms");

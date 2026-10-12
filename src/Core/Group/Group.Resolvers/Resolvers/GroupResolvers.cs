@@ -23,6 +23,9 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.Group.Resolvers;
 
+/// <summary>
+/// HTTP resolver pro Group Resolvers. Překládá požadavky Minimal API na volání služeb a návratové modely; obchodní pravidla a perzistence patří do Services/DBLayer.
+/// </summary>
 public static class GroupResolvers
 {
     public static async Task<IResult> CreatePage(
@@ -76,9 +79,15 @@ public static class GroupResolvers
         return ApiResults.Ok(created);
     }
 
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: Read, List; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> Read(Guid id, HttpContext httpContext, IGroupService service, CancellationToken cancellationToken)
         => BaseResolvers.Read<GroupModel, GroupResponse, IGroupService>(id, httpContext, service, cancellationToken);
 
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: List; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> List(HttpContext httpContext, IGroupService service, CancellationToken cancellationToken)
         => BaseResolvers.List<GroupModel, GroupResponse, IGroupService>(httpContext, service, cancellationToken);
 
@@ -157,6 +166,9 @@ public static class GroupResolvers
         => BaseResolvers.Link<GroupModel, GroupResponse, IGroupService>(
             id, httpContext, service, cancellationToken);
 
+    /// <summary>
+    /// Požaduje odstranění entity; pravidla mazání závislostí a RBAC se uplatňují ve službě. Volání: Delete; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> Delete(Guid id, HttpContext httpContext, IGroupService service, CancellationToken cancellationToken)
         => BaseResolvers.Delete<GroupModel, GroupResponse, IGroupService>(id, httpContext, service, cancellationToken);
 

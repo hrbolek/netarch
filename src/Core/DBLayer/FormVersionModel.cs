@@ -6,6 +6,9 @@ namespace WebAppArchitecture.DBLayer;
 // Digital Processes - definition models
 // ============================================================
 
+/// <summary>
+/// Verzovaný návrh formuláře. Odkazuje na FormDefinition; publikovaná verze se používá pro běhové podání a nesmí se zaměnit s pracovním draftem.
+/// </summary>
 public sealed record FormVersionModel(
     Guid id,
     Guid form_definition_id,

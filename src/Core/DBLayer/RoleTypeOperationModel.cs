@@ -3,6 +3,9 @@ using WebAppArchitecture.Base.Data;
 
 namespace WebAppArchitecture.DBLayer;
 
+/// <summary>
+/// Typ Role Type Operation ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public sealed record RoleTypeOperationModel(
     Guid id,
     Guid role_type_id,

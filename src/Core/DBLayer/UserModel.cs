@@ -3,6 +3,9 @@ using WebAppArchitecture.Base.Data;
 
 namespace WebAppArchitecture.DBLayer;
 
+/// <summary>
+/// Identita uživatele, ke které se přiřazují role, členství a auditní údaje; oprávnění se hodnotí vůči efektivní identitě.
+/// </summary>
 public sealed record UserModel(
     Guid id,
     string Name,

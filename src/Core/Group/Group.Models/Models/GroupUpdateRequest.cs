@@ -5,6 +5,9 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.Group.Models;
 
+/// <summary>
+/// Vstupní kontrakt Group Update Request. Přijímá pouze údaje od klienta; identita konajícího uživatele a bezpečnostní kontext se ověřují na serveru.
+/// </summary>
 public sealed record GroupUpdateRequest(
     Guid id,
     string Name,
@@ -15,9 +18,15 @@ public sealed record GroupUpdateRequest(
     Guid? updated_by = null
 ) : IUpdateDTOModel<GroupModel>
 {
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public static GroupUpdateRequest FromModel(GroupModel model) => new(
         model.id, model.Name, model.group_type_id, model.master_group_id, model.inherit_roles, model.updated_at, model.updated_by);
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public GroupModel ApplyTo(GroupModel model) => model with
     {
         Name = Name,
@@ -29,6 +38,9 @@ public sealed record GroupUpdateRequest(
         updated_by = updated_by ?? model.updated_by
     };
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public GroupModel ToModel() => new(id, Name, group_type_id, master_group_id, string.Empty, inherit_roles ?? true, id,
         DateTimeOffset.UtcNow, updated_at ?? DateTimeOffset.UtcNow,
         Guid.Empty, updated_by ?? Guid.Empty);

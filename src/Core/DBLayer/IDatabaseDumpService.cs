@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebAppArchitecture.DBLayer;
 
+/// <summary>
+/// Služba I Database Dump Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public interface IDatabaseDumpService
 {
     Task<bool> LoadIfExistsAsync(string path, CancellationToken cancellationToken = default);

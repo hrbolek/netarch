@@ -9,9 +9,4 @@
     <Compile Include="../../Shared/IsolatedHost.cs" Link="Shared/IsolatedHost.cs" />
     <Compile Include="../../Shared/PostgresTestDatabase.cs" Link="Shared/PostgresTestDatabase.cs" />
   </ItemGroup>
-  <!-- Legacy SQLite-only tests may remain in an overlaid workspace. -->
-  <ItemGroup>
-    <Compile Remove="SqliteDateTimeOffsetConversionTests.cs" />
-    <Compile Remove="SqliteLegacyDateTimeOffsetReadTests.cs" />
-  </ItemGroup>
 </Project>

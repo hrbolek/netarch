@@ -6,9 +6,15 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
+/// <summary>
+/// Služba Process Definition Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public sealed class ProcessDefinitionService(ISecurityLayer security, ISecurityProjectionService securityProjection, IDBLayer db)
     : BaseService<ProcessDefinitionModel, ProcessDefinitionResponse>(security), IProcessDefinitionService
 {
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: GetByIdAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<ProcessDefinitionResponse> CreateTypedAsync(CreateProcessDefinitionRequest request, CancellationToken ct = default)
     {
         var initiatorRoleTypeId = request.initiator_role_type_id

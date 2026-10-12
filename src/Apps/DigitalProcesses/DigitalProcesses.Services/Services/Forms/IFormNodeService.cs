@@ -7,6 +7,9 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
+/// <summary>
+/// Služba I Form Node Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public interface IFormNodeService : IBaseService<FormNodeModel, FormNodeResponse>
 {
     Task<FormNodeResponse> CreateContainedInVersionAsync(CreateFormNodeRequest request, CancellationToken ct = default);

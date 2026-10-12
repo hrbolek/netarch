@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebAppArchitecture.DBLayer;
 
+/// <summary>
+/// Typ Application Db Context ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public sealed class ApplicationDbContext : DbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
@@ -40,6 +43,9 @@ public sealed class ApplicationDbContext : DbContext
     public DbSet<RequestTransitionHistoryModel> RequestTransitionHistory => Set<RequestTransitionHistoryModel>();
     public DbSet<WorkflowStateAccessRuleModel> WorkflowStateAccessRules => Set<WorkflowStateAccessRuleModel>();
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<UserModel>(e =>

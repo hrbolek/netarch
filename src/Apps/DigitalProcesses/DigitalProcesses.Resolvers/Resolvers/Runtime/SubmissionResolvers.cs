@@ -11,17 +11,38 @@ using WebAppArchitecture.DigitalProcesses.UI.Pages;
 
 namespace WebAppArchitecture.DigitalProcesses.Resolvers;
 
+/// <summary>
+/// HTTP resolver pro Submission Resolvers. Překládá požadavky Minimal API na volání služeb a návratové modely; obchodní pravidla a perzistence patří do Services/DBLayer.
+/// </summary>
 public static class SubmissionResolvers
 {
     private const string Prefix = "/digital-processes";
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: Read, List, Link, GetTreeAsync, UpdateSubmissionValuesAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> Read(Guid id, HttpContext http, ISubmissionService service, CancellationToken ct) => BaseResolvers.Read<SubmissionModel,SubmissionResponse,ISubmissionService>(id,http,service,ct);
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: List, Link, GetTreeAsync, UpdateSubmissionValuesAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> List(HttpContext http, ISubmissionService service, CancellationToken ct) => BaseResolvers.List<SubmissionModel,SubmissionResponse,ISubmissionService>(http,service,ct);
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: Link, GetTreeAsync, UpdateSubmissionValuesAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> Link(Guid id, HttpContext http, ISubmissionService service, CancellationToken ct) => BaseResolvers.Link<SubmissionModel,SubmissionResponse,ISubmissionService>(id,http,service,ct);
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: GetTreeAsync, UpdateSubmissionValuesAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public static Task<SubmissionTreeResponse> Tree(Guid id, ISubmissionService service, CancellationToken ct) => service.GetTreeAsync(id, ct);
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: UpdateSubmissionValuesAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public static Task<SubmissionTreeResponse> BulkValues(Guid id, BulkSubmissionValuesRequest request, IBulkTreeService service, CancellationToken ct)
         => service.UpdateSubmissionValuesAsync(id, request, ct);
 
+    /// <summary>
+    /// Registruje routy Minimal API a vazbu endpointů na Razor/JSON reprezentaci; samotné požadavky zpracovávají příslušné resolver metody.
+    /// </summary>
     public static void Map(IEndpointRouteBuilder endpoints, string prefix)
     {
         var group = endpoints.MapGroup(prefix + "/SubmissionResponse").WithTags("DigitalProcesses.Runtime");

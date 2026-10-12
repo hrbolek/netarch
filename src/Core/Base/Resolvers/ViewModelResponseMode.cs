@@ -11,6 +11,9 @@ namespace WebAppArchitecture.Base.Endpoints;
 // Response mode
 // ============================================================
 
+/// <summary>
+/// Výstupní DTO entity View response Mode. Odděluje datový model od kontraktu API a Razor pohledů; vytváří se mapováním doménového/databázového modelu.
+/// </summary>
 public enum ViewModelResponseMode
 {
     Auto,

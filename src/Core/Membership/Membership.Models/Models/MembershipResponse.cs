@@ -5,6 +5,9 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.Membership.Models;
 
+/// <summary>
+/// Výstupní DTO entity Membership response. Odděluje datový model od kontraktu API a Razor pohledů; vytváří se mapováním doménového/databázového modelu.
+/// </summary>
 public sealed record MembershipResponse(
     Guid id,
     Guid group_id,
@@ -21,6 +24,9 @@ public sealed record MembershipResponse(
     string visual_label = ""
 ) : IEntityDTOModel<MembershipModel, MembershipResponse>, ISecuredEntityDTOModel
 {
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public static MembershipResponse FromModel(MembershipModel model) => new(
         model.id, model.group_id, model.user_id, model.valid_from, model.valid_to, model.rbacobject_id,
         model.created_at, model.updated_at, model.created_by, model.updated_by, model.group_name, model.user_name,
@@ -31,6 +37,9 @@ public sealed record MembershipResponse(
         model.created_at, model.updated_at, model.created_by, model.updated_by, model.group_name, model.user_name,
         (model.user_name ?? "User") + " @ " + (model.group_name ?? "Group"));
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public MembershipModel ToModel() => new(id, group_id, user_id, valid_from, valid_to, rbacobject_id,
         created_at, updated_at, created_by, updated_by)
     {

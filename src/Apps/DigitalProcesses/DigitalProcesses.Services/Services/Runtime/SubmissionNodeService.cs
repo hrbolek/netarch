@@ -6,12 +6,18 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
+/// <summary>
+/// Služba Submission Node Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public sealed class SubmissionNodeService(
     ISecurityLayer security,
     IRbacAccessBindingManager bindingManager,
     ISecurityProjectionService securityProjection)
     : BaseService<SubmissionNodeModel, SubmissionNodeResponse>(security), ISubmissionNodeService
 {
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách.
+    /// </summary>
     public Task<SubmissionNodeResponse> CreateInSubmissionAsync(CreateSubmissionNodeRequest request, CancellationToken ct = default)
     {
         if (request.parent_id is not null)
@@ -19,6 +25,9 @@ public sealed class SubmissionNodeService(
         return CreateCoreAsync(request with { parent_id = null }, requireParent: false, ct);
     }
 
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: GetByIdAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public Task<SubmissionNodeResponse> CreateInNodeAsync(CreateSubmissionNodeRequest request, CancellationToken ct = default)
     {
         if (request.parent_id is null)
@@ -164,6 +173,9 @@ public sealed class SubmissionNodeService(
         }, ct);
     }
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: GetByIdAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<SubmissionNodeResponse> SetValueAsync(Guid id, SetSubmissionNodeValueRequest r, CancellationToken ct = default)
     {
         var node = await Security.GetByIdAsync<SubmissionNodeModel>(id, SecurityOperations.Update, ct)
@@ -197,6 +209,9 @@ public sealed class SubmissionNodeService(
         }, ct);
     }
 
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: Query; pořadí a parametry viz implementace.
+    /// </summary>
     public Task<IReadOnlyCollection<SubmissionNodeResponse>> GetSubtreeAsync(Guid id, CancellationToken ct = default)
     {
         var root = Security.Query<SubmissionNodeModel>(SecurityOperations.Read)

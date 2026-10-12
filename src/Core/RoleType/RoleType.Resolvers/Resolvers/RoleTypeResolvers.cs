@@ -15,14 +15,26 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.RoleType.Resolvers;
 
+/// <summary>
+/// HTTP resolver pro Role Type Resolvers. Překládá požadavky Minimal API na volání služeb a návratové modely; obchodní pravidla a perzistence patří do Services/DBLayer.
+/// </summary>
 public static class RoleTypeResolvers
 {
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: Read, List; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> Read(Guid id, HttpContext httpContext, IRoleTypeService service, CancellationToken cancellationToken)
         => BaseResolvers.Read<RoleTypeModel, RoleTypeResponse, IRoleTypeService>(id, httpContext, service, cancellationToken);
 
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: List; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> List(HttpContext httpContext, IRoleTypeService service, CancellationToken cancellationToken)
         => BaseResolvers.List<RoleTypeModel, RoleTypeResponse, IRoleTypeService>(httpContext, service, cancellationToken);
 
+    /// <summary>
+    /// Zpracovává změnu existující entity; ověření oprávnění a integrity musí probíhat ve službě, ne pouze v UI. Volání: Update; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static async Task<IResult> Update(RoleTypeUpdateRequest request, HttpContext httpContext, IRoleTypeService service, CancellationToken cancellationToken)
     {
         var actorProvider = httpContext.RequestServices.GetRequiredService<ICurrentActorProvider>();
@@ -92,6 +104,9 @@ public static class RoleTypeResolvers
         => BaseResolvers.Link<RoleTypeModel, RoleTypeResponse, IRoleTypeService>(
             id, httpContext, service, cancellationToken);
 
+    /// <summary>
+    /// Požaduje odstranění entity; pravidla mazání závislostí a RBAC se uplatňují ve službě. Volání: Delete; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> Delete(Guid id, HttpContext httpContext, IRoleTypeService service, CancellationToken cancellationToken)
         => BaseResolvers.Delete<RoleTypeModel, RoleTypeResponse, IRoleTypeService>(id, httpContext, service, cancellationToken);
 }

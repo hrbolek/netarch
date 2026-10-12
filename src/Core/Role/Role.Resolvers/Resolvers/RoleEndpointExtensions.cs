@@ -16,8 +16,14 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.Role.Resolvers;
 
+/// <summary>
+/// Typ Role Endpoint Extensions ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public static class RoleEndpointExtensions
 {
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public static IEndpointRouteBuilder MapRoleEndpoints(this IEndpointRouteBuilder endpoints, string prefix)
     {
         var group = endpoints.MapGroup(prefix + "/RoleResponse").WithTags("Role");

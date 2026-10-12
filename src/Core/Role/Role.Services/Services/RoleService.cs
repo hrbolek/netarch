@@ -5,6 +5,9 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.Role.Services;
 
+/// <summary>
+/// Služba Role Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public sealed class RoleService : BaseService<RoleModel, RoleResponse>, IRoleService
 {
     private readonly ISecurityProjectionService _projection;
@@ -52,6 +55,9 @@ public sealed class RoleService : BaseService<RoleModel, RoleResponse>, IRoleSer
         }, cancellationToken);
     }
 
+    /// <summary>
+    /// Požaduje odstranění entity; pravidla mazání závislostí a RBAC se uplatňují ve službě. Volání: GetByIdAsync, ExecuteInTransactionAsync, StageDeleteAsync, SaveChangesAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public override async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var current = await Security.GetByIdAsync<RoleModel>(id, SecurityOperations.Delete, cancellationToken);

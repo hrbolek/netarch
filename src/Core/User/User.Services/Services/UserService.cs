@@ -5,6 +5,9 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.User.Services;
 
+/// <summary>
+/// Služba User Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public sealed class UserService : BaseService<UserModel, UserResponse>, IUserService
 {
     private readonly ISecurityProjectionService _projection;

@@ -8,6 +8,9 @@ namespace WebAppArchitecture.DBLayer;
 /// Domain Services must never inject this interface directly; application access goes through SecurityLayer.
 /// Mutation methods stage changes in the current DbContext. SaveChanges and transaction boundaries are explicit.
 /// </summary>
+/// <summary>
+/// Typ I D B Layer ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public interface IDBLayer
 {
     IQueryable<TEntity> Query<TEntity>() where TEntity : class, IEntityDBModel;

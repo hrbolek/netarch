@@ -6,6 +6,9 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
+/// <summary>
+/// Vstupní kontrakt Request Service. Přijímá pouze údaje od klienta; identita konajícího uživatele a bezpečnostní kontext se ověřují na serveru.
+/// </summary>
 public sealed class RequestService(
     ISecurityLayer security,
     IDigitalProcessIntegration integration,
@@ -15,6 +18,9 @@ public sealed class RequestService(
     IProcessRequestProvisioner provisioner)
     : BaseService<RequestModel, RequestResponse>(security), IRequestService
 {
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: GetByIdAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<RequestResponse> StartAsync(StartRequestRequest r, CancellationToken ct = default)
     {
         var definition = await Security.GetByIdAsync<ProcessDefinitionVersionModel>(
@@ -210,6 +216,9 @@ public sealed class RequestService(
         }, ct);
     }
 
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: GetByIdAsync, Query; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<RequestDetailResponse> GetDetailAsync(Guid requestId, CancellationToken ct = default)
     {
         var r = await Security.GetByIdAsync<RequestModel>(requestId, SecurityOperations.Read, ct)

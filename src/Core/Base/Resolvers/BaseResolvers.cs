@@ -9,6 +9,9 @@ using WebAppArchitecture.Base.Endpoints;
 using WebAppArchitecture.Base.Security;
 
 namespace WebAppArchitecture.Base.Resolvers;
+/// <summary>
+/// HTTP resolver pro Base Resolvers. Překládá požadavky Minimal API na volání služeb a návratové modely; obchodní pravidla a perzistence patří do Services/DBLayer.
+/// </summary>
 public static class BaseResolvers
 {
     public static async Task<IResult?> AuthorizeModelAsync<TDTOModel>(

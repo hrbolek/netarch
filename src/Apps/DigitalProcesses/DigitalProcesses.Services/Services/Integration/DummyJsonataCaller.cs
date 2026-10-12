@@ -9,6 +9,9 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 /// Development adapter backed by the same secured IUserService as the existing
 /// /architecture/UserResponse/list endpoint. No separate HTTP endpoint or fixture is created.
 /// </summary>
+/// <summary>
+/// Typ Dummy Jsonata Caller ve vrstvě Apps; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public sealed class DummyJsonataCaller(IUserService users) : IFormDataBackend
 {
     public Task<FormBackendPreparedRequest> PreprocessAsync(
@@ -19,6 +22,9 @@ public sealed class DummyJsonataCaller(IUserService users) : IFormDataBackend
         return Task.FromResult(new FormBackendPreparedRequest(request.query, variables));
     }
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public async Task<FormBackendRawResponse> FetchAsync(FormBackendPreparedRequest request, CancellationToken ct = default)
     {
         // Development-only caller: accept any GraphQL document, but always return

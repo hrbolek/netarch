@@ -16,8 +16,14 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.Membership.Resolvers;
 
+/// <summary>
+/// Typ Membership Endpoint Extensions ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public static class MembershipEndpointExtensions
 {
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public static IEndpointRouteBuilder MapMembershipEndpoints(this IEndpointRouteBuilder endpoints, string prefix)
     {
         var group = endpoints.MapGroup(prefix + "/MembershipResponse").WithTags("Membership");

@@ -6,9 +6,15 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
+/// <summary>
+/// Služba Form Node Type Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public sealed class FormNodeTypeService(ISecurityLayer security, ISecurityProjectionService securityProjection)
     : BaseService<FormNodeTypeModel, FormNodeTypeResponse>(security), IFormNodeTypeService
 {
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách.
+    /// </summary>
     public async Task<FormNodeTypeResponse> CreateTypedAsync(CreateFormNodeTypeRequest request, CancellationToken ct = default)
     {
         if (request.parent_type_id is not null)
@@ -19,6 +25,9 @@ public sealed class FormNodeTypeService(ISecurityLayer security, ISecurityProjec
         return await CreateCoreAsync(request, catalog, null, ct);
     }
 
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: Query; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<FormNodeTypeResponse> CreateContainedAsync(CreateFormNodeTypeRequest request, CancellationToken ct = default)
     {
         if (request.parent_type_id is not Guid parentTypeId)

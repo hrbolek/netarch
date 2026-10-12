@@ -7,9 +7,15 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
+/// <summary>
+/// Služba Form Definition Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public sealed class FormDefinitionService(ISecurityLayer security, ISecurityProjectionService securityProjection)
     : BaseService<FormDefinitionModel, FormDefinitionResponse>(security), IFormDefinitionService
 {
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CurrentUserId, ExecuteInTransactionAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<FormDefinitionResponse> CreateTypedAsync(CreateFormDefinitionRequest request, CancellationToken ct = default)
     {
         var (catalog, _) = await CreationScopeGuard.RequireEntityAsync<GroupModel>(
@@ -42,6 +48,9 @@ public sealed class FormDefinitionService(ISecurityLayer security, ISecurityProj
         }, ct);
     }
 
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: GetByIdAsync, Query; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<FormDefinitionDetailResponse> GetDetailAsync(Guid id, CancellationToken ct = default)
     {
         var definition = await Security.GetByIdAsync<FormDefinitionModel>(id, SecurityOperations.Read, ct)

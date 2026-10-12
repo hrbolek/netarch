@@ -6,9 +6,15 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
+/// <summary>
+/// Služba Workflow State Access Rule Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public sealed class WorkflowStateAccessRuleService(ISecurityLayer security)
     : BaseService<WorkflowStateAccessRuleModel, WorkflowStateAccessRuleResponse>(security), IWorkflowStateAccessRuleService
 {
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: GetByIdAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<WorkflowStateAccessRuleResponse> CreateContainedAsync(CreateWorkflowStateAccessRuleRequest request, CancellationToken ct = default)
     {
         var (state, _) = await CreationScopeGuard.RequireEntityAsync<WorkflowStateModel>(

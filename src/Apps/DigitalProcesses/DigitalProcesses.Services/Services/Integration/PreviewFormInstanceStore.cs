@@ -29,6 +29,9 @@ public sealed class PreviewFormInstanceStore(IMemoryCache cache)
     }
 }
 
+/// <summary>
+/// Typ Preview Form Instance ve vrstvě Apps; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public sealed class PreviewFormInstance(Guid versionId)
 {
     public Guid VersionId { get; } = versionId;

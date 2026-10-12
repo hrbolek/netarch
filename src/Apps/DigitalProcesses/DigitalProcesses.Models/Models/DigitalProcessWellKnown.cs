@@ -11,6 +11,9 @@ public static class DigitalProcessWellKnown
     /// </summary>
     public static readonly Guid InitiatorRoleTypeId =
         Guid.Parse("05a3e0f5-f71e-4caa-8012-229d868aa8ca");
+    /// <summary>
+    /// Typ Form Node Types ve vrstvě Apps; dokumentuje kontrakt a roli typu v architektuře.
+    /// </summary>
     public static class FormNodeTypes
     {
         public static readonly Guid Section = Guid.Parse("7d80c90b-f7b3-45f2-a5c8-7e54d23d1001");

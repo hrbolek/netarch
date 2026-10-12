@@ -6,6 +6,9 @@ namespace WebAppArchitecture.DBLayer;
 // Digital Processes - definition models
 // ============================================================
 
+/// <summary>
+/// Běhová instance žádosti vytvořená podle konkrétní verze procesu. Odděluje data uživatele a aktuální stav od verzovaných definic.
+/// </summary>
 public sealed record RequestModel(
     Guid id,
     Guid process_definition_version_id,

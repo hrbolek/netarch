@@ -5,6 +5,9 @@ using WebAppArchitecture.DigitalProcesses.Models;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
+/// <summary>
+/// Typ I Form Data Backend ve vrstvě Apps; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public interface IFormDataBackend
 {
     Task<FormBackendPreparedRequest> PreprocessAsync(FormBackendOperationRequest request, FormValueSnapshot values, CancellationToken ct = default);

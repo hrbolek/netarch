@@ -3,6 +3,9 @@ using WebAppArchitecture.Base.Data;
 
 namespace WebAppArchitecture.DBLayer;
 
+/// <summary>
+/// Klasifikace skupin umožňující oddělit organizační strukturu, RBAC objekty a další typy hierarchických uzlů.
+/// </summary>
 public sealed record GroupTypeModel(
     Guid id,
     string Name,

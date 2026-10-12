@@ -5,9 +5,15 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
+/// <summary>
+/// Služba Form Version Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public sealed class FormVersionService(ISecurityLayer security)
     : BaseService<FormVersionModel, FormVersionResponse>(security), IFormVersionService
 {
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CurrentUserId, ExecuteInTransactionAsync, StageCreateAsync, Query; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<FormVersionResponse> CreateContainedAsync(CreateFormVersionRequest request, CancellationToken ct = default)
     {
         var (definition, _) = await CreationScopeGuard.RequireEntityAsync<FormDefinitionModel>(
@@ -52,6 +58,9 @@ public sealed class FormVersionService(ISecurityLayer security)
         return request.publish ? await PublishAsync(created.id, ct) : created;
     }
 
+    /// <summary>
+    /// Požaduje odstranění entity; pravidla mazání závislostí a RBAC se uplatňují ve službě. Volání: GetByIdAsync, Query, ExecuteInTransactionAsync, StageDeleteAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task DeleteDraftAsync(Guid id, CancellationToken ct = default)
     {
         var version = await Security.GetByIdAsync<FormVersionModel>(id, SecurityOperations.Delete, ct)
@@ -73,6 +82,9 @@ public sealed class FormVersionService(ISecurityLayer security)
         }, ct);
     }
 
+    /// <summary>
+    /// Provádí přechod životního cyklu; služba ověřuje stavové předpoklady a oprávnění před uložením změn. Volání: GetByIdAsync, Query, CurrentUserId, ExecuteInTransactionAsync, StageUpdateAsync, SaveChangesAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<FormVersionResponse> PublishAsync(Guid id, CancellationToken ct = default)
     {
         var model = await Security.GetByIdAsync<FormVersionModel>(id, SecurityOperations.Update, ct)

@@ -3,6 +3,9 @@ using WebAppArchitecture.Base.Data;
 
 namespace WebAppArchitecture.DBLayer;
 
+/// <summary>
+/// Přidělení role uživateli nad konkrétní skupinou/RBAC objektem. Platnost role není odvozována z členství ve skupině.
+/// </summary>
 public sealed record RoleModel(
     Guid id,
     Guid group_id,

@@ -14,18 +14,39 @@ using WebAppArchitecture.DigitalProcesses.UI.Pages;
 
 namespace WebAppArchitecture.DigitalProcesses.Resolvers;
 
+/// <summary>
+/// HTTP resolver pro Workflow Definition Resolvers. Překládá požadavky Minimal API na volání služeb a návratové modely; obchodní pravidla a perzistence patří do Services/DBLayer.
+/// </summary>
 public static class WorkflowDefinitionResolvers
 {
     private const string Prefix = "/digital-processes";
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: Read, List, Link, CreateTypedAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> Read(Guid id, HttpContext http, IWorkflowDefinitionService service, CancellationToken ct) => BaseResolvers.Read<WorkflowDefinitionModel,WorkflowDefinitionResponse,IWorkflowDefinitionService>(id,http,service,ct);
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: List, Link, CreateTypedAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> List(HttpContext http, IWorkflowDefinitionService service, CancellationToken ct) => BaseResolvers.List<WorkflowDefinitionModel,WorkflowDefinitionResponse,IWorkflowDefinitionService>(http,service,ct);
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: Link, CreateTypedAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<IResult> Link(Guid id, HttpContext http, IWorkflowDefinitionService service, CancellationToken ct) => BaseResolvers.Link<WorkflowDefinitionModel,WorkflowDefinitionResponse,IWorkflowDefinitionService>(id,http,service,ct);
 
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateTypedAsync, GetByIdAsync, Query, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static DigitalProcessCreatePageModel CreatePage() => DigitalProcessCreateForm.Page("Create workflow definition", Prefix+"/WorkflowDefinitionResponse/create-form", Prefix+"/WorkflowDefinitionResponse/list", "Creates the stable identity of a workflow.", DigitalProcessCreateForm.Text("name","Name"),DigitalProcessCreateForm.TextArea("description","Description",false));
 
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateTypedAsync, GetByIdAsync, Query, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static Task<WorkflowDefinitionResponse> CreateApi(CreateWorkflowDefinitionRequest request, IWorkflowDefinitionService service, CancellationToken ct)
         => service.CreateTypedAsync(request, ct);
 
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateTypedAsync, GetByIdAsync, Query, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static async Task<IResult> CreateForm(HttpContext http, IWorkflowDefinitionService service, CancellationToken ct)
     {
         var f = await http.Request.ReadFormAsync(ct);
@@ -33,6 +54,9 @@ public static class WorkflowDefinitionResolvers
         return Results.Redirect(Prefix + "/WorkflowDefinitionResponse/view/" + created.id);
     }
 
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: PublishAsync, GetByIdAsync, Query; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static async Task<DefinitionVersionsPageModel> Detail(Guid id, ISecurityLayer security, CancellationToken ct)
     {
         var definition = await security.GetByIdAsync<WorkflowDefinitionModel>(id, SecurityOperations.Read, ct) ?? throw new KeyNotFoundException("Definition not found.");
@@ -40,12 +64,18 @@ public static class WorkflowDefinitionResolvers
             .Select(v => new DefinitionVersionItem(v.id, v.version, v.is_published, v.updated_at)).ToArray();
         return new DefinitionVersionsPageModel(id, definition.name, "Workflow", versions, WorkflowDefinitionResponse.FromModel(definition));
     }
+    /// <summary>
+    /// Provádí přechod životního cyklu; služba ověřuje stavové předpoklady a oprávnění před uložením změn. Volání: PublishAsync, CreateContainedAsync, DeleteDraftAsync, GetByIdAsync, Query; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static async Task<IResult> PublishVersion(Guid id, Guid definitionId, IWorkflowVersionService versions, CancellationToken ct)
     {
         var published = await versions.PublishAsync(id, ct);
         if (published.workflow_definition_id != definitionId) return Results.BadRequest();
         return Results.Redirect($"/digital-processes/WorkflowDefinitionResponse/view/{definitionId}");
     }
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: CreateContainedAsync, DeleteDraftAsync, GetByIdAsync, Query; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static async Task<IResult> NewVersion(Guid id, ISecurityLayer security, IWorkflowVersionService versions, CancellationToken ct)
     {
         _ = await security.GetByIdAsync<WorkflowDefinitionModel>(id, SecurityOperations.Read, ct) ?? throw new KeyNotFoundException();
@@ -53,11 +83,17 @@ public static class WorkflowDefinitionResolvers
         var created = await versions.CreateContainedAsync(new CreateWorkflowVersionRequest(id, next), ct);
         return Results.Redirect($"/digital-processes/WorkflowVersionResponse/designer/{created.id}");
     }
+    /// <summary>
+    /// Požaduje odstranění entity; pravidla mazání závislostí a RBAC se uplatňují ve službě. Volání: DeleteDraftAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
+    /// </summary>
     public static async Task<IResult> DeleteDraft(Guid id, Guid definitionId, IWorkflowVersionService versions, CancellationToken ct)
     {
         await versions.DeleteDraftAsync(id, ct);
         return Results.Redirect("/digital-processes/WorkflowDefinitionResponse/view/" + definitionId);
     }
+    /// <summary>
+    /// Registruje routy Minimal API a vazbu endpointů na Razor/JSON reprezentaci; samotné požadavky zpracovávají příslušné resolver metody.
+    /// </summary>
     public static void Map(IEndpointRouteBuilder endpoints, string prefix)
     {
         var group = endpoints.MapGroup(prefix + "/WorkflowDefinitionResponse").WithTags("DigitalProcesses.Workflow");

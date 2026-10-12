@@ -7,6 +7,9 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
+/// <summary>
+/// Služba Process Definition Version Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public sealed class ProcessDefinitionVersionService(ISecurityLayer security) : BaseService<ProcessDefinitionVersionModel,ProcessDefinitionVersionResponse>(security),IProcessDefinitionVersionService
 {
     private static void ValidateOwnedDefinitions(ProcessDefinitionModel process, FormVersionModel form, WorkflowVersionModel workflow)
@@ -17,6 +20,9 @@ public sealed class ProcessDefinitionVersionService(ISecurityLayer security) : B
             throw new InvalidOperationException("Process versions may use only versions of the process-owned form and workflow definitions.");
     }
 
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: GetByIdAsync, CurrentUserId; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<ProcessDefinitionVersionResponse> CreateContainedAsync(CreateProcessDefinitionVersionRequest request, CancellationToken ct = default)
     {
         var (process, _) = await CreationScopeGuard.RequireEntityAsync<ProcessDefinitionModel>(
@@ -42,6 +48,9 @@ public sealed class ProcessDefinitionVersionService(ISecurityLayer security) : B
         return request.publish ? await PublishAsync(created.id, ct) : created;
     }
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: GetByIdAsync, Query, ExecuteInTransactionAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<ProcessDefinitionVersionResponse> CloneLatestAsync(Guid definitionId, CancellationToken ct = default)
     {
         _ = await Security.GetByIdAsync<ProcessDefinitionModel>(definitionId, SecurityOperations.Update, ct)
@@ -70,6 +79,9 @@ public sealed class ProcessDefinitionVersionService(ISecurityLayer security) : B
         return created;
     }
 
+    /// <summary>
+    /// Požaduje odstranění entity; pravidla mazání závislostí a RBAC se uplatňují ve službě. Volání: GetByIdAsync, Query, ExecuteInTransactionAsync, StageDeleteAsync, SaveChangesAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task DeleteDraftAsync(Guid id, CancellationToken ct = default)
     {
         var version = await Security.GetByIdAsync<ProcessDefinitionVersionModel>(id, SecurityOperations.Delete, ct)
@@ -87,6 +99,9 @@ public sealed class ProcessDefinitionVersionService(ISecurityLayer security) : B
         }, ct);
     }
 
+    /// <summary>
+    /// Provádí přechod životního cyklu; služba ověřuje stavové předpoklady a oprávnění před uložením změn. Volání: GetByIdAsync, Query, CurrentUserId, ExecuteInTransactionAsync, StageUpdateAsync, SaveChangesAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<ProcessDefinitionVersionResponse> PublishAsync(Guid id,CancellationToken ct=default){var model=await Security.GetByIdAsync<ProcessDefinitionVersionModel>(id,SecurityOperations.Update,ct)??throw new KeyNotFoundException();if(model.is_published)return ProcessDefinitionVersionResponse.FromModel(model);var form=await Security.GetByIdAsync<FormVersionModel>(model.form_version_id,SecurityOperations.Read,ct)??throw new KeyNotFoundException();var workflow=await Security.GetByIdAsync<WorkflowVersionModel>(model.workflow_version_id,SecurityOperations.Read,ct)??throw new KeyNotFoundException();var process = await Security.GetByIdAsync<ProcessDefinitionModel>(model.process_definition_id, SecurityOperations.Read, ct) ?? throw new KeyNotFoundException("Process not found.");
         ValidateOwnedDefinitions(process, form, workflow);
         if(!form.is_published||!workflow.is_published)throw new InvalidOperationException("Process version requires published form and workflow versions.");

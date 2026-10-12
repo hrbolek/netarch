@@ -10,8 +10,14 @@ namespace WebAppArchitecture.SecurityLayer;
 /// to the Request subtree and only lives within an active transaction.
 /// Generic SecurityLayer.StageCreateAsync is unchanged.
 /// </summary>
+/// <summary>
+/// Vstupní kontrakt Process Request Provisioner. Přijímá pouze údaje od klienta; identita konajícího uživatele a bezpečnostní kontext se ověřují na serveru.
+/// </summary>
 public sealed class ProcessRequestProvisioner(IDBLayer db, ISecurityLayer security) : IProcessRequestProvisioner
 {
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: IsAllowedAsync, CurrentUserId, GetByIdAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<IProcessRequestWriteScope> BeginStartAsync(Guid targetGroupId, GroupModel requestGroup, CancellationToken ct = default)
     {
         RequireTransaction();
@@ -29,6 +35,9 @@ public sealed class ProcessRequestProvisioner(IDBLayer db, ISecurityLayer securi
         return writer;
     }
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: IsAllowedAsync, CurrentUserId, GetByIdAsync, HasActiveTransaction; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<IProcessRequestWriteScope> BeginTransitionAsync(Guid requestGroupId, CancellationToken ct = default)
     {
         RequireTransaction();
@@ -55,6 +64,9 @@ public sealed class ProcessRequestProvisioner(IDBLayer db, ISecurityLayer securi
     {
         private readonly Dictionary<Guid, string> newGroups = new();
 
+        /// <summary>
+        /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: StageCreateAsync, HasActiveTransaction; pořadí a parametry viz implementace.
+        /// </summary>
         public async Task StageRequestRootAsync(GroupModel group, CancellationToken ct)
         {
             newGroups.Add(group.id, group.path);

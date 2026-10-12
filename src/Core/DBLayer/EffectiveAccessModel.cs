@@ -8,6 +8,9 @@ namespace WebAppArchitecture.DBLayer;
 /// RbacAccessBinding that maps a functional role at one security scope to an operational role
 /// at another RBAC object.
 /// </summary>
+/// <summary>
+/// Projekce efektivních oprávnění. Je odvozená z RBAC vazeb a není nezávislým zdrojem pravdy.
+/// </summary>
 public sealed record EffectiveAccessModel(
     Guid user_id,
     Guid rbacobject_id,

@@ -5,6 +5,9 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
+/// <summary>
+/// Služba I Workflow State Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public interface IWorkflowStateService : IBaseService<WorkflowStateModel, WorkflowStateResponse>
 {
     Task<WorkflowStateResponse> CreateContainedAsync(CreateWorkflowStateRequest request, CancellationToken ct = default);

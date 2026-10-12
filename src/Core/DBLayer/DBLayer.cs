@@ -5,6 +5,9 @@ using WebAppArchitecture.Base.Data;
 
 namespace WebAppArchitecture.DBLayer;
 
+/// <summary>
+/// Typ D B Layer ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public sealed class DBLayer(ApplicationDbContext db, IServiceProvider services) : IDBLayer
 {
     public bool HasActiveTransaction => db.Database.CurrentTransaction is not null;
@@ -76,9 +79,15 @@ public sealed class DBLayer(ApplicationDbContext db, IServiceProvider services) 
     public Task<int> DeleteWhereAsync<TEntity>(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default) where TEntity : class, IEntityDBModel
         => db.Set<TEntity>().Where(predicate).ExecuteDeleteAsync(cancellationToken);
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: SaveChangesAsync, Database; pořadí a parametry viz implementace.
+    /// </summary>
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         => db.SaveChangesAsync(cancellationToken);
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: Database; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task ExecuteInTransactionAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(action);

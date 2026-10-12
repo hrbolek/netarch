@@ -5,6 +5,9 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.Role.Models;
 
+/// <summary>
+/// Vstupní kontrakt Role Create Contained Request. Přijímá pouze údaje od klienta; identita konajícího uživatele a bezpečnostní kontext se ověřují na serveru.
+/// </summary>
 public sealed record RoleCreateContainedRequest(
     Guid group_id,
     Guid user_id,

@@ -5,6 +5,9 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.SecurityLayer;
 
+/// <summary>
+/// Služba I Security Projection Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public interface ISecurityProjectionService
 {
     Task RebuildAllAsync(CancellationToken cancellationToken = default);

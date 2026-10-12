@@ -23,7 +23,6 @@ public sealed class CoreDatabaseHostedService(
         await using var scope = scopeFactory.CreateAsyncScope();
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         await db.Database.EnsureCreatedAsync(cancellationToken);
-        // PostgreSQL owns persistence. The SQLite JSON table dump is not used.
         // For development/test databases EnsureCreated supplies the initial schema.
         var systemDataSource = configuration["SystemData:Source"]
             ?? Environment.GetEnvironmentVariable("SYSTEMDATA_SOURCE")

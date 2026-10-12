@@ -6,7 +6,6 @@ using System.Net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace WebAppArchitecture.Base.Security;
@@ -32,9 +31,6 @@ public sealed class HeaderOrClaimActorProvider : ICurrentActorProvider
 
         if (TryParseValue(httpContext.Request.Headers["X-Actor-UserId"], out var headerActor))
             return headerActor;
-
-        if (TryParseValue(httpContext.Request.Query["actorUserId"], out var queryActor))
-            return queryActor;
 
         return null;
     }

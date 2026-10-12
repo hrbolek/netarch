@@ -4,12 +4,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebAppArchitecture.DBLayer;
 
+/// <summary>
+/// Služba Database Dump Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public sealed class DatabaseDumpService(ApplicationDbContext db) : IDatabaseDumpService
 {
     private sealed record DumpValue(string kind, string? value);
     private sealed record DumpTable(string name, IReadOnlyList<string> columns, IReadOnlyList<IReadOnlyList<DumpValue>> rows);
     private sealed record DatabaseDump(int format, DateTimeOffset created_at, IReadOnlyList<DumpTable> tables);
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: Database; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task SaveAsync(string path, CancellationToken cancellationToken = default)
     {
         var connection = db.Database.GetDbConnection();
@@ -81,6 +87,9 @@ public sealed class DatabaseDumpService(ApplicationDbContext db) : IDatabaseDump
         }
     }
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: Database; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<bool> LoadIfExistsAsync(string path, CancellationToken cancellationToken = default)
     {
         if (!File.Exists(path)) return false;

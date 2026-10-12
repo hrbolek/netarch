@@ -16,6 +16,9 @@ public sealed record FormContextHistoryEntry(Guid StateId, string? StateName,
     Guid ActorUserId, string? ActorEmail, string? PublicNote,
     DateTimeOffset ChangedAt, Guid ArchivedSubmissionId);
 
+/// <summary>
+/// Typ I Form Data Context Builder ve vrstvě Apps; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public interface IFormDataContextBuilder
 {
     JsonObject Build(IReadOnlyCollection<FormNodeResponse> nodes,
@@ -24,6 +27,9 @@ public interface IFormDataContextBuilder
         IEnumerable<FormContextHistoryEntry>? visibleHistory = null);
 }
 
+/// <summary>
+/// Typ Form Data Context Builder ve vrstvě Apps; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public sealed class FormDataContextBuilder : IFormDataContextBuilder
 {
     public JsonObject Build(IReadOnlyCollection<FormNodeResponse> nodes,
@@ -96,6 +102,9 @@ public sealed class FormDataContextBuilder : IFormDataContextBuilder
     }
 }
 
+/// <summary>
+/// Typ I Form Expression Evaluator ve vrstvě Apps; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public interface IFormExpressionEvaluator
 {
     JsonNode? Evaluate(JsonObject context, string expression);
@@ -105,6 +114,9 @@ public interface IFormExpressionEvaluator
 public sealed class FormExpressionEvaluator : IFormExpressionEvaluator
 {
     private static readonly Regex Token = new(@"\G(?:\.([A-Za-z_][A-Za-z0-9_]*)|\[(\d+)\])", RegexOptions.Compiled);
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public JsonNode? Evaluate(JsonObject context, string expression)
     {
         if (string.IsNullOrWhiteSpace(expression) || expression.Length > 512 || expression[0] != '$')
@@ -128,11 +140,17 @@ public sealed class FormExpressionEvaluator : IFormExpressionEvaluator
     }
 }
 
+/// <summary>
+/// Typ Form Url Result ve vrstvě Apps; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public sealed record FormUrlResult(string? Url, string? Error)
 {
     public bool Success => Url is not null;
 }
 
+/// <summary>
+/// Typ I Form Url Template Renderer ve vrstvě Apps; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public interface IFormUrlTemplateRenderer
 {
     FormUrlResult Render(string template, JsonObject context);
@@ -143,6 +161,9 @@ public interface IFormUrlTemplateRenderer
 public sealed class FormUrlTemplateRenderer(IFormExpressionEvaluator evaluator) : IFormUrlTemplateRenderer
 {
     private static readonly Regex Placeholder = new(@"\{(\$[^{}]+)\}", RegexOptions.Compiled);
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public FormUrlResult Render(string template, JsonObject context)
     {
         if (string.IsNullOrWhiteSpace(template)) return new(null, "URL template is empty.");

@@ -5,6 +5,9 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.Role.Models;
 
+/// <summary>
+/// Výstupní DTO entity Role response. Odděluje datový model od kontraktu API a Razor pohledů; vytváří se mapováním doménového/databázového modelu.
+/// </summary>
 public sealed record RoleResponse(
     Guid id,
     Guid group_id,
@@ -26,6 +29,9 @@ public sealed record RoleResponse(
     string visual_label = ""
 ) : IEntityDTOModel<RoleModel, RoleResponse>, ISecuredEntityDTOModel
 {
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public static RoleResponse FromModel(RoleModel model) => new(
         model.id, model.group_id, model.user_id, model.role_type_id, model.role_type?.name,
         model.is_deputy, model.valid_from, model.valid_to, model.delegated_by_role_id,
@@ -40,6 +46,9 @@ public sealed record RoleResponse(
         model.group_name, model.user_name, null,
         (model.role_type != null ? model.role_type.name : "Role") + " · " + (model.user_name ?? "User"));
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public RoleModel ToModel() => new(id, group_id, user_id, role_type_id, is_deputy, valid_from, valid_to,
         delegated_by_role_id, rbacobject_id, created_at, updated_at, created_by, updated_by)
     {

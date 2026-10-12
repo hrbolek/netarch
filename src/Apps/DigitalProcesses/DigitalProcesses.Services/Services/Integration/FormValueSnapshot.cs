@@ -5,10 +5,16 @@ using WebAppArchitecture.DigitalProcesses.Models;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
+/// <summary>
+/// Typ Form Value Snapshot ve vrstvě Apps; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public sealed record FormValueSnapshot(
     IReadOnlyDictionary<string, JsonNode?> Values,
     IReadOnlyDictionary<string, JsonNode?> RuntimeValues)
 {
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public JsonNode? Resolve(FormBackendParameterBinding binding)
         => binding.source switch
         {

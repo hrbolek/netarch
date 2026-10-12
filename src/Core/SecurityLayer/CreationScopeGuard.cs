@@ -7,6 +7,9 @@ namespace WebAppArchitecture.SecurityLayer;
 /// Trusted authorization target used before a new secured entity exists.
 /// The target is always derived server-side from a parent, type or well-known catalog scope.
 /// </summary>
+/// <summary>
+/// Typ Creation Scope Guard ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public static class CreationScopeGuard
 {
     public static Task<CreationScope> RequireCatalogAsync(

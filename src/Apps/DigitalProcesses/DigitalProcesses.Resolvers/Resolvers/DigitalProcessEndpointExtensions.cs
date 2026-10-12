@@ -2,8 +2,14 @@ using Microsoft.AspNetCore.Routing;
 
 namespace WebAppArchitecture.DigitalProcesses.Resolvers;
 
+/// <summary>
+/// Typ Digital Process Endpoint Extensions ve vrstvě Apps; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public static class DigitalProcessEndpointExtensions
 {
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
     public static IEndpointRouteBuilder MapDigitalProcessEndpoints(this IEndpointRouteBuilder endpoints, string prefix = "/digital-processes")
     {
         FormDefinitionResolvers.Map(endpoints, prefix);

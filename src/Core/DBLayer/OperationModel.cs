@@ -3,6 +3,9 @@ using WebAppArchitecture.Base.Data;
 
 namespace WebAppArchitecture.DBLayer;
 
+/// <summary>
+/// Katalog pojmenovaných bezpečnostních operací používaných při vyhodnocení efektivního přístupu.
+/// </summary>
 public sealed record OperationModel(
     Guid id,
     string name,

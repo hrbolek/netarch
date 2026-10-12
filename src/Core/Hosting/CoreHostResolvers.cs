@@ -26,7 +26,7 @@ public static class CoreHostResolvers
             principal_name = httpContext.User.FindFirst("preferred_username")?.Value
                 ?? httpContext.User.Identity?.Name
                 ?? httpContext.User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value,
-            storage = "SQLite / EF Core (single application database)",
+            storage = "PostgreSQL / Entity Framework Core",
             bootstrap_admin_user_id = RbacWellKnown.BootstrapAdminUserId,
         });
 

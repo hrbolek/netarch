@@ -11,6 +11,9 @@ namespace WebAppArchitecture.Base.Endpoints;
 // Response mode
 // ============================================================
 
+/// <summary>
+/// Typ I Result ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public interface IModelResult
 {
     object? Model { get; }

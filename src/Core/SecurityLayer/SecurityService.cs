@@ -4,8 +4,14 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.SecurityLayer;
 
+/// <summary>
+/// Služba Security Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public sealed class SecurityService(IDBLayer db, ICurrentActorProvider actorProvider) : ISecurityService
 {
+    /// <summary>
+    /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: Query; pořadí a parametry viz implementace.
+    /// </summary>
     public Task<IReadOnlySet<string>> GetAllowedOperationsAsync(Guid userId, Guid rbacId, CancellationToken cancellationToken = default)
     {
         var nowUnixMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
@@ -26,21 +32,29 @@ public sealed class SecurityService(IDBLayer db, ICurrentActorProvider actorProv
         return Task.FromResult<IReadOnlySet<string>>(operations);
     }
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: Query; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<bool> IsAllowedAsync(Guid actorUserId, Guid rbacObjectId, string operation, CancellationToken cancellationToken = default)
         => actorUserId != Guid.Empty && (await GetAllowedOperationsAsync(actorUserId, rbacObjectId, cancellationToken))
             .Contains(operation.Trim().ToLowerInvariant());
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: Query; pořadí a parametry viz implementace.
+    /// </summary>
     public async Task<bool> IsCurrentActorAllowedAsync(HttpContext httpContext, Guid rbacObjectId, string operation, CancellationToken cancellationToken = default)
     {
         var userId = actorProvider.TryGetActorUserId(httpContext);
         return userId is not null && await IsAllowedAsync(userId.Value, rbacObjectId, operation, cancellationToken);
     }
 
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: Query; pořadí a parametry viz implementace.
+    /// </summary>
     public Task<bool> CanAssignDeputyRoleAsync(Guid actorUserId, Guid groupId, string roleType, DateTimeOffset validFrom, DateTimeOffset? validTo, CancellationToken cancellationToken = default)
     {
         var roleTypeIds = db.Query<RoleTypeModel>().Where(x => x.name == roleType).Select(x => x.id);
-        // SQLite cannot translate ordering comparisons over DateTimeOffset reliably.
-        // First narrow the candidate set in SQL, then evaluate the small validity predicate in memory.
+        // Narrow candidates in SQL, then evaluate the validity predicate on the bounded result set.
         var candidates = db.Query<RoleModel>()
             .Where(r => r.user_id == actorUserId
                 && r.group_id == groupId

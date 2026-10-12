@@ -5,6 +5,9 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.Membership.Services;
 
+/// <summary>
+/// Služba Membership Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
 public sealed class MembershipService : BaseService<MembershipModel, MembershipResponse>, IMembershipService
 {
     private readonly ISecurityProjectionService _projection;
@@ -49,6 +52,9 @@ public sealed class MembershipService : BaseService<MembershipModel, MembershipR
         }, cancellationToken);
     }
 
+    /// <summary>
+    /// Požaduje odstranění entity; pravidla mazání závislostí a RBAC se uplatňují ve službě. Volání: GetByIdAsync, ExecuteInTransactionAsync, StageDeleteAsync, SaveChangesAsync; pořadí a parametry viz implementace.
+    /// </summary>
     public override async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var current = await Security.GetByIdAsync<MembershipModel>(id, SecurityOperations.Delete, cancellationToken);

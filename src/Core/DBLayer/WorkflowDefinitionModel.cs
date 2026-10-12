@@ -6,6 +6,9 @@ namespace WebAppArchitecture.DBLayer;
 // Digital Processes - definition models
 // ============================================================
 
+/// <summary>
+/// Stabilní identita workflow; jeho verze obsahují stavový automat, který řídí postup žádostí.
+/// </summary>
 public sealed record WorkflowDefinitionModel(
     Guid id,
     string name,

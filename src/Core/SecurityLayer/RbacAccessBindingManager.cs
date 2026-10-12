@@ -6,8 +6,14 @@ namespace WebAppArchitecture.SecurityLayer;
 /// Internal authoring API for declarative RBAC bindings. Bindings are source data;
 /// runtime authorization still reads only EffectiveAccess + RoleTypeOperation.
 /// </summary>
+/// <summary>
+/// Typ Rbac Access Binding Manager ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public sealed class RbacAccessBindingManager(IDBLayer db) : IRbacAccessBindingManager
 {
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: StageCreateAsync, Query; pořadí a parametry viz implementace.
+    /// </summary>
     public Task<RbacAccessBindingModel> StageCreateAsync(RbacAccessBindingModel binding, CancellationToken ct = default)
         => db.StageCreateAsync(binding, ct);
 

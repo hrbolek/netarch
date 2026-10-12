@@ -5,6 +5,9 @@ using WebAppArchitecture.Base.Security;
 
 namespace WebAppArchitecture.DBLayer;
 
+/// <summary>
+/// Typ System Data Importer ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public static class SystemDataImporter
 {
     public const string DefaultSource =
@@ -360,20 +363,47 @@ public static class SystemDataImporter
         public override bool CanWrite => false;
         public override long Length => inner.Length;
         public override long Position { get => inner.Position; set => inner.Position = value; }
+        /// <summary>
+        /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+        /// </summary>
         public override void Flush() => inner.Flush();
+        /// <summary>
+        /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce.
+        /// </summary>
         public override int Read(byte[] buffer, int offset, int count) => inner.Read(buffer, offset, count);
+        /// <summary>
+        /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+        /// </summary>
         public override long Seek(long offset, SeekOrigin origin) => inner.Seek(offset, origin);
+        /// <summary>
+        /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+        /// </summary>
         public override void SetLength(long value) => throw new NotSupportedException();
+        /// <summary>
+        /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+        /// </summary>
         public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+        /// <summary>
+        /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce.
+        /// </summary>
         public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
             => inner.ReadAsync(buffer, offset, count, cancellationToken);
+        /// <summary>
+        /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce.
+        /// </summary>
         public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
             => inner.ReadAsync(buffer, cancellationToken);
+        /// <summary>
+        /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+        /// </summary>
         protected override void Dispose(bool disposing)
         {
             if (disposing) { inner.Dispose(); response.Dispose(); client.Dispose(); }
             base.Dispose(disposing);
         }
+        /// <summary>
+        /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+        /// </summary>
         public override async ValueTask DisposeAsync()
         {
             await inner.DisposeAsync();

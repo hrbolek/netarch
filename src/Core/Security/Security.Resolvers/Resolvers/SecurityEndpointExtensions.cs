@@ -15,6 +15,9 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.Security.Resolvers;
 
+/// <summary>
+/// Typ Security Endpoint Extensions ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
 public static class SecurityEndpointExtensions
 {
     public static IEndpointRouteBuilder MapSecurityEndpoints(
