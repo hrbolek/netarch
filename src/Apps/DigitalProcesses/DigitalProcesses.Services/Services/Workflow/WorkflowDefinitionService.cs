@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
@@ -9,8 +10,8 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 /// <summary>
 /// Služba Workflow Definition Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public sealed class WorkflowDefinitionService(ISecurityLayer security, ISecurityProjectionService securityProjection)
-    : BaseService<WorkflowDefinitionModel, WorkflowDefinitionResponse>(security), IWorkflowDefinitionService
+public sealed class WorkflowDefinitionService(ISecurityLayer security, ISecurityProjectionService securityProjection, IDBLayer unsecuredDb)
+    : SecuredBaseService<WorkflowDefinitionModel>(security, unsecuredDb), IWorkflowDefinitionService
 {
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CurrentUserId, ExecuteInTransactionAsync, StageCreateAsync; pořadí a parametry viz implementace.

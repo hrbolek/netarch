@@ -71,7 +71,7 @@ public static class RoleTypeResolvers
         if (actorUserId is null)
             return Results.Unauthorized();
 
-        var existing = await service.GetByIdAsync(id, cancellationToken);
+        var existing = await service.GetByIdAsync<RoleTypeResponse>(id, cancellationToken);
         if (existing is null)
             return Results.NotFound();
 
@@ -91,7 +91,7 @@ public static class RoleTypeResolvers
             DateTimeOffset.UtcNow,
             actorUserId);
 
-        var updated = await service.UpdateAsync(request, cancellationToken);
+        var updated = await service.UpdateAsync<RoleTypeUpdateRequest, RoleTypeResponse>(request, cancellationToken);
         return ApiResults.Ok(updated);
     }
 

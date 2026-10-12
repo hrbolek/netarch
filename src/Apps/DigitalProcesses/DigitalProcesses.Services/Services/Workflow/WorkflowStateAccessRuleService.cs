@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
@@ -9,8 +10,8 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 /// <summary>
 /// Služba Workflow State Access Rule Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public sealed class WorkflowStateAccessRuleService(ISecurityLayer security)
-    : BaseService<WorkflowStateAccessRuleModel, WorkflowStateAccessRuleResponse>(security), IWorkflowStateAccessRuleService
+public sealed class WorkflowStateAccessRuleService(ISecurityLayer security, IDBLayer unsecuredDb)
+    : SecuredBaseService<WorkflowStateAccessRuleModel>(security, unsecuredDb), IWorkflowStateAccessRuleService
 {
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: GetByIdAsync; pořadí a parametry viz implementace.

@@ -108,7 +108,7 @@ Services  UI
 
 - základní datové kontrakty (`IEntityDBModel`, DTO kontrakty),
 - `IBaseStore<T>` a základní/in-memory store,
-- `IBaseService<TDBModel,TDTOModel>` a `BaseService`,
+- `IBaseService<TDBModel>` a `BaseService`,
 - generické CRUD resolver metody v `BaseResolvers`,
 - Hasura-like filtrování přes `HasuraFilterExpression`,
 - endpoint helpers `ApplyJsonModel` a `ApplyViewModel`,
@@ -165,7 +165,7 @@ Service vrstva reprezentuje aplikační/business logiku.
 Konkrétní služba typicky pouze fixuje obecné typy:
 
 ```csharp
-public interface IUserService : IBaseService<UserModel, UserResponse>
+public interface IUserService : IBaseService<UserModel>
 {
 }
 
@@ -847,7 +847,7 @@ Například:
 
 ```csharp
 public interface IDocumentService
-    : IBaseService<DocumentModel, DocumentResponse>
+    : IBaseService<DocumentModel>
 {
     Task<DocumentResponse> SignAsync(
         Guid id,

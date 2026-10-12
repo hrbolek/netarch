@@ -22,8 +22,8 @@ public sealed class Stage2ProviderIntegrationTests
     {
         private readonly PostgresTestDatabase database = new();
         private readonly ServiceProvider services = new ServiceCollection().BuildServiceProvider();
-        private DbContextOptions<ApplicationDbContext> Options =>
-            new DbContextOptionsBuilder<ApplicationDbContext>()
+        private DbContextOptions<CoreDbContext> Options =>
+            new DbContextOptionsBuilder<CoreDbContext>()
                 .UseNpgsql(database.ConnectionString)
                 .Options;
 
@@ -33,8 +33,8 @@ public sealed class Stage2ProviderIntegrationTests
             context.Database.EnsureCreated();
         }
 
-        public ApplicationDbContext Open() => new(Options);
-        public IDBLayer Layer(ApplicationDbContext context) => new DBLayer(context, services);
+        public CoreDbContext Open() => new(Options);
+        public IDBLayer Layer(CoreDbContext context) => new DBLayer(context, services);
         public void Dispose()
         {
             services.Dispose();

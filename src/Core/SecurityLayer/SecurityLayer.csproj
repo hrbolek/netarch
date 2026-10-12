@@ -5,6 +5,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>WebAppArchitecture.SecurityLayer</RootNamespace>
   </PropertyGroup>
+  <!-- Legacy two-type service source is intentionally excluded during in-place ZIP upgrades.
+       Delete SecuredBaseService.cs from older worktrees; the supported implementation
+       now lives in SecuredEntityService.cs and accepts only TDBModel. -->
+  <ItemGroup>
+    <Compile Remove="SecuredBaseService.cs" />
+  </ItemGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <ProjectReference Include="../Base/Base.csproj" />

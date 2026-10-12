@@ -8,12 +8,12 @@ namespace WebAppArchitecture.Membership.Services;
 /// <summary>
 /// Služba Membership Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public sealed class MembershipService : BaseService<MembershipModel, MembershipResponse>, IMembershipService
+public sealed class MembershipService : SecuredBaseService<MembershipModel>, IMembershipService
 {
     private readonly ISecurityProjectionService _projection;
 
-    public MembershipService(ISecurityLayer security, ISecurityProjectionService projection)
-        : base(security) => _projection = projection;
+    public MembershipService(ISecurityLayer security, IDBLayer unsecuredDb, ISecurityProjectionService projection)
+        : base(security, unsecuredDb) => _projection = projection;
 
     public async Task<MembershipResponse> CreateContainedAsync(
         MembershipCreateContainedRequest request,
@@ -39,7 +39,7 @@ public sealed class MembershipService : BaseService<MembershipModel, MembershipR
         }, cancellationToken);
     }
 
-    public override async Task<MembershipResponse> UpdateAsync<TUpdateRequest>(TUpdateRequest model, CancellationToken cancellationToken = default)
+    public override async Task<TDTO> UpdateAsync<TUpdateRequest, TDTO>(TUpdateRequest model, CancellationToken cancellationToken = default)
     {
         var current = await Security.GetByIdAsync<MembershipModel>(model.id, SecurityOperations.Update, cancellationToken)
             ?? throw new InvalidOperationException($"Item with id '{model.id}' does not exist or is not accessible.");
@@ -48,7 +48,7 @@ public sealed class MembershipService : BaseService<MembershipModel, MembershipR
             var entity = await Security.StageUpdateAsync(model.ApplyTo(current), ct);
             await Security.SaveChangesAsync(ct);
             await _projection.SynchronizeRbacObjectsAsync(new[] { current.user_id, entity.user_id }, ct);
-            return MembershipResponse.FromModel(entity);
+            return TDTO.FromModel(entity);
         }, cancellationToken);
     }
 
@@ -68,28 +68,33 @@ public sealed class MembershipService : BaseService<MembershipModel, MembershipR
             await _projection.SynchronizeRbacObjectAsync(current.user_id, ct);
         }, cancellationToken);
     }
-    public override Task<IReadOnlyCollection<MembershipResponse>> VectorAsync(
+    public override Task<IReadOnlyCollection<TDTO>> VectorAsync<TDTO>(
         System.Linq.Expressions.Expression<Func<MembershipModel, bool>> predicate,
         string operation,
         VectorQueryOptions options,
         CancellationToken cancellationToken = default)
     {
-        var query = BuildDetailedQuery(predicate, operation, options, probeForMore: false);
-        return Task.FromResult<IReadOnlyCollection<MembershipResponse>>(query.ToArray());
+        if (typeof(TDTO) != typeof(MembershipResponse))
+            return base.VectorAsync<TDTO>(predicate, operation, options, cancellationToken);
+        IReadOnlyCollection<TDTO> values = BuildDetailedQuery(predicate, operation, options, probeForMore: false)
+            .AsEnumerable().Select(item => (TDTO)(object)item).ToArray();
+        return Task.FromResult(values);
     }
 
-    public override Task<VectorPageResult<MembershipResponse>> VectorPageAsync(
+    public override Task<VectorPageResult<TDTO>> VectorPageAsync<TDTO>(
         System.Linq.Expressions.Expression<Func<MembershipModel, bool>> predicate,
         string operation,
         VectorQueryOptions options,
         CancellationToken cancellationToken = default)
     {
+        if (typeof(TDTO) != typeof(MembershipResponse))
+            return base.VectorPageAsync<TDTO>(predicate, operation, options, cancellationToken);
         var take = options.Take ?? 25;
         var skip = options.Skip ?? 0;
         var values = BuildDetailedQuery(predicate, operation, options with { Take = take }, probeForMore: true).ToArray();
         var hasMore = values.Length > take;
-        IReadOnlyCollection<MembershipResponse> items = hasMore ? values.Take(take).ToArray() : values;
-        return Task.FromResult(new VectorPageResult<MembershipResponse>(items, new VectorPageInfo(take, skip, hasMore)));
+        IReadOnlyCollection<TDTO> items = (hasMore ? values.Take(take) : values).Select(item => (TDTO)(object)item).ToArray();
+        return Task.FromResult(new VectorPageResult<TDTO>(items, new VectorPageInfo(take, skip, hasMore)));
     }
 
     private IQueryable<MembershipResponse> BuildDetailedQuery(

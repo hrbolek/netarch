@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
 using WebAppArchitecture.DigitalProcesses.Models;
@@ -8,8 +9,8 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 /// <summary>
 /// Služba Workflow State Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public sealed class WorkflowStateService(ISecurityLayer security)
-    : BaseService<WorkflowStateModel, WorkflowStateResponse>(security), IWorkflowStateService
+public sealed class WorkflowStateService(ISecurityLayer security, IDBLayer unsecuredDb)
+    : SecuredBaseService<WorkflowStateModel>(security, unsecuredDb), IWorkflowStateService
 {
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: Query, CurrentUserId; pořadí a parametry viz implementace.

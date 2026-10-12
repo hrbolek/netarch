@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 using WebAppArchitecture.DigitalProcesses.Models;
 using Xunit;
 

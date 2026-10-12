@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 using Microsoft.EntityFrameworkCore;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.Base.Services;
@@ -10,8 +11,8 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 /// <summary>
 /// Služba Form Definition Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public sealed class FormDefinitionService(ISecurityLayer security, ISecurityProjectionService securityProjection)
-    : BaseService<FormDefinitionModel, FormDefinitionResponse>(security), IFormDefinitionService
+public sealed class FormDefinitionService(ISecurityLayer security, ISecurityProjectionService securityProjection, IDBLayer unsecuredDb)
+    : SecuredBaseService<FormDefinitionModel>(security, unsecuredDb), IFormDefinitionService
 {
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CurrentUserId, ExecuteInTransactionAsync; pořadí a parametry viz implementace.

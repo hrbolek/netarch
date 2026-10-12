@@ -8,7 +8,7 @@ namespace WebAppArchitecture.DBLayer;
 /// <summary>
 /// Datová komponenta Ef Role Store. Připravuje dotazy a zápisy pro vyšší vrstvy bez vykreslování HTML a bez HTTP odpovědností.
 /// </summary>
-public sealed class EfRoleStore(ApplicationDbContext db) : EfStore<RoleModel>(db), IRoleStore
+public sealed class EfRoleStore(CoreDbContext db) : EfStore<RoleModel>(db), IRoleStore
 {
     /// <summary>
     /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce.

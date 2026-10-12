@@ -9,7 +9,7 @@ namespace WebAppArchitecture.DBLayer;
 public static class DatabaseInitializer
 {
     public static async Task InitializeAsync(
-        ApplicationDbContext db,
+        CoreDbContext db,
         string? systemDataSource = null,
         bool importSystemData = true,
         CancellationToken cancellationToken = default)
@@ -44,7 +44,7 @@ public static class DatabaseInitializer
     }
 
     private static async Task EnsureTechnicalRootAsync(
-        ApplicationDbContext db,
+        CoreDbContext db,
         DateTimeOffset now,
         CancellationToken cancellationToken)
     {
@@ -69,7 +69,7 @@ public static class DatabaseInitializer
 
 
     private static async Task EnsureCreationScopesAsync(
-        ApplicationDbContext db,
+        CoreDbContext db,
         DateTimeOffset now,
         CancellationToken cancellationToken)
     {
@@ -97,7 +97,7 @@ public static class DatabaseInitializer
     }
 
     private static async Task EnsureBootstrapUsersAsync(
-        ApplicationDbContext db,
+        CoreDbContext db,
         DateTimeOffset now,
         CancellationToken cancellationToken)
     {
@@ -116,7 +116,7 @@ public static class DatabaseInitializer
     }
 
     private static async Task<string[]> EnsureOperationCatalogAsync(
-        ApplicationDbContext db,
+        CoreDbContext db,
         DateTimeOffset now,
         CancellationToken cancellationToken)
     {
@@ -140,7 +140,7 @@ public static class DatabaseInitializer
     }
 
     private static async Task EnsureWellKnownOperationAsync(
-        ApplicationDbContext db,
+        CoreDbContext db,
         string operationName,
         DateTimeOffset now,
         CancellationToken cancellationToken)
@@ -211,7 +211,7 @@ public static class DatabaseInitializer
     }
 
     private static async Task EnsureBootstrapRoleTypesAsync(
-        ApplicationDbContext db,
+        CoreDbContext db,
         DateTimeOffset now,
         CancellationToken cancellationToken)
     {
@@ -236,7 +236,7 @@ public static class DatabaseInitializer
     /// application administration without changing schema or importer code.
     /// </summary>
     private static async Task EnsureDefaultRoleTypeOperationPolicyAsync(
-        ApplicationDbContext db,
+        CoreDbContext db,
         IReadOnlyCollection<string> allOperationNames,
         CancellationToken cancellationToken)
     {
@@ -266,7 +266,7 @@ public static class DatabaseInitializer
     }
 
     private static async Task EnsureBootstrapRolesAsync(
-        ApplicationDbContext db,
+        CoreDbContext db,
         DateTimeOffset now,
         CancellationToken cancellationToken)
     {

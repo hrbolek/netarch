@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
 using WebAppArchitecture.DigitalProcesses.Models;
@@ -8,8 +9,8 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 /// <summary>
 /// Služba Workflow Version Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public sealed class WorkflowVersionService(ISecurityLayer security)
-    : BaseService<WorkflowVersionModel, WorkflowVersionResponse>(security), IWorkflowVersionService
+public sealed class WorkflowVersionService(ISecurityLayer security, IDBLayer unsecuredDb)
+    : SecuredBaseService<WorkflowVersionModel>(security, unsecuredDb), IWorkflowVersionService
 {
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CurrentUserId, ExecuteInTransactionAsync, StageCreateAsync, Query; pořadí a parametry viz implementace.

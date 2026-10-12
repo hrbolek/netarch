@@ -3,18 +3,18 @@ using WebAppArchitecture.Base.Data;
 
 namespace WebAppArchitecture.Base.Services;
 
-public interface IBaseService<TDBModel, TDTOModel>
+/// <summary>DTO-independent secured service contract. Every DTO must support this model.</summary>
+public interface IBaseService<TDBModel> : ISecuredEntityService<TDBModel>
     where TDBModel : class, ISecuredEntityDBModel
-    where TDTOModel : IEntityDTOModel<TDBModel, TDTOModel>
 {
-    IQueryable<TDTOModel> Query();
-    Task<TDTOModel?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
-    Task<IReadOnlyCollection<TDTOModel>> GetAllAsync(CancellationToken cancellationToken = default);
-    Task<IReadOnlyCollection<TDTOModel>> VectorAsync(Expression<Func<TDBModel, bool>> predicate, CancellationToken cancellationToken = default);
-    Task<IReadOnlyCollection<TDTOModel>> VectorAsync(Expression<Func<TDBModel, bool>> predicate, string operation, CancellationToken cancellationToken = default);
-    Task<IReadOnlyCollection<TDTOModel>> VectorAsync(Expression<Func<TDBModel, bool>> predicate, string operation, int? take, CancellationToken cancellationToken = default);
-    Task<IReadOnlyCollection<TDTOModel>> VectorAsync(Expression<Func<TDBModel, bool>> predicate, string operation, VectorQueryOptions options, CancellationToken cancellationToken = default);
-    Task<VectorPageResult<TDTOModel>> VectorPageAsync(Expression<Func<TDBModel, bool>> predicate, string operation, VectorQueryOptions options, CancellationToken cancellationToken = default);
-    Task<TDTOModel> UpdateAsync<TUpdateRequest>(TUpdateRequest model, CancellationToken cancellationToken = default) where TUpdateRequest : IUpdateDTOModel<TDBModel>;
-    Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<IReadOnlyCollection<TDTO>> VectorAsync<TDTO>(Expression<Func<TDBModel, bool>> predicate, CancellationToken cancellationToken = default)
+        where TDTO : IEntityDTOModel<TDBModel, TDTO>;
+    Task<IReadOnlyCollection<TDTO>> VectorAsync<TDTO>(Expression<Func<TDBModel, bool>> predicate, string operation, CancellationToken cancellationToken = default)
+        where TDTO : IEntityDTOModel<TDBModel, TDTO>;
+    Task<IReadOnlyCollection<TDTO>> VectorAsync<TDTO>(Expression<Func<TDBModel, bool>> predicate, string operation, int? take, CancellationToken cancellationToken = default)
+        where TDTO : IEntityDTOModel<TDBModel, TDTO>;
+    Task<IReadOnlyCollection<TDTO>> VectorAsync<TDTO>(Expression<Func<TDBModel, bool>> predicate, string operation, VectorQueryOptions options, CancellationToken cancellationToken = default)
+        where TDTO : IEntityDTOModel<TDBModel, TDTO>;
+    Task<VectorPageResult<TDTO>> VectorPageAsync<TDTO>(Expression<Func<TDBModel, bool>> predicate, string operation, VectorQueryOptions options, CancellationToken cancellationToken = default)
+        where TDTO : IEntityDTOModel<TDBModel, TDTO>;
 }

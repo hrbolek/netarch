@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using WebAppArchitecture.DigitalProcesses.Models;
@@ -39,8 +40,8 @@ public sealed class FormDataContextBuilder : IFormDataContextBuilder
     {
         metadata ??= new FormContextMetadata();
         var form = new JsonObject();
-        var lookup = nodes.GroupBy(x => x.parent_id)
-            .ToDictionary(x => x.Key, x => x.OrderBy(n => n.position).ThenBy(n => n.key).ToArray());
+        var lookup = nodes.OrderBy(n => n.position).ThenBy(n => n.key)
+            .ToLookup(x => x.parent_id);
         var traversed = new HashSet<Guid>();
         Fill(form, null, lookup, visibleValues, traversed);
         var history = new JsonArray();
@@ -74,17 +75,16 @@ public sealed class FormDataContextBuilder : IFormDataContextBuilder
     }
 
     private static void Fill(JsonObject output, Guid? parentId,
-        Dictionary<Guid?, FormNodeResponse[]> nodes,
+        ILookup<Guid?, FormNodeResponse> nodes,
         IReadOnlyDictionary<string, JsonNode?> visibleValues, HashSet<Guid> traversed)
     {
-        if (!nodes.TryGetValue(parentId, out var children)) return;
-        foreach (var child in children)
+        foreach (var child in nodes[parentId])
         {
             if (!traversed.Add(child.id)) throw new InvalidOperationException("Cycle in FormNodes.");
             if (!Regex.IsMatch(child.key, "^[A-Za-z_][A-Za-z0-9_]*$"))
                 throw new InvalidOperationException($"Invalid FormNode key '{child.key}'.");
             if (output.ContainsKey(child.key)) throw new InvalidOperationException($"Duplicate FormNode key '{child.key}'.");
-            if (nodes.ContainsKey(child.id))
+            if (nodes.Contains(child.id))
             {
                 var section = new JsonObject();
                 Fill(section, child.id, nodes, visibleValues, traversed);

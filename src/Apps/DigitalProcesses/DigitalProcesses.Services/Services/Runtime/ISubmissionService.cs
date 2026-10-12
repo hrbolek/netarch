@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 using System.Text.Json;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.Base.Services;
@@ -10,4 +11,4 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 /// <summary>
 /// Služba I Submission Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public interface ISubmissionService : IBaseService<SubmissionModel, SubmissionResponse> { Task<SubmissionTreeResponse> GetTreeAsync(Guid submissionId,CancellationToken ct=default); }
+public interface ISubmissionService : IBaseService<SubmissionModel> { Task<SubmissionTreeResponse> GetTreeAsync(Guid submissionId,CancellationToken ct=default); }

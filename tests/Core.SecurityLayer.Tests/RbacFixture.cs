@@ -13,7 +13,7 @@ public sealed class RbacFixture : IDisposable
 {
     private readonly PostgresTestDatabase database = new();
     private readonly ServiceProvider services;
-    public ApplicationDbContext Context { get; }
+    public CoreDbContext Context { get; }
     public IDBLayer Db { get; }
     public SecurityProjectionService Projection { get; }
     public Guid Student { get; } = Guid.NewGuid();
@@ -35,9 +35,9 @@ public sealed class RbacFixture : IDisposable
     {
         var servicesCollection = new ServiceCollection();
         services = servicesCollection.BuildServiceProvider();
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>().UseNpgsql(database.ConnectionString);
+        var options = new DbContextOptionsBuilder<CoreDbContext>().UseNpgsql(database.ConnectionString);
         if (interceptor is not null) options.AddInterceptors(interceptor);
-        Context = new ApplicationDbContext(options.Options);
+        Context = new CoreDbContext(options.Options);
         Context.Database.EnsureCreated();
         Db = new DBLayer(Context, services);
         Projection = new SecurityProjectionService(Db);

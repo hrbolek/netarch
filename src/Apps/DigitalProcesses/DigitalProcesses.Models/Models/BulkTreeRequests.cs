@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 namespace WebAppArchitecture.DigitalProcesses.Models;
 
 // Omitted nodes are preserved. No client-supplied RBAC IDs or audit metadata.

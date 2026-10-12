@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
@@ -109,7 +110,7 @@ public static class RtfDocumentEndpoints
 public sealed record RtfTemplateInfo(Guid Id, Guid FormVersionId, string Name, DateTimeOffset CreatedAt);
 
 /// <summary>PostgreSQL-backed template store. Scoped to the request DbContext.</summary>
-public sealed class RtfTemplateStore(ApplicationDbContext db)
+public sealed class RtfTemplateStore(DigitalProcessesDbContext db)
 {
     public IReadOnlyList<RtfTemplateInfo> List(Guid version) => db.DocumentTemplates.AsNoTracking()
         .Where(x => x.form_version_id == version).OrderBy(x => x.created_at)

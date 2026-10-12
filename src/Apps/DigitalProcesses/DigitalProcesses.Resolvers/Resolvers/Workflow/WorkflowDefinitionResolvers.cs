@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 using WebAppArchitecture.SecurityLayer;
 using WebAppArchitecture.Base.Security;
 using Microsoft.AspNetCore.Builder;

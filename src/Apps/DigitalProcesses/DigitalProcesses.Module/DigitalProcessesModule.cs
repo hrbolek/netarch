@@ -1,3 +1,8 @@
+using WebAppArchitecture.DigitalProcesses.Security;
+using WebAppArchitecture.DigitalProcesses.DBLayer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using WebAppArchitecture.DBLayer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -20,6 +25,14 @@ public sealed class DigitalProcessesModule : IArchitectureModule
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
+        // Override the Core-only context with one application context, not two contexts.
+        // Both Core stores/security and DigitalProcesses share one EF change tracker
+        // and transaction in the same request scope.
+        var connectionString = configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException("Missing ConnectionStrings:DefaultConnection (PostgreSQL).");
+        services.RemoveAll<CoreDbContext>();
+        services.AddDbContext<DigitalProcessesDbContext>(options => options.UseNpgsql(connectionString));
+        services.AddScoped<CoreDbContext>(sp => sp.GetRequiredService<DigitalProcessesDbContext>());
         services.AddMemoryCache();
         services.AddHttpClient("digital-process-documents");
         services.AddHttpClient("digital-process-ai-agents");
@@ -37,6 +50,7 @@ public sealed class DigitalProcessesModule : IArchitectureModule
         services.AddScoped<IWorkflowTransitionService, WorkflowTransitionService>();
         services.AddScoped<IProcessDefinitionService, ProcessDefinitionService>();
         services.AddScoped<IProcessDefinitionVersionService, ProcessDefinitionVersionService>();
+        services.AddScoped<ITrustedSubmissionSnapshotReader, TrustedSubmissionSnapshotReader>();
         services.AddScoped<IProcessRequestProvisioner, ProcessRequestProvisioner>();
         services.AddScoped<IRequestService, RequestService>();
         services.AddScoped<ISubmissionService, SubmissionService>();

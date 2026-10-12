@@ -10,7 +10,7 @@ namespace WebAppArchitecture.DBLayer;
 /// </summary>
 public abstract class EfStore<TModel> : IBaseStore<TModel> where TModel : class, IEntityDBModel
 {
-    protected readonly ApplicationDbContext Db;
+    protected readonly CoreDbContext Db;
     protected DbSet<TModel> Set => Db.Set<TModel>();
     protected IQueryable<TModel> RawQuery => Set.AsNoTracking();
 
@@ -19,7 +19,7 @@ public abstract class EfStore<TModel> : IBaseStore<TModel> where TModel : class,
     /// </summary>
     public IQueryable<TModel> Query() => RawQuery;
 
-    protected EfStore(ApplicationDbContext db) => Db = db;
+    protected EfStore(CoreDbContext db) => Db = db;
 
     /// <summary>
     /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce.

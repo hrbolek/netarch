@@ -1,3 +1,5 @@
+using WebAppArchitecture.User.Models;
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 using WebAppArchitecture.DigitalProcesses.Models;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -30,7 +32,7 @@ public sealed class DummyJsonataCaller(IUserService users) : IFormDataBackend
         // Development-only caller: accept any GraphQL document, but always return
         // the users available through the existing secured service.
         // GetAllAsync uses the same secured service as the existing UserResponse endpoints.
-        var records = await users.GetAllAsync(ct);
+        var records = await users.GetAllAsync<UserResponse>(ct);
         return new FormBackendRawResponse(JsonSerializer.SerializeToNode(records));
     }
 

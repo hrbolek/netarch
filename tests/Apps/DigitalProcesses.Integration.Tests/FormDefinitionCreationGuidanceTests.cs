@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.DigitalProcesses.Resolvers;
 using Xunit;

@@ -131,7 +131,7 @@ public static class GroupResolvers
         if (actorUserId is null)
             return Results.Unauthorized();
 
-        var existing = await service.GetByIdAsync(id, cancellationToken);
+        var existing = await service.GetByIdAsync<GroupResponse>(id, cancellationToken);
         if (existing is null)
             return Results.NotFound();
 
@@ -153,7 +153,7 @@ public static class GroupResolvers
             DateTimeOffset.UtcNow,
             actorUserId);
 
-        var updated = await service.UpdateAsync(request, cancellationToken);
+        var updated = await service.UpdateAsync<GroupUpdateRequest, GroupResponse>(request, cancellationToken);
         return ApiResults.Ok(updated);
     }
 
@@ -180,7 +180,7 @@ public static class GroupResolvers
         IRbacAuthorizationService authorizationService,
         CancellationToken cancellationToken)
     {
-        var item = await groupService.GetByIdAsync(id, cancellationToken);
+        var item = await groupService.GetByIdAsync<GroupResponse>(id, cancellationToken);
         if (item is null) return Results.NotFound();
 
         var actor = actorProvider.TryGetActorUserId(httpContext);
@@ -217,7 +217,7 @@ public static class GroupResolvers
         IRoleService roleService,
         CancellationToken cancellationToken)
     {
-        var group = await groupService.GetByIdAsync(id, cancellationToken);
+        var group = await groupService.GetByIdAsync<GroupResponse>(id, cancellationToken);
         if (group is null)
             return Results.NotFound();
 
@@ -235,7 +235,7 @@ public static class GroupResolvers
                 return Results.BadRequest(new { error });
             }
 
-            var page = await roleService.VectorPageAsync(
+            var page = await roleService.VectorPageAsync<RoleResponse>(
                 predicate, RbacOperations.List, options, cancellationToken);
             roles = page.Items;
             pageInfo = VectorQueryParser.WithRequestState(httpContext, page.PageInfo);
@@ -257,7 +257,7 @@ public static class GroupResolvers
         IMembershipService membershipService,
         CancellationToken cancellationToken)
     {
-        var group = await groupService.GetByIdAsync(id, cancellationToken);
+        var group = await groupService.GetByIdAsync<GroupResponse>(id, cancellationToken);
         if (group is null)
             return Results.NotFound();
 
@@ -275,7 +275,7 @@ public static class GroupResolvers
                 return Results.BadRequest(new { error });
             }
 
-            var page = await membershipService.VectorPageAsync(
+            var page = await membershipService.VectorPageAsync<MembershipResponse>(
                 predicate, RbacOperations.List, options, cancellationToken);
             memberships = page.Items;
             pageInfo = VectorQueryParser.WithRequestState(httpContext, page.PageInfo);

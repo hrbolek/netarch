@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 namespace WebAppArchitecture.DigitalProcesses.Resolvers;
 
 /// <summary>Human-readable authorization guidance for the HTML form endpoint.</summary>

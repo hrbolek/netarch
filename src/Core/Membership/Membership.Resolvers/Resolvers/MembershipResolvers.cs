@@ -119,7 +119,7 @@ public static class MembershipResolvers
         if (actorUserId is null)
             return Results.Unauthorized();
 
-        var existing = await service.GetByIdAsync(id, cancellationToken);
+        var existing = await service.GetByIdAsync<MembershipResponse>(id, cancellationToken);
         if (existing is null)
             return Results.NotFound();
 
@@ -151,7 +151,7 @@ public static class MembershipResolvers
             DateTimeOffset.UtcNow,
             actorUserId);
 
-        var updated = await service.UpdateAsync(request, cancellationToken);
+        var updated = await service.UpdateAsync<MembershipUpdateRequest, MembershipResponse>(request, cancellationToken);
         return ApiResults.Ok(updated);
     }
 
@@ -160,7 +160,7 @@ public static class MembershipResolvers
         Guid id, HttpContext httpContext, IMembershipService service, ICurrentActorProvider actorProvider,
         IRbacAuthorizationService authorizationService, CancellationToken cancellationToken)
     {
-        var item = await service.GetByIdAsync(id, cancellationToken);
+        var item = await service.GetByIdAsync<MembershipResponse>(id, cancellationToken);
         if (item is null) return Results.NotFound();
         var actor = actorProvider.TryGetActorUserId(httpContext);
         if (actor is null) return Results.Unauthorized();

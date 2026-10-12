@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
@@ -9,8 +10,8 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 /// <summary>
 /// Služba Form Node Type Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public sealed class FormNodeTypeService(ISecurityLayer security, ISecurityProjectionService securityProjection)
-    : BaseService<FormNodeTypeModel, FormNodeTypeResponse>(security), IFormNodeTypeService
+public sealed class FormNodeTypeService(ISecurityLayer security, ISecurityProjectionService securityProjection, IDBLayer unsecuredDb)
+    : SecuredBaseService<FormNodeTypeModel>(security, unsecuredDb), IFormNodeTypeService
 {
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách.

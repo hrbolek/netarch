@@ -8,7 +8,7 @@ namespace WebAppArchitecture.DBLayer;
 /// <summary>
 /// Datová komponenta Ef Group Store. Připravuje dotazy a zápisy pro vyšší vrstvy bez vykreslování HTML a bez HTTP odpovědností.
 /// </summary>
-public sealed class EfGroupStore(ApplicationDbContext db) : EfStore<GroupModel>(db), IGroupStore
+public sealed class EfGroupStore(CoreDbContext db) : EfStore<GroupModel>(db), IGroupStore
 {
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách.

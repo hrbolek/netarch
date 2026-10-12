@@ -37,9 +37,9 @@ public static class BaseResolvers
         CancellationToken cancellationToken)
         where TDBModel : class, ISecuredEntityDBModel
         where TDTOModel : IEntityDTOModel<TDBModel, TDTOModel>
-        where TService : IBaseService<TDBModel, TDTOModel>
+        where TService : IBaseService<TDBModel>
     {
-        var result = await service.GetByIdAsync(
+        var result = await service.GetByIdAsync<TDTOModel>(
             id,
             cancellationToken);
 
@@ -58,7 +58,7 @@ public static class BaseResolvers
         CancellationToken cancellationToken)
         where TDBModel : class, ISecuredEntityDBModel
         where TDTOModel : IEntityDTOModel<TDBModel, TDTOModel>
-        where TService : IBaseService<TDBModel, TDTOModel>
+        where TService : IBaseService<TDBModel>
     {
         var operation = httpContext.Request.Query["operation"].ToString();
         if (string.IsNullOrWhiteSpace(operation))
@@ -83,7 +83,7 @@ public static class BaseResolvers
             return Results.BadRequest(new { error });
         }
 
-        var page = await service.VectorPageAsync(predicate, operation, options, cancellationToken);
+        var page = await service.VectorPageAsync<TDTOModel>(predicate, operation, options, cancellationToken);
         var pageInfo = VectorQueryParser.WithRequestState(httpContext, page.PageInfo);
         VectorQueryParser.WritePagingHeaders(httpContext, pageInfo);
         return ApiResults.Ok(page.Items);
@@ -101,9 +101,9 @@ public static class BaseResolvers
         where TDBModel : class, ISecuredEntityDBModel
         where TDTOModel : IEntityDTOModel<TDBModel, TDTOModel>
         where TUpdateRequest : IUpdateDTOModel<TDBModel>
-        where TService : IBaseService<TDBModel, TDTOModel>
+        where TService : IBaseService<TDBModel>
     {
-        var current = await service.GetByIdAsync(
+        var current = await service.GetByIdAsync<TDTOModel>(
             request.id,
             cancellationToken);
 
@@ -119,7 +119,7 @@ public static class BaseResolvers
         if (authorizeResult is not null)
             return authorizeResult;
 
-        var result = await service.UpdateAsync(
+        var result = await service.UpdateAsync<TUpdateRequest, TDTOModel>(
             request,
             cancellationToken);
 
@@ -136,9 +136,9 @@ public static class BaseResolvers
         CancellationToken cancellationToken)
         where TDBModel : class, ISecuredEntityDBModel
         where TDTOModel : IEntityDTOModel<TDBModel, TDTOModel>
-        where TService : IBaseService<TDBModel, TDTOModel>
+        where TService : IBaseService<TDBModel>
     {
-        var current = await service.GetByIdAsync(
+        var current = await service.GetByIdAsync<TDTOModel>(
             id,
             cancellationToken);
 
@@ -171,9 +171,9 @@ public static class BaseResolvers
         CancellationToken cancellationToken)
         where TDBModel : class, ISecuredEntityDBModel
         where TDTOModel : IEntityDTOModel<TDBModel, TDTOModel>
-        where TService : IBaseService<TDBModel, TDTOModel>
+        where TService : IBaseService<TDBModel>
     {
-        var result = await service.GetByIdAsync(id, cancellationToken);
+        var result = await service.GetByIdAsync<TDTOModel>(id, cancellationToken);
         if (result is null)
             return Results.NotFound();
 
@@ -213,24 +213,3 @@ public static class BaseResolvers
 
 }
 
-// public class BaseResolvers<
-//     TService,
-//     TDBModel,
-//     TDTOModel>
-//     where TDBModel : class, ISecuredEntityDBModel
-//     where TDTOModel : IEntityDTOModel<TDBModel, TDTOModel>
-//     where TService : IBaseService<TDBModel, TDTOModel>
-// {
-//     public static async Task<IResult> Update<TUpdateRequest>(
-//         TUpdateRequest request,
-//         TService service,
-//         CancellationToken cancellationToken)
-//         where TUpdateRequest : IUpdateDTOModel<TDBModel>
-//     {
-//         var result = await service.UpdateAsync(
-//             request,
-//             cancellationToken);
-
-//         return ApiResults.Ok(result);
-//     }
-// }

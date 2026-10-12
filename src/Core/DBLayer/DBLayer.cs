@@ -8,7 +8,7 @@ namespace WebAppArchitecture.DBLayer;
 /// <summary>
 /// Typ D B Layer ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
 /// </summary>
-public sealed class DBLayer(ApplicationDbContext db, IServiceProvider services) : IDBLayer
+public sealed class DBLayer(CoreDbContext db, IServiceProvider services) : IDBLayer
 {
     public bool HasActiveTransaction => db.Database.CurrentTransaction is not null;
 

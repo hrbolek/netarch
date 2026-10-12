@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 using System.Text.Json;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
@@ -12,8 +13,8 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 public sealed class SubmissionNodeService(
     ISecurityLayer security,
     IRbacAccessBindingManager bindingManager,
-    ISecurityProjectionService securityProjection)
-    : BaseService<SubmissionNodeModel, SubmissionNodeResponse>(security), ISubmissionNodeService
+    ISecurityProjectionService securityProjection, IDBLayer unsecuredDb)
+    : SecuredBaseService<SubmissionNodeModel>(security, unsecuredDb), ISubmissionNodeService
 {
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách.

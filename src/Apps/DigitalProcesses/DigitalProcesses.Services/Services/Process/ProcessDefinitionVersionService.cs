@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 using System.Text.Json;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.Base.Services;
@@ -10,7 +11,7 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 /// <summary>
 /// Služba Process Definition Version Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public sealed class ProcessDefinitionVersionService(ISecurityLayer security) : BaseService<ProcessDefinitionVersionModel,ProcessDefinitionVersionResponse>(security),IProcessDefinitionVersionService
+public sealed class ProcessDefinitionVersionService(ISecurityLayer security, IDBLayer unsecuredDb) : SecuredBaseService<ProcessDefinitionVersionModel>(security, unsecuredDb),IProcessDefinitionVersionService
 {
     private static void ValidateOwnedDefinitions(ProcessDefinitionModel process, FormVersionModel form, WorkflowVersionModel workflow)
     {

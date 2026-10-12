@@ -39,7 +39,9 @@ public sealed class CoreModule : IArchitectureModule
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException("Missing ConnectionStrings:DefaultConnection (PostgreSQL).");
-        services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
+        // Core can run independently; application modules may replace this registration
+        // with a derived context while retaining CoreDbContext as its scoped alias.
+        services.AddDbContext<CoreDbContext>(options => options.UseNpgsql(connectionString));
 
         services.AddHttpContextAccessor();
         services.AddScoped<IDBLayer, DBLayerImplementation>();
@@ -47,7 +49,6 @@ public sealed class CoreModule : IArchitectureModule
         services.AddHostedService<EffectiveAccessCleanupHostedService>();
         services.AddScoped<ISecurityProjectionService, SecurityProjectionService>();
         services.AddScoped<IRbacAccessBindingManager, RbacAccessBindingManager>();
-        services.AddScoped<ITrustedSubmissionSnapshotReader, TrustedSubmissionSnapshotReader>();
         services.AddScoped<ISecurityLayer, SecurityLayerImplementation>();
 
         services.AddScoped<IUserStore, EfUserStore>();

@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,7 +13,7 @@ public sealed class DigitalProcessesBootstrapHostedService(IServiceScopeFactory 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         await using var scope = scopeFactory.CreateAsyncScope();
-        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var db = scope.ServiceProvider.GetRequiredService<DigitalProcessesDbContext>();
         var now = DateTimeOffset.UtcNow;
         var actor = RbacWellKnown.BootstrapAdminUserId;
         var scopeId = RbacWellKnown.FormNodeTypeCreationScopeId;

@@ -1,3 +1,5 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
+using WebAppArchitecture.DigitalProcesses;
 using System.Net;
 using System.Net.Http.Json;
 using Microsoft.EntityFrameworkCore;
@@ -59,7 +61,7 @@ public sealed class DigitalProcessesFacultyScopeTests
         using var host = new IsolatedHost();
         var f = await SeedAsync(host);
         using var scope = host.Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var db = scope.ServiceProvider.GetRequiredService<DigitalProcessesDbContext>();
         var request = await db.DigitalProcessRequests.AsNoTracking().SingleAsync(x => x.id == f.Request);
         var snapshots = await db.Submissions.AsNoTracking().Where(x => x.request_id == f.Request)
             .OrderBy(x => x.version).ToListAsync();
@@ -79,7 +81,7 @@ public sealed class DigitalProcessesFacultyScopeTests
         // Force startup/bootstrap before resolving a scope.
         using var client = host.CreateClient();
         using var scope = host.Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var db = scope.ServiceProvider.GetRequiredService<DigitalProcessesDbContext>();
         var projection = scope.ServiceProvider.GetRequiredService<ISecurityProjectionService>();
         var now = DateTimeOffset.UtcNow;
         var admin = RbacWellKnown.BootstrapAdminUserId;

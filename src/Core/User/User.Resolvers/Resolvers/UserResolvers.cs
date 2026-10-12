@@ -23,6 +23,7 @@ using WebAppArchitecture.User.Services;
 using WebAppArchitecture.User.UI.Pages;
 using WebAppArchitecture.User.UI.Components.Vectors;
 using WebAppArchitecture.DBLayer;
+using WebAppArchitecture.Group.Models;
 using WebAppArchitecture.Group.Services;
 
 namespace WebAppArchitecture.User.Resolvers;
@@ -107,7 +108,7 @@ public static class UserResolvers
                 return Results.Unauthorized();
 
             var predicate = HasuraFilterExpression.Build<UserModel>(request.Where ?? new Dictionary<string, object?>());
-            var models = await service.VectorAsync(
+            var models = await service.VectorAsync<UserResponse>(
                 predicate,
                 RbacOperations.Vector,
                 cancellationToken);
@@ -164,7 +165,7 @@ public static class UserResolvers
         if (actorUserId is null)
             return Results.Unauthorized();
 
-        var existing = await service.GetByIdAsync(id, cancellationToken);
+        var existing = await service.GetByIdAsync<UserResponse>(id, cancellationToken);
         if (existing is null)
             return Results.NotFound();
 
@@ -183,7 +184,7 @@ public static class UserResolvers
             DateTimeOffset.UtcNow,
             actorUserId);
 
-        var updated = await service.UpdateAsync(request, cancellationToken);
+        var updated = await service.UpdateAsync<UserUpdateRequest, UserResponse>(request, cancellationToken);
         return ApiResults.Ok(updated);
     }
 
@@ -216,7 +217,7 @@ public static class UserResolvers
         IMembershipService membershipService,
         CancellationToken cancellationToken)
     {
-        var user = await userService.GetByIdAsync(id, cancellationToken);
+        var user = await userService.GetByIdAsync<UserResponse>(id, cancellationToken);
         if (user is null)
             return Results.NotFound();
 
@@ -234,7 +235,7 @@ public static class UserResolvers
                 return Results.BadRequest(new { error });
             }
 
-            var page = await membershipService.VectorPageAsync(
+            var page = await membershipService.VectorPageAsync<MembershipResponse>(
                 predicate, RbacOperations.List, options, cancellationToken);
             memberships = page.Items;
             pageInfo = VectorQueryParser.WithRequestState(httpContext, page.PageInfo);
@@ -258,7 +259,7 @@ public static class UserResolvers
         IRbacAuthorizationService authorizationService,
         CancellationToken cancellationToken)
     {
-        var user = await userService.GetByIdAsync(id, cancellationToken);
+        var user = await userService.GetByIdAsync<UserResponse>(id, cancellationToken);
         if (user is null) return Results.NotFound();
 
         var actor = actorProvider.TryGetActorUserId(httpContext);
@@ -266,7 +267,7 @@ public static class UserResolvers
 
         var canUpdate = await authorizationService.IsAllowedAsync(actor.Value, user.rbacobject_id, RbacOperations.Update, cancellationToken);
         var canDelete = await authorizationService.IsAllowedAsync(actor.Value, user.rbacobject_id, RbacOperations.Delete, cancellationToken);
-        var targetGroups = await groupService.VectorAsync(_ => true, RbacOperations.Create, 1, cancellationToken);
+        var targetGroups = await groupService.VectorAsync<GroupResponse>(_ => true, RbacOperations.Create, 1, cancellationToken);
         var canCreateRelation = targetGroups.Count > 0;
         var returnUrl = $"/architecture/UserResponse/view/{id}";
 
@@ -294,7 +295,7 @@ public static class UserResolvers
         IRoleService roleService,
         CancellationToken cancellationToken)
     {
-        var user = await userService.GetByIdAsync(id, cancellationToken);
+        var user = await userService.GetByIdAsync<UserResponse>(id, cancellationToken);
         if (user is null)
             return Results.NotFound();
 
@@ -312,7 +313,7 @@ public static class UserResolvers
                 return Results.BadRequest(new { error });
             }
 
-            var page = await roleService.VectorPageAsync(
+            var page = await roleService.VectorPageAsync<RoleResponse>(
                 predicate, RbacOperations.List, options, cancellationToken);
             roles = page.Items;
             pageInfo = VectorQueryParser.WithRequestState(httpContext, page.PageInfo);

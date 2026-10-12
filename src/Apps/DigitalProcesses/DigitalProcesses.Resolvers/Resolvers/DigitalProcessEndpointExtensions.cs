@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 using Microsoft.AspNetCore.Routing;
 
 namespace WebAppArchitecture.DigitalProcesses.Resolvers;

@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 using System.Linq.Expressions;
 using WebAppArchitecture.Base.Data;
 using WebAppArchitecture.DBLayer;

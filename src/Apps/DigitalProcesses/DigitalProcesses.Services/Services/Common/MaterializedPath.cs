@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
 /// <summary>

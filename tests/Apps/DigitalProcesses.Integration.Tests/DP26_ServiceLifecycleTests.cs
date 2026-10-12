@@ -1,3 +1,5 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
+using WebAppArchitecture.DigitalProcesses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using WebAppArchitecture.DigitalProcesses.Services;
@@ -44,7 +46,7 @@ public sealed class DigitalProcessesFullLifecycleTests
         Guid originalNode;
         using (var scope = host.Services.CreateScope())
         {
-            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var db = scope.ServiceProvider.GetRequiredService<DigitalProcessesDbContext>();
             var request = await db.DigitalProcessRequests.AsNoTracking().SingleAsync(x => x.id == started.id);
             Assert.Equal(f.InitialState, request.current_state_id);
             Assert.Equal(f.ProcessVersion, request.process_definition_version_id);
@@ -63,7 +65,7 @@ public sealed class DigitalProcessesFullLifecycleTests
         Guid nextNode;
         using (var scope = host.Services.CreateScope())
         {
-            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var db = scope.ServiceProvider.GetRequiredService<DigitalProcessesDbContext>();
             var request = await db.DigitalProcessRequests.AsNoTracking().SingleAsync(x => x.id == started.id);
             Assert.Equal(f.FinalState, request.current_state_id);
             Assert.NotEqual(originalSubmission, request.current_submission_id);
@@ -94,7 +96,7 @@ public sealed class DigitalProcessesFullLifecycleTests
                 new SetSubmissionNodeValueRequest("\"Tampered\"")));
         using (var scope = host.Services.CreateScope())
         {
-            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var db = scope.ServiceProvider.GetRequiredService<DigitalProcessesDbContext>();
             Assert.Equal("\"Original answer\"", (await db.SubmissionNodes.AsNoTracking().SingleAsync(x => x.id == originalNode)).value_json);
             Assert.Equal("\"Original answer\"", (await db.SubmissionNodes.AsNoTracking().SingleAsync(x => x.id == nextNode)).value_json);
         }
@@ -112,7 +114,7 @@ public sealed class DigitalProcessesFullLifecycleTests
     {
         using var client = host.CreateClient(); // Initializes DB and bootstrap identities.
         using var scope = host.Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var db = scope.ServiceProvider.GetRequiredService<DigitalProcessesDbContext>();
         var now = DateTimeOffset.UtcNow;
         var actor = RbacWellKnown.BootstrapAdminUserId;
         var root = await db.Groups.SingleAsync(x => x.id == RbacWellKnown.RootGroupId);

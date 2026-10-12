@@ -8,11 +8,11 @@ namespace WebAppArchitecture.User.Services;
 /// <summary>
 /// Služba User Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public sealed class UserService : BaseService<UserModel, UserResponse>, IUserService
+public sealed class UserService : SecuredBaseService<UserModel>, IUserService
 {
     private readonly ISecurityProjectionService _projection;
 
-    public UserService(ISecurityLayer security, ISecurityProjectionService projection) : base(security)
+    public UserService(ISecurityLayer security, IDBLayer unsecuredDb, ISecurityProjectionService projection) : base(security, unsecuredDb)
         => _projection = projection;
 
     public async Task<UserResponse> CreateContainedAsync(

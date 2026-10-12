@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
@@ -9,9 +10,19 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 /// <summary>
 /// Služba Process Definition Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public sealed class ProcessDefinitionService(ISecurityLayer security, ISecurityProjectionService securityProjection, IDBLayer db)
-    : BaseService<ProcessDefinitionModel, ProcessDefinitionResponse>(security), IProcessDefinitionService
+public sealed class ProcessDefinitionService
+    : SecuredBaseService<ProcessDefinitionModel>, IProcessDefinitionService
 {
+    private readonly IDBLayer _db;
+    private readonly ISecurityProjectionService _securityProjection;
+
+    public ProcessDefinitionService(ISecurityLayer security, ISecurityProjectionService securityProjection, IDBLayer db)
+        : base(security, db)
+    {
+        _db = db;
+        _securityProjection = securityProjection;
+    }
+
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: GetByIdAsync; pořadí a parametry viz implementace.
     /// </summary>
@@ -44,22 +55,22 @@ public sealed class ProcessDefinitionService(ISecurityLayer security, ISecurityP
                 { form_definition_id = formId, workflow_definition_id = workflowId };
             // Trusted child provisioning after authorizing the existing process creation scope.
             // Newly-created scopes do not yet have EffectiveAccess projection rows.
-            await db.StageCreateAsync(new GroupModel(formId, $"Form: {request.name}", ownedProcessGroup.group_type_id,
+            await _db.StageCreateAsync(new GroupModel(formId, $"Form: {request.name}", ownedProcessGroup.group_type_id,
                 id, $"{ownedProcessGroup.path}{formId:D}/", true, formId, now, now, actor, actor), token);
-            await db.StageCreateAsync(new GroupModel(workflowId, $"Workflow: {request.name}", ownedProcessGroup.group_type_id,
+            await _db.StageCreateAsync(new GroupModel(workflowId, $"Workflow: {request.name}", ownedProcessGroup.group_type_id,
                 id, $"{ownedProcessGroup.path}{workflowId:D}/", true, workflowId, now, now, actor, actor), token);
-            await db.StageCreateAsync(new FormDefinitionModel(formId, request.name, request.description, formId, now, now, actor, actor), token);
-            await db.StageCreateAsync(new WorkflowDefinitionModel(workflowId, request.name, request.description, workflowId, now, now, actor, actor), token);
-            await db.StageCreateAsync(new FormVersionModel(formVersionId, formId, 1, false, null, formId, now, now, actor, actor), token);
-            await db.StageCreateAsync(new WorkflowVersionModel(workflowVersionId, workflowId, 1, false, null, workflowId, now, now, actor, actor), token);
-            await db.StageCreateAsync(new ProcessDefinitionVersionModel(
+            await _db.StageCreateAsync(new FormDefinitionModel(formId, request.name, request.description, formId, now, now, actor, actor), token);
+            await _db.StageCreateAsync(new WorkflowDefinitionModel(workflowId, request.name, request.description, workflowId, now, now, actor, actor), token);
+            await _db.StageCreateAsync(new FormVersionModel(formVersionId, formId, 1, false, null, formId, now, now, actor, actor), token);
+            await _db.StageCreateAsync(new WorkflowVersionModel(workflowVersionId, workflowId, 1, false, null, workflowId, now, now, actor, actor), token);
+            await _db.StageCreateAsync(new ProcessDefinitionVersionModel(
                 Guid.NewGuid(), id, formVersionId, workflowVersionId, 1, false, null,
                 id, now, now, actor, actor), token);
-            var created = await db.StageCreateAsync(model, token);
+            var created = await _db.StageCreateAsync(model, token);
             await Security.SaveChangesAsync(token);
-            await securityProjection.SynchronizeRbacObjectAsync(id, token);
-            await securityProjection.SynchronizeRbacObjectAsync(formId, token);
-            await securityProjection.SynchronizeRbacObjectAsync(workflowId, token);
+            await _securityProjection.SynchronizeRbacObjectAsync(id, token);
+            await _securityProjection.SynchronizeRbacObjectAsync(formId, token);
+            await _securityProjection.SynchronizeRbacObjectAsync(workflowId, token);
             return ProcessDefinitionResponse.FromModel(created);
         }, ct);
     }

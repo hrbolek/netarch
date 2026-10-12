@@ -14,7 +14,7 @@ public static class SystemDataImporter
         "https://raw.githubusercontent.com/hrbolek/_uois/latest/systemdata.hk2026.json";
 
     public static async Task<SystemDataImportResult> ImportAsync(
-        ApplicationDbContext db,
+        CoreDbContext db,
         string source,
         CancellationToken cancellationToken = default)
     {

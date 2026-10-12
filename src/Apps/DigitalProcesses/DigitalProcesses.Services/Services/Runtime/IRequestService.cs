@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 using System.Text.Json;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
@@ -9,7 +10,7 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 /// <summary>
 /// Vstupní kontrakt I Request Service. Přijímá pouze údaje od klienta; identita konajícího uživatele a bezpečnostní kontext se ověřují na serveru.
 /// </summary>
-public interface IRequestService : IBaseService<RequestModel, RequestResponse>
+public interface IRequestService : IBaseService<RequestModel>
 {
     Task<RequestResponse> StartAsync(StartRequestRequest request, CancellationToken ct = default);
     Task<RequestResponse> TransitionAsync(Guid requestId, TransitionRequestRequest request, CancellationToken ct = default);

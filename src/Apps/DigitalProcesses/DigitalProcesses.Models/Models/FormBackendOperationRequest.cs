@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 using System.Text.Json.Nodes;
 namespace WebAppArchitecture.DigitalProcesses.Models;
 

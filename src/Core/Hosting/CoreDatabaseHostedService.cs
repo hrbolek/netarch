@@ -21,7 +21,7 @@ public sealed class CoreDatabaseHostedService(
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         await using var scope = scopeFactory.CreateAsyncScope();
-        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var db = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
         await db.Database.EnsureCreatedAsync(cancellationToken);
         // For development/test databases EnsureCreated supplies the initial schema.
         var systemDataSource = configuration["SystemData:Source"]

@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -33,7 +34,7 @@ public static class TemplateManagementEndpoints
             .WithDescription("Schema context for future AI template design. Returns only readable FormNodes.");
     }
 
-    private static async Task<IResult> Revisions(Guid id, ApplicationDbContext db, ISecurityLayer security, CancellationToken ct)
+    private static async Task<IResult> Revisions(Guid id, DigitalProcessesDbContext db, ISecurityLayer security, CancellationToken ct)
     {
         var template = await db.DocumentTemplates.AsNoTracking().SingleOrDefaultAsync(x => x.id == id, ct);
         if (template is null || await security.GetByIdAsync<FormVersionModel>(template.form_version_id, SecurityOperations.Read, ct) is null)
@@ -44,7 +45,7 @@ public static class TemplateManagementEndpoints
         return Results.Ok(revisions);
     }
 
-    private static async Task<IResult> DownloadRevision(Guid revisionId, ApplicationDbContext db, ISecurityLayer security, CancellationToken ct)
+    private static async Task<IResult> DownloadRevision(Guid revisionId, DigitalProcessesDbContext db, ISecurityLayer security, CancellationToken ct)
     {
         var revision = await db.DocumentTemplateRevisions.AsNoTracking().SingleOrDefaultAsync(x => x.id == revisionId, ct);
         if (revision is null) return Results.NotFound();
@@ -64,7 +65,7 @@ public static class TemplateManagementEndpoints
         return Results.Ok(nodes);
     }
 
-    private static async Task<IResult> CreateRevision(Guid id, NewRevisionRequest request, ApplicationDbContext db,
+    private static async Task<IResult> CreateRevision(Guid id, NewRevisionRequest request, DigitalProcessesDbContext db,
         ISecurityLayer security, CancellationToken ct)
     {
         var template = await db.DocumentTemplates.SingleOrDefaultAsync(x => x.id == id, ct);

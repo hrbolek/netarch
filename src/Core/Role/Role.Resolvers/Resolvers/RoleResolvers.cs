@@ -131,7 +131,7 @@ public static class RoleResolvers
         if (actorUserId is null)
             return Results.Unauthorized();
 
-        var existing = await service.GetByIdAsync(id, cancellationToken);
+        var existing = await service.GetByIdAsync<RoleResponse>(id, cancellationToken);
         if (existing is null)
             return Results.NotFound();
 
@@ -165,7 +165,7 @@ public static class RoleResolvers
             DateTimeOffset.UtcNow,
             actorUserId);
 
-        var updated = await service.UpdateAsync(request, cancellationToken);
+        var updated = await service.UpdateAsync<RoleUpdateRequest, RoleResponse>(request, cancellationToken);
         return ApiResults.Ok(updated);
     }
 
@@ -174,7 +174,7 @@ public static class RoleResolvers
         Guid id, HttpContext httpContext, IRoleService service, ICurrentActorProvider actorProvider,
         IRbacAuthorizationService authorizationService, CancellationToken cancellationToken)
     {
-        var item = await service.GetByIdAsync(id, cancellationToken);
+        var item = await service.GetByIdAsync<RoleResponse>(id, cancellationToken);
         if (item is null) return Results.NotFound();
         var actor = actorProvider.TryGetActorUserId(httpContext);
         if (actor is null) return Results.Unauthorized();

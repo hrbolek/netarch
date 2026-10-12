@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 using System.Text.Json;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.Base.Services;
@@ -10,4 +11,4 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 /// <summary>
 /// Vstupní kontrakt Request Transition History Service. Přijímá pouze údaje od klienta; identita konajícího uživatele a bezpečnostní kontext se ověřují na serveru.
 /// </summary>
-public sealed class RequestTransitionHistoryService(ISecurityLayer security) : BaseService<RequestTransitionHistoryModel,RequestTransitionHistoryResponse>(security),IRequestTransitionHistoryService { }
+public sealed class RequestTransitionHistoryService(ISecurityLayer security, IDBLayer unsecuredDb) : SecuredBaseService<RequestTransitionHistoryModel>(security, unsecuredDb),IRequestTransitionHistoryService { }

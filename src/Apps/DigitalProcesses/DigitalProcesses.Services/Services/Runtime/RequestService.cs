@@ -1,3 +1,5 @@
+using WebAppArchitecture.DigitalProcesses.Security;
+using WebAppArchitecture.DigitalProcesses.DBLayer;
 using System.Text.Json;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
@@ -15,8 +17,8 @@ public sealed class RequestService(
     IRbacAccessBindingManager bindingManager,
     ISecurityProjectionService securityProjection,
     ITrustedSubmissionSnapshotReader snapshots,
-    IProcessRequestProvisioner provisioner)
-    : BaseService<RequestModel, RequestResponse>(security), IRequestService
+    IProcessRequestProvisioner provisioner, IDBLayer unsecuredDb)
+    : SecuredBaseService<RequestModel>(security, unsecuredDb), IRequestService
 {
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: GetByIdAsync; pořadí a parametry viz implementace.
