@@ -404,7 +404,9 @@ document.addEventListener('htmx:afterSwap', () => window.digitalProcessesRenumbe
     }
 
     private static string ConfigurationPlaceholder(FormNodeResponse node) =>
-        node.key.Contains("select", StringComparison.OrdinalIgnoreCase)
+        node.node_type_id == DigitalProcessWellKnown.FormNodeTypes.DisplayUrl
+            ? "{\"template\":\"https://example.org/example\",\"label\":\"Otevřít odkaz\",\"target\":\"_blank\"}"
+            : node.key.Contains("select", StringComparison.OrdinalIgnoreCase)
             ? "{\"dataSource\":{\"query\":\"query { users { id name surname } }\",\"variables\":\"section\"}}"
             : "{\"label\":\"Import dat\",\"query\":\"query { whoami { hostname } }\",\"variables\":{}}";
     private string TestUrl => $"/digital-processes/FormVersionResponse/test/{Model.designer.form.id}";

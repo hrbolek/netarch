@@ -25,7 +25,7 @@ public static class ProcessDefinitionResolvers
         "Create process definition",
         Prefix + "/ProcessDefinitionResponse/create-form",
         Prefix + "/ProcessDefinitionResponse/list",
-        "Creates a digital-process definition. The request initiator automatically receives the system role type 'já'.",
+        "Creates a process together with its own form, workflow, and first draft versions. The request initiator uses the system role type 'já'.",
         DigitalProcessCreateForm.Text("name", "Name"),
         DigitalProcessCreateForm.TextArea("description", "Description", false));
 
@@ -46,7 +46,7 @@ public static class ProcessDefinitionResolvers
         var definition = await security.GetByIdAsync<ProcessDefinitionModel>(id, SecurityOperations.Read, ct) ?? throw new KeyNotFoundException("Definition not found.");
         var versions = security.Query<ProcessDefinitionVersionModel>(SecurityOperations.Read).Where(v => v.process_definition_id == id).OrderByDescending(v => v.version)
             .Select(v => new DefinitionVersionItem(v.id, v.version, v.is_published, v.updated_at)).ToArray();
-        return new DefinitionVersionsPageModel(id, definition.name, "Process", versions);
+        return new DefinitionVersionsPageModel(id, definition.name, "Process", versions, ProcessDefinition: ProcessDefinitionResponse.FromModel(definition));
     }
     public static async Task<IResult> PublishVersion(Guid id, Guid definitionId, IProcessDefinitionVersionService versions, CancellationToken ct)
     {
@@ -92,7 +92,7 @@ public static class ProcessDefinitionResolvers
         group.MapPost("/create-typed", ProcessDefinitionResolvers.CreateApi)
             .ApplyJsonModel<DigitalProcessModelPage<ProcessDefinitionResponse>,ProcessDefinitionResponse>()
             .WithDescription("""
-                Creates ProcessDefinition using typed creation scope for ProcessDefinition roots. The authorization target is derived server-side; clients cannot supply rbacobject_id.
+                Atomically creates ProcessDefinition, its owned FormDefinition and WorkflowDefinition, and all three first draft versions using typed creation scope. The authorization target is derived server-side; clients cannot supply rbacobject_id.
                 """);
 
         group.MapGet("/create", ProcessDefinitionResolvers.CreatePage)

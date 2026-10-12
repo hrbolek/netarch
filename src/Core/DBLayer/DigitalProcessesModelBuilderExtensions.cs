@@ -83,7 +83,7 @@ internal static class DigitalProcessesModelBuilderExtensions
             ConfigureSecured(e);
         });
 
-        modelBuilder.Entity<ProcessDefinitionModel>(e => { e.ToTable("dp_process_definitions"); e.HasKey(x => x.id); e.HasIndex(x => x.name); e.HasOne<RoleTypeModel>().WithMany().HasForeignKey(x => x.initiator_role_type_id).OnDelete(DeleteBehavior.Restrict); ConfigureSecured(e); });
+        modelBuilder.Entity<ProcessDefinitionModel>(e => { e.ToTable("dp_process_definitions"); e.HasKey(x => x.id); e.HasIndex(x => x.name); e.HasIndex(x => x.form_definition_id).IsUnique(); e.HasIndex(x => x.workflow_definition_id).IsUnique(); e.HasOne<FormDefinitionModel>().WithMany().HasForeignKey(x => x.form_definition_id).OnDelete(DeleteBehavior.Restrict); e.HasOne<WorkflowDefinitionModel>().WithMany().HasForeignKey(x => x.workflow_definition_id).OnDelete(DeleteBehavior.Restrict); e.HasOne<RoleTypeModel>().WithMany().HasForeignKey(x => x.initiator_role_type_id).OnDelete(DeleteBehavior.Restrict); ConfigureSecured(e); });
         modelBuilder.Entity<ProcessDefinitionVersionModel>(e =>
         {
             e.ToTable("dp_process_definition_versions"); e.HasKey(x => x.id);

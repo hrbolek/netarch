@@ -47,7 +47,12 @@
             }
             // The hosting page may pass an already filtered full runtime context; otherwise
             // build from the visible FormNodes/values (not from a backend JSONata query).
-            var context = FormContext ?? ContextBuilder.Build(FormNodes, SectionValues);
+            // A literal URL must not depend on unrelated form nodes or their values.
+            // Building a full context can fail (e.g. legacy invalid node keys),
+            // which previously hid even completely constant links.
+            var context = template.Contains("{$", StringComparison.Ordinal)
+                ? FormContext ?? ContextBuilder.Build(FormNodes, SectionValues)
+                : new JsonObject();
             var result = UrlTemplates.Render(template, context);
             _url = result.Url;
             _error = result.Error;

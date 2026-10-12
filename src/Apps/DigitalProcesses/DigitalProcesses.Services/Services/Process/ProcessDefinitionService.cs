@@ -6,7 +6,7 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services;
 
-public sealed class ProcessDefinitionService(ISecurityLayer security, ISecurityProjectionService securityProjection)
+public sealed class ProcessDefinitionService(ISecurityLayer security, ISecurityProjectionService securityProjection, IDBLayer db)
     : BaseService<ProcessDefinitionModel, ProcessDefinitionResponse>(security), IProcessDefinitionService
 {
     public async Task<ProcessDefinitionResponse> CreateTypedAsync(CreateProcessDefinitionRequest request, CancellationToken ct = default)
@@ -21,18 +21,39 @@ public sealed class ProcessDefinitionService(ISecurityLayer security, ISecurityP
             Security, RbacWellKnown.ProcessDefinitionCreationScopeId, "typed", ct);
 
         var id = Guid.NewGuid();
+        var formId = Guid.NewGuid();
+        var workflowId = Guid.NewGuid();
+        var formVersionId = Guid.NewGuid();
+        var workflowVersionId = Guid.NewGuid();
         var now = DateTimeOffset.UtcNow;
         var actor = Security.CurrentUserId;
         return await Security.ExecuteInTransactionAsync(async token =>
         {
-            await CreationScopeGuard.StageOwnedGroupAsync(
+            var ownedProcessGroup = await CreationScopeGuard.StageOwnedGroupAsync(
                 Security, id, $"Process definition: {request.name}", catalog, true, now, actor, token);
+            // All entities are staged atomically. Their RBAC groups inherit from the process group.
             var model = new ProcessDefinitionModel(
                 id, request.name, request.description, initiatorRoleTypeId,
-                id, now, now, actor, actor);
-            var created = await Security.StageCreateAsync(model, token);
+                id, now, now, actor, actor)
+                { form_definition_id = formId, workflow_definition_id = workflowId };
+            // Trusted child provisioning after authorizing the existing process creation scope.
+            // Newly-created scopes do not yet have EffectiveAccess projection rows.
+            await db.StageCreateAsync(new GroupModel(formId, $"Form: {request.name}", ownedProcessGroup.group_type_id,
+                id, $"{ownedProcessGroup.path}{formId:D}/", true, formId, now, now, actor, actor), token);
+            await db.StageCreateAsync(new GroupModel(workflowId, $"Workflow: {request.name}", ownedProcessGroup.group_type_id,
+                id, $"{ownedProcessGroup.path}{workflowId:D}/", true, workflowId, now, now, actor, actor), token);
+            await db.StageCreateAsync(new FormDefinitionModel(formId, request.name, request.description, formId, now, now, actor, actor), token);
+            await db.StageCreateAsync(new WorkflowDefinitionModel(workflowId, request.name, request.description, workflowId, now, now, actor, actor), token);
+            await db.StageCreateAsync(new FormVersionModel(formVersionId, formId, 1, false, null, formId, now, now, actor, actor), token);
+            await db.StageCreateAsync(new WorkflowVersionModel(workflowVersionId, workflowId, 1, false, null, workflowId, now, now, actor, actor), token);
+            await db.StageCreateAsync(new ProcessDefinitionVersionModel(
+                Guid.NewGuid(), id, formVersionId, workflowVersionId, 1, false, null,
+                id, now, now, actor, actor), token);
+            var created = await db.StageCreateAsync(model, token);
             await Security.SaveChangesAsync(token);
             await securityProjection.SynchronizeRbacObjectAsync(id, token);
+            await securityProjection.SynchronizeRbacObjectAsync(formId, token);
+            await securityProjection.SynchronizeRbacObjectAsync(workflowId, token);
             return ProcessDefinitionResponse.FromModel(created);
         }, ct);
     }

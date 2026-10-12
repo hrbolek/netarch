@@ -8,6 +8,7 @@
         {
             <Attribute TModel="TModel" Item="@item" Label="@property.Name.Replace('_', ' ')" AttributeName="@property.Name" />
         }
+        <DigitalProcessForeignKeyLinks TModel="TModel" Model="@item" />
     </ChildContent>
 </MediumCard>
 @code {

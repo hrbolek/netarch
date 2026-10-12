@@ -16,4 +16,10 @@ public sealed record ProcessDefinitionModel(
     DateTimeOffset updated_at,
     Guid created_by,
     Guid updated_by
-) : ISecuredEntityDBModel;
+) : ISecuredEntityDBModel
+{
+    // A process owns stable identities; its versions can select only versions of these definitions.
+    // Nullable solely to permit explicit legacy-data migration.
+    public Guid? form_definition_id { get; init; }
+    public Guid? workflow_definition_id { get; init; }
+}

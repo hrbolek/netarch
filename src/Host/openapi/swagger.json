@@ -273,7 +273,7 @@
         "tags": [
           "DigitalProcesses.Designer"
         ],
-        "description": "Editable Applicant visibility / explicit deny matrix by workflow state and FormNode. Draft process versions only.",
+        "description": "Razor-based Applicant access matrix. Draft process versions only allow editing when the current user has Update.",
         "parameters": [
           {
             "name": "id",
@@ -1988,7 +1988,7 @@
         "tags": [
           "DigitalProcesses.Process"
         ],
-        "description": "Creates ProcessDefinition using typed creation scope for ProcessDefinition roots. The authorization target is derived server-side; clients cannot supply rbacobject_id.",
+        "description": "Atomically creates ProcessDefinition, its owned FormDefinition and WorkflowDefinition, and all three first draft versions using typed creation scope. The authorization target is derived server-side; clients cannot supply rbacobject_id.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -3523,7 +3523,7 @@
         "tags": [
           "DigitalProcesses.Templates"
         ],
-        "description": "Contextual RTF template and immutable revision management for a FormVersion.",
+        "description": "Razor-based RTF template management for a FormVersion.",
         "parameters": [
           {
             "name": "id",
@@ -8054,6 +8054,9 @@
           },
           "workflowDefinition": {
             "$ref": "#/components/schemas/WorkflowDefinitionResponse"
+          },
+          "processDefinition": {
+            "$ref": "#/components/schemas/ProcessDefinitionResponse"
           }
         },
         "additionalProperties": false
@@ -9136,6 +9139,16 @@
           },
           "visual_label": {
             "type": "string",
+            "nullable": true
+          },
+          "form_definition_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "workflow_definition_id": {
+            "type": "string",
+            "format": "uuid",
             "nullable": true
           }
         },

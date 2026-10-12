@@ -1,6 +1,7 @@
 @namespace WebAppArchitecture.Base.UI.Components
 @typeparam TModel where TModel : IEntityDTOModel
 
+<div data-recent-entity-label="@RecentEntityLabel.For(Model)" data-recent-entity-type="@typeof(TModel).Name">
 <CardCapsule TModel="TModel" Model="@Model" HeaderText="@HeaderText" FooterText="@FooterText">
     <ChildContent Context="item">
         <div class="row g-3">
@@ -22,6 +23,7 @@
         </div>
     </ChildContent>
 </CardCapsule>
+</div>
 
 @code {
     [Parameter, EditorRequired] public TModel Model { get; set; } = default!;

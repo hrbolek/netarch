@@ -17,7 +17,9 @@ public sealed record ProcessDefinitionResponse(
     string visual_label = ""
 ) : IEntityDTOModel<ProcessDefinitionModel, ProcessDefinitionResponse>, ISecuredEntityDTOModel
 {
-    public static ProcessDefinitionResponse FromModel(ProcessDefinitionModel model) => new(model.id, model.name, model.description, model.initiator_role_type_id, model.rbacobject_id, model.created_at, model.updated_at, model.created_by, model.updated_by, model.name);
-    public static Expression<Func<ProcessDefinitionModel, ProcessDefinitionResponse>> Projection => model => new(model.id, model.name, model.description, model.initiator_role_type_id, model.rbacobject_id, model.created_at, model.updated_at, model.created_by, model.updated_by, model.name);
-    public ProcessDefinitionModel ToModel() => new(id, name, description, initiator_role_type_id, rbacobject_id, created_at, updated_at, created_by, updated_by);
+    public Guid? form_definition_id { get; init; }
+    public Guid? workflow_definition_id { get; init; }
+    public static ProcessDefinitionResponse FromModel(ProcessDefinitionModel model) => new(model.id, model.name, model.description, model.initiator_role_type_id, model.rbacobject_id, model.created_at, model.updated_at, model.created_by, model.updated_by, model.name) { form_definition_id = model.form_definition_id, workflow_definition_id = model.workflow_definition_id };
+    public static Expression<Func<ProcessDefinitionModel, ProcessDefinitionResponse>> Projection => model => new(model.id, model.name, model.description, model.initiator_role_type_id, model.rbacobject_id, model.created_at, model.updated_at, model.created_by, model.updated_by, model.name) { form_definition_id = model.form_definition_id, workflow_definition_id = model.workflow_definition_id };
+    public ProcessDefinitionModel ToModel() => new(id, name, description, initiator_role_type_id, rbacobject_id, created_at, updated_at, created_by, updated_by) { form_definition_id = form_definition_id, workflow_definition_id = workflow_definition_id };
 }

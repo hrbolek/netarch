@@ -1,0 +1,149 @@
+@namespace WebAppArchitecture.Base.UI.Components
+
+@* Shared navigation history; localStorage is browser-only, so interactive behaviour
+   belongs in this small script while Razor owns the page structure. *@
+<div id="recent-entity-history" class="container-fluid py-1 border-bottom bg-body" style="display:none" aria-label="Připnuté a nedávno navštívené entity">
+    <div class="d-flex align-items-center gap-2 overflow-auto" style="min-width:0;white-space:nowrap">
+        <span class="small text-body-secondary flex-shrink-0" title="Připnuté entity">📌</span>
+        <nav class="d-flex align-items-center flex-nowrap gap-1 flex-shrink-0" aria-label="Připnuté entity" data-pinned-links></nav>
+        <span class="small text-body-secondary flex-shrink-0" data-history-separator aria-hidden="true">|</span>
+        <span class="small text-body-secondary flex-shrink-0" data-history-caption>Historie</span>
+        <nav class="d-flex align-items-center flex-nowrap gap-1 overflow-auto flex-grow-1" style="min-width:0" aria-label="Poslední navštívené entity" data-recent-entity-links></nav>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    'use strict';
+    const historyKey = 'zarchitecture.recentEntities.v1';
+    const pinsKey = 'zarchitecture.pinnedEntities.v1';
+    const limit = 5;
+    const root = document.getElementById('recent-entity-history');
+    if (!root) return;
+    const recentNav = root.querySelector('[data-recent-entity-links]');
+    const pinnedNav = root.querySelector('[data-pinned-links]');
+    const separator = root.querySelector('[data-history-separator]');
+    const caption = root.querySelector('[data-history-caption]');
+    const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const parse = path => {
+        if (typeof path !== 'string') return null;
+        const p = path.split('?')[0].split('#')[0].split('/').filter(Boolean);
+        if (p.length !== 4 || !uuid.test(p[3])) return null;
+        if (p.slice(0, 3).some(x => !/^[a-z0-9_.-]+$/i.test(x))) return null;
+        return { app: p[0], entity: p[1], action: p[2], id: p[3].toLowerCase() };
+    };
+    const keyOf = x => `${x.app.toLowerCase()}/${x.entity.toLowerCase()}/${x.id.toLowerCase()}`;
+    const shortType = name => name.replace(/Response$/i, '').replace(/([a-z])([A-Z])/g, '$1 $2').trim();
+    const safeText = value => typeof value === 'string' ? value.replace(/\s+/g, ' ').trim().slice(0, 80) : '';
+    const normalize = raw => {
+        if (!raw) return null;
+        if (typeof raw.url !== 'string' || !raw.url.startsWith('/') || raw.url.startsWith('//')) return null;
+        const target = parse(raw.url);
+        if (!target) return null;
+        return { ...target, url: `/${target.app}/${target.entity}/${target.action}/${target.id}`, label: safeText(raw.label) || `${shortType(target.entity)} · ${target.id.slice(0, 8)}` };
+    };
+    const read = key => {
+        try {
+            const raw = JSON.parse(localStorage.getItem(key) || '[]');
+            if (!Array.isArray(raw)) return [];
+            const unique = new Map();
+            for (const candidate of raw) {
+                const item = normalize(candidate);
+                if (!item) continue;
+                unique.delete(keyOf(item));
+                unique.set(keyOf(item), item);
+            }
+            return [...unique.values()].slice(-limit);
+        } catch { return []; }
+    };
+    const save = (key, items) => {
+        try { localStorage.setItem(key, JSON.stringify(items)); } catch { /* disabled storage */ }
+    };
+    const append = (list, item) => [...list.filter(x => keyOf(x) !== keyOf(item)), item].slice(-limit);
+    const current = parse(location.pathname);
+    const inferLabel = entity => {
+        const type = shortType(entity.entity);
+        const data = safeText(document.querySelector('[data-recent-entity-label]')?.getAttribute('data-recent-entity-label'));
+        if (data) return `${type} · ${data}`.slice(0, 80);
+        const title = safeText(document.querySelector('h1, h2, .card-header h3')?.textContent);
+        const generic = /^(edit|view|designer|detail|nový|úprava|návrhář|zobrazení)$/i.test(title);
+        return `${type} · ${title && !generic && title.length <= 45 ? title : entity.id.slice(0, 8)}`.slice(0, 80);
+    };
+    let pinned = read(pinsKey);
+    let recent = read(historyKey).filter(x => !pinned.some(p => keyOf(p) === keyOf(x)));
+    if (current) {
+        const existing = [...pinned, ...recent].find(x => keyOf(x) === keyOf(current));
+        const label = document.querySelector('[data-recent-entity-label]') ? inferLabel(current) : (existing?.label || inferLabel(current));
+        const item = { ...current, url: location.pathname, label };
+        if (pinned.some(p => keyOf(p) === keyOf(current))) {
+            pinned = pinned.map(p => keyOf(p) === keyOf(current) ? item : p);
+        } else {
+            recent = append(recent, item);
+        }
+    }
+    const persist = () => { save(pinsKey, pinned); save(historyKey, recent); };
+    const visit = item => {
+        if (pinned.some(p => keyOf(p) === keyOf(item))) {
+            pinned = pinned.map(p => keyOf(p) === keyOf(item) ? item : p);
+        } else {
+            recent = append(recent, item);
+        }
+        persist();
+        render();
+    };
+    const togglePin = item => {
+        const key = keyOf(item);
+        if (pinned.some(x => keyOf(x) === key)) {
+            pinned = pinned.filter(x => keyOf(x) !== key);
+            recent = append(recent, item);
+        } else {
+            if (pinned.length >= limit) return;
+            recent = recent.filter(x => keyOf(x) !== key);
+            pinned.push(item);
+        }
+        persist();
+        render();
+    };
+    const draw = (nav, item, isPinned) => {
+        const group = document.createElement('span');
+        group.className = 'd-inline-flex align-items-center flex-shrink-0 border rounded-pill bg-body-tertiary';
+        group.style.maxWidth = '235px';
+        const a = document.createElement('a');
+        a.className = 'small text-decoration-none text-body text-truncate ps-2 py-1';
+        a.style.cssText = 'max-width:185px;font-size:.78rem;';
+        a.href = item.url;
+        a.textContent = item.label;
+        a.title = `${item.label} (${item.id})`;
+        if (current && keyOf(current) === keyOf(item)) {
+            group.classList.add('border-primary');
+            a.setAttribute('aria-current', 'page');
+        }
+        a.addEventListener('click', () => visit(item));
+        const pin = document.createElement('button');
+        pin.type = 'button';
+        pin.className = 'btn btn-sm border-0 px-2 py-0 flex-shrink-0';
+        pin.style.cssText = 'font-size:.75rem;line-height:1.6';
+        pin.textContent = '📌';
+        if (!isPinned) pin.style.opacity = '.45';
+        pin.title = isPinned ? 'Odepnout z historie' : 'Připnout odkaz';
+        pin.setAttribute('aria-label', pin.title + ': ' + item.label);
+        if (!isPinned && pinned.length >= limit) {
+            pin.disabled = true;
+            pin.title = 'Lze připnout maximálně 5 entit';
+        }
+        pin.addEventListener('click', () => togglePin(item));
+        group.append(a, pin);
+        nav.appendChild(group);
+    };
+    function render() {
+        pinnedNav.replaceChildren();
+        recentNav.replaceChildren();
+        root.style.display = pinned.length || recent.length ? '' : 'none';
+        separator.hidden = !pinned.length || !recent.length;
+        caption.hidden = !recent.length;
+        for (const item of pinned) draw(pinnedNav, item, true);
+        for (const item of recent) draw(recentNav, item, false);
+    }
+    persist();
+    render();
+});
+</script>
