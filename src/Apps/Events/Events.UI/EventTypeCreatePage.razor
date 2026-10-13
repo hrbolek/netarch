@@ -1,0 +1,28 @@
+@using WebAppArchitecture.Base.UI.Components
+@namespace WebAppArchitecture.Events
+@using Microsoft.AspNetCore.Components
+@using WebAppArchitecture.Base.UI.Pages
+<Page Title="Nový typ události">
+<div class="container py-4">
+ 
+ <nav class="mb-3"><a href="/events/EventResponse/list">← Události</a></nav>
+ <h1 class="h3">Vytvořit typ události</h1>
+ @if(Model.Scopes.Count == 0) {<div class="alert alert-warning">K vytvoření typu potřebujete oprávnění <code>create</code> v některém RBAC rozsahu.</div>}
+ <form id="event-type-form" class="card card-body" style="max-width:780px">
+  <div class="row g-3 mb-3"><div class="col-md-4"><label for="et-code" class="form-label">Kód</label><input id="et-code" class="form-control" required /></div><div class="col-md-8"><label for="et-name" class="form-label">Název</label><input id="et-name" class="form-control" required /></div></div>
+  <div class="row g-3 mb-3"><div class="col-md-6"><label for="et-abbr" class="form-label">Zkratka</label><input id="et-abbr" class="form-control" /></div><div class="col-md-6"><label for="et-color" class="form-label">Barva</label><input id="et-color" type="color" class="form-control form-control-color" value="#198754" /></div></div>
+  <div class="mb-3"><label for="et-parent" class="form-label">Nadřazený typ</label><EntityLookupSelect Name="parent_id" Label="Nadřazený typ" ListUrl="/events/EventTypeResponse/list" SearchFields="@(new[] { "name", "code" })" MinChars="2" Take="30" Required="false" /></div>
+  <div class="mb-3"><label for="et-scope" class="form-label">RBAC rozsah</label><select id="et-scope" class="form-select"><option value="">Vyberte rozsah</option>@foreach(var s in Model.Scopes){<option value="@s.Id">@s.Name</option>}</select><div class="form-text">Pro podřízený typ se rozsah přebírá z nadřazeného typu.</div></div>
+  <div class="mb-3"><label for="et-mode" class="form-label">Registrace</label><select id="et-mode" class="form-select"><option value="inherit">Dědit</option><option value="disabled">Zakázána</option><option value="open">Otevřená</option><option value="approval_required">Vyžaduje schválení</option></select></div>
+  <div class="mb-3"><label for="et-description" class="form-label">Popis</label><textarea id="et-description" class="form-control"></textarea></div>
+  <div id="event-type-error" class="alert alert-danger d-none" role="alert"></div>
+  <button class="btn btn-primary" type="submit">Vytvořit typ</button>
+ </form>
+</div>
+<script>
+(() => {const form=document.getElementById('event-type-form');if(!form||form.dataset.bound)return;form.dataset.bound='1';form.addEventListener('submit',async e=>{e.preventDefault();const v=id=>document.getElementById(id).value;const error=document.getElementById('event-type-error');error.classList.add('d-none');
+ const parentId=document.querySelector('[name=parent_id]')?.value||null;const rbacObjectId=v('et-scope')||'00000000-0000-0000-0000-000000000000';if(!parentId&&rbacObjectId==='00000000-0000-0000-0000-000000000000'){error.textContent='Vyberte RBAC rozsah nebo nadřazený typ.';error.classList.remove('d-none');return;}
+ const body={code:v('et-code'),name:v('et-name'),description:v('et-description'),abbreviation:v('et-abbr'),color:v('et-color'),registrationMode:v('et-mode'),parentId,rbacObjectId};try{const res=await fetch('/events/EventTypeResponse/create',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},credentials:'same-origin',body:JSON.stringify(body)});if(!res.ok)throw new Error('Typ nebylo možné vytvořit (HTTP '+res.status+').');window.location.assign('/events/EventResponse/new');}catch(ex){error.textContent=ex.message;error.classList.remove('d-none');}})})();
+</script>
+</Page>
+@code { [Parameter, EditorRequired] public EventFormsModel Model {get;set;}=new(new(),new(),new()); [Parameter] public bool IsFragment {get;set;} }

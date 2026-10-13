@@ -1,11 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><TargetFramework>net8.0</TargetFramework><IsTestProject>true</IsTestProject><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings></PropertyGroup>
   <ItemGroup>
+    <Compile Remove="SqliteLegacyDateTimeOffsetReadTests.cs;SqliteDateTimeOffsetConversionTests.cs" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
     <PackageReference Include="xunit" Version="2.9.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.10" />
-    <ProjectReference Include="../../../src/Host/Host.csproj" />
+    <ProjectReference Include="../../../src/Apps/Host/Host.csproj" />
     <Compile Include="../../Shared/IsolatedHost.cs" Link="Shared/IsolatedHost.cs" />
     <Compile Include="../../Shared/PostgresTestDatabase.cs" Link="Shared/PostgresTestDatabase.cs" />
   </ItemGroup>

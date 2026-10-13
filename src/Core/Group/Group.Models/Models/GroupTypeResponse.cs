@@ -20,7 +20,7 @@ public sealed record GroupTypeResponse(
     Guid updated_by,
     string? parent_group_type_name = null,
     string visual_label = ""
-) : IEntityDTOModel<GroupTypeModel, GroupTypeResponse>, ISecuredEntityDTOModel
+) : IEntityProjection<GroupTypeModel, GroupTypeResponse>, IEntityMapper<GroupTypeModel, GroupTypeResponse>, ISecuredEntityDTOModel
 {
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.

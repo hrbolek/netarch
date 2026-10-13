@@ -61,9 +61,9 @@ public sealed class DigitalProcessesFacultyScopeTests
         using var host = new IsolatedHost();
         var f = await SeedAsync(host);
         using var scope = host.Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<DigitalProcessesDbContext>();
-        var request = await db.DigitalProcessRequests.AsNoTracking().SingleAsync(x => x.id == f.Request);
-        var snapshots = await db.Submissions.AsNoTracking().Where(x => x.request_id == f.Request)
+        var db = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
+        var request = await db.Set<RequestModel>().AsNoTracking().SingleAsync(x => x.id == f.Request);
+        var snapshots = await db.Set<SubmissionModel>().AsNoTracking().Where(x => x.request_id == f.Request)
             .OrderBy(x => x.version).ToListAsync();
         Assert.Equal(2, snapshots.Count);
         Assert.True(snapshots[0].is_archived);
@@ -81,7 +81,7 @@ public sealed class DigitalProcessesFacultyScopeTests
         // Force startup/bootstrap before resolving a scope.
         using var client = host.CreateClient();
         using var scope = host.Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<DigitalProcessesDbContext>();
+        var db = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
         var projection = scope.ServiceProvider.GetRequiredService<ISecurityProjectionService>();
         var now = DateTimeOffset.UtcNow;
         var admin = RbacWellKnown.BootstrapAdminUserId;
@@ -137,26 +137,26 @@ public sealed class DigitalProcessesFacultyScopeTests
         var formId = Guid.NewGuid(); var formVersionId = Guid.NewGuid();
         var workflowId = Guid.NewGuid(); var workflowVersionId = Guid.NewGuid();
         var stateId = Guid.NewGuid(); var processVersionId = Guid.NewGuid();
-        db.FormDefinitions.Add(new FormDefinitionModel(formId, "Student form", null, process, now, now, admin, admin));
-        db.FormVersions.Add(new FormVersionModel(formVersionId, formId, 1, true, now, process, now, now, admin, admin));
-        db.WorkflowDefinitions.Add(new WorkflowDefinitionModel(workflowId, "Student workflow", null, process, now, now, admin, admin));
-        db.WorkflowVersions.Add(new WorkflowVersionModel(workflowVersionId, workflowId, 1, true, now, process, now, now, admin, admin));
-        db.WorkflowStates.Add(new WorkflowStateModel(stateId, workflowVersionId, "submitted", "Submitted", null,
+        db.Set<FormDefinitionModel>().Add(new FormDefinitionModel(formId, "Student form", null, process, now, now, admin, admin));
+        db.Set<FormVersionModel>().Add(new FormVersionModel(formVersionId, formId, 1, true, now, process, now, now, admin, admin));
+        db.Set<WorkflowDefinitionModel>().Add(new WorkflowDefinitionModel(workflowId, "Student workflow", null, process, now, now, admin, admin));
+        db.Set<WorkflowVersionModel>().Add(new WorkflowVersionModel(workflowVersionId, workflowId, 1, true, now, process, now, now, admin, admin));
+        db.Set<WorkflowStateModel>().Add(new WorkflowStateModel(stateId, workflowVersionId, "submitted", "Submitted", null,
             true, false, 0, process, now, now, admin, admin));
-        db.ProcessDefinitions.Add(new ProcessDefinitionModel(process, "Administrative process", null,
+        db.Set<ProcessDefinitionModel>().Add(new ProcessDefinitionModel(process, "Administrative process", null,
             roleType, process, now, now, admin, admin));
-        db.ProcessDefinitionVersions.Add(new ProcessDefinitionVersionModel(processVersionId,
+        db.Set<ProcessDefinitionVersionModel>().Add(new ProcessDefinitionVersionModel(processVersionId,
             process, formVersionId, workflowVersionId, 1, true, now, process, now, now, admin, admin));
-        db.DigitalProcessRequests.Add(new RequestModel(request, processVersionId, officer,
+        db.Set<RequestModel>().Add(new RequestModel(request, processVersionId, officer,
             stateId, submission, "Application", request, now, now, admin, admin));
-        db.Submissions.AddRange(
+        db.Set<SubmissionModel>().AddRange(
             new SubmissionModel(oldSubmission, request, formVersionId, 1, true,
                 now, oldSubmission, now, now, admin, admin),
             new SubmissionModel(submission, request, formVersionId, 2, false,
                 null, submission, now, now, admin, admin),
             new SubmissionModel(otherSubmission, foreignRequestId, formVersionId, 1, false,
                 null, otherSubmission, now, now, admin, admin));
-        db.DigitalProcessRequests.Add(new RequestModel(foreignRequestId, processVersionId,
+        db.Set<RequestModel>().Add(new RequestModel(foreignRequestId, processVersionId,
             unrelated, stateId, otherSubmission, "Other request", foreignRequestId,
             now, now, admin, admin));
         await db.SaveChangesAsync();

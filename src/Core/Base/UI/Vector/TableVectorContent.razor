@@ -1,4 +1,5 @@
 @namespace WebAppArchitecture.Base.UI.Vector
+@inject WebAppArchitecture.Base.UI.Routing.IEntityRouteRegistry EntityRoutes
 @using System.Reflection
 
 <div class="table-responsive">
@@ -33,7 +34,7 @@
                             }
                             else
                             {
-                                <a href="@($"/{Model.App}/{Model.EntityType}/view/{item.id}")">@item.visual_label</a>
+                                <a href="@(EntityUrl(item, "view"))">@item.visual_label</a>
                             }
                         </td>
                         @foreach (var column in Columns)
@@ -41,7 +42,7 @@
                             <td>@FormatValue(GetValue(item, column.PropertyName))</td>
                         }
                         <td class="text-end">
-                            <EntityActionSlot Url="@($"/{Model.App}/{Model.EntityType}/actions/{item.id}")" />
+                            <EntityActionSlot Url="@(EntityUrl(item, "actions"))" />
                         </td>
                     </tr>
                 }
@@ -53,6 +54,12 @@
 <VectorPager PageInfo="@Model.PageInfo" ItemCount="@Model.Items.Count" TargetId="@Model.TargetId" />
 
 @code {
+    private string EntityUrl(IEntityDTOModel item, string operation)
+        => EntityRoutes.GetUrl(item.GetType(), item.id,
+            app: string.IsNullOrWhiteSpace(Model.App) ? null : Model.App,
+            entity: string.IsNullOrWhiteSpace(Model.EntityType) ? null : Model.EntityType,
+            operation: operation);
+
     [Parameter, EditorRequired]
     public VectorContentViewModel Model { get; set; } = default!;
 

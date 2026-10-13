@@ -36,7 +36,7 @@ public static class BaseResolvers
         TService service,
         CancellationToken cancellationToken)
         where TDBModel : class, ISecuredEntityDBModel
-        where TDTOModel : IEntityDTOModel<TDBModel, TDTOModel>
+        where TDTOModel : IEntityProjection<TDBModel, TDTOModel>
         where TService : IBaseService<TDBModel>
     {
         var result = await service.GetByIdAsync<TDTOModel>(
@@ -57,7 +57,7 @@ public static class BaseResolvers
         TService service,
         CancellationToken cancellationToken)
         where TDBModel : class, ISecuredEntityDBModel
-        where TDTOModel : IEntityDTOModel<TDBModel, TDTOModel>
+        where TDTOModel : IEntityProjection<TDBModel, TDTOModel>
         where TService : IBaseService<TDBModel>
     {
         var operation = httpContext.Request.Query["operation"].ToString();
@@ -99,7 +99,7 @@ public static class BaseResolvers
         TService service,
         CancellationToken cancellationToken)
         where TDBModel : class, ISecuredEntityDBModel
-        where TDTOModel : IEntityDTOModel<TDBModel, TDTOModel>
+        where TDTOModel : IEntityProjection<TDBModel, TDTOModel>, IEntityMapper<TDBModel, TDTOModel>
         where TUpdateRequest : IUpdateDTOModel<TDBModel>
         where TService : IBaseService<TDBModel>
     {
@@ -135,7 +135,7 @@ public static class BaseResolvers
         TService service,
         CancellationToken cancellationToken)
         where TDBModel : class, ISecuredEntityDBModel
-        where TDTOModel : IEntityDTOModel<TDBModel, TDTOModel>
+        where TDTOModel : IEntityProjection<TDBModel, TDTOModel>
         where TService : IBaseService<TDBModel>
     {
         var current = await service.GetByIdAsync<TDTOModel>(
@@ -170,7 +170,7 @@ public static class BaseResolvers
         TService service,
         CancellationToken cancellationToken)
         where TDBModel : class, ISecuredEntityDBModel
-        where TDTOModel : IEntityDTOModel<TDBModel, TDTOModel>
+        where TDTOModel : IEntityProjection<TDBModel, TDTOModel>
         where TService : IBaseService<TDBModel>
     {
         var result = await service.GetByIdAsync<TDTOModel>(id, cancellationToken);

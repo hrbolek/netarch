@@ -1,0 +1,11 @@
+@namespace WebAppArchitecture.Base.UI.Components
+@typeparam TModel
+@typeparam TComponent where TComponent : IComponent
+
+<DynamicComponent Type="@typeof(TComponent)" Parameters="@Parameters(Model)" />
+
+@code {
+    [Parameter, EditorRequired] public TModel Model { get; set; } = default!;
+    private static IDictionary<string, object?> Parameters(TModel model)
+        => new Dictionary<string, object?> { ["Model"] = model };
+}

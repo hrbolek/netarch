@@ -46,7 +46,7 @@ COPY src/Core/User/User.Models/User.Models.csproj src/Core/User/User.Models/
 COPY src/Core/User/User.Resolvers/User.Resolvers.csproj src/Core/User/User.Resolvers/
 COPY src/Core/User/User.Services/User.Services.csproj src/Core/User/User.Services/
 COPY src/Core/User/User.UI/User.UI.csproj src/Core/User/User.UI/
-COPY src/Host/Host.csproj src/Host/
+COPY src/Apps/Host/Host.csproj src/Apps/Host/
 
 
 # ------------------------------------------------------------
@@ -67,7 +67,7 @@ COPY src/ ./src/
 # Build / publish host
 # ------------------------------------------------------------
 
-RUN dotnet publish src/Host/Host.csproj \
+RUN dotnet publish src/Apps/Host/Host.csproj \
     --configuration Release \
     --output /app/publish \
     --no-restore

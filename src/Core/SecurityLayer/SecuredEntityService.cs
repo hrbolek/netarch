@@ -50,12 +50,12 @@ public abstract class SecuredBaseService<TDBModel> : IBaseService<TDBModel>
 
     /// <summary>SQL projection through a trusted typed DTO contract, after RBAC filtering.</summary>
     public IQueryable<TDTO> Query<TDTO>()
-        where TDTO : IEntityDTOModel<TDBModel, TDTO>
+        where TDTO : IEntityProjection<TDBModel, TDTO>
         => SecuredModels().Select(TDTO.Projection);
 
     /// <summary>Read one authorized entity and project to the requested DTO.</summary>
     public Task<TDTO?> GetByIdAsync<TDTO>(Guid id, CancellationToken cancellationToken = default)
-        where TDTO : IEntityDTOModel<TDBModel, TDTO>
+        where TDTO : IEntityProjection<TDBModel, TDTO>
         => Task.FromResult(SecuredModels(SecurityOperations.Read)
             .Where(entity => entity.id == id)
             .Select(TDTO.Projection)
@@ -63,7 +63,7 @@ public abstract class SecuredBaseService<TDBModel> : IBaseService<TDBModel>
 
     /// <summary>List authorized entities as the requested DTO projection.</summary>
     public Task<IReadOnlyCollection<TDTO>> GetAllAsync<TDTO>(CancellationToken cancellationToken = default)
-        where TDTO : IEntityDTOModel<TDBModel, TDTO>
+        where TDTO : IEntityProjection<TDBModel, TDTO>
         => Task.FromResult<IReadOnlyCollection<TDTO>>(Query<TDTO>().ToArray());
 
     /// <summary>
@@ -71,7 +71,7 @@ public abstract class SecuredBaseService<TDBModel> : IBaseService<TDBModel>
     /// applied inside SQL, not to materialized objects.
     /// </summary>
     public IQueryable<TDTO> Where<TDTO>(Expression<Func<TDBModel, bool>> predicate, string operation = SecurityOperations.List)
-        where TDTO : IEntityDTOModel<TDBModel, TDTO>
+        where TDTO : IEntityProjection<TDBModel, TDTO>
         => SecuredModels(operation).Where(predicate).Select(TDTO.Projection);
 
     /// <summary>
@@ -81,7 +81,7 @@ public abstract class SecuredBaseService<TDBModel> : IBaseService<TDBModel>
     /// </summary>
     public virtual async Task<TDTO> UpdateAsync<TUpdateRequest, TDTO>(TUpdateRequest model, CancellationToken cancellationToken = default)
         where TUpdateRequest : IUpdateDTOModel<TDBModel>
-        where TDTO : IEntityDTOModel<TDBModel, TDTO>
+        where TDTO : IEntityMapper<TDBModel, TDTO>
     {
         var current = await Security.GetByIdAsync<TDBModel>(model.id, SecurityOperations.Update, cancellationToken)
             ?? throw new InvalidOperationException($"Item with id '{model.id}' does not exist or is not accessible.");
@@ -96,14 +96,14 @@ public abstract class SecuredBaseService<TDBModel> : IBaseService<TDBModel>
     public virtual Task<IReadOnlyCollection<TDTO>> VectorAsync<TDTO>(
         Expression<Func<TDBModel, bool>> predicate,
         CancellationToken cancellationToken = default)
-        where TDTO : IEntityDTOModel<TDBModel, TDTO>
+        where TDTO : IEntityProjection<TDBModel, TDTO>
         => VectorAsync<TDTO>(predicate, SecurityOperations.List, cancellationToken);
 
     public virtual Task<IReadOnlyCollection<TDTO>> VectorAsync<TDTO>(
         Expression<Func<TDBModel, bool>> predicate,
         string operation,
         CancellationToken cancellationToken = default)
-        where TDTO : IEntityDTOModel<TDBModel, TDTO>
+        where TDTO : IEntityProjection<TDBModel, TDTO>
         => VectorAsync<TDTO>(predicate, operation, VectorQueryOptions.Empty, cancellationToken);
 
     public virtual Task<IReadOnlyCollection<TDTO>> VectorAsync<TDTO>(
@@ -111,7 +111,7 @@ public abstract class SecuredBaseService<TDBModel> : IBaseService<TDBModel>
         string operation,
         int? take,
         CancellationToken cancellationToken = default)
-        where TDTO : IEntityDTOModel<TDBModel, TDTO>
+        where TDTO : IEntityProjection<TDBModel, TDTO>
         => VectorAsync<TDTO>(predicate, operation, new VectorQueryOptions(Take: take), cancellationToken);
 
     public virtual Task<IReadOnlyCollection<TDTO>> VectorAsync<TDTO>(
@@ -119,7 +119,7 @@ public abstract class SecuredBaseService<TDBModel> : IBaseService<TDBModel>
         string operation,
         VectorQueryOptions options,
         CancellationToken cancellationToken = default)
-        where TDTO : IEntityDTOModel<TDBModel, TDTO>
+        where TDTO : IEntityProjection<TDBModel, TDTO>
     {
         var query = BuildVectorQuery(predicate, operation, options, probeForMore: false);
         return Task.FromResult<IReadOnlyCollection<TDTO>>(
@@ -131,7 +131,7 @@ public abstract class SecuredBaseService<TDBModel> : IBaseService<TDBModel>
         string operation,
         VectorQueryOptions options,
         CancellationToken cancellationToken = default)
-        where TDTO : IEntityDTOModel<TDBModel, TDTO>
+        where TDTO : IEntityProjection<TDBModel, TDTO>
     {
         var take = options.Take ?? 25;
         var skip = options.Skip ?? 0;

@@ -34,7 +34,7 @@ public static class FormComponentCatalogEndpoints
 
     public static void Map(IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapGet("/digital-processes/form-component-catalog", (ISecurityLayer security) =>
+        endpoints.MapGet("/form-component-catalog", (ISecurityLayer security) =>
         {
             var types = security.Query<FormNodeTypeModel>(SecurityOperations.Read)
                 .OrderBy(x => x.renderer_key).ToArray();

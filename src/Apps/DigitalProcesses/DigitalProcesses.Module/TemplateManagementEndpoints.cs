@@ -19,7 +19,7 @@ public static class TemplateManagementEndpoints
 
     public static void Map(IEndpointRouteBuilder endpoints)
     {
-        const string prefix = "/digital-processes/document-templates";
+        const string prefix = "/document-templates";
         endpoints.MapGet(prefix + "/{id:guid}/revisions", Revisions)
             .WithTags("DigitalProcesses.Templates")
             .WithDescription("List immutable revisions of a template; requires Read on its FormVersion.");
@@ -34,22 +34,22 @@ public static class TemplateManagementEndpoints
             .WithDescription("Schema context for future AI template design. Returns only readable FormNodes.");
     }
 
-    private static async Task<IResult> Revisions(Guid id, DigitalProcessesDbContext db, ISecurityLayer security, CancellationToken ct)
+    private static async Task<IResult> Revisions(Guid id, CoreDbContext db, ISecurityLayer security, CancellationToken ct)
     {
-        var template = await db.DocumentTemplates.AsNoTracking().SingleOrDefaultAsync(x => x.id == id, ct);
+        var template = await db.Set<DocumentTemplateModel>().AsNoTracking().SingleOrDefaultAsync(x => x.id == id, ct);
         if (template is null || await security.GetByIdAsync<FormVersionModel>(template.form_version_id, SecurityOperations.Read, ct) is null)
             return Results.NotFound();
-        var revisions = await db.DocumentTemplateRevisions.AsNoTracking()
+        var revisions = await db.Set<DocumentTemplateRevisionModel>().AsNoTracking()
             .Where(x => x.template_id == id).OrderBy(x => x.revision)
             .Select(x => new { x.id, x.revision, x.content_type, x.created_at }).ToListAsync(ct);
         return Results.Ok(revisions);
     }
 
-    private static async Task<IResult> DownloadRevision(Guid revisionId, DigitalProcessesDbContext db, ISecurityLayer security, CancellationToken ct)
+    private static async Task<IResult> DownloadRevision(Guid revisionId, CoreDbContext db, ISecurityLayer security, CancellationToken ct)
     {
-        var revision = await db.DocumentTemplateRevisions.AsNoTracking().SingleOrDefaultAsync(x => x.id == revisionId, ct);
+        var revision = await db.Set<DocumentTemplateRevisionModel>().AsNoTracking().SingleOrDefaultAsync(x => x.id == revisionId, ct);
         if (revision is null) return Results.NotFound();
-        var template = await db.DocumentTemplates.AsNoTracking().SingleOrDefaultAsync(x => x.id == revision.template_id, ct);
+        var template = await db.Set<DocumentTemplateModel>().AsNoTracking().SingleOrDefaultAsync(x => x.id == revision.template_id, ct);
         if (template is null || await security.GetByIdAsync<FormVersionModel>(template.form_version_id, SecurityOperations.Read, ct) is null)
             return Results.NotFound();
         return Results.File(revision.content, revision.content_type, $"template-{revision.template_id:N}-r{revision.revision}.rtf");
@@ -65,10 +65,10 @@ public static class TemplateManagementEndpoints
         return Results.Ok(nodes);
     }
 
-    private static async Task<IResult> CreateRevision(Guid id, NewRevisionRequest request, DigitalProcessesDbContext db,
+    private static async Task<IResult> CreateRevision(Guid id, NewRevisionRequest request, CoreDbContext db,
         ISecurityLayer security, CancellationToken ct)
     {
-        var template = await db.DocumentTemplates.SingleOrDefaultAsync(x => x.id == id, ct);
+        var template = await db.Set<DocumentTemplateModel>().SingleOrDefaultAsync(x => x.id == id, ct);
         if (template is null || await security.GetByIdAsync<FormVersionModel>(template.form_version_id, SecurityOperations.Update, ct) is null)
             return Results.NotFound();
         byte[] bytes;
@@ -81,7 +81,7 @@ public static class TemplateManagementEndpoints
             mappings.Select(x => x.Placeholder).Distinct(StringComparer.Ordinal).Count() != mappings.Length)
             return Results.BadRequest(new { error = "Placeholders must be nonempty and unique." });
         var nodeIds = mappings.Select(x => x.FormNodeId).Distinct().ToArray();
-        var validIds = await db.FormNodes.AsNoTracking()
+        var validIds = await db.Set<FormNodeModel>().AsNoTracking()
             .Where(x => x.form_version_id == template.form_version_id && nodeIds.Contains(x.id))
             .Select(x => x.id).ToListAsync(ct);
         if (validIds.Count != nodeIds.Length ||
@@ -90,15 +90,15 @@ public static class TemplateManagementEndpoints
             return Results.BadRequest(new { error = "A binding references an absent or unreadable FormNode." });
 
         await using var transaction = await db.Database.BeginTransactionAsync(ct);
-        var next = (await db.DocumentTemplateRevisions.Where(x => x.template_id == id)
+        var next = (await db.Set<DocumentTemplateRevisionModel>().Where(x => x.template_id == id)
             .MaxAsync(x => (int?)x.revision, ct) ?? 0) + 1;
         var revision = new DocumentTemplateRevisionModel {
             id = Guid.NewGuid(), template_id = id, revision = next, content = bytes,
             created_at = DateTimeOffset.UtcNow
         };
-        db.DocumentTemplateRevisions.Add(revision);
+        db.Set<DocumentTemplateRevisionModel>().Add(revision);
         foreach (var binding in mappings)
-            db.TemplateFieldBindings.Add(new TemplateFieldBindingModel {
+            db.Set<TemplateFieldBindingModel>().Add(new TemplateFieldBindingModel {
                 id = Guid.NewGuid(), revision_id = revision.id,
                 placeholder = binding.Placeholder, form_node_id = binding.FormNodeId
             });

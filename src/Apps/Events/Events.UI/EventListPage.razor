@@ -1,0 +1,7 @@
+@namespace WebAppArchitecture.Events
+@using Microsoft.AspNetCore.Components
+@using WebAppArchitecture.Base.UI.Pages
+<PageViewList TModel="EventModel" Items="@Model" Title="Události" ShowFilter="false">
+ <ChildContent Context="item"><EventMediumCard Model="@item" /></ChildContent>
+</PageViewList>
+@code { [Parameter,EditorRequired] public List<EventModel> Model {get;set;}=new(); [Parameter] public bool IsFragment {get;set;} }

@@ -20,7 +20,7 @@ public static class RtfDocumentEndpoints
 {
     public static void Map(IEndpointRouteBuilder endpoints)
     {
-        var root = "/digital-processes";
+        var root = "";
         endpoints.MapGet(root + "/FormVersionResponse/rtf-templates/{id:guid}", List)
             .WithTags("DigitalProcesses.Rtf").WithName("FormRtfTemplateList")
             .WithDescription("Lists stored RTF templates associated with this form version, subject to RBAC Read.");
@@ -110,13 +110,13 @@ public static class RtfDocumentEndpoints
 public sealed record RtfTemplateInfo(Guid Id, Guid FormVersionId, string Name, DateTimeOffset CreatedAt);
 
 /// <summary>PostgreSQL-backed template store. Scoped to the request DbContext.</summary>
-public sealed class RtfTemplateStore(DigitalProcessesDbContext db)
+public sealed class RtfTemplateStore(CoreDbContext db)
 {
-    public IReadOnlyList<RtfTemplateInfo> List(Guid version) => db.DocumentTemplates.AsNoTracking()
+    public IReadOnlyList<RtfTemplateInfo> List(Guid version) => db.Set<DocumentTemplateModel>().AsNoTracking()
         .Where(x => x.form_version_id == version).OrderBy(x => x.created_at)
         .Select(x => new RtfTemplateInfo(x.id, x.form_version_id, x.name, x.created_at)).ToArray();
 
-    public RtfTemplateInfo? Find(Guid id) => db.DocumentTemplates.AsNoTracking()
+    public RtfTemplateInfo? Find(Guid id) => db.Set<DocumentTemplateModel>().AsNoTracking()
         .Where(x => x.id == id)
         .Select(x => new RtfTemplateInfo(x.id, x.form_version_id, x.name, x.created_at))
         .SingleOrDefault();
@@ -130,8 +130,8 @@ public sealed class RtfTemplateStore(DigitalProcessesDbContext db)
             content_type = "application/rtf", content = bytes,
             created_at = DateTimeOffset.UtcNow
         };
-        db.DocumentTemplates.Add(entity);
-        db.DocumentTemplateRevisions.Add(new DocumentTemplateRevisionModel
+        db.Set<DocumentTemplateModel>().Add(entity);
+        db.Set<DocumentTemplateRevisionModel>().Add(new DocumentTemplateRevisionModel
         {
             id = Guid.NewGuid(), template_id = entity.id, revision = 1,
             content = bytes.ToArray(), content_type = "application/rtf",
@@ -141,14 +141,14 @@ public sealed class RtfTemplateStore(DigitalProcessesDbContext db)
         return new RtfTemplateInfo(entity.id, version, entity.name, entity.created_at);
     }
 
-    public byte[] Read(Guid id) => db.DocumentTemplates.AsNoTracking()
+    public byte[] Read(Guid id) => db.Set<DocumentTemplateModel>().AsNoTracking()
         .Where(x => x.id == id).Select(x => x.content).Single();
 
     public void Delete(Guid id)
     {
-        var entity = db.DocumentTemplates.SingleOrDefault(x => x.id == id);
+        var entity = db.Set<DocumentTemplateModel>().SingleOrDefault(x => x.id == id);
         if (entity is null) return;
-        db.DocumentTemplates.Remove(entity);
+        db.Set<DocumentTemplateModel>().Remove(entity);
         db.SaveChanges();
     }
 }

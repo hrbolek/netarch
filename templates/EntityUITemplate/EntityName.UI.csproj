@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <ProjectReference Include="../Base/Base.csproj" />
+    <ProjectReference Include="../../Core/Base/Base.csproj" />
     <ProjectReference Include="../EntityName.Models/EntityName.Models.csproj" />
   </ItemGroup>
 </Project>

@@ -22,10 +22,10 @@ public static class FormDesignAiEndpoints
 
     public static void Map(IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapPost("/digital-processes/ai/form-design/approve", Approve)
+        endpoints.MapPost("/ai/form-design/approve", Approve)
             .WithTags("DigitalProcesses.AI")
             .WithDescription("Apply an explicitly approved AI form proposal to an editable form version; validates components, keys and RBAC.");
-        endpoints.MapPost("/digital-processes/ai/form-design", Design)
+        endpoints.MapPost("/ai/form-design", Design)
             .WithTags("DigitalProcesses.AI")
             .WithDescription("Propose a form schema via configured FastAPI/PydanticAI agent. Checks Read on form version, sends only readable nodes, returns an unpersisted proposal. Never stores agent output.");
     }

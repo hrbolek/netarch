@@ -5,5 +5,5 @@ rm -rf .build
 for type in IFormVersionService IWorkflowVersionService IProcessDefinitionVersionService; do
   find src/Apps/DigitalProcesses/DigitalProcesses.Services/Services -name "$type.cs" -print
  done
-dotnet restore src/Host/Host.csproj --force
-dotnet build src/Host/Host.csproj --no-restore
+dotnet restore src/Apps/Host/Host.csproj --force
+dotnet build src/Apps/Host/Host.csproj --no-restore

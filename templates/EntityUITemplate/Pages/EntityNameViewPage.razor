@@ -1,19 +1,11 @@
 @using WebAppArchitecture.Base.UI.Pages
 @using RootNamespace.EntityName.Models
 @using RootNamespace.EntityName.UI.Components
-
 @namespace RootNamespace.EntityName.UI.Pages
 
-<PageView
-    TModel="EntityNameResponse"
-    TComponent="WebAppArchitecture.EntityName.UI.Components.LargeCard"
-    Model="@Model"
-    Title="EntityTitle" />
+<PageView TModel="EntityNameResponse" TComponent="EntityNameLargeCard" Model="@Model" Title="EntityTitle" />
 
 @code {
-    [Parameter, EditorRequired]
-    public EntityNameResponse Model { get; set; } = default!;
-
-    [Parameter]
-    public bool IsFragment { get; set; }
+    [Parameter, EditorRequired] public EntityNameResponse Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
 }

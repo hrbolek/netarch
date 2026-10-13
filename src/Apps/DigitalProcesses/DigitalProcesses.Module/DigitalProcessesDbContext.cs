@@ -8,10 +8,12 @@ namespace WebAppArchitecture.DigitalProcesses;
 /// Application-specific EF model: Core tables plus DigitalProcesses tables.
 /// The one registered instance also serves CoreDbContext through DI.
 /// </summary>
-public sealed class DigitalProcessesDbContext : CoreDbContext
+public class DigitalProcessesDbContext : CoreDbContext
 {
     public DigitalProcessesDbContext(DbContextOptions<DigitalProcessesDbContext> options)
         : base(options) { }
+
+    protected DigitalProcessesDbContext(DbContextOptions options) : base(options) { }
 
     public DbSet<FormNodeApplicantAccessModel> FormNodeApplicantAccess => Set<FormNodeApplicantAccessModel>();
 

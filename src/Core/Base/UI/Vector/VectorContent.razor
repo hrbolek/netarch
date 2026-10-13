@@ -1,4 +1,5 @@
 @namespace WebAppArchitecture.Base.UI.Vector
+@inject WebAppArchitecture.Base.UI.Routing.IEntityRouteRegistry EntityRoutes
 @using WebAppArchitecture.Base.Data
 
 <div class="d-grid gap-3">
@@ -16,7 +17,7 @@
             }
             else
             {
-                <a href="@($"/{Model.App}/{Model.EntityType}/view/{item.id}")">@item.visual_label</a>
+                <a href="@(EntityUrl(item, "view"))">@item.visual_label</a>
             }
         }
     }
@@ -24,6 +25,12 @@
 <VectorPager PageInfo="@Model.PageInfo" ItemCount="@Model.Items.Count" TargetId="@Model.TargetId" />
 
 @code {
+    private string EntityUrl(IEntityDTOModel item, string operation)
+        => EntityRoutes.GetUrl(item.GetType(), item.id,
+            app: string.IsNullOrWhiteSpace(Model.App) ? null : Model.App,
+            entity: string.IsNullOrWhiteSpace(Model.EntityType) ? null : Model.EntityType,
+            operation: operation);
+
     [Parameter, EditorRequired]
     public VectorContentViewModel Model { get; set; } = default!;
 

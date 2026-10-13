@@ -1,9 +1,9 @@
 @using WebAppArchitecture.Base.UI.Components
 @using RootNamespace.EntityName.Models
-
 @namespace RootNamespace.EntityName.UI.Components
 
-<MediumCard TModel="EntityNameResponse" Model="@Model" HeaderText="EntityTitle">
+<MediumCard TModel="EntityNameResponse" Model="@Model" HeaderText="EntityTitle"
+            ActionsUrl="@($"/APPLICATION_PREFIX/EntityNameResponse/actions/{Model.id}")">
     <ChildContent Context="item">
         <Attribute TModel="EntityNameResponse" Item="@item" Label="ID" AttributeName="id" />
         <Attribute TModel="EntityNameResponse" Item="@item" Label="Name" AttributeName="Name" />
@@ -11,6 +11,5 @@
 </MediumCard>
 
 @code {
-    [Parameter, EditorRequired]
-    public EntityNameResponse Model { get; set; } = default!;
+    [Parameter, EditorRequired] public EntityNameResponse Model { get; set; } = default!;
 }

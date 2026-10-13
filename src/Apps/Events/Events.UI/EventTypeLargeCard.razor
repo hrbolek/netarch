@@ -1,0 +1,7 @@
+@namespace WebAppArchitecture.Events
+@using Microsoft.AspNetCore.Components
+@using WebAppArchitecture.Base.UI.Components
+<LargeCard TModel="EventTypeModel" Model="@Model" HeaderText="@Model.Name">
+ <ChildContent Context="item"><p>@item.Description</p><dl class="row"><dt class="col-sm-3">Kód</dt><dd class="col-sm-9">@item.Code</dd><dt class="col-sm-3">Zkratka</dt><dd class="col-sm-9">@item.Abbreviation</dd><dt class="col-sm-3">Registrace</dt><dd class="col-sm-9">@item.RegistrationMode</dd></dl></ChildContent>
+</LargeCard>
+@code { [Parameter,EditorRequired] public EventTypeModel Model {get;set;}=default!; }

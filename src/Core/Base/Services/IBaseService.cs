@@ -8,13 +8,13 @@ public interface IBaseService<TDBModel> : ISecuredEntityService<TDBModel>
     where TDBModel : class, ISecuredEntityDBModel
 {
     Task<IReadOnlyCollection<TDTO>> VectorAsync<TDTO>(Expression<Func<TDBModel, bool>> predicate, CancellationToken cancellationToken = default)
-        where TDTO : IEntityDTOModel<TDBModel, TDTO>;
+        where TDTO : IEntityProjection<TDBModel, TDTO>;
     Task<IReadOnlyCollection<TDTO>> VectorAsync<TDTO>(Expression<Func<TDBModel, bool>> predicate, string operation, CancellationToken cancellationToken = default)
-        where TDTO : IEntityDTOModel<TDBModel, TDTO>;
+        where TDTO : IEntityProjection<TDBModel, TDTO>;
     Task<IReadOnlyCollection<TDTO>> VectorAsync<TDTO>(Expression<Func<TDBModel, bool>> predicate, string operation, int? take, CancellationToken cancellationToken = default)
-        where TDTO : IEntityDTOModel<TDBModel, TDTO>;
+        where TDTO : IEntityProjection<TDBModel, TDTO>;
     Task<IReadOnlyCollection<TDTO>> VectorAsync<TDTO>(Expression<Func<TDBModel, bool>> predicate, string operation, VectorQueryOptions options, CancellationToken cancellationToken = default)
-        where TDTO : IEntityDTOModel<TDBModel, TDTO>;
+        where TDTO : IEntityProjection<TDBModel, TDTO>;
     Task<VectorPageResult<TDTO>> VectorPageAsync<TDTO>(Expression<Func<TDBModel, bool>> predicate, string operation, VectorQueryOptions options, CancellationToken cancellationToken = default)
-        where TDTO : IEntityDTOModel<TDBModel, TDTO>;
+        where TDTO : IEntityProjection<TDBModel, TDTO>;
 }

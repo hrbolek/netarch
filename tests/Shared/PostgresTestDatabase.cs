@@ -32,14 +32,14 @@ public sealed class PostgresTestDatabase : IDisposable
         {
             for (var directory = new DirectoryInfo(origin); directory is not null; directory = directory.Parent)
             {
-                var path = Path.Combine(directory.FullName, "src", "Host", "appsettings.Development.json");
+                var path = Path.Combine(directory.FullName, "src", "Apps", "Host", "appsettings.Development.json");
                 if (!File.Exists(path)) continue;
                 var config = new ConfigurationBuilder().AddJsonFile(path).Build();
                 return config.GetConnectionString("IntegrationTests")
                     ?? throw new InvalidOperationException("Host config has no IntegrationTests connection string.");
             }
         }
-        throw new FileNotFoundException("Cannot locate src/Host/appsettings.Development.json for PostgreSQL integration tests.");
+        throw new FileNotFoundException("Cannot locate src/Apps/Host/appsettings.Development.json for PostgreSQL integration tests.");
     }
 
     public void Dispose()

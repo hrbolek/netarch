@@ -1,0 +1,23 @@
+@namespace WebAppArchitecture.Base.UI.Components
+@typeparam TModel
+@typeparam TComponent where TComponent : IComponent
+
+<div class="@CssClass">
+    @if (Items is null || !Items.Any())
+    {
+        <div class="text-muted">@EmptyText</div>
+    }
+    else
+    {
+        @foreach (var item in Items)
+        {
+            <View TModel="TModel" TComponent="TComponent" Model="@item" />
+        }
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public IEnumerable<TModel> Items { get; set; } = Array.Empty<TModel>();
+    [Parameter] public string CssClass { get; set; } = "d-grid gap-3";
+    [Parameter] public string EmptyText { get; set; } = "No items.";
+}

@@ -1,0 +1,29 @@
+@namespace WebAppArchitecture.Base.UI.Pages
+@typeparam TContext where TContext : IEntityDTOModel
+@typeparam TLeftColumnContent where TLeftColumnContent : IComponent
+
+<Page Title="@Title">
+    <TypedLargeCard TContext="TContext" TLeftColumnContent="TLeftColumnContent"
+                    Model="@Model" HeaderText="@HeaderText">
+        <LeftFooter Context="context">
+            @if (LeftFooter is not null)
+            {
+                @LeftFooter(context)
+            }
+        </LeftFooter>
+        <ChildContent Context="context">
+            @if (ChildContent is not null)
+            {
+                @ChildContent(context)
+            }
+        </ChildContent>
+    </TypedLargeCard>
+</Page>
+
+@code {
+    [Parameter, EditorRequired] public TContext Model { get; set; } = default!;
+    [Parameter] public string Title { get; set; } = "Detail";
+    [Parameter] public string? HeaderText { get; set; }
+    [Parameter] public RenderFragment<TContext>? LeftFooter { get; set; }
+    [Parameter] public RenderFragment<TContext>? ChildContent { get; set; }
+}

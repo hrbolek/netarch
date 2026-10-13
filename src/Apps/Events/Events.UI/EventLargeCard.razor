@@ -1,0 +1,11 @@
+@namespace WebAppArchitecture.Events
+@using Microsoft.AspNetCore.Components
+@using WebAppArchitecture.Base.UI.Components
+<LargeCard TModel="EventModel" Model="@Model" HeaderText="@Model.Name">
+ <ChildContent Context="item">
+  <p>@item.Description</p>
+  <dl class="row"><dt class="col-sm-3">Začátek</dt><dd class="col-sm-9">@item.StartsAt.ToString("dd.MM.yyyy HH:mm")</dd><dt class="col-sm-3">Konec</dt><dd class="col-sm-9">@item.EndsAt.ToString("dd.MM.yyyy HH:mm")</dd><dt class="col-sm-3">Typ</dt><dd class="col-sm-9">@item.EventTypeId</dd></dl>
+  <div class="d-flex gap-2 flex-wrap"><a class="btn btn-outline-primary" href="@($"/events/EventResponse/timetable/{item.id}")">Rozvrh</a><a class="btn btn-outline-primary" href="@($"/events/EventResponse/academic-plan/{item.id}")">Harmonogram</a><a class="btn btn-outline-secondary" href="@($"/events/EventResponse/edit/{item.id}")">Upravit</a></div>
+ </ChildContent>
+</LargeCard>
+@code { [Parameter,EditorRequired] public EventModel Model {get;set;}=default!; }

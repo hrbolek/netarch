@@ -1,0 +1,71 @@
+@namespace WebAppArchitecture.Events
+@using System.Globalization
+@using Microsoft.AspNetCore.Components
+@using WebAppArchitecture.Base.UI.Pages
+<Page Title="Akademický harmonogram">
+<div class="container-fluid px-3 py-3 academic-planner" id="academic-planner-@Model.Year.id"
+     data-year-id="@Model.Year.id" data-editable="@(Model.CanEdit ? "true" : "false")">
+    <EventsMenu />
+    <h1 class="h3">@Model.Year.Name</h1>
+    <p class="text-muted">Akademický kalendář po ISO týdnech. Horní trojúhelník = pondělí až středa; dolní = čtvrtek až neděle.</p>
+    <div class="ap-toolbar" role="toolbar" aria-label="Typy období">
+      @foreach (var type in Model.Types) {
+        <button type="button" class="ap-tool" data-type="@type.id" data-name="@type.Name"
+          data-abbr="@type.Abbreviation" data-color="@(type.Color ?? "#777777")"
+          style="--ap-color:@(type.Color ?? "#777777")" disabled="@(!Model.CanEdit)">@type.Name</button>
+      }
+    </div>
+    <div class="ap-scroller">
+      <div class="ap-grid">
+        <div class="ap-header">
+          @foreach(var week in Weeks()) {
+            <div class="ap-week-head" title="@week.Start.ToString("dd.MM.yyyy") – @week.End.ToString("dd.MM.yyyy")">
+              <strong>@week.Number</strong>
+              <span>@week.Start.ToString("dd.MM.")</span>
+              <span>@week.End.ToString("dd.MM.")</span>
+              <span>@week.IsoYear</span>
+            </div>
+          }
+        </div>
+        <div class="ap-calendar" role="group" aria-label="Kalendářní intervaly">
+          @foreach(var week in Weeks()) {
+            <div class="ap-week" title="Týden @week.Number/@week.IsoYear">
+              <button type="button" class="ap-half ap-top" data-start="@week.Start.ToString("yyyy-MM-dd")"
+                      data-end="@week.Start.AddDays(2).ToString("yyyy-MM-dd")"
+                      aria-label="Týden @week.Number/@week.IsoYear, pondělí až středa"
+                      disabled="@(!Model.CanEdit)"><span></span></button>
+              <button type="button" class="ap-half ap-bottom" data-start="@week.Start.AddDays(3).ToString("yyyy-MM-dd")"
+                      data-end="@week.End.ToString("yyyy-MM-dd")"
+                      aria-label="Týden @week.Number/@week.IsoYear, čtvrtek až neděle"
+                      disabled="@(!Model.CanEdit)"><span></span></button>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+    <div class="d-flex gap-3 align-items-center mt-3 flex-wrap">
+      @if (Model.CanEdit) {
+        <button type="button" class="btn btn-primary ap-save" disabled>Uložit změny</button>
+        <button type="button" class="btn btn-outline-secondary ap-reset" disabled>Vrátit změny</button>
+      }
+      <span class="ap-counter" aria-live="polite"></span>
+      <span class="ap-message" role="status" aria-live="polite"></span>
+    </div>
+    <details class="mt-3"><summary>Seznam upravených intervalů</summary><pre class="ap-diff"></pre></details>
+</div>
+</Page>
+<link rel="stylesheet" href="/events/events-assets/academic-planner.css" />
+<script src="/events/events-assets/academic-planner.js" defer></script>
+@code {
+    [Parameter,EditorRequired] public AcademicPlannerModel Model { get; set; }=null!;
+    [Parameter] public bool IsFragment { get; set; }
+    private IEnumerable<(int IsoYear,int Number,DateOnly Start,DateOnly End)> Weeks() {
+      var date=DateOnly.FromDateTime(Model.Year.StartsAt.UtcDateTime);
+      var end=DateOnly.FromDateTime(Model.Year.EndsAt.UtcDateTime);
+      // ISO-week boundaries. Guard unreasonably long ranges to keep page bounded.
+      date=date.AddDays(-(((int)date.DayOfWeek+6)%7));
+      for(var n=0; date<=end && n<120; n++,date=date.AddDays(7))
+        yield return (ISOWeek.GetYear(date.ToDateTime(TimeOnly.MinValue)),
+          ISOWeek.GetWeekOfYear(date.ToDateTime(TimeOnly.MinValue)),date,date.AddDays(6));
+    }
+}

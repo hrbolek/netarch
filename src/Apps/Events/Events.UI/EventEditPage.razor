@@ -1,0 +1,23 @@
+@using WebAppArchitecture.Base.UI.Components
+@namespace WebAppArchitecture.Events
+@using WebAppArchitecture.Base.UI.Pages
+@using Microsoft.AspNetCore.Components
+@if(Model.Current is not null) {
+<PageEdit TModel="EventModel" Model="@Model.Current" Title="Úprava události">
+ <ChildContent Context="item">
+ <div class="container py-3">
+<h1 class="h3">Upravit událost</h1>
+<form id="event-edit-form"><div class="mb-3"><label class="form-label" for="edit-name">Název</label><input id="edit-name" class="form-control" required value="@Model.Current.Name" /></div>
+<div class="mb-3"><label class="form-label" for="edit-type">Typ</label><EntityLookupSelect Name="event_type_id" Label="Typ" ListUrl="/events/EventTypeResponse/list" SearchFields="@(new[] { "name", "code" })" MinChars="2" Take="30" InitialId="@Model.Current.EventTypeId" InitialLabel="@(Model.Types.FirstOrDefault(t => t.id == Model.Current.EventTypeId)?.Name)" /></div>
+<div class="row g-3 mb-3"><div class="col-md-6"><label class="form-label" for="edit-start">Začátek</label><input type="datetime-local" id="edit-start" class="form-control" required value="@Local(Model.Current.StartsAt)" /></div><div class="col-md-6"><label class="form-label" for="edit-end">Konec</label><input type="datetime-local" id="edit-end" class="form-control" required value="@Local(Model.Current.EndsAt)" /></div></div>
+<div class="mb-3"><label class="form-label" for="edit-parent">Nadřazená událost</label><EntityLookupSelect Name="parent_id" Label="Nadřazená událost" ListUrl="/events/EventResponse/list" SearchFields="@(new[] { "name" })" MinChars="2" Take="30" Required="false" InitialId="@Model.Current.ParentId" InitialLabel="@(Model.Parents.FirstOrDefault(e => e.id == Model.Current.ParentId)?.Name)" /></div>
+<div class="mb-3"><label class="form-label" for="edit-description">Popis</label><textarea id="edit-description" class="form-control">@Model.Current.Description</textarea></div>
+<div id="edit-error" class="alert alert-danger d-none"></div><div><button class="btn btn-primary" type="submit">Uložit změny</button> <a class="btn btn-outline-secondary" href="@($"/events/EventResponse/detail/{Model.Current.id}")">Zrušit</a></div></form>
+<script>
+(() => {const form=document.getElementById('event-edit-form');if(!form || form.dataset.bound)return;form.dataset.bound='1';form.addEventListener('submit',async e=>{e.preventDefault();const v=id=>document.getElementById(id).value;const err=document.getElementById('edit-error');err.classList.add('d-none');try{const payload={name:v('edit-name'),description:v('edit-description'),eventTypeId:document.querySelector('[name=event_type_id]')?.value,parentId:document.querySelector('[name=parent_id]')?.value||null,startsAt:new Date(v('edit-start')).toISOString(),endsAt:new Date(v('edit-end')).toISOString()};if(payload.startsAt>=payload.endsAt)throw new Error('Konec musí být po začátku.');const response=await fetch('/events/EventResponse/update/@Model.Current.id',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});if(!response.ok)throw new Error('Uložení se nezdařilo (HTTP '+response.status+').');location.assign('/events/EventResponse/detail/@Model.Current.id');}catch(ex){err.textContent=ex.message;err.classList.remove('d-none');}});})();
+</script>
+</div>
+ </ChildContent>
+</PageEdit>
+} else { <Page Title="Úprava události"><div class="alert alert-warning">Událost není dostupná pro editaci.</div></Page> }
+@code {[Parameter,EditorRequired] public EventFormsModel Model {get;set;}=new(new(),new(),new());[Parameter]public bool IsFragment {get;set;} static string Local(DateTimeOffset dt)=>TimeZoneInfo.ConvertTime(dt,TimeZoneInfo.FindSystemTimeZoneById("Europe/Prague")).ToString("yyyy-MM-ddTHH:mm");}

@@ -46,15 +46,15 @@ public sealed class DigitalProcessesFullLifecycleTests
         Guid originalNode;
         using (var scope = host.Services.CreateScope())
         {
-            var db = scope.ServiceProvider.GetRequiredService<DigitalProcessesDbContext>();
-            var request = await db.DigitalProcessRequests.AsNoTracking().SingleAsync(x => x.id == started.id);
+            var db = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
+            var request = await db.Set<RequestModel>().AsNoTracking().SingleAsync(x => x.id == started.id);
             Assert.Equal(f.InitialState, request.current_state_id);
             Assert.Equal(f.ProcessVersion, request.process_definition_version_id);
             originalSubmission = request.current_submission_id;
-            var first = await db.Submissions.AsNoTracking().SingleAsync(x => x.id == originalSubmission);
+            var first = await db.Set<SubmissionModel>().AsNoTracking().SingleAsync(x => x.id == originalSubmission);
             Assert.Equal(1, first.version);
             Assert.False(first.is_archived);
-            var node = await db.SubmissionNodes.AsNoTracking().SingleAsync(x => x.submission_id == first.id);
+            var node = await db.Set<SubmissionNodeModel>().AsNoTracking().SingleAsync(x => x.submission_id == first.id);
             Assert.Equal(f.FormNode, node.form_node_id);
             originalNode = node.id;
         }
@@ -65,11 +65,11 @@ public sealed class DigitalProcessesFullLifecycleTests
         Guid nextNode;
         using (var scope = host.Services.CreateScope())
         {
-            var db = scope.ServiceProvider.GetRequiredService<DigitalProcessesDbContext>();
-            var request = await db.DigitalProcessRequests.AsNoTracking().SingleAsync(x => x.id == started.id);
+            var db = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
+            var request = await db.Set<RequestModel>().AsNoTracking().SingleAsync(x => x.id == started.id);
             Assert.Equal(f.FinalState, request.current_state_id);
             Assert.NotEqual(originalSubmission, request.current_submission_id);
-            var versions = await db.Submissions.AsNoTracking().Where(x => x.request_id == started.id)
+            var versions = await db.Set<SubmissionModel>().AsNoTracking().Where(x => x.request_id == started.id)
                 .OrderBy(x => x.version).ToListAsync();
             Assert.Equal(2, versions.Count);
             Assert.Equal(originalSubmission, versions[0].id);
@@ -78,14 +78,14 @@ public sealed class DigitalProcessesFullLifecycleTests
             Assert.False(versions[1].is_archived);
             Assert.Equal(2, versions[1].version);
             Assert.NotEqual(versions[0].rbacobject_id, versions[1].rbacobject_id);
-            var nodes = await db.SubmissionNodes.AsNoTracking()
+            var nodes = await db.Set<SubmissionNodeModel>().AsNoTracking()
                 .Where(x => x.submission_id == originalSubmission || x.submission_id == request.current_submission_id)
                 .ToListAsync();
             Assert.Equal(2, nodes.Count);
             Assert.All(nodes, x => Assert.Equal("\"Original answer\"", x.value_json));
             Assert.NotEqual(nodes[0].id, nodes[1].id);
             nextNode = nodes.Single(x => x.submission_id == request.current_submission_id).id;
-            var history = await db.RequestTransitionHistory.AsNoTracking().Where(x => x.request_id == started.id).ToListAsync();
+            var history = await db.Set<RequestTransitionHistoryModel>().AsNoTracking().Where(x => x.request_id == started.id).ToListAsync();
             Assert.Single(history);
             Assert.Equal(originalSubmission, history[0].archived_submission_id);
         }
@@ -96,9 +96,9 @@ public sealed class DigitalProcessesFullLifecycleTests
                 new SetSubmissionNodeValueRequest("\"Tampered\"")));
         using (var scope = host.Services.CreateScope())
         {
-            var db = scope.ServiceProvider.GetRequiredService<DigitalProcessesDbContext>();
-            Assert.Equal("\"Original answer\"", (await db.SubmissionNodes.AsNoTracking().SingleAsync(x => x.id == originalNode)).value_json);
-            Assert.Equal("\"Original answer\"", (await db.SubmissionNodes.AsNoTracking().SingleAsync(x => x.id == nextNode)).value_json);
+            var db = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
+            Assert.Equal("\"Original answer\"", (await db.Set<SubmissionNodeModel>().AsNoTracking().SingleAsync(x => x.id == originalNode)).value_json);
+            Assert.Equal("\"Original answer\"", (await db.Set<SubmissionNodeModel>().AsNoTracking().SingleAsync(x => x.id == nextNode)).value_json);
         }
         }
         finally
@@ -114,7 +114,7 @@ public sealed class DigitalProcessesFullLifecycleTests
     {
         using var client = host.CreateClient(); // Initializes DB and bootstrap identities.
         using var scope = host.Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<DigitalProcessesDbContext>();
+        var db = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
         var now = DateTimeOffset.UtcNow;
         var actor = RbacWellKnown.BootstrapAdminUserId;
         var root = await db.Groups.SingleAsync(x => x.id == RbacWellKnown.RootGroupId);
@@ -137,23 +137,23 @@ public sealed class DigitalProcessesFullLifecycleTests
         var wf = Guid.NewGuid(); var wfVersion = Guid.NewGuid();
         var initial = Guid.NewGuid(); var final = Guid.NewGuid(); var transition = Guid.NewGuid();
         var process = Guid.NewGuid(); var processVersion = Guid.NewGuid();
-        db.FormDefinitions.Add(new FormDefinitionModel(form, "Faculty form", null, root.id, now, now, actor, actor));
-        db.FormVersions.Add(new FormVersionModel(formVersion, form, 1, true, now, root.id, now, now, actor, actor));
+        db.Set<FormDefinitionModel>().Add(new FormDefinitionModel(form, "Faculty form", null, root.id, now, now, actor, actor));
+        db.Set<FormVersionModel>().Add(new FormVersionModel(formVersion, form, 1, true, now, root.id, now, now, actor, actor));
         var type = DigitalProcessWellKnown.FormNodeTypes.Text;
-        Assert.True(await db.FormNodeTypes.AnyAsync(x => x.id == type),
+        Assert.True(await db.Set<FormNodeTypeModel>().AnyAsync(x => x.id == type),
             "Bootstrap must seed the canonical text FormNodeType.");
-        db.FormNodes.Add(new FormNodeModel(node, formVersion, null, $"/{node:D}/", "reason", "Reason", null,
+        db.Set<FormNodeModel>().Add(new FormNodeModel(node, formVersion, null, $"/{node:D}/", "reason", "Reason", null,
             type, 0, 1, 1, false, null, root.id, now, now, actor, actor));
-        db.WorkflowDefinitions.Add(new WorkflowDefinitionModel(wf, "Faculty workflow", null, root.id, now, now, actor, actor));
-        db.WorkflowVersions.Add(new WorkflowVersionModel(wfVersion, wf, 1, true, now, root.id, now, now, actor, actor));
-        db.WorkflowStates.AddRange(
+        db.Set<WorkflowDefinitionModel>().Add(new WorkflowDefinitionModel(wf, "Faculty workflow", null, root.id, now, now, actor, actor));
+        db.Set<WorkflowVersionModel>().Add(new WorkflowVersionModel(wfVersion, wf, 1, true, now, root.id, now, now, actor, actor));
+        db.Set<WorkflowStateModel>().AddRange(
             new WorkflowStateModel(initial, wfVersion, "draft", "Draft", null, true, false, 0, root.id, now, now, actor, actor),
             new WorkflowStateModel(final, wfVersion, "submitted", "Submitted", null, false, true, 1, root.id, now, now, actor, actor));
-        db.WorkflowTransitions.Add(new WorkflowTransitionModel(transition, wfVersion, initial, final,
+        db.Set<WorkflowTransitionModel>().Add(new WorkflowTransitionModel(transition, wfVersion, initial, final,
             "submit", "Submit", false, null, null, root.id, now, now, actor, actor));
-        db.ProcessDefinitions.Add(new ProcessDefinitionModel(process, "Application", null, roleTypeId,
+        db.Set<ProcessDefinitionModel>().Add(new ProcessDefinitionModel(process, "Application", null, roleTypeId,
             root.id, now, now, actor, actor));
-        db.ProcessDefinitionVersions.Add(new ProcessDefinitionVersionModel(processVersion, process,
+        db.Set<ProcessDefinitionVersionModel>().Add(new ProcessDefinitionVersionModel(processVersion, process,
             formVersion, wfVersion, 1, true, now, root.id, now, now, actor, actor)
             { target_group_type_id = root.group_type_id });
         await db.SaveChangesAsync();

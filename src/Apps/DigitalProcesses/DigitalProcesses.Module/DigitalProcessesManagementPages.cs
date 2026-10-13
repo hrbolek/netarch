@@ -17,10 +17,10 @@ public static class DigitalProcessesManagementPages
 {
     public static void Map(IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapGet("/digital-processes/process-versions/{id:guid}/permissions", ApplicantMatrix)
+        endpoints.MapGet("/process-versions/{id:guid}/permissions", ApplicantMatrix)
             .WithTags("DigitalProcesses.Designer")
             .WithDescription("Razor-based Applicant access matrix. Draft process versions only allow editing when the current user has Update.");
-        endpoints.MapGet("/digital-processes/form-versions/{id:guid}/templates", TemplatePage)
+        endpoints.MapGet("/form-versions/{id:guid}/templates", TemplatePage)
             .WithTags("DigitalProcesses.Templates")
             .WithDescription("Razor-based RTF template management for a FormVersion.");
     }

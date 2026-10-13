@@ -24,7 +24,7 @@ public sealed record RequestTransitionHistoryResponse(
     Guid created_by,
     Guid updated_by,
     string visual_label = ""
-) : IEntityDTOModel<RequestTransitionHistoryModel, RequestTransitionHistoryResponse>, ISecuredEntityDTOModel
+) : IEntityProjection<RequestTransitionHistoryModel, RequestTransitionHistoryResponse>, IEntityMapper<RequestTransitionHistoryModel, RequestTransitionHistoryResponse>, ISecuredEntityDTOModel
 {
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.

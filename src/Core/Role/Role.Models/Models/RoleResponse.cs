@@ -27,7 +27,7 @@ public sealed record RoleResponse(
     string? user_name = null,
     string? delegated_by_role_type = null,
     string visual_label = ""
-) : IEntityDTOModel<RoleModel, RoleResponse>, ISecuredEntityDTOModel
+) : IEntityProjection<RoleModel, RoleResponse>, IEntityMapper<RoleModel, RoleResponse>, ISecuredEntityDTOModel
 {
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.

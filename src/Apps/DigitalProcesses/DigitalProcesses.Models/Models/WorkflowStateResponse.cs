@@ -23,7 +23,7 @@ public sealed record WorkflowStateResponse(
     Guid created_by,
     Guid updated_by,
     string visual_label = ""
-) : IEntityDTOModel<WorkflowStateModel, WorkflowStateResponse>, ISecuredEntityDTOModel
+) : IEntityProjection<WorkflowStateModel, WorkflowStateResponse>, IEntityMapper<WorkflowStateModel, WorkflowStateResponse>, ISecuredEntityDTOModel
 {
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.

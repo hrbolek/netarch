@@ -22,7 +22,7 @@ public sealed record MembershipResponse(
     string? group_name = null,
     string? user_name = null,
     string visual_label = ""
-) : IEntityDTOModel<MembershipModel, MembershipResponse>, ISecuredEntityDTOModel
+) : IEntityProjection<MembershipModel, MembershipResponse>, IEntityMapper<MembershipModel, MembershipResponse>, ISecuredEntityDTOModel
 {
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.

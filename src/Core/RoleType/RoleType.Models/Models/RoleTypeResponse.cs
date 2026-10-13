@@ -18,7 +18,7 @@ public sealed record RoleTypeResponse(
     Guid created_by,
     Guid updated_by,
     string visual_label = ""
-) : IEntityDTOModel<RoleTypeModel, RoleTypeResponse>, ISecuredEntityDTOModel
+) : IEntityProjection<RoleTypeModel, RoleTypeResponse>, IEntityMapper<RoleTypeModel, RoleTypeResponse>, ISecuredEntityDTOModel
 {
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.

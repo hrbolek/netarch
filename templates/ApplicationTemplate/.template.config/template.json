@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "WebAppArchitecture",
+  "identity": "WebAppArchitecture.AppTemplate",
+  "name": "WebAppArchitecture Application Module (two models)",
+  "shortName": "architecture-app",
+  "sourceName": "AppName",
+  "symbols": {
+    "rootNamespace": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "WebAppArchitecture",
+      "replaces": "RootNamespace"
+    }
+  },
+  "sources": [
+    {
+      "exclude": [
+        ".template.config/**",
+        "README.md"
+      ]
+    }
+  ]
+}

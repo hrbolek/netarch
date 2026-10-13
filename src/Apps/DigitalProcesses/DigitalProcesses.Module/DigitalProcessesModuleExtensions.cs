@@ -21,5 +21,5 @@ public static class DigitalProcessesModuleExtensions
         => services.AddArchitectureModule<DigitalProcessesModule>();
 
     public static IEndpointRouteBuilder MapDigitalProcesses(this IEndpointRouteBuilder endpoints)
-        => endpoints.MapArchitectureModule<DigitalProcessesModule>();
+        => endpoints.MapArchitectureModule<DigitalProcessesModule>("digital-processes");
 }

@@ -1,22 +1,15 @@
 @using WebAppArchitecture.Base.UI.Pages
-@using WebAppArchitecture.EntityName.UI.Components
-@using WebAppArchitecture.EntityName.Models
+@using RootNamespace.EntityName.Models
+@using RootNamespace.EntityName.UI.Components
+@namespace RootNamespace.EntityName.UI.Pages
 
-@namespace WebAppArchitecture.EntityName.UI.Pages
-
-<PageViewList
-    TModel="EntityNameResponse"
-    Items="@Model"
-    Title="Uživatel">
+<PageViewList TModel="EntityNameResponse" Items="@Model" Title="EntityTitle">
     <ChildContent Context="item">
         <EntityNameMediumCard Model="@item" />
     </ChildContent>
-</PageViewList>    
+</PageViewList>
 
 @code {
-    [Parameter, EditorRequired]
-    public EntityNameResponse[] Model { get; set; } = default!;
-
-    [Parameter]
-    public bool IsFragment { get; set; }
+    [Parameter, EditorRequired] public EntityNameResponse[] Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
 }

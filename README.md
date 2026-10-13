@@ -346,7 +346,7 @@ pokud se nacházíte v rootu solution a CLI solution jednoznačně rozpozná.
 ## Spuštění Hostu
 
 ```bash
-dotnet run --project src/Host/Host.csproj
+dotnet run --project src/Apps/Host/Host.csproj
 ```
 
 Host naslouchá na:
@@ -579,7 +579,7 @@ Tyto reference templates generují automaticky, přesto je vhodné je po scaffol
 
 ## Krok 7 – registrovat Store a Service v Hostu
 
-Do `src/Host/Program.cs` přidejte namespace:
+Do `src/Apps/Host/Program.cs` přidejte namespace:
 
 ```csharp
 using WebAppArchitecture.Document.Models;
@@ -623,7 +623,7 @@ dotnet build SignFakeArchitecture.sln
 ## Krok 10 – spustit a ověřit Swagger
 
 ```bash
-dotnet run --project src/Host/Host.csproj
+dotnet run --project src/Apps/Host/Host.csproj
 ```
 
 Otevřete:
@@ -1434,7 +1434,7 @@ dotnet build SignFakeArchitecture.sln
 ## Run
 
 ```bash
-dotnet run --project src/Host/Host.csproj
+dotnet run --project src/Apps/Host/Host.csproj
 ```
 
 ## Templates
@@ -1472,7 +1472,7 @@ dotnet sln SignFakeArchitecture.sln add src/Document.Resolvers/Document.Resolver
 ```bash
 dotnet sln SignFakeArchitecture.sln list
 dotnet build SignFakeArchitecture.sln
-dotnet run --project src/Host/Host.csproj
+dotnet run --project src/Apps/Host/Host.csproj
 ```
 
 Swagger:
@@ -1518,7 +1518,7 @@ with `SYSTEMDATA_SOURCE`; a local compact seed can be produced with
 ### Lokální vývoj – Debug
 
 ```bash
-ASPNETCORE_ENVIRONMENT=Development dotnet run --project src/Host/Host.csproj -c Debug
+ASPNETCORE_ENVIRONMENT=Development dotnet run --project src/Apps/Host/Host.csproj -c Debug
 ```
 
 Výchozí Debug build připojí `JsonataPlayground`; při `Development` prostředí je UI na `http://localhost:8080/jsonata` a testovací API na `POST /jsonata/execute`. Port se řídí konfigurací Hostu. `ForwardHeaders` a GraphQL `Endpoint` nastavujte výhradně v konfiguraci Hostu (`DigitalProcesses:DataBackend`), ne ve formuláři.
@@ -1526,13 +1526,13 @@ Výchozí Debug build připojí `JsonataPlayground`; při `Development` prostře
 ### Vývoj bez playgroundu
 
 ```bash
-ASPNETCORE_ENVIRONMENT=Development dotnet run --project src/Host/Host.csproj -c Debug -p:EnableJsonataPlayground=false
+ASPNETCORE_ENVIRONMENT=Development dotnet run --project src/Apps/Host/Host.csproj -c Debug -p:EnableJsonataPlayground=false
 ```
 
 ### Produkční build a deployment – Release
 
 ```bash
-dotnet publish src/Host/Host.csproj -c Release -p:EnableJsonataPlayground=false
+dotnet publish src/Apps/Host/Host.csproj -c Release -p:EnableJsonataPlayground=false
 ```
 
 Release bez explicitního přepnutí playground **nepřipojuje, nekompiluje ani nepublikuje** jako závislost Hostu. Endpointy `/jsonata` se navíc registrují jen když prostředí běží jako `Development`. Při nasazování nepovolujte volbu `EnableJsonataPlayground=true`.
@@ -1582,13 +1582,13 @@ Podpora opakovaných instancí a HTTP akcí v této verzi se týká **preview/Te
 Spouštění se nemění:
 
 ```bash
-ASPNETCORE_ENVIRONMENT=Development dotnet run --project src/Host/Host.csproj -c Debug
+ASPNETCORE_ENVIRONMENT=Development dotnet run --project src/Apps/Host/Host.csproj -c Debug
 ```
 
 Při nasazování Release je JsonataPlayground nadále vypnut:
 
 ```bash
-dotnet publish src/Host/Host.csproj -c Release -p:EnableJsonataPlayground=false
+dotnet publish src/Apps/Host/Host.csproj -c Release -p:EnableJsonataPlayground=false
 ```
 
 ## JSON schema a data formulářů (77.17)
@@ -1609,7 +1609,7 @@ Testovací endpoint čte dočasný stav preview a rekonstruuje jej stejnou funkc
 Vývojové spuštění:
 
 ```bash
-ASPNETCORE_ENVIRONMENT=Development dotnet run --project src/Host/Host.csproj -c Debug
+ASPNETCORE_ENVIRONMENT=Development dotnet run --project src/Apps/Host/Host.csproj -c Debug
 ```
 
 
@@ -1639,8 +1639,8 @@ zůstává zachován.
 Ověření v devcontaineru:
 
 ```bash
-dotnet clean src/Host/Host.csproj -c Debug
-ASPNETCORE_ENVIRONMENT=Development dotnet run --project src/Host/Host.csproj -c Debug
+dotnet clean src/Apps/Host/Host.csproj -c Debug
+ASPNETCORE_ENVIRONMENT=Development dotnet run --project src/Apps/Host/Host.csproj -c Debug
 ```
 
 ### RTF templates and submission documents (77.20)
@@ -1718,7 +1718,7 @@ providers require a corresponding deployment migration. Always back up
 `data/dump.json` and the database before updating. Running `EnsureCreated`
 alone does *not* migrate tables in existing EF Core databases.
 
-**Validation**: Build with `dotnet build src/Host/Host.csproj -c Debug` and test
+**Validation**: Build with `dotnet build src/Apps/Host/Host.csproj -c Debug` and test
 (1) Applicant visible section; (2) Applicant hidden section and all descendants
 on `/SubmissionResponse/data/{id}`; (3) Dean/referent access as configured;
 (4) transition creates a fully populated next Submission but preserves archived

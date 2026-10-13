@@ -13,7 +13,7 @@ public sealed class DigitalProcessesBootstrapHostedService(IServiceScopeFactory 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         await using var scope = scopeFactory.CreateAsyncScope();
-        var db = scope.ServiceProvider.GetRequiredService<DigitalProcessesDbContext>();
+        var db = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
         var now = DateTimeOffset.UtcNow;
         var actor = RbacWellKnown.BootstrapAdminUserId;
         var scopeId = RbacWellKnown.FormNodeTypeCreationScopeId;
@@ -34,10 +34,10 @@ public sealed class DigitalProcessesBootstrapHostedService(IServiceScopeFactory 
         };
 
         var ids = seeds.Select(x => x.id).ToArray();
-        var existing = await db.FormNodeTypes.Where(x => ids.Contains(x.id)).Select(x => x.id).ToArrayAsync(cancellationToken);
+        var existing = await db.Set<FormNodeTypeModel>().Where(x => ids.Contains(x.id)).Select(x => x.id).ToArrayAsync(cancellationToken);
         var existingSet = existing.ToHashSet();
         foreach (var seed in seeds.Where(x => !existingSet.Contains(x.id)))
-            db.FormNodeTypes.Add(seed);
+            db.Set<FormNodeTypeModel>().Add(seed);
         await db.SaveChangesAsync(cancellationToken);
     }
 

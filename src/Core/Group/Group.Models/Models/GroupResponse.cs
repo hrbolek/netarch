@@ -23,7 +23,7 @@ public sealed record GroupResponse(
     string? master_group_name = null,
     string? group_type_name = null,
     string visual_label = ""
-) : IEntityDTOModel<GroupModel, GroupResponse>, ISecuredEntityDTOModel
+) : IEntityProjection<GroupModel, GroupResponse>, IEntityMapper<GroupModel, GroupResponse>, ISecuredEntityDTOModel
 {
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.

@@ -1,0 +1,16 @@
+@namespace WebAppArchitecture.Events
+@using WebAppArchitecture.Base.UI.Pages
+@using WebAppArchitecture.Base.UI.Components
+@using Microsoft.AspNetCore.Components
+@using System.Globalization
+<PageView TModel="EventModel" TComponent="EventLargeCard" Model="@Model.Event" Title="Detail události">
+ <ChildContent Context="item">
+  <EventLargeCard Model="@item" />
+  <div class="container py-3"><h2 class="h5">Podřízené události</h2>
+  <ViewVector TModel="EventModel" TComponent="EventMediumCard" Items="@Model.Children" EmptyText="Žádné přístupné podřízené události." />
+  @if (Model.CanDelete) { <button type="button" class="btn btn-outline-danger mt-3" id="event-delete">Odstranit</button> }
+  </div>
+ </ChildContent>
+</PageView>
+@if(Model.CanDelete){<script>document.getElementById('event-delete')?.addEventListener('click',async()=>{if(!confirm('Opravdu odstranit událost?'))return;const res=await fetch('/events/EventResponse/delete/@Model.Event.id',{method:'DELETE'});if(res.ok)location.assign('/events/EventResponse/list');else alert('Odstranění se nezdařilo (HTTP '+res.status+').');});</script>}
+@code { [Parameter,EditorRequired] public EventDetailModel Model {get;set;}=null!; [Parameter]public bool IsFragment {get;set;} static string Prague(DateTimeOffset time){try{return TimeZoneInfo.ConvertTime(time,TimeZoneInfo.FindSystemTimeZoneById("Europe/Prague")).ToString("dd.MM.yyyy HH:mm",CultureInfo.GetCultureInfo("cs-CZ"));}catch{return time.ToString("dd.MM.yyyy HH:mm zzz");}} }

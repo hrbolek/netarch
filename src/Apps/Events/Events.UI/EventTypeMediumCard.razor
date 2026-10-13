@@ -1,0 +1,7 @@
+@namespace WebAppArchitecture.Events
+@using Microsoft.AspNetCore.Components
+@using WebAppArchitecture.Base.UI.Components
+<MediumCard TModel="EventTypeModel" Model="@Model" HeaderText="@Model.Name">
+ <ChildContent Context="item"><span class="text-muted">@item.Code · @item.Abbreviation</span><div><a href="@($"/events/EventTypeResponse/edit/{item.id}")">Upravit typ</a></div></ChildContent>
+</MediumCard>
+@code { [Parameter,EditorRequired] public EventTypeModel Model {get;set;}=default!; }

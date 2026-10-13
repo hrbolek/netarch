@@ -21,7 +21,7 @@ internal static class PreviewFormEndpoints
 {
     public static void Map(IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapGet("/digital-processes/form-preview/data/{formVersionId:guid}/{previewInstanceId:guid}", async (
+        endpoints.MapGet("/form-preview/data/{formVersionId:guid}/{previewInstanceId:guid}", async (
             Guid formVersionId, Guid previewInstanceId, IFormNodeService nodes,
             PreviewFormInstanceStore store, CancellationToken ct) =>
         {
@@ -34,7 +34,7 @@ internal static class PreviewFormEndpoints
           .WithName("PreviewFormJsonData")
           .WithDescription("Returns the JSON document of a temporary form preview, using the same reconstruction as export ($form). Preview state expires after inactivity.");
 
-        endpoints.MapPost("/digital-processes/form-preview/values", async (
+        endpoints.MapPost("/form-preview/values", async (
             HttpContext http, IFormNodeService nodeService, PreviewFormInstanceStore store, ILoggerFactory logs, CancellationToken ct) =>
         {
             var log = logs.CreateLogger("DigitalProcesses.FormPreview.Values");
@@ -55,7 +55,7 @@ internal static class PreviewFormEndpoints
         }).WithTags("DigitalProcesses", "Preview")
           .WithDescription("Autosaves preview form values into temporary server-side state; never creates a Submission.");
 
-        endpoints.MapPost("/digital-processes/form-preview/actions/{actionId:guid}", async (
+        endpoints.MapPost("/form-preview/actions/{actionId:guid}", async (
             Guid actionId, HttpContext http, IFormNodeService nodeService,
             PreviewFormInstanceStore store, IFormDataBackend backend, ILoggerFactory logs, CancellationToken ct) =>
         {

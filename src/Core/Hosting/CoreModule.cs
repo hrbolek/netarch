@@ -33,7 +33,7 @@ using WebAppArchitecture.User.Services;
 
 namespace WebAppArchitecture.Hosting;
 
-public sealed class CoreModule : IArchitectureModule
+public sealed class CoreModule : IModule
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
@@ -79,44 +79,39 @@ public sealed class CoreModule : IArchitectureModule
         services.AddScoped<IRbacAuthorizationService>(sp => sp.GetRequiredService<SecurityService>());
     }
 
+    public void ConfigureApplication(WebApplication app)
+    {
+        app.UseEasyEntraHeaderPrincipal();
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
+
     public void ConfigureNavigation(IApplicationNavigationRegistry navigation)
     {
         navigation.RegisterArchitecture();
     }
 
-    public void MapEndpoints(IEndpointRouteBuilder endpoints)
+    public void MapAPI(IEndpointRouteBuilder endpoints, string prefix)
+        => MapEndpoints(endpoints, prefix);
+
+    public void MapUI(IEndpointRouteBuilder endpoints, string prefix)
+        => MapEndpoints(endpoints, prefix);
+
+    private static void MapEndpoints(IEndpointRouteBuilder endpoints, string prefix)
     {
         var routes = endpoints.ServiceProvider.GetRequiredService<IEntityRouteRegistry>();
-        routes.Register<GroupTypeResponse>(operation: "read");
-
-        endpoints.MapGet("/", CoreHostResolvers.Home)
-            .ApplyViewModel<ApplicationHomePage, ApplicationDefinition[]>()
-            .WithName("ApplicationHome")
-            .WithTags("Home")
-            .WithDescription("""
-                Displays the application home page using all application definitions
-                contributed by the explicitly mapped architecture modules.
-                """);
-
-        endpoints.MapGet("/architecture", CoreHostResolvers.Architecture)
-            .ApplyViewModel<ApplicationDashboardPage, ApplicationDefinition>()
-            .WithName("ArchitectureHome")
-            .WithTags("Home")
-            .WithDescription("Displays the Architecture application landing page and its navigation entries.");
-
-        endpoints.MapGet("/info", CoreHostResolvers.Info)
-            .WithTags("Diagnostics")
-            .WithDescription("Returns basic application, authentication and storage diagnostics as JSON.");
-
-        endpoints.MapGet("/debug", CoreHostResolvers.Debug)
-            .WithTags("Diagnostics")
-            .WithDescription("Renders a diagnostic HTML page containing the current identity headers and claims.");
-
-        endpoints.MapUserEndpoints("/architecture");
-        endpoints.MapGroupEndpoints("/architecture");
-        endpoints.MapRoleEndpoints("/architecture");
-        endpoints.MapMembershipEndpoints("/architecture");
-        endpoints.MapRoleTypeEndpoints("/architecture");
-        endpoints.MapSecurityEndpoints("/architecture");
+        routes.Register<GroupTypeResponse>(app: prefix, operation: "read");
+        routes.Register<UserResponse>(app: prefix);
+        routes.Register<GroupResponse>(app: prefix);
+        routes.Register<RoleResponse>(app: prefix);
+        routes.Register<MembershipResponse>(app: prefix);
+        routes.Register<RoleTypeResponse>(app: prefix);
+        var root = "/" + prefix.Trim('/');
+        endpoints.MapUserEndpoints(root);
+        endpoints.MapGroupEndpoints(root);
+        endpoints.MapRoleEndpoints(root);
+        endpoints.MapMembershipEndpoints(root);
+        endpoints.MapRoleTypeEndpoints(root);
+        endpoints.MapSecurityEndpoints(root);
     }
 }

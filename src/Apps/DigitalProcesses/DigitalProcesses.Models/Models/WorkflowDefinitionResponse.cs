@@ -18,7 +18,7 @@ public sealed record WorkflowDefinitionResponse(
     Guid created_by,
     Guid updated_by,
     string visual_label = ""
-) : IEntityDTOModel<WorkflowDefinitionModel, WorkflowDefinitionResponse>, ISecuredEntityDTOModel
+) : IEntityProjection<WorkflowDefinitionModel, WorkflowDefinitionResponse>, IEntityMapper<WorkflowDefinitionModel, WorkflowDefinitionResponse>, ISecuredEntityDTOModel
 {
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.

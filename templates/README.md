@@ -1,93 +1,22 @@
-# WebAppArchitecture layer templates
+# ZArchitecture templates — standalone agent reference
 
-Každá šablona generuje samostatnou DLL vrstvu pro jednu entitu. Registrace zůstává explicitní; žádný assembly scanning není potřeba.
+`/templates/` is the **self-contained normative entry point** for creating domains, entities, forms and specialized views. It is designed for consumers that possess **Core only as DLL/NuGet**; `User`, `Group` and `Membership` source files are not required.
 
-## Instalace šablon
+## Mandatory reading order
 
-Z rootu repozitáře:
+1. [`AGENTS.md`](AGENTS.md) and [`PORTABLE_CORE_CONTRACT.md`](PORTABLE_CORE_CONTRACT.md).
+2. [`REFERENCE_CATALOG.md`](REFERENCE_CATALOG.md) to select an operation and its included sample.
+3. The task-specific [`DOMAIN_CONTRACT.md`](DOMAIN_CONTRACT.md), [`ENTITY_CONTRACT.md`](ENTITY_CONTRACT.md) or [`VISUALIZATION_CONTRACT.md`](VISUALIZATION_CONTRACT.md).
+4. [`UI_COMPOSITION_CONTRACT.md`](UI_COMPOSITION_CONTRACT.md) for UI and [`INPUT_COMPONENTS_CONTRACT.md`](INPUT_COMPONENTS_CONTRACT.md) for forms.
+5. Local template source code under `Entity*Template/` plus `TEMPLATE_STATUS.md` for limitations. Verify compiled Core's **public** API signatures; do not require its source tree.
 
-```bash
-dotnet new install ./templates/EntityModelTemplate
-dotnet new install ./templates/EntityServiceTemplate
-dotnet new install ./templates/EntityResolversTemplate
-dotnet new install ./templates/EntityUITemplate
-```
+## Priority and availability
 
-## Vygenerování nové entity
+The above normative files take precedence over older per-template readmes. The package's public APIs are the authority for exact signatures. Historical implementations in `Core/User`, `Core/Group`, `Core/Membership` are **optional design provenance** only. If the public API does not match an example, report the version mismatch instead of fabricating wrappers.
 
-Příklad `Document`:
+**Known limits:** `ApplicationTemplate` is an older single-project scaffold; it does not yet generate a conforming four-project domain. Scalar field controls such as `TextInput` are not guaranteed to exist in Core. No untested scaffold may be described as complete or compiled. See `TEMPLATE_STATUS.md`.
 
-```bash
-dotnet new entity-model     -n Document -o src/Document.Models     --rootNamespace MyApp
-dotnet new entity-service   -n Document -o src/Document.Services   --rootNamespace MyApp
-dotnet new entity-ui        -n Document -o src/Document.UI         --rootNamespace MyApp --title "Dokument"
-dotnet new entity-resolvers -n Document -o src/Document.Resolvers --rootNamespace MyApp --route document
-```
 
-Přidání do solution je záměrně explicitní:
+## Endpoint metadata requirements (v140)
 
-```bash
-dotnet sln SignFakeArchitecture.sln add src/Document.Models/Document.Models.csproj
-dotnet sln SignFakeArchitecture.sln add src/Document.Services/Document.Services.csproj
-dotnet sln SignFakeArchitecture.sln add src/Document.UI/Document.UI.csproj
-dotnet sln SignFakeArchitecture.sln add src/Document.Resolvers/Document.Resolvers.csproj
-```
-
-## Závislosti
-
-```text
-Base
-  ↑
-Models
-  ↑       ↑
-Services  UI
-   \      /
-    Resolvers
-       ↑
-      Host
-```
-
-Response DTO je v `Models`, nikoli v `Resolvers`, aby UI a Resolvers nevytvářely kruhovou závislost.
-
-## Host
-
-Host explicitně zapne služby a endpointy:
-
-```csharp
-using MyApp.Document.Services;
-using MyApp.Document.Resolvers;
-
-builder.Services.AddRazorComponents();
-builder.Services.AddDocumentServices();
-
-var app = builder.Build();
-
-app.MapDocumentEndpoints();
-```
-
-Resolver template vytvoří například:
-
-```csharp
-var group = endpoints.MapGroup("/document");
-
-group.MapGet("/{id:guid}", DocumentResolvers.Read)
-    .ApplyViewModel<DocumentViewPage, DocumentResponse>();
-```
-
-## Hasura-like filtrovaný vektor
-
-Base vrstva obsahuje `HasuraFilterExpression`, který převádí explicitní dictionary filtr na `Expression<Func<TModel,bool>>`. Resolver template publikuje `POST /<route>/vector`; resolver provede překlad a service/store vrstva pracuje už pouze s typovaným predikátem.
-
-```json
-{
-  "where": {
-    "Name": { "_ilike": "%demo%" },
-    "_or": [
-      { "Name": { "_eq": "Alpha" } },
-      { "Name": { "_eq": "Beta" } }
-    ]
-  }
-}
-```
-
-Toto rozdělení záměrně drží Hasura-like transportní syntaxi v resolver vrstvě a `Expression<Func<...>>` jako kontrakt service/store vrstvy.
+For resolver generation, first read [`ENDPOINT_CONTRACT.md`](ENDPOINT_CONTRACT.md) and the self-contained `EntityResolversTemplate/Resolvers/EntityNameEndpointExtensions.cs`. Use canonical routes, `WithName`, `WithDescription`, `WithTags`, `ApplyViewModel` and `ApplyJsonModel`; verify Swagger metadata. Core/User and Core/Group source code is **not required**.

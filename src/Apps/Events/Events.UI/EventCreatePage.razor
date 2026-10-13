@@ -1,0 +1,52 @@
+@using WebAppArchitecture.Base.UI.Components
+@namespace WebAppArchitecture.Events
+@using Microsoft.AspNetCore.Components
+@using WebAppArchitecture.Base.UI.Pages
+
+<Page Title="Nová událost">
+<div class="container py-4">
+ 
+ <nav class="mb-3"><a href="/events/EventResponse/list">← Události</a></nav>
+ <h1 class="h3">Vytvořit událost</h1>
+ @if (Model.Types.Count == 0)
+ {
+  <div class="alert alert-warning">Neexistuje žádný dostupný typ události. <a href="/events/EventTypeResponse/new">Nejprve vytvořte typ</a>.</div>
+ }
+ @if (Model.Scopes.Count == 0 && Model.Parents.Count == 0)
+ {
+  <div class="alert alert-warning">Nemáte přidělené oprávnění <code>create</code> nad žádnou skupinou (RBAC rozsahem). Přidělení je nutné provést ve správě oprávnění.</div>
+ }
+ <form id="event-create-form" class="card card-body" style="max-width:850px">
+  <div class="mb-3"><label class="form-label" for="ev-name">Název</label><input class="form-control" id="ev-name" required maxlength="200" /></div>
+  <div class="mb-3"><label class="form-label" for="ev-type">Typ události</label><EntityLookupSelect Name="event_type_id" Label="Typ události" ListUrl="/events/EventTypeResponse/list" SearchFields="@(new[] { "name", "code" })" MinChars="2" Take="30" /><a class="small" href="/events/EventTypeResponse/new">Vytvořit nový typ</a></div>
+  <div class="row g-3 mb-3">
+   <div class="col-md-6"><label class="form-label" for="ev-start">Začátek</label><input class="form-control" id="ev-start" type="datetime-local" required /></div>
+   <div class="col-md-6"><label class="form-label" for="ev-end">Konec</label><input class="form-control" id="ev-end" type="datetime-local" required /></div>
+  </div>
+  <div class="mb-3"><label class="form-label" for="ev-parent">Nadřazená událost (nepovinné)</label><EntityLookupSelect Name="parent_id" Label="Nadřazená událost" ListUrl="/events/EventResponse/list" SearchFields="@(new[] { "name" })" MinChars="2" Take="30" Required="false" /></div>
+  <div class="mb-3"><label class="form-label" for="ev-scope">RBAC rozsah kořenové události</label><select class="form-select" id="ev-scope"><option value="">Vyberte rozsah</option>
+   @foreach (var scope in Model.Scopes) { <option value="@scope.Id">@scope.Name</option> }
+  </select><div class="form-text">U podřízené události se rozsah dědí z rodiče.</div></div>
+  <div class="mb-3"><label class="form-label" for="ev-description">Popis</label><textarea class="form-control" id="ev-description" rows="3"></textarea></div>
+  <div id="event-create-error" class="alert alert-danger d-none" role="alert"></div>
+  <div><button type="submit" class="btn btn-primary" disabled="@(Model.Types.Count == 0)">Vytvořit událost</button></div>
+ </form>
+</div>
+<script>
+(() => {
+ const form=document.getElementById('event-create-form'); if(!form || form.dataset.bound)return; form.dataset.bound='1';
+ form.addEventListener('submit', async e => {
+  e.preventDefault(); const val=id=>document.getElementById(id).value; const error=document.getElementById('event-create-error'); error.classList.add('d-none');
+  const parentId=document.querySelector('[name=parent_id]')?.value||null, rbacObjectId=val('ev-scope')||null;
+  if(!parentId&&!rbacObjectId){error.textContent='Vyberte RBAC rozsah nebo nadřazenou událost.';error.classList.remove('d-none');return;}
+  const request={name:val('ev-name'),description:val('ev-description'),eventTypeId:document.querySelector('[name=event_type_id]')?.value,parentId,rbacObjectId,startsAt:new Date(val('ev-start')).toISOString(),endsAt:new Date(val('ev-end')).toISOString()};
+  if(request.startsAt>=request.endsAt){error.textContent='Konec musí být po začátku.';error.classList.remove('d-none');return;}
+  try {const response=await fetch('/events/EventResponse/create',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},credentials:'same-origin',body:JSON.stringify(request)});
+   if(!response.ok)throw new Error('Vytvoření nebylo povoleno nebo údaje nejsou platné (HTTP '+response.status+').');
+   const result=await response.json();window.location.assign('/events/EventResponse/list');
+  }catch(ex){error.textContent=ex.message;error.classList.remove('d-none');}
+ });
+})();
+</script>
+</Page>
+@code { [Parameter, EditorRequired] public EventFormsModel Model { get; set; } = new(new(),new(),new()); [Parameter] public bool IsFragment {get;set;} }

@@ -21,18 +21,15 @@ using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.DigitalProcesses;
 
-public sealed class DigitalProcessesModule : IArchitectureModule
+public sealed class DigitalProcessesModule : IModule
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         // Override the Core-only context with one application context, not two contexts.
         // Both Core stores/security and DigitalProcesses share one EF change tracker
         // and transaction in the same request scope.
-        var connectionString = configuration.GetConnectionString("DefaultConnection")
-            ?? throw new InvalidOperationException("Missing ConnectionStrings:DefaultConnection (PostgreSQL).");
-        services.RemoveAll<CoreDbContext>();
-        services.AddDbContext<DigitalProcessesDbContext>(options => options.UseNpgsql(connectionString));
-        services.AddScoped<CoreDbContext>(sp => sp.GetRequiredService<DigitalProcessesDbContext>());
+        // DbContext composition belongs to the executable Host. CoreDbContext
+        // is registered by CoreModule; this module only contributes EF mappings.
         services.AddMemoryCache();
         services.AddHttpClient("digital-process-documents");
         services.AddHttpClient("digital-process-ai-agents");
@@ -80,31 +77,40 @@ public sealed class DigitalProcessesModule : IArchitectureModule
         services.AddDigitalProcessRenderers();
     }
 
+    public void ConfigureDatabase(ModelBuilder modelBuilder)
+        => modelBuilder.ConfigureDigitalProcesses();
+
     public void ConfigureNavigation(IApplicationNavigationRegistry navigation)
     {
         navigation.RegisterDigitalProcesses();
     }
 
-    public void MapEndpoints(IEndpointRouteBuilder endpoints)
+    public void MapAPI(IEndpointRouteBuilder endpoints, string prefix)
+        => MapEndpoints(endpoints, prefix);
+
+    public void MapUI(IEndpointRouteBuilder endpoints, string prefix)
+        => MapEndpoints(endpoints, prefix);
+
+    private static void MapEndpoints(IEndpointRouteBuilder endpoints, string prefix)
     {
         var routes = endpoints.ServiceProvider.GetRequiredService<IEntityRouteRegistry>();
-        routes.Register<FormDefinitionResponse>(app: "digital-processes");
-        routes.Register<FormVersionResponse>(app: "digital-processes");
-        routes.Register<FormNodeTypeResponse>(app: "digital-processes");
-        routes.Register<FormNodeResponse>(app: "digital-processes");
-        routes.Register<WorkflowDefinitionResponse>(app: "digital-processes");
-        routes.Register<WorkflowVersionResponse>(app: "digital-processes");
-        routes.Register<WorkflowStateResponse>(app: "digital-processes");
-        routes.Register<WorkflowStateAccessRuleResponse>(app: "digital-processes");
-        routes.Register<WorkflowTransitionResponse>(app: "digital-processes");
-        routes.Register<ProcessDefinitionResponse>(app: "digital-processes");
-        routes.Register<ProcessDefinitionVersionResponse>(app: "digital-processes");
-        routes.Register<RequestResponse>(app: "digital-processes");
-        routes.Register<SubmissionResponse>(app: "digital-processes");
-        routes.Register<SubmissionNodeResponse>(app: "digital-processes");
-        routes.Register<RequestTransitionHistoryResponse>(app: "digital-processes");
+        routes.Register<FormDefinitionResponse>(app: prefix);
+        routes.Register<FormVersionResponse>(app: prefix);
+        routes.Register<FormNodeTypeResponse>(app: prefix);
+        routes.Register<FormNodeResponse>(app: prefix);
+        routes.Register<WorkflowDefinitionResponse>(app: prefix);
+        routes.Register<WorkflowVersionResponse>(app: prefix);
+        routes.Register<WorkflowStateResponse>(app: prefix);
+        routes.Register<WorkflowStateAccessRuleResponse>(app: prefix);
+        routes.Register<WorkflowTransitionResponse>(app: prefix);
+        routes.Register<ProcessDefinitionResponse>(app: prefix);
+        routes.Register<ProcessDefinitionVersionResponse>(app: prefix);
+        routes.Register<RequestResponse>(app: prefix);
+        routes.Register<SubmissionResponse>(app: prefix);
+        routes.Register<SubmissionNodeResponse>(app: prefix);
+        routes.Register<RequestTransitionHistoryResponse>(app: prefix);
 
-        endpoints.MapGet("/digital-processes", DigitalProcessesModuleResolvers.Home)
+        endpoints.MapGet("/" + prefix.Trim('/'), DigitalProcessesModuleResolvers.Home)
             .ApplyViewModel<ApplicationDashboardPage, ApplicationDefinition>()
             .WithName("DigitalProcessesHome")
             .WithTags("Home")
@@ -119,15 +125,16 @@ public sealed class DigitalProcessesModule : IArchitectureModule
         // an HTMX action whose target route is absent (404). Preview remains
         // experimental; protect access to the application until authorization
         // and persistent form instances have been implemented.
-        PreviewFormEndpoints.Map(endpoints);
-        FormDocumentEndpoints.Map(endpoints);
-        RtfDocumentEndpoints.Map(endpoints);
-        TemplateManagementEndpoints.Map(endpoints);
-        FormComponentCatalogEndpoints.Map(endpoints);
-        FormDesignAiEndpoints.Map(endpoints);
-        DigitalProcessesManagementPages.Map(endpoints);
-        ApplicantPolicyEndpoints.Map(endpoints);
+        var scoped = endpoints.MapGroup("/" + prefix.Trim('/'));
+        PreviewFormEndpoints.Map(scoped);
+        FormDocumentEndpoints.Map(scoped);
+        RtfDocumentEndpoints.Map(scoped);
+        TemplateManagementEndpoints.Map(scoped);
+        FormComponentCatalogEndpoints.Map(scoped);
+        FormDesignAiEndpoints.Map(scoped);
+        DigitalProcessesManagementPages.Map(scoped);
+        ApplicantPolicyEndpoints.Map(scoped);
 
-        endpoints.MapDigitalProcessEndpoints("/digital-processes");
+        endpoints.MapDigitalProcessEndpoints("/" + prefix.Trim('/'));
     }
 }

@@ -23,7 +23,7 @@ public sealed record ProcessDefinitionVersionResponse(
     Guid updated_by,
     string visual_label = "",
     Guid? target_group_type_id = null
-) : IEntityDTOModel<ProcessDefinitionVersionModel, ProcessDefinitionVersionResponse>, ISecuredEntityDTOModel
+) : IEntityProjection<ProcessDefinitionVersionModel, ProcessDefinitionVersionResponse>, IEntityMapper<ProcessDefinitionVersionModel, ProcessDefinitionVersionResponse>, ISecuredEntityDTOModel
 {
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.

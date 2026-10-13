@@ -1,4 +1,5 @@
 @namespace WebAppArchitecture.Base.UI.Vector
+@inject WebAppArchitecture.Base.UI.Routing.IEntityRouteRegistry EntityRoutes
 @using WebAppArchitecture.Base.Data
 
 <div class="row g-3">
@@ -19,7 +20,7 @@
                 {
                     <div class="card h-100">
                         <div class="card-body">
-                            <a href="@($"/{Model.App}/{Model.EntityType}/view/{item.id}")">@item.visual_label</a>
+                            <a href="@(EntityUrl(item, "view"))">@item.visual_label</a>
                         </div>
                     </div>
                 }
@@ -31,6 +32,12 @@
 <VectorPager PageInfo="@Model.PageInfo" ItemCount="@Model.Items.Count" TargetId="@Model.TargetId" />
 
 @code {
+    private string EntityUrl(IEntityDTOModel item, string operation)
+        => EntityRoutes.GetUrl(item.GetType(), item.id,
+            app: string.IsNullOrWhiteSpace(Model.App) ? null : Model.App,
+            entity: string.IsNullOrWhiteSpace(Model.EntityType) ? null : Model.EntityType,
+            operation: operation);
+
     [Parameter, EditorRequired]
     public VectorContentViewModel Model { get; set; } = default!;
 

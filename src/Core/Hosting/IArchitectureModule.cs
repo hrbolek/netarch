@@ -1,23 +1,11 @@
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using WebAppArchitecture.Base.UI.Routing;
-
+using Microsoft.AspNetCore.Builder;
 namespace WebAppArchitecture.Hosting;
 
-/// <summary>
-/// Explicit application-module contract used by the architecture host.
-/// A module owns its DI registrations, endpoint mapping and navigation contribution.
-/// </summary>
-public interface IArchitectureModule
+/// <summary>Compatibility name for older application modules; use IModule for new modules.</summary>
+[System.Obsolete("Use IModule instead.")]
+public interface IArchitectureModule : IModule
 {
-    void ConfigureServices(
-        IServiceCollection services,
-        IConfiguration configuration);
-
-    void MapEndpoints(
-        IEndpointRouteBuilder endpoints);
-
-    void ConfigureNavigation(
-        IApplicationNavigationRegistry navigation);
+    void MapEndpoints(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder endpoints);
+    void IModule.MapAPI(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder endpoints, string prefix) => MapEndpoints(endpoints.MapGroup("/" + prefix.Trim('/')));
+    void IModule.MapUI(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder endpoints, string prefix) => MapEndpoints(endpoints.MapGroup("/" + prefix.Trim('/')));
 }

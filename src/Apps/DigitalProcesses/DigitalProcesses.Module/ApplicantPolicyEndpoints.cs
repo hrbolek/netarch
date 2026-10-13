@@ -18,7 +18,7 @@ public static class ApplicantPolicyEndpoints
 
     public static void Map(IEndpointRouteBuilder endpoints)
     {
-        var group = endpoints.MapGroup("/digital-processes/ProcessDefinitionVersionResponse/applicant-access")
+        var group = endpoints.MapGroup("/ProcessDefinitionVersionResponse/applicant-access")
             .WithTags("DigitalProcesses.ApplicantVisibility");
         group.MapGet("/{processVersionId:guid}", List).WithName("ApplicantAccessList")
             .WithDescription("Lists Applicant visibility rules for the process version. Optional query parameter stateId filters by state.");

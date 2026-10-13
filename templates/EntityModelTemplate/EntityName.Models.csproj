@@ -6,7 +6,7 @@
     <RootNamespace>RootNamespace.EntityName.Models</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../Base/Base.csproj" />
-    <ProjectReference Include="../DBLayer/DBLayer.csproj" />
+    <ProjectReference Include="../../Core/Base/Base.csproj" />
+    <ProjectReference Include="../../Core/DBLayer/DBLayer.csproj" />
   </ItemGroup>
 </Project>

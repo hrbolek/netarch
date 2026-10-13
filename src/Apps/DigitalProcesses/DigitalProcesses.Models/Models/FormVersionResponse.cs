@@ -20,7 +20,7 @@ public sealed record FormVersionResponse(
     Guid created_by,
     Guid updated_by,
     string visual_label = ""
-) : IEntityDTOModel<FormVersionModel, FormVersionResponse>, ISecuredEntityDTOModel
+) : IEntityProjection<FormVersionModel, FormVersionResponse>, IEntityMapper<FormVersionModel, FormVersionResponse>, ISecuredEntityDTOModel
 {
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.

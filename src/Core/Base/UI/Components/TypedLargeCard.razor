@@ -1,0 +1,32 @@
+@namespace WebAppArchitecture.Base.UI.Components
+@typeparam TContext where TContext : IEntityDTOModel
+@typeparam TLeftColumnContent where TLeftColumnContent : IComponent
+
+@* Reusable entity workspace: one context model, one domain-specific summary component,
+   and any content in the main column. TLeftColumnContent receives Model=TContext. *@
+<LargeCard TModel="TContext" Model="@Model" HeaderText="@HeaderText" FooterText="@FooterText">
+    <SideContent Context="context">
+        <DynamicComponent Type="@typeof(TLeftColumnContent)" Parameters="@LeftParameters(context)" />
+        @if (LeftFooter is not null)
+        {
+            @LeftFooter(context)
+        }
+    </SideContent>
+    <ChildContent Context="context">
+        @if (ChildContent is not null)
+        {
+            @ChildContent(context)
+        }
+    </ChildContent>
+</LargeCard>
+
+@code {
+    [Parameter, EditorRequired] public TContext Model { get; set; } = default!;
+    [Parameter] public string? HeaderText { get; set; }
+    [Parameter] public string? FooterText { get; set; }
+    [Parameter] public RenderFragment<TContext>? LeftFooter { get; set; }
+    [Parameter] public RenderFragment<TContext>? ChildContent { get; set; }
+
+    private static IDictionary<string, object?> LeftParameters(TContext context)
+        => new Dictionary<string, object?> { ["Model"] = context };
+}

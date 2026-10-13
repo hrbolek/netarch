@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../Base/Base.csproj" />
-    <ProjectReference Include="../SecurityLayer/SecurityLayer.csproj" />
+    <ProjectReference Include="../../Core/Base/Base.csproj" />
+    <ProjectReference Include="../../Core/SecurityLayer/SecurityLayer.csproj" />
     <ProjectReference Include="../EntityName.Models/EntityName.Models.csproj" />
   </ItemGroup>
 </Project>

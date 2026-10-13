@@ -1,51 +1,32 @@
 using System.Linq.Expressions;
 using WebAppArchitecture.Base.Data;
-using WebAppArchitecture.DBLayer;
+using WebAppArchitecture.Base.Security;
 
-namespace WebAppArchitecture.EntityName.Models;
+namespace RootNamespace.EntityName.Models;
 
-/// <summary>
-/// Application/transport DTOs only. The persistence EntityNameModel belongs to DBLayer.
-/// </summary>
-public sealed record EntityNameResponse(
-    Guid id,
-    string Name,
-    Guid rbac_id
-) : IEntityDTOModel<EntityNameModel, EntityNameResponse>, ISecuredEntityDTOModel
+public sealed record EntityNameModel(
+    Guid id, string Name, Guid rbacobject_id,
+    DateTimeOffset created_at, DateTimeOffset updated_at,
+    Guid created_by, Guid updated_by) : ISecuredEntityDBModel;
+
+public sealed record EntityNameResponse(Guid id, string Name, Guid rbacobject_id)
+    : IEntityProjection<EntityNameModel, EntityNameResponse>,
+      IEntityMapper<EntityNameModel, EntityNameResponse>, ISecuredEntityDTOModel
 {
-    public static EntityNameResponse FromModel(EntityNameModel model)
-        => new(model.id, model.Name, model.rbac_id);
-
-    public static Expression<Func<EntityNameModel, EntityNameResponse>> Projection
-        => model => new EntityNameResponse(model.id, model.Name, model.rbac_id);
-
-    public EntityNameModel ToModel()
-        => new(id, Name, rbac_id, DateTimeOffset.UtcNow, DateTimeOffset.UtcNow, Guid.Empty, Guid.Empty);
+    public static Expression<Func<EntityNameModel, EntityNameResponse>> Projection =>
+        entity => new(entity.id, entity.Name, entity.rbacobject_id);
+    public static EntityNameResponse FromModel(EntityNameModel entity) =>
+        new(entity.id, entity.Name, entity.rbacobject_id);
+    public string visual_label => Name;
 }
 
-public sealed record EntityNameCreateRequest(
-    string Name,
-    Guid? rbac_id = null
-) : ICreateDTOModel<EntityNameModel>, ISecuredCreateRequest
-{
-    public EntityNameModel ToModel()
-    {
-        var now = DateTimeOffset.UtcNow;
-        return new EntityNameModel(Guid.NewGuid(), Name,
-            rbac_id ?? WebAppArchitecture.Base.Security.RbacWellKnown.RootSecurityObjectId,
-            now, now, Guid.Empty, Guid.Empty);
-    }
-}
+// Client request supplies a container, not a trusted RBAC object id.
+// Conversion into a secured DB model belongs to a service after CreationScopeGuard.
+public sealed record EntityNameCreateContainedRequest(string Name, Guid group_id);
 
-public sealed record EntityNameUpdateRequest(
-    Guid id,
-    string Name
-) : IUpdateDTOModel<EntityNameModel>
+public sealed record EntityNameUpdateRequest(Guid id, string Name)
+    : IUpdateDTOModel<EntityNameModel>
 {
-    public EntityNameModel ApplyTo(EntityNameModel model)
-        => model with { Name = Name, updated_at = DateTimeOffset.UtcNow };
-
-    public EntityNameModel ToModel()
-        => new(id, Name, WebAppArchitecture.Base.Security.RbacWellKnown.RootSecurityObjectId,
-            DateTimeOffset.UtcNow, DateTimeOffset.UtcNow, Guid.Empty, Guid.Empty);
+    public EntityNameModel ApplyTo(EntityNameModel current) =>
+        current with { Name = Name, updated_at = DateTimeOffset.UtcNow };
 }

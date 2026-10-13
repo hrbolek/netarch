@@ -34,7 +34,6 @@ public sealed class ArchitectureHost
         // Keep the builder configuration directly available to pre-Build module registration.
         services.AddSingleton<IConfiguration>(configuration);
         services.AddEndpointsApiExplorer();
-        services.AddRazorComponents();
         services.AddSwaggerGen(options =>
         {
             options.OperationFilter<ArchitectureOperationFilter>();

@@ -9,7 +9,7 @@
         }
         else
         {
-            <DynamicComponent Type="@EditableCardType" Parameters="@GetParameters(item)" />
+            <div class="alert alert-warning" role="alert">An editor must be supplied by this application.</div>
         }
     </ChildContent>
 </PageBase>
@@ -21,8 +21,4 @@
     [Parameter] public string? FooterText { get; set; }
     [Parameter] public RenderFragment<TModel>? ChildContent { get; set; }
 
-    private static Type EditableCardType => typeof(EditableCard<>).MakeGenericType(typeof(TModel));
-
-    private static IDictionary<string, object?> GetParameters(TModel model)
-        => new Dictionary<string, object?> { ["Model"] = model };
 }

@@ -1,19 +1,19 @@
 @using WebAppArchitecture.Base.UI.Pages
 @using RootNamespace.EntityName.Models
 @using RootNamespace.EntityName.UI.Components
-
 @namespace RootNamespace.EntityName.UI.Pages
 
-<PageView
-    TModel="EntityNameResponse"
-    TComponent="EditableCard"
-    Model="@Model"
-    Title="Editace: EntityTitle" />
+<PageEdit TModel="EntityNameResponse" Model="@Model" Title="Editace: EntityTitle">
+    <ChildContent Context="item">
+        <EntityNameLargeCard Model="@item">
+            <ChildContent Context="largeItem">
+                <EntityNameEditableCard Model="@largeItem" />
+            </ChildContent>
+        </EntityNameLargeCard>
+    </ChildContent>
+</PageEdit>
 
 @code {
-    [Parameter, EditorRequired]
-    public EntityNameResponse Model { get; set; } = default!;
-
-    [Parameter]
-    public bool IsFragment { get; set; }
+    [Parameter, EditorRequired] public EntityNameResponse Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
 }

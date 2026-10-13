@@ -21,7 +21,7 @@ public sealed record RequestResponse(
     Guid created_by,
     Guid updated_by,
     string visual_label = ""
-) : IEntityDTOModel<RequestModel, RequestResponse>, ISecuredEntityDTOModel
+) : IEntityProjection<RequestModel, RequestResponse>, IEntityMapper<RequestModel, RequestResponse>, ISecuredEntityDTOModel
 {
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.

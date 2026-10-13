@@ -14,7 +14,7 @@ public static class CoreModuleExtensions
         app.UseEasyEntraHeaderPrincipal();
         app.UseSwagger();
         app.UseSwaggerUI();
-        app.MapArchitectureModule<CoreModule>();
+        app.MapArchitectureModule<CoreModule>("architecture");
         return app;
     }
 }

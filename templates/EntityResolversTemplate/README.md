@@ -1,54 +1,15 @@
-# EntityResolversTemplate
+# EntityName Resolvers Template — canonical endpoint metadata
 
-Generuje samostatný `EntityName.Resolvers.csproj`, static resolvers a explicitní `MapEntityNameEndpoints()`.
-Používá `MapGroup(...)`, `ApplyViewModel` / `ApplyJsonModel` a generuje také endpoint pro filtrovaný vektor entit.
+This template contains **working reference patterns for the supported Read/List/Link/Update/Delete operations**, not a complete entity implementation. See `../ENDPOINT_CONTRACT.md`. The generated mapping adopts the current Core User/Group conventions:
 
-```bash
-dotnet new entity-resolvers -n Document -o src/Document.Resolvers --rootNamespace WebAppArchitecture.Dokument --route document
-```
+- `MapEntityNameEndpoints(endpoints, prefix)` uses `${prefix}/EntityNameResponse` (prefix supplied once by the module).
+- `.WithTags("EntityName")`, unique `.WithName("EntityNameOperation")`, descriptive `.WithDescription(...)`.
+- `ApplyViewModel<TPage,TResponse>` for HTML-first list/view/edit/link endpoints.
+- `ApplyJsonModel<TResponse>` for JSON-first update; optional explicit HTML negotiation is handled by Core.
+- `RedirectResolvers.List/View` for canonical short-URL redirects.
+- Resolver handlers delegate to `BaseResolvers`; business logic and RBAC stay in Services.
+- The generated resolver project references the generated UI project to resolve page types.
 
-Výchozí project references očekávají `../Base`, `../Document.Models`, `../Document.Services` a `../Document.UI`.
+**Not included:** domain-specific secure creation, form POST handler, actions, filtered vector endpoint. These must be implemented following the detailed contract and actual service interfaces. Do not present this skeleton as a complete CRUD+UI generator.
 
-## Filtrovaný vektor
-
-Template generuje:
-
-```csharp
-POST /document/vector
-```
-
-Resolver přijme JSON objekt s `Where` dictionary, přeloží jej přes
-`HasuraFilterExpression.Build<DocumentModel>(...)` na:
-
-```csharp
-Expression<Func<DocumentModel, bool>>
-```
-
-a předá jej do:
-
-```csharp
-service.VectorAsync(predicate, cancellationToken)
-```
-
-Příklad requestu:
-
-```json
-{
-  "where": {
-    "Name": { "_ilike": "%demo%" },
-    "_and": [
-      { "id": { "_neq": "00000000-0000-0000-0000-000000000000" } }
-    ]
-  }
-}
-```
-
-Podporované operátory:
-
-```text
-_and _or _not
-_eq _neq _gt _gte _lt _lte
-_in _nin
-_like _ilike
-_is_null
-```
+For a *binary-only Core* installation, use the public types from the installed assemblies; no Core/User source is required. Verify signatures against the exact package version before compiling.

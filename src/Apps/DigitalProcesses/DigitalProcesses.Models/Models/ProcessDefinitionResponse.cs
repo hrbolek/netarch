@@ -19,7 +19,7 @@ public sealed record ProcessDefinitionResponse(
     Guid created_by,
     Guid updated_by,
     string visual_label = ""
-) : IEntityDTOModel<ProcessDefinitionModel, ProcessDefinitionResponse>, ISecuredEntityDTOModel
+) : IEntityProjection<ProcessDefinitionModel, ProcessDefinitionResponse>, IEntityMapper<ProcessDefinitionModel, ProcessDefinitionResponse>, ISecuredEntityDTOModel
 {
     public Guid? form_definition_id { get; init; }
     public Guid? workflow_definition_id { get; init; }

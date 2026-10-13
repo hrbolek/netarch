@@ -21,7 +21,7 @@ public sealed record SubmissionResponse(
     Guid created_by,
     Guid updated_by,
     string visual_label = ""
-) : IEntityDTOModel<SubmissionModel, SubmissionResponse>, ISecuredEntityDTOModel
+) : IEntityProjection<SubmissionModel, SubmissionResponse>, IEntityMapper<SubmissionModel, SubmissionResponse>, ISecuredEntityDTOModel
 {
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
