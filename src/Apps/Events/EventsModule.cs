@@ -16,6 +16,7 @@ public sealed class EventsModule : IModule
 {
  public void ConfigureServices(IServiceCollection services,IConfiguration configuration)
  {
+  services.AddScoped<EventTypeService>();
   services.AddScoped<EventService>();
   services.AddHostedService<EventsDatabaseHostedService>();
  }

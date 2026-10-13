@@ -9,10 +9,9 @@ public static class EventsPlanUI
  {
   var actor=actors.TryGetActorUserId(http);
   if(actor is null)return Results.Unauthorized();
-  var year=await db.Set<EventModel>().AsNoTracking().FirstOrDefaultAsync(e=>e.id==id,ct);
+  var year=await svc.FindAsync(id,ct);
   if(year is null)return Results.NotFound();
-  if(!await svc.CanAsync(actor.Value,year,"read",ct))return Results.Forbid();
-  var editable=await svc.CanAsync(actor.Value,year,"update",ct);
+  var editable=await svc.CanAsync(year,"update",ct);
   var html="""
 <!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Harmonogram akademického roku</title>
 <style>body{font:14px system-ui;margin:2rem}h1{margin-bottom:.2rem}.muted{color:#666}.weekgrid{display:flex;gap:3px;overflow:auto;padding:8px 0}.week{min-width:45px;text-align:center;font-size:11px}.halves{display:flex;min-height:42px}.half{flex:1;min-width:20px;border:1px solid #bbb;cursor:pointer;font-size:10px}table{border-collapse:collapse;width:100%;max-width:1100px}td,th{border:1px solid #ddd;padding:7px}input,select,button{padding:5px}button{cursor:pointer}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:1rem 0}#message{margin:1rem 0}.disabled{pointer-events:none;opacity:.7}</style></head><body>

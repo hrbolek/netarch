@@ -9,9 +9,16 @@ public abstract class EventEntity : ISecuredEntityDBModel, WebAppArchitecture.Ba
  public Guid created_by {get;set;}
  public Guid updated_by {get;set;}
 }
-public sealed class EventTypeModel : EventEntity
+public abstract class EventTreeEntity : EventEntity
 {
  public Guid? ParentId {get;set;}
+ /// <summary>Materialized path of all ancestors: /{rootId}/.../{id}/ (maintained by TreeSecuredService).</summary>
+ public string path {get;set;} = "";
+}
+public sealed class EventTypeModel : EventTreeEntity, ITreeEntityDBModel<EventTypeModel>
+{
+ Guid? ITreeEntityDBModel<EventTypeModel>.parent_id => ParentId;
+ public EventTypeModel WithPath(string newPath){path=newPath;return this;}
  public string Code {get;set;} = "";
  public string Name {get;set;} = "";
  public string? Description {get;set;}
@@ -19,10 +26,11 @@ public sealed class EventTypeModel : EventEntity
  public string? Color {get;set;}
  public string RegistrationMode {get;set;} = "inherit";
 }
-public sealed class EventModel : EventEntity
+public sealed class EventModel : EventTreeEntity, ITreeEntityDBModel<EventModel>
 {
+ Guid? ITreeEntityDBModel<EventModel>.parent_id => ParentId;
+ public EventModel WithPath(string newPath){path=newPath;return this;}
  public Guid EventTypeId {get;set;}
- public Guid? ParentId {get;set;}
  public string Name {get;set;} = "";
  public string? Description {get;set;}
  public bool IsPlannerSegment {get;set;}

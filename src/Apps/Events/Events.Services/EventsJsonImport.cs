@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using WebAppArchitecture.Base.Data;
 using WebAppArchitecture.DBLayer;
 using WebAppArchitecture.SecurityLayer;
 
@@ -98,7 +99,8 @@ public static class EventsJsonImport
                     sourceTypes.Add((id, Value(t, "name")!));
         var newTypes = sourceTypes.Where(x => !types.Contains(x.Id)).DistinctBy(x => x.Id).ToList();
         foreach (var t in newTypes) types.Add(t.Id);
-        var existing = (await db.Set<EventModel>().AsNoTracking().Select(x => x.id).ToListAsync(ct)).ToHashSet();
+        var paths = (await db.Set<EventModel>().AsNoTracking().Select(x => new { x.id, x.path }).ToListAsync(ct)).ToDictionary(x => x.id, x => x.path);
+        var existing = paths.Keys.ToHashSet();
         var existingCount = rows.Keys.Count(existing.Contains);
         var missingTypes = rows.Values.Count(x => !existing.Contains(x.Id) && !types.Contains(x.TypeId));
         var pending = rows.Values.Where(x => !existing.Contains(x.Id) && types.Contains(x.TypeId))
@@ -109,7 +111,7 @@ public static class EventsJsonImport
         foreach (var type in newTypes)
             db.Set<EventTypeModel>().Add(new EventTypeModel
             {
-                id = type.Id, Code = "legacy-" + type.Id.ToString("N"), Name = type.Name,
+                id = type.Id, path = $"/{type.Id:D}/", Code = "legacy-" + type.Id.ToString("N"), Name = type.Name,
                 Abbreviation = type.Name.Length <= 12 ? type.Name : null,
                 RegistrationMode = "inherit", rbacobject_id = scope,
                 created_by = actor, updated_by = actor
@@ -123,9 +125,11 @@ public static class EventsJsonImport
             var now = DateTimeOffset.UtcNow;
             foreach (var e in ready)
             {
+                var path = e.ParentId is Guid parentId ? TreePath.Child(paths[parentId], e.Id) : TreePath.Root(e.Id);
+                paths[e.Id] = path;
                 db.Set<EventModel>().Add(new EventModel
                 {
-                    id = e.Id, EventTypeId = e.TypeId, ParentId = e.ParentId, Name = e.Name,
+                    id = e.Id, path = path, EventTypeId = e.TypeId, ParentId = e.ParentId, Name = e.Name,
                     Description = e.Description, StartsAt = e.Start.ToUniversalTime(), EndsAt = e.End.ToUniversalTime(),
                     rbacobject_id = scope, created_by = actor, updated_by = actor,
                     created_at = now, updated_at = now

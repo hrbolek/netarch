@@ -67,6 +67,19 @@ public sealed class EventsDatabaseHostedService(
         CREATE INDEX IF NOT EXISTS "IX_events_IsPlannerSegment" ON events("IsPlannerSegment");
         CREATE INDEX IF NOT EXISTS "IX_events_StartsAt_EndsAt" ON events("StartsAt", "EndsAt");
 
+        ALTER TABLE event_types ADD COLUMN IF NOT EXISTS path text NOT NULL DEFAULT '';
+        ALTER TABLE events ADD COLUMN IF NOT EXISTS path text NOT NULL DEFAULT '';
+        CREATE INDEX IF NOT EXISTS "IX_event_types_path" ON event_types(path text_pattern_ops);
+        CREATE INDEX IF NOT EXISTS "IX_events_path" ON events(path text_pattern_ops);
+        WITH RECURSIVE t AS (
+          SELECT id, '/' || id::text || '/' AS p FROM event_types WHERE "ParentId" IS NULL
+          UNION ALL SELECT c.id, t.p || c.id::text || '/' FROM event_types c JOIN t ON c."ParentId" = t.id)
+        UPDATE event_types e SET path = t.p FROM t WHERE e.id = t.id AND e.path = '';
+        WITH RECURSIVE t AS (
+          SELECT id, '/' || id::text || '/' AS p FROM events WHERE "ParentId" IS NULL
+          UNION ALL SELECT c.id, t.p || c.id::text || '/' FROM events c JOIN t ON c."ParentId" = t.id)
+        UPDATE events e SET path = t.p FROM t WHERE e.id = t.id AND e.path = '';
+
         CREATE TABLE IF NOT EXISTS event_registration_policies (
           id uuid PRIMARY KEY, rbacobject_id uuid NOT NULL,
           created_at timestamp with time zone NOT NULL, updated_at timestamp with time zone NOT NULL,

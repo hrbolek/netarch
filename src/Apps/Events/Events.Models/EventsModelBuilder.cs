@@ -4,8 +4,8 @@ public static class EventsModelBuilder
 {
  public static void ConfigureEvents(this ModelBuilder b)
  {
-  b.Entity<EventTypeModel>(e=>{e.ToTable("event_types");e.HasKey(x=>x.id);e.HasIndex(x=>x.Code).IsUnique();e.HasOne<EventTypeModel>().WithMany().HasForeignKey(x=>x.ParentId).OnDelete(DeleteBehavior.Restrict);});
-  b.Entity<EventModel>(e=>{e.ToTable("events");e.HasKey(x=>x.id);e.HasIndex(x=>x.ParentId);e.HasIndex(x=>x.IsPlannerSegment);e.HasIndex(x=>new{x.StartsAt,x.EndsAt});e.HasOne<EventModel>().WithMany().HasForeignKey(x=>x.ParentId).OnDelete(DeleteBehavior.Restrict);e.HasOne<EventTypeModel>().WithMany().HasForeignKey(x=>x.EventTypeId).OnDelete(DeleteBehavior.Restrict);});
+  b.Entity<EventTypeModel>(e=>{e.ToTable("event_types");e.Property(x=>x.path).IsRequired();e.HasIndex(x=>x.path);e.HasKey(x=>x.id);e.HasIndex(x=>x.Code).IsUnique();e.HasOne<EventTypeModel>().WithMany().HasForeignKey(x=>x.ParentId).OnDelete(DeleteBehavior.Restrict);});
+  b.Entity<EventModel>(e=>{e.ToTable("events");e.Property(x=>x.path).IsRequired();e.HasIndex(x=>x.path);e.HasKey(x=>x.id);e.HasIndex(x=>x.ParentId);e.HasIndex(x=>x.IsPlannerSegment);e.HasIndex(x=>new{x.StartsAt,x.EndsAt});e.HasOne<EventModel>().WithMany().HasForeignKey(x=>x.ParentId).OnDelete(DeleteBehavior.Restrict);e.HasOne<EventTypeModel>().WithMany().HasForeignKey(x=>x.EventTypeId).OnDelete(DeleteBehavior.Restrict);});
   b.Entity<EventRegistrationPolicyModel>(e=>{e.ToTable("event_registration_policies");e.HasKey(x=>x.id);e.HasIndex(x=>x.EventId).IsUnique();e.HasOne<EventModel>().WithMany().HasForeignKey(x=>x.EventId).OnDelete(DeleteBehavior.Cascade);});
   b.Entity<EventParticipationSourceModel>(e=>{e.ToTable("event_participation_sources");e.HasKey(x=>x.id);e.HasIndex(x=>x.Code).IsUnique();});
   b.Entity<EventParticipantStatusModel>(e=>{e.ToTable("event_participant_statuses");e.HasKey(x=>x.id);e.HasIndex(x=>x.Code).IsUnique();});

@@ -18,8 +18,11 @@ public sealed record GroupModel(
     DateTimeOffset updated_at,
     Guid created_by,
     Guid updated_by
-) : ISecuredEntityDBModel, IEntityWithTree
+) : ITreeEntityDBModel<GroupModel>
 {
+    Guid? ITreeEntityDBModel<GroupModel>.parent_id => master_group_id;
+    GroupModel ITreeEntityDBModel<GroupModel>.WithPath(string newPath) => this with { path = newPath };
+
     /// <summary>False if the organisational group is retired; historical RBAC rows stay intact.</summary>
     public bool valid { get; init; } = true;
 

@@ -32,6 +32,7 @@ public static class EventTypeImport
             db.Set<EventTypeModel>().Add(new EventTypeModel
             {
                 id = definition.Id,
+                path = $"/{definition.Id:D}/",
                 Code = definition.Code,
                 Name = definition.Name,
                 Abbreviation = definition.Abbreviation,
