@@ -14,100 +14,124 @@ namespace WebAppArchitecture.Events;
 /// <summary>HTTP endpoint registration only; retains legacy route contracts and adds OpenAPI operation metadata.</summary>
 public static class EventsEndpointExtensions
 {
-    public static void MapRoutes(IEndpointRouteBuilder endpoints, string prefix, bool ui)
-    {
-        var r = endpoints.MapGroup("/" + prefix.Trim('/')).WithTags("Events");
-        if (ui)
-        {
-            r.MapGet("/events-assets/{file}", (string file) =>
-            {
-                if (file != "academic-planner.css" && file != "academic-planner.js") return (IResult)Results.NotFound();
-                var asm = typeof(EventsEndpointExtensions).Assembly;
-                var name = asm.GetManifestResourceNames().FirstOrDefault(x => x.EndsWith("events_assets_" + file.Replace('.', '_'), StringComparison.OrdinalIgnoreCase)
-                || x.EndsWith("events_assets." + file, StringComparison.OrdinalIgnoreCase)
-                || x.EndsWith("events-assets." + file, StringComparison.OrdinalIgnoreCase));
-                if (name is null) return (IResult)Results.NotFound();
-                using var stream = asm.GetManifestResourceStream(name);
-                if (stream is null) return (IResult)Results.NotFound();
-                using var reader = new StreamReader(stream);
-                return (IResult)Results.Content(reader.ReadToEnd(), file.EndsWith(".css") ? "text/css" : "text/javascript");
-            }).ExcludeFromDescription();
-        }
+    /// <summary>JSON-only endpoints (no Razor pages or UI assets).</summary>
+    public static void MapApi(IEndpointRouteBuilder endpoints, string prefix) =>
+        MapApiRoutes(Group(endpoints, prefix), htmlNegotiation: false);
 
-        if (ui)
+    /// <summary>Razor pages and UI assets together with the API routes they build on.</summary>
+    public static void MapUi(IEndpointRouteBuilder endpoints, string prefix)
+    {
+        var r = Group(endpoints, prefix);
+        MapUiRoutes(r);
+        MapApiRoutes(r, htmlNegotiation: true);
+    }
+
+    private static RouteGroupBuilder Group(IEndpointRouteBuilder endpoints, string prefix) =>
+        endpoints.MapGroup("/" + prefix.Trim('/')).WithTags("Events");
+
+    private static void MapUiRoutes(RouteGroupBuilder r)
+    {
+        r.MapGet("/events-assets/{file}", (string file) =>
         {
-            r.MapGet("/EventTypeResponse/list", async (HttpContext http, ICurrentActorProvider actors, EventService svc, string? where, int? take, CancellationToken ct) =>
-            {
-                var actor = actors.TryGetActorUserId(http);
-                if (actor is null) return (object)Results.Unauthorized();
-                var visible = new List<EventTypeModel>();
-                foreach (var item in await svc.TypesAsync(ct))
-                    if (await svc.CanTypeAsync(actor.Value, item, "read", ct)) visible.Add(item);
-                return (object)EventLookupFilter.Apply(visible, where, take, x => x.Name + " " + x.Code);
-            }).ApplyViewModel<EventTypeListPage, List<EventTypeModel>>().WithTags("Events").WithName("EventTypeListPage").WithDescription("Lists event types available for read to the acting user; supports JSON and HTML representations for lookup and administration.");
-            r.MapGet("/EventResponse/detail/{id:guid}", async (Guid id, HttpContext http, ICurrentActorProvider actors, EventService svc, CancellationToken ct) =>
-            {
-                var actor = actors.TryGetActorUserId(http);
-                if (actor is null) return (object)Results.Unauthorized();
-                var item = await svc.FindAsync(id, ct);
-                if (item is null) return (object)Results.NotFound();
-                if (!await svc.CanAsync(actor.Value, item, "read", ct)) return (object)Results.Forbid();
-                var children = new List<EventModel>();
-                foreach (var child in await svc.ChildrenAsync(id, ct))
-                    if (await svc.CanAsync(actor.Value, child, "read", ct)) children.Add(child);
-                return (object)new EventDetailModel(item, children, await svc.CanAsync(actor.Value, item, "update", ct), await svc.CanAsync(actor.Value, item, "delete", ct));
-            }).ApplyViewModel<EventDetailPage, EventDetailModel>().WithTags("Events").WithName("EventDetail").WithDescription("Returns Event resource via /EventResponse/detail/{id:guid}. Requires a signed-in actor; secured operations enforce RBAC. Uses the canonical Events domain contract.");
-            r.MapGet("/EventResponse/edit/{id:guid}", async (Guid id, HttpContext http, ICurrentActorProvider actors, CoreDbContext db, EventService svc, SecurityService security, CancellationToken ct) =>
-            {
-                var actor = actors.TryGetActorUserId(http);
-                if (actor is null) return (object)Results.Unauthorized();
-                var item = await svc.FindAsync(id, ct);
-                if (item is null) return (object)Results.NotFound();
-                if (!await svc.CanAsync(actor.Value, item, "update", ct)) return (object)Results.Forbid();
-                return (object)await EventForms.LoadAsync(actor.Value, db, svc, security, id, ct);
-            }).ApplyViewModel<EventEditPage, EventFormsModel>().WithTags("Events").WithName("EventEdit").WithDescription("Returns Event resource via /EventResponse/edit/{id:guid}. Requires a signed-in actor; secured operations enforce RBAC. Uses the canonical Events domain contract.");
-            r.MapGet("/EventTypeResponse/edit/{id:guid}", async (Guid id, HttpContext http, ICurrentActorProvider actors, CoreDbContext db, EventService svc, SecurityService security, CancellationToken ct) =>
-            {
-                var actor = actors.TryGetActorUserId(http);
-                if (actor is null) return (object)Results.Unauthorized();
-                var type = (await svc.TypesAsync(ct)).FirstOrDefault(x => x.id == id);
-                if (type is null) return (object)Results.NotFound();
-                if (!await svc.CanTypeAsync(actor.Value, type, "update", ct)) return (object)Results.Forbid();
-                return (object)new EventTypeEditModel(type, await EventForms.LoadAsync(actor.Value, db, svc, security, null, ct));
-            }).ApplyViewModel<EventTypeEditPage, EventTypeEditModel>().WithTags("Events").WithName("EventTypeEdit").WithDescription("Returns EventType resource via /EventTypeResponse/edit/{id:guid}. Requires a signed-in actor; secured operations enforce RBAC. Uses the canonical Events domain contract.");
-        }
-        if (ui)
+            if (file != "academic-planner.css" && file != "academic-planner.js") return (IResult)Results.NotFound();
+            var asm = typeof(EventsEndpointExtensions).Assembly;
+            var name = asm.GetManifestResourceNames().FirstOrDefault(x => x.EndsWith("events_assets_" + file.Replace('.', '_'), StringComparison.OrdinalIgnoreCase)
+            || x.EndsWith("events_assets." + file, StringComparison.OrdinalIgnoreCase)
+            || x.EndsWith("events-assets." + file, StringComparison.OrdinalIgnoreCase));
+            if (name is null) return (IResult)Results.NotFound();
+            using var stream = asm.GetManifestResourceStream(name);
+            if (stream is null) return (IResult)Results.NotFound();
+            using var reader = new StreamReader(stream);
+            return (IResult)Results.Content(reader.ReadToEnd(), file.EndsWith(".css") ? "text/css" : "text/javascript");
+        }).ExcludeFromDescription();
+        r.MapGet("/EventTypeResponse/list", async (HttpContext http, ICurrentActorProvider actors, EventService svc, string? where, int? take, CancellationToken ct) =>
         {
-            r.MapGet("/EventResponse/new", async (HttpContext http, ICurrentActorProvider actors, CoreDbContext db, EventService svc, SecurityService security, CancellationToken ct) =>
-            {
-                var actor = actors.TryGetActorUserId(http);
-                if (actor is null) return (object)Results.Unauthorized();
-                return (object)await EventForms.LoadAsync(actor.Value, db, svc, security, null, ct);
-            }).ApplyViewModel<EventCreatePage, EventFormsModel>().WithTags("Events").WithName("EventNew").WithDescription("Returns Event resource via /EventResponse/new. Requires a signed-in actor; secured operations enforce RBAC. Uses the canonical Events domain contract.");
-            r.MapGet("/EventResponse/admin", async (HttpContext http, ICurrentActorProvider actors, CoreDbContext db, EventService svc, SecurityService security, CancellationToken ct) =>
-            {
-                var actor = actors.TryGetActorUserId(http);
-                if (actor is null) return (object)Results.Unauthorized();
-                return (object)await EventForms.LoadAsync(actor.Value, db, svc, security, null, ct);
-            }).ApplyViewModel<EventAdminPage, EventFormsModel>().WithTags("Events").WithName("EventAdmin").WithDescription("Returns Event resource via /EventResponse/admin. Requires a signed-in actor; secured operations enforce RBAC. Uses the canonical Events domain contract.");
-            r.MapGet("/EventTypeResponse/new", async (HttpContext http, ICurrentActorProvider actors, CoreDbContext db, EventService svc, SecurityService security, CancellationToken ct) =>
-            {
-                var actor = actors.TryGetActorUserId(http);
-                if (actor is null) return (object)Results.Unauthorized();
-                return (object)await EventForms.LoadAsync(actor.Value, db, svc, security, null, ct);
-            }).ApplyViewModel<EventTypeCreatePage, EventFormsModel>().WithTags("Events").WithName("EventTypeNew").WithDescription("Returns EventType resource via /EventTypeResponse/new. Requires a signed-in actor; secured operations enforce RBAC. Uses the canonical Events domain contract.");
-        }
-        if (ui)
-            r.MapGet("/EventResponse/list", async (HttpContext http, ICurrentActorProvider actors, EventService svc, string? where, int? take, CancellationToken ct) =>
-            {
-                var actor = actors.TryGetActorUserId(http);
-                if (actor is null) return (object)Results.Unauthorized();
-                var visible = new List<EventModel>();
-                foreach (var item in await svc.ListAsync(ct))
-                    if (await svc.CanAsync(actor.Value, item, "read", ct)) visible.Add(item);
-                return (object)EventLookupFilter.Apply(visible, where, take, x => x.Name);
-            }).ApplyViewModel<EventListPage, List<EventModel>>().WithTags("Events").WithName("EventListPage").WithDescription("Lists events visible to the effective user. JSON returns the event collection; HTML renders standard cards. Read access is enforced for each event.");
-        else
+            var actor = actors.TryGetActorUserId(http);
+            if (actor is null) return (object)Results.Unauthorized();
+            var visible = new List<EventTypeModel>();
+            foreach (var item in await svc.TypesAsync(ct))
+                if (await svc.CanTypeAsync(actor.Value, item, "read", ct)) visible.Add(item);
+            return (object)EventLookupFilter.Apply(visible, where, take, x => x.Name + " " + x.Code);
+        }).ApplyViewModel<EventTypeListPage, List<EventTypeModel>>().WithTags("Events").WithName("EventTypeListPage").WithDescription("Lists event types available for read to the acting user; supports JSON and HTML representations for lookup and administration.");
+        r.MapGet("/EventResponse/detail/{id:guid}", async (Guid id, HttpContext http, ICurrentActorProvider actors, EventService svc, CancellationToken ct) =>
+        {
+            var actor = actors.TryGetActorUserId(http);
+            if (actor is null) return (object)Results.Unauthorized();
+            var item = await svc.FindAsync(id, ct);
+            if (item is null) return (object)Results.NotFound();
+            if (!await svc.CanAsync(actor.Value, item, "read", ct)) return (object)Results.Forbid();
+            var children = new List<EventModel>();
+            foreach (var child in await svc.ChildrenAsync(id, ct))
+                if (await svc.CanAsync(actor.Value, child, "read", ct)) children.Add(child);
+            return (object)new EventDetailModel(item, children, await svc.CanAsync(actor.Value, item, "update", ct), await svc.CanAsync(actor.Value, item, "delete", ct));
+        }).ApplyViewModel<EventDetailPage, EventDetailModel>().WithTags("Events").WithName("EventDetail").WithDescription("Returns Event resource via /EventResponse/detail/{id:guid}. Requires a signed-in actor; secured operations enforce RBAC. Uses the canonical Events domain contract.");
+        r.MapGet("/EventResponse/edit/{id:guid}", async (Guid id, HttpContext http, ICurrentActorProvider actors, CoreDbContext db, EventService svc, SecurityService security, CancellationToken ct) =>
+        {
+            var actor = actors.TryGetActorUserId(http);
+            if (actor is null) return (object)Results.Unauthorized();
+            var item = await svc.FindAsync(id, ct);
+            if (item is null) return (object)Results.NotFound();
+            if (!await svc.CanAsync(actor.Value, item, "update", ct)) return (object)Results.Forbid();
+            return (object)await EventForms.LoadAsync(actor.Value, db, svc, security, id, ct);
+        }).ApplyViewModel<EventEditPage, EventFormsModel>().WithTags("Events").WithName("EventEdit").WithDescription("Returns Event resource via /EventResponse/edit/{id:guid}. Requires a signed-in actor; secured operations enforce RBAC. Uses the canonical Events domain contract.");
+        r.MapGet("/EventTypeResponse/edit/{id:guid}", async (Guid id, HttpContext http, ICurrentActorProvider actors, CoreDbContext db, EventService svc, SecurityService security, CancellationToken ct) =>
+        {
+            var actor = actors.TryGetActorUserId(http);
+            if (actor is null) return (object)Results.Unauthorized();
+            var type = (await svc.TypesAsync(ct)).FirstOrDefault(x => x.id == id);
+            if (type is null) return (object)Results.NotFound();
+            if (!await svc.CanTypeAsync(actor.Value, type, "update", ct)) return (object)Results.Forbid();
+            return (object)new EventTypeEditModel(type, await EventForms.LoadAsync(actor.Value, db, svc, security, null, ct));
+        }).ApplyViewModel<EventTypeEditPage, EventTypeEditModel>().WithTags("Events").WithName("EventTypeEdit").WithDescription("Returns EventType resource via /EventTypeResponse/edit/{id:guid}. Requires a signed-in actor; secured operations enforce RBAC. Uses the canonical Events domain contract.");
+        r.MapGet("/EventResponse/new", async (HttpContext http, ICurrentActorProvider actors, CoreDbContext db, EventService svc, SecurityService security, CancellationToken ct) =>
+        {
+            var actor = actors.TryGetActorUserId(http);
+            if (actor is null) return (object)Results.Unauthorized();
+            return (object)await EventForms.LoadAsync(actor.Value, db, svc, security, null, ct);
+        }).ApplyViewModel<EventCreatePage, EventFormsModel>().WithTags("Events").WithName("EventNew").WithDescription("Returns Event resource via /EventResponse/new. Requires a signed-in actor; secured operations enforce RBAC. Uses the canonical Events domain contract.");
+        r.MapGet("/EventResponse/admin", async (HttpContext http, ICurrentActorProvider actors, CoreDbContext db, EventService svc, SecurityService security, CancellationToken ct) =>
+        {
+            var actor = actors.TryGetActorUserId(http);
+            if (actor is null) return (object)Results.Unauthorized();
+            return (object)await EventForms.LoadAsync(actor.Value, db, svc, security, null, ct);
+        }).ApplyViewModel<EventAdminPage, EventFormsModel>().WithTags("Events").WithName("EventAdmin").WithDescription("Returns Event resource via /EventResponse/admin. Requires a signed-in actor; secured operations enforce RBAC. Uses the canonical Events domain contract.");
+        r.MapGet("/EventTypeResponse/new", async (HttpContext http, ICurrentActorProvider actors, CoreDbContext db, EventService svc, SecurityService security, CancellationToken ct) =>
+        {
+            var actor = actors.TryGetActorUserId(http);
+            if (actor is null) return (object)Results.Unauthorized();
+            return (object)await EventForms.LoadAsync(actor.Value, db, svc, security, null, ct);
+        }).ApplyViewModel<EventTypeCreatePage, EventFormsModel>().WithTags("Events").WithName("EventTypeNew").WithDescription("Returns EventType resource via /EventTypeResponse/new. Requires a signed-in actor; secured operations enforce RBAC. Uses the canonical Events domain contract.");
+        r.MapGet("/EventResponse/list", async (HttpContext http, ICurrentActorProvider actors, EventService svc, string? where, int? take, CancellationToken ct) =>
+        {
+            var actor = actors.TryGetActorUserId(http);
+            if (actor is null) return (object)Results.Unauthorized();
+            var visible = new List<EventModel>();
+            foreach (var item in await svc.ListAsync(ct))
+                if (await svc.CanAsync(actor.Value, item, "read", ct)) visible.Add(item);
+            return (object)EventLookupFilter.Apply(visible, where, take, x => x.Name);
+        }).ApplyViewModel<EventListPage, List<EventModel>>().WithTags("Events").WithName("EventListPage").WithDescription("Lists events visible to the effective user. JSON returns the event collection; HTML renders standard cards. Read access is enforced for each event.");
+        r.MapGet("/EventResponse/academic-plan/editor/{id:guid}", async (Guid id, HttpContext http, ICurrentActorProvider actors, EventService svc, CoreDbContext db, CancellationToken ct) =>
+        {
+            var actor = actors.TryGetActorUserId(http);
+            if (actor is null) return (object)Results.Unauthorized();
+            var year = await svc.FindAsync(id, ct);
+            if (year is null) return (object)Results.NotFound();
+            if (!await svc.CanAsync(actor.Value, year, "read", ct)) return (object)Results.Forbid();
+            var items = await db.Set<EventModel>().AsNoTracking().Where(x => x.ParentId == id && x.IsPlannerSegment).ToListAsync(ct);
+            var visible = new List<EventModel>();
+            foreach (var item in items) if (await svc.CanAsync(actor.Value, item, "read", ct)) visible.Add(item);
+            var types = new List<EventTypeModel>();
+            foreach (var type in await svc.TypesAsync(ct)) if (await svc.CanTypeAsync(actor.Value, type, "read", ct)) types.Add(type);
+            return (object)new AcademicPlannerModel(year, visible, types, await svc.CanAsync(actor.Value, year, "update", ct));
+        }).ApplyViewModel<AcademicPlannerPage, AcademicPlannerModel>()
+          .WithName("EventAcademicPlannerEditor")
+          .WithDescription("Razor academic-year calendar: ISO week half-cells, event-type palette, accessible read-only mode and RBAC-aware save via AcademicPlanPut.");
+    }
+
+    private static void MapApiRoutes(RouteGroupBuilder r, bool htmlNegotiation)
+    {
+        var ui = htmlNegotiation;
+        if (!ui)
             r.MapGet("/EventResponse/list", async (HttpContext http, ICurrentActorProvider actors, EventService svc, string? where, int? take, CancellationToken ct) =>
             {
                 var actor = actors.TryGetActorUserId(http); if (actor is null) return Results.Unauthorized();
@@ -115,7 +139,6 @@ public static class EventsEndpointExtensions
                 foreach (var item in await svc.ListAsync(ct)) if (await svc.CanAsync(actor.Value, item, "read", ct)) visible.Add(item);
                 return Results.Ok(EventLookupFilter.Apply(visible, where, take, x => x.Name));
             }).WithTags("Events").WithName("EventListApi").WithDescription("Lists events visible to the effective user. JSON returns the event collection; HTML renders standard cards. Read access is enforced for each event.");
-
         r.MapGet("/EventResponse/vector", async (HttpContext http, ICurrentActorProvider actors, EventService svc, CancellationToken ct) =>
         {
             var actor = actors.TryGetActorUserId(http); if (actor is null) return Results.Unauthorized();
@@ -178,25 +201,6 @@ public static class EventsEndpointExtensions
             foreach (var type in await svc.TypesAsync(ct)) if (await svc.CanTypeAsync(actor.Value, type, "read", ct)) types.Add(type);
             return Results.Ok(new { root = new { root.id, root.Name }, from = first, to = last, timeZone = "Europe/Prague", events = descendants, types });
         }).WithName("EventTimetable").WithDescription("Returns Event resource via /EventResponse/timetable/{id:guid}. Requires a signed-in actor; secured operations enforce RBAC. Uses the canonical Events domain contract.");
-        if (ui)
-        {
-            r.MapGet("/EventResponse/academic-plan/editor/{id:guid}", async (Guid id, HttpContext http, ICurrentActorProvider actors, EventService svc, CoreDbContext db, CancellationToken ct) =>
-            {
-                var actor = actors.TryGetActorUserId(http);
-                if (actor is null) return (object)Results.Unauthorized();
-                var year = await svc.FindAsync(id, ct);
-                if (year is null) return (object)Results.NotFound();
-                if (!await svc.CanAsync(actor.Value, year, "read", ct)) return (object)Results.Forbid();
-                var items = await db.Set<EventModel>().AsNoTracking().Where(x => x.ParentId == id && x.IsPlannerSegment).ToListAsync(ct);
-                var visible = new List<EventModel>();
-                foreach (var item in items) if (await svc.CanAsync(actor.Value, item, "read", ct)) visible.Add(item);
-                var types = new List<EventTypeModel>();
-                foreach (var type in await svc.TypesAsync(ct)) if (await svc.CanTypeAsync(actor.Value, type, "read", ct)) types.Add(type);
-                return (object)new AcademicPlannerModel(year, visible, types, await svc.CanAsync(actor.Value, year, "update", ct));
-            }).ApplyViewModel<AcademicPlannerPage, AcademicPlannerModel>()
-              .WithName("EventAcademicPlannerEditor")
-              .WithDescription("Razor academic-year calendar: ISO week half-cells, event-type palette, accessible read-only mode and RBAC-aware save via AcademicPlanPut.");
-        }
         r.MapGet("/EventResponse/academic-plan/{id:guid}", async (Guid id, HttpContext http, ICurrentActorProvider actors, EventService svc, CoreDbContext db, CancellationToken ct) =>
         {
 

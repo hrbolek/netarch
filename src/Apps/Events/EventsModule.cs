@@ -35,8 +35,8 @@ public sealed class EventsModule : IModule
     })
    }));
  }
- public void MapAPI(IEndpointRouteBuilder endpoints,string prefix) => EventsEndpointExtensions.MapRoutes(endpoints,prefix,false);
- public void MapUI(IEndpointRouteBuilder endpoints,string prefix) => EventsEndpointExtensions.MapRoutes(endpoints,prefix,true);
+ public void MapAPI(IEndpointRouteBuilder endpoints,string prefix) => EventsEndpointExtensions.MapApi(endpoints,prefix);
+ public void MapUI(IEndpointRouteBuilder endpoints,string prefix) => EventsEndpointExtensions.MapUi(endpoints,prefix);
 
 
 }
