@@ -332,6 +332,24 @@
 </script>
 
 <script>
+// Refreshes computed display.url links from the server-side recomputation returned by each autosave.
+function dpApplyUrls(payload) {
+  for (const item of payload?.urls || []) {
+    document.querySelectorAll('[data-form-backend-kind="display-url"][data-form-node-id="' + item.id + '"]').forEach(box => {
+      const link = box.querySelector('[data-url-link]'), missing = box.querySelector('[data-url-missing]');
+      if (!link || !missing) return;
+      link.hidden = !item.url; missing.hidden = !!item.url;
+      if (item.url) { link.href = item.url; link.target = item.target; link.textContent = item.text || item.url; }
+      else { link.removeAttribute('href'); missing.title = item.error || ''; }
+    });
+  }
+}
+document.addEventListener('htmx:afterRequest', event => {
+  if (event.detail.elt?.id !== 'dp-preview-form' || !event.detail.successful) return;
+  try { dpApplyUrls(JSON.parse(event.detail.xhr.responseText)); } catch { }
+});
+// Sent by the import action (HX-Trigger) after the backend values were stored.
+document.addEventListener('dpUrls', event => dpApplyUrls(event.detail));
 window.digitalProcessesRenumber = function(root) {
   document.querySelectorAll('[data-repeat-body]').forEach(body => {
     body.querySelectorAll(':scope > [data-repeat-instance]').forEach((instance, index) => {

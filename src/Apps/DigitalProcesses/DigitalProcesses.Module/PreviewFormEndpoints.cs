@@ -35,7 +35,7 @@ internal static class PreviewFormEndpoints
           .WithDescription("Returns the JSON document of a temporary form preview, using the same reconstruction as export ($form). Preview state expires after inactivity.");
 
         endpoints.MapPost("/form-preview/values", async (
-            HttpContext http, IFormNodeService nodeService, PreviewFormInstanceStore store, ILoggerFactory logs, CancellationToken ct) =>
+            HttpContext http, IFormNodeService nodeService, PreviewFormInstanceStore store, IFormUrlTemplateRenderer urlTemplates, ILoggerFactory logs, CancellationToken ct) =>
         {
             var log = logs.CreateLogger("DigitalProcesses.FormPreview.Values");
             try
@@ -44,8 +44,12 @@ internal static class PreviewFormEndpoints
                 var (instance, version) = Identity(form);
                 log.LogInformation("Preview autosave received: instance={Instance}, version={Version}, fields={FieldCount}", instance, version, form.Count);
                 var designer = await nodeService.GetDesignerAsync(version, ct);
-                store.WithInstance(instance, version, state => { Capture(state, form, designer); return 0; });
-                return Results.NoContent();
+                var flat = store.WithInstance(instance, version, state =>
+                {
+                    Capture(state, form, designer);
+                    return BuildQualifiedValues(state.Values, designer.nodes);
+                });
+                return Results.Json(new { urls = RenderUrls(designer, flat, urlTemplates) });
             }
             catch (Exception ex) when (ex is InvalidOperationException or FormatException or KeyNotFoundException)
             {
@@ -57,7 +61,7 @@ internal static class PreviewFormEndpoints
 
         endpoints.MapPost("/form-preview/actions/{actionId:guid}", async (
             Guid actionId, HttpContext http, IFormNodeService nodeService,
-            PreviewFormInstanceStore store, IFormDataBackend backend, ILoggerFactory logs, CancellationToken ct) =>
+            PreviewFormInstanceStore store, IFormDataBackend backend, IFormUrlTemplateRenderer urlTemplates, ILoggerFactory logs, CancellationToken ct) =>
         {
             var log = logs.CreateLogger("DigitalProcesses.FormPreview.Import");
             try
@@ -176,13 +180,17 @@ internal static class PreviewFormEndpoints
                 }
                 log.LogInformation("Import field matching: action={ActionId}, scopeParent={ParentId}, incomingKeys={IncomingKeys}, matchedKeys={MatchedKeys}",
                     actionId, action.parent_id, string.Join(",", imported.Keys), string.Join(",", matching.Select(m => m.Key)));
-                store.WithInstance(instance, version, state =>
+                var updatedValues = store.WithInstance(instance, version, state =>
                 {
                     foreach (var item in matching)
                         state.Values[StateKey(item.Node, item.Key, action.parent_id, designer.nodes)] = item.Value?.DeepClone();
                     state.Revision++;
-                    return 0;
+                    return BuildQualifiedValues(state.Values, designer.nodes);
                 });
+                // The swapped fragment contains only the import section; computed links are refreshed client-side.
+                // Default JSON encoding escapes non-ASCII characters, which keeps the header value valid.
+                http.Response.Headers["HX-Trigger"] = System.Text.Json.JsonSerializer.Serialize(
+                    new Dictionary<string, object> { ["dpUrls"] = new { urls = RenderUrls(designer, updatedValues, urlTemplates) } });
                 log.LogInformation("Import saved: action={ActionId}, returnedFields={ReturnedFields}, mappedFields={MappedFields}", actionId, imported.Count, matching.Count);
                 return Results.Content(Render(action.id, action.label ?? "Import dat", imported, matching, designer, instance, version, response, action.parent_id), "text/html; charset=utf-8");
             }
@@ -194,6 +202,37 @@ internal static class PreviewFormEndpoints
             }
         }).WithTags("DigitalProcesses", "Preview")
           .WithDescription("Loads the persisted import action, captures current form fields, resolves variables on the server, executes the configured backend and returns a replacement HTML fragment.");
+    }
+
+    // Recomputes display.url nodes from the current values so the client can refresh links after each autosave.
+    private static List<object> RenderUrls(FormDesignerResponse designer, IReadOnlyDictionary<string, JsonNode?> flat,
+        IFormUrlTemplateRenderer urlTemplates)
+    {
+        var result = new List<object>();
+        var context = new JsonObject { ["form"] = BuildStructuredJson(flat) };
+        foreach (var node in designer.nodes)
+        {
+            if (designer.node_types.FirstOrDefault(t => t.id == node.node_type_id)?.renderer_key != "display.url") continue;
+            string? url = null, text = null, error;
+            var target = "_blank";
+            try
+            {
+                var configuration = JsonNode.Parse(node.configuration_json ?? "{}") as JsonObject;
+                var template = configuration?["template"]?.ToString();
+                var rendered = string.IsNullOrWhiteSpace(template)
+                    ? new FormUrlResult(null, "Missing display.url template configuration.")
+                    : urlTemplates.Render(template, template.Contains("{$", StringComparison.Ordinal) ? context : new JsonObject());
+                url = rendered.Url; error = rendered.Error;
+                text = configuration?["label"]?.ToString() ?? configuration?["text"]?.ToString();
+                if (configuration?["target"]?.ToString() == "_self") target = "_self";
+            }
+            catch (Exception ex) when (ex is System.Text.Json.JsonException or InvalidOperationException)
+            {
+                error = "Unable to evaluate URL; inspect the node configuration and form paths.";
+            }
+            result.Add(new { id = node.id, url, text, target, error });
+        }
+        return result;
     }
 
     private static (Guid Instance, Guid Version) Identity(IFormCollection form)

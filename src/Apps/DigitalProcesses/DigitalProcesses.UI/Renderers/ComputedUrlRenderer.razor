@@ -6,14 +6,8 @@
 
 <div class="mb-3" data-form-node-id="@Definition.id" data-form-backend-kind="display-url">
     <span class="form-label d-block">@(Definition.label ?? Definition.key)</span>
-    @if (_url is not null)
-    {
-        <a href="@_url" target="@_target" rel="noopener noreferrer">@(_text ?? _url)</a>
-    }
-    else
-    {
-        <span class="text-muted small" title="@_error">Odkaz není k dispozici.</span>
-    }
+    <a data-url-link href="@_url" target="@_target" rel="noopener noreferrer" hidden="@(_url is null)">@(_text ?? _url)</a>
+    <span data-url-missing class="text-muted small" title="@_error" hidden="@(_url is not null)">Odkaz není k dispozici.</span>
     @if (!string.IsNullOrWhiteSpace(Definition.description))
     {
         <div class="form-text">@Definition.description</div>
