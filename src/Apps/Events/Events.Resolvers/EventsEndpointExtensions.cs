@@ -24,6 +24,7 @@ public static class EventsEndpointExtensions
                 if (file != "academic-planner.css" && file != "academic-planner.js") return (IResult)Results.NotFound();
                 var asm = typeof(EventsEndpointExtensions).Assembly;
                 var name = asm.GetManifestResourceNames().FirstOrDefault(x => x.EndsWith("events_assets_" + file.Replace('.', '_'), StringComparison.OrdinalIgnoreCase)
+                || x.EndsWith("events_assets." + file, StringComparison.OrdinalIgnoreCase)
                 || x.EndsWith("events-assets." + file, StringComparison.OrdinalIgnoreCase));
                 if (name is null) return (IResult)Results.NotFound();
                 using var stream = asm.GetManifestResourceStream(name);

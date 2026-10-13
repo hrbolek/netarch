@@ -72,7 +72,7 @@
         cell.style.setProperty('--fill',clr);
         cell.querySelector('span').textContent=t?.abbr||'';
         cell.querySelector('span').style.color=colorText(clr);
-        cell.title=(t?.name||'Bez události')+' — '+cell.dataset.start+' až '+cell.dataset.end;
+        cell.setAttribute('aria-description',(t?.name||'Bez události')+' — '+cell.dataset.start+' až '+cell.dataset.end);
       }
       const diff=changes(),count=diff.added.length+diff.updated.length+diff.deleted.length;
       if(counter)counter.textContent=count?`${diff.added.length} přidáno, ${diff.updated.length} změněno, ${diff.deleted.length} odstraněno`:'Bez neuložených změn';
