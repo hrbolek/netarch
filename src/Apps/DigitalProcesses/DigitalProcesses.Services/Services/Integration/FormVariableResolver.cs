@@ -38,7 +38,9 @@ public static class FormVariableResolver
         {
             if (expression.StartsWith("$$", StringComparison.Ordinal))
                 return JsonValue.Create(expression[1..]);
-            if (expression == "$form") return BuildFormJson(snapshot.Values);
+            if (expression is "$.form" or "$form") return BuildFormJson(snapshot.Values);
+            if (expression.StartsWith("$.form.", StringComparison.Ordinal))
+                return ResolveFormExpression(snapshot.Values, expression[7..], expression);
             if (expression.StartsWith("$form.", StringComparison.Ordinal))
                 return ResolveFormExpression(snapshot.Values, expression[6..], expression);
             if (expression.StartsWith("$process.", StringComparison.Ordinal))

@@ -1,0 +1,31 @@
+@using System.Text.Json.Nodes
+
+<td data-table-cell>
+    @if (Editable)
+    {
+        <button type="button" class="btn btn-link text-start text-decoration-none w-100 text-body"
+                data-cell-display aria-label="@($"Edit {Label}")">@DisplayValue</button>
+        <div data-cell-editor hidden>@ChildContent</div>
+    }
+    else
+    {
+        @ChildContent
+    }
+</td>
+
+@code {
+    [Parameter] public bool Editable { get; set; }
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? ValueJson { get; set; }
+    [Parameter, EditorRequired] public RenderFragment ChildContent { get; set; } = default!;
+    private string DisplayValue
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(ValueJson)) return "\u2014";
+            var value = JsonNode.Parse(ValueJson);
+            return value is JsonObject selected ? selected["label"]?.ToString() ?? "\u2014"
+                : value?.ToString() is { Length: > 0 } text ? text : "\u2014";
+        }
+    }
+}

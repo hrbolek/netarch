@@ -1,7 +1,14 @@
 @namespace WebAppArchitecture.Events
-@using Microsoft.AspNetCore.Components
-@using WebAppArchitecture.Base.UI.Components
-<MediumCard TModel="EventTypeModel" Model="@Model" HeaderText="@Model.Name">
- <ChildContent Context="item"><span class="text-muted">@item.Code · @item.Abbreviation</span><div><a href="@($"/events/EventTypeResponse/edit/{item.id}")">Upravit typ</a></div></ChildContent>
+
+<MediumCard TModel="EventTypeModel" Model="@Model" HeaderText="Typ události">
+    <ChildContent Context="item">
+        <Attribute TModel="EventTypeModel" Item="@item" Label="Název" AttributeName="Name" />
+        <Attribute TModel="EventTypeModel" Item="@item" Label="Kód" AttributeName="Code" />
+        <Attribute TModel="EventTypeModel" Item="@item" Label="Zkratka" AttributeName="Abbreviation" />
+        <div class="mt-2"><a href="@($"/events/EventTypeResponse/edit/{item.id}")">Upravit typ</a></div>
+    </ChildContent>
 </MediumCard>
-@code { [Parameter,EditorRequired] public EventTypeModel Model {get;set;}=default!; }
+
+@code {
+    [Parameter, EditorRequired] public EventTypeModel Model { get; set; } = default!;
+}

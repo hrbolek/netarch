@@ -16,6 +16,16 @@ public sealed class ProcessDefinitionService
     private readonly IDBLayer _db;
     private readonly ISecurityProjectionService _securityProjection;
 
+    public async Task<ProcessDefinitionDetailResponse> GetDetailAsync(Guid id, CancellationToken ct = default)
+    {
+        var definition = await Security.GetByIdAsync<ProcessDefinitionModel>(id, SecurityOperations.Read, ct)
+            ?? throw new KeyNotFoundException("Definition not found.");
+        var versions = Security.Query<ProcessDefinitionVersionModel>(SecurityOperations.Read)
+            .Where(v => v.process_definition_id == id).OrderByDescending(v => v.version)
+            .Select(ProcessDefinitionVersionResponse.Projection).ToArray();
+        return new(ProcessDefinitionResponse.FromModel(definition), versions);
+    }
+
     public ProcessDefinitionService(ISecurityLayer security, ISecurityProjectionService securityProjection, IDBLayer db)
         : base(security, db)
     {
@@ -63,6 +73,8 @@ public sealed class ProcessDefinitionService
             await _db.StageCreateAsync(new WorkflowDefinitionModel(workflowId, request.name, request.description, workflowId, now, now, actor, actor), token);
             await _db.StageCreateAsync(new FormVersionModel(formVersionId, formId, 1, false, null, formId, now, now, actor, actor), token);
             await _db.StageCreateAsync(new WorkflowVersionModel(workflowVersionId, workflowId, 1, false, null, workflowId, now, now, actor, actor), token);
+            await DefaultVersionContent.StageFormAsync(_db, formVersionId, formId, now, actor, token);
+            await DefaultVersionContent.StageWorkflowAsync(_db, workflowVersionId, workflowId, now, actor, token);
             await _db.StageCreateAsync(new ProcessDefinitionVersionModel(
                 Guid.NewGuid(), id, formVersionId, workflowVersionId, 1, false, null,
                 id, now, now, actor, actor), token);

@@ -9,5 +9,7 @@
     <ProjectReference Include="../../../src/Apps/Host/Host.csproj" />
     <Compile Include="../../Shared/IsolatedHost.cs" Link="Shared/IsolatedHost.cs" />
     <Compile Include="../../Shared/PostgresTestDatabase.cs" Link="Shared/PostgresTestDatabase.cs" />
+    <Content Include="../../../Workflow.Material.json;../../../Workflow.ZSC.json" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../Form.Material.json;../../../Form.ZSC.json" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

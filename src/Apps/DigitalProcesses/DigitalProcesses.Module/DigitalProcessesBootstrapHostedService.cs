@@ -30,7 +30,9 @@ public sealed class DigitalProcessesBootstrapHostedService(IServiceScopeFactory 
             new FormNodeTypeModel(DigitalProcessWellKnown.FormNodeTypes.Document, null, "Create document and import", "action.document", false, false, false, null, scopeId, now, now, actor, actor),
             new FormNodeTypeModel(DigitalProcessWellKnown.FormNodeTypes.Export, null, "Export dat (GraphQL)", "action.export", false, false, false, null, scopeId, now, now, actor, actor),
             new FormNodeTypeModel(DigitalProcessWellKnown.FormNodeTypes.DisplayUrl, null, "Computed link", "display.url", false, false, false, null, scopeId, now, now, actor, actor),
-            new FormNodeTypeModel(DigitalProcessWellKnown.FormNodeTypes.Select, null, "Select", "input.select", false, true, true, null, scopeId, now, now, actor, actor)
+            new FormNodeTypeModel(DigitalProcessWellKnown.FormNodeTypes.Select, null, "Select", "input.select", false, true, true, null, scopeId, now, now, actor, actor),
+            new FormNodeTypeModel(DigitalProcessWellKnown.FormNodeTypes.GraphqlSearch, null, "GraphQL search", "input.graphql-search", false, true, false, null, scopeId, now, now, actor, actor),
+            new FormNodeTypeModel(DigitalProcessWellKnown.FormNodeTypes.Time, null, "Time", "input.time", false, true, true, null, scopeId, now, now, actor, actor)
         };
 
         var ids = seeds.Select(x => x.id).ToArray();
@@ -38,6 +40,27 @@ public sealed class DigitalProcessesBootstrapHostedService(IServiceScopeFactory 
         var existingSet = existing.ToHashSet();
         foreach (var seed in seeds.Where(x => !existingSet.Contains(x.id)))
             db.Set<FormNodeTypeModel>().Add(seed);
+
+        var initiatorRoleTypeExists = await db.Set<RoleTypeModel>()
+            .AnyAsync(x => x.id == DigitalProcessWellKnown.InitiatorRoleTypeId, cancellationToken);
+        if (initiatorRoleTypeExists)
+        {
+            var updateOperationExists = await db.Set<OperationModel>()
+                .AnyAsync(x => x.id == RbacOperationIds.Update, cancellationToken);
+            if (!updateOperationExists)
+                throw new InvalidOperationException("The well-known Update RBAC operation must be seeded before DigitalProcesses.");
+
+            var initiatorCanUpdate = await db.Set<RoleTypeOperationModel>().AnyAsync(
+                x => x.role_type_id == DigitalProcessWellKnown.InitiatorRoleTypeId
+                    && x.operation_id == RbacOperationIds.Update,
+                cancellationToken);
+            if (!initiatorCanUpdate)
+            {
+                db.Set<RoleTypeOperationModel>().Add(new RoleTypeOperationModel(
+                    Guid.NewGuid(), DigitalProcessWellKnown.InitiatorRoleTypeId, RbacOperationIds.Update));
+            }
+        }
+
         await db.SaveChangesAsync(cancellationToken);
     }
 

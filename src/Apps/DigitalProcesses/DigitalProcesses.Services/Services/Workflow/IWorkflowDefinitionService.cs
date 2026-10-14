@@ -13,4 +13,5 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 public interface IWorkflowDefinitionService : IBaseService<WorkflowDefinitionModel>
 {
     Task<WorkflowDefinitionResponse> CreateTypedAsync(CreateWorkflowDefinitionRequest request, CancellationToken ct = default);
+    Task<WorkflowDefinitionDetailResponse> GetDetailAsync(Guid id, CancellationToken ct = default);
 }

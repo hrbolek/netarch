@@ -43,7 +43,17 @@ public static class SubmissionNodeResolvers
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: SetValueAsync, GetSubtreeAsync; pořadí a parametry viz implementace.
     /// </summary>
-    public static Task<SubmissionNodeResponse> SetValue(Guid id, SetSubmissionNodeValueRequest request, ISubmissionNodeService service, CancellationToken ct) => service.SetValueAsync(id, request, ct);
+    public static async Task<IResult> SetValue(Guid id, SetSubmissionNodeValueRequest request, ISubmissionNodeService service, CancellationToken ct)
+    {
+        try
+        {
+            return Results.Ok(await service.SetValueAsync(id, request, ct));
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Results.Forbid();
+        }
+    }
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: GetSubtreeAsync; pořadí a parametry viz implementace.
     /// </summary>
@@ -83,7 +93,6 @@ public static class SubmissionNodeResolvers
                 Creates a child runtime SubmissionNode below parent_id. Create permission is evaluated on the parent SubmissionNode RBAC scope. The service enforces submission ownership, form-tree structure and occurrence limits; rbacobject_id cannot be supplied by the client.
                 """);
         group.MapPut("/value/{id:guid}", SubmissionNodeResolvers.SetValue)
-            .ApplyJsonModel<DigitalProcessModelPage<SubmissionNodeResponse>,SubmissionNodeResponse>()
             .WithDescription("""
                 Stores a value in an editable submission node; archived submissions remain immutable.
                 """);

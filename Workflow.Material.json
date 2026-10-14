@@ -1,0 +1,53 @@
+{
+  "name": "Pořízení materiálu a služeb",
+  "source": "vzor.1.html",
+  "description": "Rekonstrukce procesní mapy a historie jednoho požadavku; nejde o úplnou specifikaci původního systému.",
+  "limitations": [
+    "Stavy jsou převzaty z procesní mapy. Akce jsou převzaty z historie, pokud jsou dostupné.",
+    "Hrany mezi následnými stavy jsou rekonstruovány z pořadí mapy a historie, nikoli z původních definic přechodů.",
+    "Cíl vrácení od zakázkáře je odhadnut jako žadatel podle následného opakování schvalování v historii.",
+    "Akce pro doručení a vyzvednutí nejsou v historii doloženy; jejich názvy jsou návrh.",
+    "Stornováno je doložený stav a dialog, ale zdrojové stavy storna nejsou známy; přechody do něj nejsou vymyšleny.",
+    "Svislé oddělovače mapy nejsou důkazem paralelního workflow; soubor modeluje jednu sekvenční cestu.",
+    "Pravidla přístupu, role, podmínky větvení a externí akce nelze z HTML rekonstruovat a nejsou nakonfigurovány."
+  ],
+  "states": [
+    { "key": "draft", "legacy_state_id": 1, "name": "Řešitel / žadatel", "is_initial": true, "is_terminal": false, "position": 0 },
+    { "key": "submitted", "legacy_state_id": 2, "name": "Odpovědný řešitel", "is_initial": false, "is_terminal": false, "position": 1 },
+    { "key": "authorized_person", "legacy_state_id": 4, "name": "Pověřená osoba", "is_initial": false, "is_terminal": false, "position": 2 },
+    { "key": "vice_dean", "legacy_state_id": 7, "name": "Proděkan/Ředitel ústavu, centra", "is_initial": false, "is_terminal": false, "position": 3 },
+    { "key": "asset_department_head", "legacy_state_id": 9, "name": "Vedoucí oddělení majetku", "is_initial": false, "is_terminal": false, "position": 4 },
+    { "key": "asset_manager", "legacy_state_id": 10, "name": "Majetkový manažer", "is_initial": false, "is_terminal": false, "position": 5 },
+    { "key": "budget_officer", "legacy_state_id": 15, "name": "Rozpočtář", "is_initial": false, "is_terminal": false, "position": 6 },
+    { "key": "procurement_head", "legacy_state_id": 11, "name": "Vedoucí OdVZ", "is_initial": false, "is_terminal": false, "position": 7 },
+    { "key": "procurement_officer", "legacy_state_id": 12, "name": "Zakázkář", "is_initial": false, "is_terminal": false, "position": 8 },
+    { "key": "deputy_bursar", "legacy_state_id": 29, "name": "Zástupce kvestora", "is_initial": false, "is_terminal": false, "position": 9 },
+    { "key": "asset_manager_second", "legacy_state_id": 44, "name": "Majetkový manažer 2", "is_initial": false, "is_terminal": false, "position": 10 },
+    { "key": "procurement_officer_second", "legacy_state_id": 45, "name": "Zakázkář 2", "is_initial": false, "is_terminal": false, "position": 11 },
+    { "key": "tender_announcement", "legacy_state_id": 19, "name": "Vyhlášení veřejné zakázky a komise", "is_initial": false, "is_terminal": false, "position": 12 },
+    { "key": "supplier_contract", "legacy_state_id": 20, "name": "Uzavření smlouvy s dodavatelem", "is_initial": false, "is_terminal": false, "position": 13 },
+    { "key": "delivered", "legacy_state_id": 23, "name": "Zboží/služba doručeno", "is_initial": false, "is_terminal": false, "position": 14 },
+    { "key": "ready_for_pickup", "legacy_state_id": 24, "name": "Připraveno k vyzvednutí", "is_initial": false, "is_terminal": false, "position": 15 },
+    { "key": "completed", "legacy_state_id": 27, "name": "Ukončeno", "is_initial": false, "is_terminal": true, "position": 16 },
+    { "key": "cancelled", "legacy_state_id": 28, "name": "Stornováno", "is_initial": false, "is_terminal": true, "position": 17 }
+  ],
+  "transitions": [
+    { "key": "submit", "source_key": "draft", "target_key": "submitted", "name": "Dokončeno", "note_required": false, "condition_query": null, "action_query": null, "evidence": "Akce v historii; návaznost z mapy." },
+    { "key": "approve_responsible", "source_key": "submitted", "target_key": "authorized_person", "name": "Schváleno", "note_required": false, "condition_query": null, "action_query": null, "evidence": "Akce v historii; návaznost z mapy." },
+    { "key": "check_authorized", "source_key": "authorized_person", "target_key": "vice_dean", "name": "Zkontrolováno", "note_required": false, "condition_query": null, "action_query": null, "evidence": "Akce v historii; návaznost z mapy." },
+    { "key": "approve_vice_dean", "source_key": "vice_dean", "target_key": "asset_department_head", "name": "Schváleno", "note_required": false, "condition_query": null, "action_query": null, "evidence": "Akce v historii; návaznost z mapy." },
+    { "key": "assign_asset_manager", "source_key": "asset_department_head", "target_key": "asset_manager", "name": "Přiděleno", "note_required": false, "condition_query": null, "action_query": null, "evidence": "Akce v historii; návaznost z mapy." },
+    { "key": "process_assets", "source_key": "asset_manager", "target_key": "budget_officer", "name": "Zpracováno", "note_required": false, "condition_query": null, "action_query": null, "evidence": "Akce v historii; návaznost z mapy." },
+    { "key": "confirm_budget", "source_key": "budget_officer", "target_key": "procurement_head", "name": "Rozpočtově kryto", "note_required": false, "condition_query": null, "action_query": null, "evidence": "Akce v historii; návaznost z mapy." },
+    { "key": "assign_procurement", "source_key": "procurement_head", "target_key": "procurement_officer", "name": "Přiděleno", "note_required": false, "condition_query": null, "action_query": null, "evidence": "Akce v historii; návaznost z mapy." },
+    { "key": "process_procurement", "source_key": "procurement_officer", "target_key": "deputy_bursar", "name": "Zpracováno", "note_required": false, "condition_query": null, "action_query": null, "evidence": "Akce v historii; návaznost z mapy." },
+    { "key": "return", "source_key": "procurement_officer", "target_key": "draft", "name": "Vráceno", "note_required": true, "condition_query": null, "action_query": null, "evidence": "Vrácení je v historii. Cíl žadatel a povinná poznámka jsou návrh k potvrzení." },
+    { "key": "check_bursar", "source_key": "deputy_bursar", "target_key": "asset_manager_second", "name": "Zkontrolováno", "note_required": false, "condition_query": null, "action_query": null, "evidence": "Akce v historii; návaznost z mapy." },
+    { "key": "process_assets_second", "source_key": "asset_manager_second", "target_key": "procurement_officer_second", "name": "Zpracováno", "note_required": false, "condition_query": null, "action_query": null, "evidence": "Akce v historii; návaznost z mapy." },
+    { "key": "process_procurement_second", "source_key": "procurement_officer_second", "target_key": "tender_announcement", "name": "Zpracováno", "note_required": false, "condition_query": null, "action_query": null, "evidence": "Akce v historii; návaznost z mapy." },
+    { "key": "announce_tender", "source_key": "tender_announcement", "target_key": "supplier_contract", "name": "Zakázka vyhlášena", "note_required": false, "condition_query": null, "action_query": null, "evidence": "Akce v historii; návaznost z mapy." },
+    { "key": "sign_contract", "source_key": "supplier_contract", "target_key": "delivered", "name": "Smlouva uzavřena", "note_required": false, "condition_query": null, "action_query": null, "evidence": "Akce v historii; další stav čeká na zpracování." },
+    { "key": "receive_delivery", "source_key": "delivered", "target_key": "ready_for_pickup", "name": "Potvrdit doručení", "note_required": false, "condition_query": null, "action_query": null, "evidence": "Návrh názvu akce; návaznost pouze z mapy." },
+    { "key": "complete_pickup", "source_key": "ready_for_pickup", "target_key": "completed", "name": "Potvrdit převzetí a ukončit", "note_required": false, "condition_query": null, "action_query": null, "evidence": "Návrh názvu akce; návaznost pouze z mapy." }
+  ]
+}

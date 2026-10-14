@@ -6,6 +6,14 @@ namespace WebAppArchitecture.Security.Services;
 /// <summary>
 /// Služba Security Permission Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
+/// <remarks>
+/// Architecture exception: this read-only diagnostic projection joins effective RBAC grants,
+/// roles, users and groups for one security scope; it is not CRUD for a single secured entity.
+/// Filtering each supporting row independently would obscure the grants being explained.
+/// The caller must authorize Read on the requested RBAC scope before invoking this service,
+/// as SecurityResolvers.Permissions does. Raw reads remain internal and only the permission DTO
+/// is returned. This exception permits neither domain writes nor general unfiltered lookups.
+/// </remarks>
 public sealed class SecurityPermissionService(IDBLayer db) : ISecurityPermissionService
 {
     public Task<RbacPermissionResponse> GetPermissionsAsync(

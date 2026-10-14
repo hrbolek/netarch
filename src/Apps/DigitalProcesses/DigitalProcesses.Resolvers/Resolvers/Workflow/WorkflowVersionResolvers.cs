@@ -41,8 +41,20 @@ public static class WorkflowVersionResolvers
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateContainedAsync, PublishAsync, GetDesignerAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
     /// </summary>
-    public static Task<WorkflowVersionResponse> CreateApi(CreateWorkflowVersionRequest request, IWorkflowVersionService service, CancellationToken ct)
-        => service.CreateContainedAsync(request, ct);
+    public static Task<IResult> CreateApi(CreateWorkflowVersionRequest request, IWorkflowVersionService service, CancellationToken ct)
+        => DefinitionResult(async () => await service.CreateContainedAsync(request, ct));
+
+    public static Task<IResult> UpdateApi(Guid id, WorkflowGraphDefinition request, IWorkflowVersionService service, CancellationToken ct)
+        => DefinitionResult(async () => await service.ReplaceDefinitionAsync(id, request, ct));
+
+    private static async Task<IResult> DefinitionResult(Func<Task<object>> action)
+    {
+        try { return Results.Ok(await action()); }
+        catch (ArgumentException ex) { return Results.Problem(ex.Message, statusCode: StatusCodes.Status400BadRequest); }
+        catch (KeyNotFoundException ex) { return Results.Problem(ex.Message, statusCode: StatusCodes.Status404NotFound); }
+        catch (UnauthorizedAccessException ex) { return Results.Problem(ex.Message, statusCode: StatusCodes.Status403Forbidden); }
+        catch (InvalidOperationException ex) { return Results.Problem(ex.Message, statusCode: StatusCodes.Status409Conflict); }
+    }
 
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateContainedAsync, PublishAsync, GetDesignerAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
@@ -63,6 +75,12 @@ public static class WorkflowVersionResolvers
     /// </summary>
     public static Task<WorkflowDesignerResponse> Designer(Guid id, IWorkflowVersionService service, CancellationToken ct)
         => service.GetDesignerAsync(id, ct);
+
+    public static async Task<IResult> CreateTestRequest(Guid id, IRequestService service, CancellationToken ct)
+    {
+        var request = await service.CreateTestRequestForWorkflowVersionAsync(id, ct);
+        return Results.Redirect($"{Prefix}/RequestResponse/detail/{request.id}");
+    }
 
     private static string? Optional(Microsoft.AspNetCore.Http.IFormCollection f, string name)
         => DigitalProcessCreateForm.Optional(f, name);
@@ -158,6 +176,9 @@ public static class WorkflowVersionResolvers
         group.MapGet("/designer/{id:guid}", WorkflowVersionResolvers.Designer)
             .ApplyViewModel<WorkflowDesignerPage, WorkflowDesignerResponse>()
             .WithDescription("Opens the workflow graph editor with its states and transitions. Published versions are read-only.");
+        group.MapPost("/designer/test/{id:guid}", WorkflowVersionResolvers.CreateTestRequest)
+            .DisableAntiforgery()
+            .WithDescription("Creates a test Request using the newest process version assigned to this exact workflow version, then redirects to the Request history.");
         group.MapPost("/designer/add-state", WorkflowVersionResolvers.AddState).DisableAntiforgery()
             .WithDescription("Adds a workflow state to an unpublished workflow version.");
         group.MapPost("/designer/update-state", WorkflowVersionResolvers.UpdateState).DisableAntiforgery()
@@ -189,8 +210,12 @@ public static class WorkflowVersionResolvers
         group.MapPost("/create-contained", WorkflowVersionResolvers.CreateApi)
             .ApplyJsonModel<DigitalProcessModelPage<WorkflowVersionResponse>,WorkflowVersionResponse>()
             .WithDescription("""
-                Creates WorkflowVersion using parent WorkflowDefinition. The authorization target is derived server-side; clients cannot supply rbacobject_id.
+                Creates WorkflowVersion using parent WorkflowDefinition. Optional states and transitions supply the complete graph with source_key/target_key references; otherwise the previous version is cloned. The authorization target is derived server-side.
                 """);
+
+        group.MapPut("/definition/{id:guid}", WorkflowVersionResolvers.UpdateApi)
+            .Produces<WorkflowDesignerResponse>()
+            .WithDescription("Atomically replaces the graph of a draft workflow version. Items match by key; omitted transitions are deleted before omitted states. References from requests, history or access rules prevent deletion.");
 
         group.MapGet("/create", WorkflowVersionResolvers.CreatePage)
             .ApplyViewModel<DigitalProcessCreatePage, DigitalProcessCreatePageModel>()

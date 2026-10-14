@@ -89,12 +89,19 @@ public static class FormVersionResolvers
             DigitalProcessCreateForm.Optional(f, "label"),
             null,
             DigitalProcessCreateForm.IntValue(f, "position"),
-            configuration_json: DigitalProcessCreateForm.GuidValue(f, "node_type_id") == DigitalProcessWellKnown.FormNodeTypes.Import
-                ? DigitalProcessCreateForm.Optional(f, "configuration_json") : null);
-        if (request.parent_id is null)
-            await service.CreateContainedInVersionAsync(request, ct);
-        else
-            await service.CreateContainedInNodeAsync(request, ct);
+            configuration_json: DigitalProcessCreateForm.Optional(f, "configuration_json"));
+        try
+        {
+            if (request.parent_id is null)
+                await service.CreateContainedInVersionAsync(request, ct);
+            else
+                await service.CreateContainedInNodeAsync(request, ct);
+        }
+        catch (System.Text.Json.JsonException ex)
+        {
+            return Results.BadRequest(new { error = ex.Message });
+        }
+        catch (ArgumentException ex) { return Results.BadRequest(new { error = ex.Message }); }
         return Results.Redirect($"{Prefix}/FormVersionResponse/designer/{versionId}");
     }
 
@@ -106,13 +113,21 @@ public static class FormVersionResolvers
         var f = await http.Request.ReadFormAsync(ct);
         var id = DigitalProcessCreateForm.GuidValue(f, "id");
         var versionId = DigitalProcessCreateForm.GuidValue(f, "form_version_id");
-        await service.UpdateDefinitionAsync(id, new UpdateFormNodeRequest(
-            DigitalProcessCreateForm.Required(f, "key"),
-            DigitalProcessCreateForm.Optional(f, "label"),
-            DigitalProcessCreateForm.Optional(f, "description"),
-            DigitalProcessCreateForm.Optional(f, "configuration_json"),
-            DigitalProcessCreateForm.IntValue(f, "min_occurs"),
-            DigitalProcessCreateForm.IntValue(f, "max_occurs")), ct);
+        try
+        {
+            await service.UpdateDefinitionAsync(id, new UpdateFormNodeRequest(
+                DigitalProcessCreateForm.Required(f, "key"),
+                DigitalProcessCreateForm.Optional(f, "label"),
+                DigitalProcessCreateForm.Optional(f, "description"),
+                DigitalProcessCreateForm.Optional(f, "configuration_json"),
+                DigitalProcessCreateForm.IntValue(f, "min_occurs"),
+                DigitalProcessCreateForm.IntValue(f, "max_occurs")), ct);
+        }
+        catch (System.Text.Json.JsonException ex)
+        {
+            return Results.BadRequest(new { error = ex.Message });
+        }
+        catch (ArgumentException ex) { return Results.BadRequest(new { error = ex.Message }); }
         return Results.Redirect($"{Prefix}/FormVersionResponse/designer/{versionId}#node-{id}");
     }
 
@@ -124,9 +139,10 @@ public static class FormVersionResolvers
         var f = await http.Request.ReadFormAsync(ct);
         var id = DigitalProcessCreateForm.GuidValue(f, "id");
         var versionId = DigitalProcessCreateForm.GuidValue(f, "form_version_id");
-        await service.MoveAsync(id, new MoveFormNodeRequest(
+        try { await service.MoveAsync(id, new MoveFormNodeRequest(
             DigitalProcessCreateForm.OptionalGuid(f, "parent_id"),
-            DigitalProcessCreateForm.IntValue(f, "position")), ct);
+            DigitalProcessCreateForm.IntValue(f, "position")), ct); }
+        catch (ArgumentException ex) { return Results.BadRequest(new { error = ex.Message }); }
         return Results.Redirect($"{Prefix}/FormVersionResponse/designer/{versionId}#node-{id}");
     }
 
@@ -137,12 +153,13 @@ public static class FormVersionResolvers
     {
         var f = await http.Request.ReadFormAsync(ct);
         var versionId = DigitalProcessCreateForm.GuidValue(f, "target_form_version_id");
-        await service.ImportSubtreeAsync(new ImportFormSubtreeRequest(
+        try { await service.ImportSubtreeAsync(new ImportFormSubtreeRequest(
             DigitalProcessCreateForm.GuidValue(f, "source_node_id"),
             versionId,
             DigitalProcessCreateForm.OptionalGuid(f, "target_parent_id"),
             DigitalProcessCreateForm.Optional(f, "key_prefix"),
-            0), ct);
+            0), ct); }
+        catch (ArgumentException ex) { return Results.BadRequest(new { error = ex.Message }); }
         return Results.Redirect($"{Prefix}/FormVersionResponse/designer/{versionId}");
     }
 
@@ -161,8 +178,15 @@ public static class FormVersionResolvers
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: UpsertFormTreeAsync; pořadí a parametry viz implementace.
     /// </summary>
-    public static Task<FormTreeResponse> BulkTree(Guid id, BulkFormTreeRequest request, IBulkTreeService service, CancellationToken ct)
-        => service.UpsertFormTreeAsync(id, request, ct);
+    public static async Task<IResult> BulkTree(Guid id, BulkFormTreeRequest request, IFormVersionService service, CancellationToken ct)
+    {
+        try { return Results.Ok(await service.UpsertTreeAsync(id, request, ct)); }
+        catch (ArgumentException ex) { return Results.Problem(ex.Message, statusCode: StatusCodes.Status400BadRequest); }
+        catch (System.Text.Json.JsonException ex) { return Results.Problem(ex.Message, statusCode: StatusCodes.Status400BadRequest); }
+        catch (KeyNotFoundException ex) { return Results.Problem(ex.Message, statusCode: StatusCodes.Status404NotFound); }
+        catch (UnauthorizedAccessException ex) { return Results.Problem(ex.Message, statusCode: StatusCodes.Status403Forbidden); }
+        catch (InvalidOperationException ex) { return Results.Problem(ex.Message, statusCode: StatusCodes.Status409Conflict); }
+    }
 
     /// <summary>
     /// Registruje routy Minimal API a vazbu endpointů na Razor/JSON reprezentaci; samotné požadavky zpracovávají příslušné resolver metody.
@@ -236,7 +260,8 @@ public static class FormVersionResolvers
             .WithDescription("Deep-clones a reusable FormNode subtree into the target draft form version.");
 
         group.MapPut("/tree/{id:guid}", FormVersionResolvers.BulkTree)
-            .WithDescription("Atomically create/update supplied form nodes. Omitted nodes are preserved; publishing locks the form. Authorization is verified per existing node.");
+            .Produces<FormTreeResponse>()
+            .WithDescription("Atomically create/update supplied form nodes. Supply either nodes (bulk array with IDs) or children (form definition object with renderer_key, matching existing nodes by parent and key). Omitted nodes are preserved; publishing locks the form. Authorization is verified per existing node. Root name/description are ignored.");
         group.MapGet("/tree/{id:guid}", FormVersionResolvers.Tree)
             .ApplyViewModel<FormTreePage,FormTreeResponse>()
             .WithDescription("""

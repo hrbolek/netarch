@@ -17,11 +17,9 @@ public interface IBulkTreeService
 }
 
 /// <summary>
-/// Batch, all-or-nothing commands for UIs and delegated AI agents. Omission never means deletion.
+/// Internal batch algorithm shared by secured FormVersionService and SubmissionService.
+/// HTTP resolvers must use those entity services, not inject this helper. Omission never means deletion.
 /// The caller's identity is resolved by ISecurityLayer, not supplied in the request body.
-/// </summary>
-/// <summary>
-/// Služba Bulk Tree Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
 public sealed class BulkTreeService(ISecurityLayer security) : IBulkTreeService
 {
@@ -31,7 +29,8 @@ public sealed class BulkTreeService(ISecurityLayer security) : IBulkTreeService
     public async Task<FormTreeResponse> UpsertFormTreeAsync(Guid versionId, BulkFormTreeRequest request, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(request);
-        ArgumentNullException.ThrowIfNull(request.nodes);
+        if ((request.nodes is null) == (request.children is null))
+            throw new ArgumentException("Supply exactly one of 'nodes' (bulk array) or 'children' (form definition object).");
         var version = await security.GetByIdAsync<FormVersionModel>(versionId, SecurityOperations.Update, ct)
             ?? throw new KeyNotFoundException("Form version is not editable.");
         if (version.is_published) throw new InvalidOperationException("Published form version is immutable.");
@@ -39,6 +38,23 @@ public sealed class BulkTreeService(ISecurityLayer security) : IBulkTreeService
         // Validate every requested node and its authorization before staging any writes.
         var existing = security.Query<FormNodeModel>(SecurityOperations.Read)
             .Where(x => x.form_version_id == versionId).ToArray();
+        var inputNodes = request.nodes;
+        if (request.children is JsonElement children)
+        {
+            var schema = FormDefinitionService.ReadSchemaNodes(children,
+                security.Query<FormNodeTypeModel>(SecurityOperations.Read).ToArray());
+            var siblings = existing.ToLookup(x => x.parent_id);
+            IReadOnlyList<BulkFormTreeNode> Convert(
+                IReadOnlyList<FormDefinitionService.SchemaNode> items, Guid? parentId, bool isNewParent = false)
+                => items.Select(item =>
+                {
+                    var old = isNewParent ? null : siblings[parentId].SingleOrDefault(x => x.key == item.Key);
+                    return new BulkFormTreeNode(old?.id, item.Key, item.NodeTypeId,
+                        item.Label, item.Description, item.Position, item.MinOccurs, item.MaxOccurs,
+                        item.ConfigurationJson, Convert(item.Children, old?.id, old is null));
+                }).ToArray();
+            inputNodes = Convert(schema, null);
+        }
         var byId = existing.ToDictionary(x => x.id);
         var flattened = new List<(BulkFormTreeNode Input, Guid Id, Guid? Parent, string Path, Guid Rbac)>();
         var usedIds = new HashSet<Guid>();
@@ -47,6 +63,7 @@ public sealed class BulkTreeService(ISecurityLayer security) : IBulkTreeService
 
         async Task Visit(BulkFormTreeNode input, Guid? parentId, string? parentPath, Guid parentRbac)
         {
+            ArgumentNullException.ThrowIfNull(input);
             if (string.IsNullOrWhiteSpace(input.key)) throw new ArgumentException("Form-node key is required.");
             if (input.min_occurs < 0 || input.max_occurs < 1 || input.min_occurs > input.max_occurs)
                 throw new ArgumentException("Invalid occurrence limits.");
@@ -83,7 +100,14 @@ public sealed class BulkTreeService(ISecurityLayer security) : IBulkTreeService
             if (input.children is not null)
                 foreach (var child in input.children) await Visit(child, id, path, rbac);
         }
-        foreach (var node in request.nodes) await Visit(node, null, null, version.rbacobject_id);
+        foreach (var node in inputNodes!) await Visit(node, null, null, version.rbacobject_id);
+        var types = security.Query<FormNodeTypeModel>(SecurityOperations.Read).ToDictionary(x => x.id);
+        foreach (var (input, id, parent, _, _) in flattened)
+        {
+            var hasSections = flattened.Any(child => child.Parent == id && types[child.Input.node_type_id].renderer_key == "section")
+                || existing.Any(child => child.parent_id == id && !usedIds.Contains(child.id) && types[child.node_type_id].renderer_key == "section");
+            FormSectionRules.Validate(parent, types[input.node_type_id], input.max_occurs, input.configuration_json, hasSections);
+        }
         var now = DateTimeOffset.UtcNow;
         await security.ExecuteInTransactionAsync(async token =>
         {

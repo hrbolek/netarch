@@ -16,7 +16,17 @@ using WebAppArchitecture.DigitalProcesses.Services;
 
 namespace WebAppArchitecture.DigitalProcesses;
 
-/// <summary>Development-only preview endpoints. Values, queries and output are processed server-side.</summary>
+/// <summary>Temporary designer live-preview endpoints. Values, queries and output are processed server-side.</summary>
+/// <remarks>
+/// Architecture exception: these handlers orchestrate an ephemeral designer session rather than
+/// a persisted entity, so their preview store, calculations and transport need no SecuredBaseService.
+/// They are mapped in all environments to keep designer actions available, not only in Development.
+/// Each handler first loads the source form through IFormNodeService.GetDesignerAsync for RBAC read
+/// checks. The in-memory preview is not a Submission and this exception permits no definition or
+/// Request writes. Import/export/document actions can still call configured external backends;
+/// temporary state does not imply a side-effect-free sandbox or production Request authorization.
+/// This exception does not cover runtime form search, durable submissions or definition mutations.
+/// </remarks>
 internal static class PreviewFormEndpoints
 {
     public static void Map(IEndpointRouteBuilder endpoints)
@@ -258,6 +268,17 @@ internal static class PreviewFormEndpoints
                     state.Values[key[5..]] = JsonValue.Create(number);
                 else if (fieldType == "input.checkbox")
                     state.Values[key[5..]] = JsonValue.Create(text is "on" or "true" or "True");
+                else if (fieldType == "input.graphql-search")
+                {
+                    try
+                    {
+                        state.Values[key[5..]] = string.IsNullOrWhiteSpace(text) ? null : JsonNode.Parse(text);
+                    }
+                    catch (System.Text.Json.JsonException ex)
+                    {
+                        throw new InvalidOperationException($"Invalid GraphQL search selection for form node {node.id}.", ex);
+                    }
+                }
                 else
                     state.Values[key[5..]] = JsonValue.Create(text);
             }

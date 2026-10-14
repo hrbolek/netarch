@@ -9,14 +9,30 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 /// <summary>
 /// Služba Workflow Version Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public sealed class WorkflowVersionService(ISecurityLayer security, IDBLayer unsecuredDb)
+public sealed partial class WorkflowVersionService(ISecurityLayer security, IDBLayer unsecuredDb)
     : SecuredBaseService<WorkflowVersionModel>(security, unsecuredDb), IWorkflowVersionService
 {
+    private readonly IDBLayer _definitionDb = unsecuredDb;
+
+    public async Task<WorkflowVersionResponse> CreateNextAsync(Guid definitionId, CancellationToken ct = default)
+    {
+        _ = await Security.GetByIdAsync<WorkflowDefinitionModel>(definitionId, SecurityOperations.Read, ct)
+            ?? throw new KeyNotFoundException("Workflow definition not found or not readable.");
+        var next = Security.Query<WorkflowVersionModel>(SecurityOperations.Read)
+            .Where(v => v.workflow_definition_id == definitionId).Select(v => v.version).ToArray().DefaultIfEmpty(0).Max() + 1;
+        return await CreateContainedAsync(new CreateWorkflowVersionRequest(definitionId, next), ct);
+    }
+
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CurrentUserId, ExecuteInTransactionAsync, StageCreateAsync, Query; pořadí a parametry viz implementace.
     /// </summary>
     public async Task<WorkflowVersionResponse> CreateContainedAsync(CreateWorkflowVersionRequest request, CancellationToken ct = default)
     {
+        if ((request.states is null) != (request.transitions is null))
+            throw new ArgumentException("Supply both states and transitions, or omit both to clone the previous version.");
+        var graph = request.states is not null && request.transitions is not null
+            ? new WorkflowGraphDefinition(request.states, request.transitions) : null;
+        if (graph is not null) ValidateDefinition(graph, request.publish);
         var (definition, _) = await CreationScopeGuard.RequireEntityAsync<WorkflowDefinitionModel>(
             Security, request.workflow_definition_id, "contained", ct);
         var now = DateTimeOffset.UtcNow;
@@ -31,7 +47,12 @@ public sealed class WorkflowVersionService(ISecurityLayer security, IDBLayer uns
             var source = Security.Query<WorkflowVersionModel>(SecurityOperations.Read)
                 .Where(v => v.workflow_definition_id == definition.id && v.version < request.version)
                 .OrderByDescending(v => v.version).FirstOrDefault();
-            if (source is not null)
+            if (graph is not null)
+            {
+                await Security.SaveChangesAsync(token);
+                await ReplaceDefinitionCoreAsync(model, graph, token);
+            }
+            else if (source is not null)
             {
                 var states = Security.Query<WorkflowStateModel>(SecurityOperations.Read)
                     .Where(st => st.workflow_version_id == source.id).ToArray();
@@ -63,9 +84,13 @@ public sealed class WorkflowVersionService(ISecurityLayer security, IDBLayer uns
                     }, token);
             }
             await Security.SaveChangesAsync(token);
+            if (request.publish)
+            {
+                return await PublishAsync(x.id, token);
+            }
             return WorkflowVersionResponse.FromModel(x);
         }, ct);
-        return request.publish ? await PublishAsync(created.id, ct) : created;
+        return created;
     }
 
     /// <summary>

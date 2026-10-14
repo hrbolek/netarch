@@ -179,10 +179,14 @@ public sealed class SubmissionNodeService(
     /// </summary>
     public async Task<SubmissionNodeResponse> SetValueAsync(Guid id, SetSubmissionNodeValueRequest r, CancellationToken ct = default)
     {
-        var node = await Security.GetByIdAsync<SubmissionNodeModel>(id, SecurityOperations.Update, ct)
-            ?? throw new KeyNotFoundException();
-        var submission = await Security.GetByIdAsync<SubmissionModel>(node.submission_id, SecurityOperations.Update, ct)
-            ?? throw new KeyNotFoundException();
+        var node = await unsecuredDb.GetByIdAsync<SubmissionNodeModel>(id, ct)
+            ?? throw new KeyNotFoundException("Submission node not found.");
+        if (!await Security.IsAllowedAsync(node.rbacobject_id, SecurityOperations.Update, ct))
+            throw new UnauthorizedAccessException("Submission node is not editable.");
+        var submission = await unsecuredDb.GetByIdAsync<SubmissionModel>(node.submission_id, ct)
+            ?? throw new KeyNotFoundException("Submission not found.");
+        if (!await Security.IsAllowedAsync(submission.rbacobject_id, SecurityOperations.Update, ct))
+            throw new UnauthorizedAccessException("Submission is not editable.");
         if (submission.is_archived)
             throw new InvalidOperationException("Archived submission is immutable.");
         var formNode = await Security.GetByIdAsync<FormNodeModel>(node.form_node_id, SecurityOperations.Read, ct)

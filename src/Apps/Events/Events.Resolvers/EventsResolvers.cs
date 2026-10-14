@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Http;
 using WebAppArchitecture.Base.Security;
-using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
 
 namespace WebAppArchitecture.Events;
 
@@ -52,32 +50,32 @@ public static class EventsResolvers
         return new EventDetailModel(item, children, await svc.CanAsync(item, "update", ct), await svc.CanAsync(item, "delete", ct));
     }
 
-    public static async Task<object> EventEditPage(Guid id, HttpContext http, ICurrentActorProvider actors, CoreDbContext db, EventService svc, EventTypeService typeSvc, SecurityService security, CancellationToken ct)
+    public static async Task<object> EventEditPage(Guid id, HttpContext http, ICurrentActorProvider actors, EventService svc, EventAdministrationService administration, CancellationToken ct)
     {
         var actor = actors.TryGetActorUserId(http);
         if (actor is null) return Unauthorized;
         var item = await svc.FindAsync(id, ct);
         if (item is null) return Results.NotFound();
         if (!await svc.CanAsync(item, "update", ct)) return Results.Forbid();
-        return await EventForms.LoadAsync(actor.Value, db, svc, typeSvc, security, id, ct);
+        return await administration.LoadFormAsync(id, ct);
     }
 
-    public static async Task<object> EventTypeEditPage(Guid id, HttpContext http, ICurrentActorProvider actors, CoreDbContext db, EventService svc, EventTypeService typeSvc, SecurityService security, CancellationToken ct)
+    public static async Task<object> EventTypeEditPage(Guid id, HttpContext http, ICurrentActorProvider actors, EventTypeService typeSvc, EventAdministrationService administration, CancellationToken ct)
     {
         var actor = actors.TryGetActorUserId(http);
         if (actor is null) return Unauthorized;
         var type = await typeSvc.FindAsync(id, ct);
         if (type is null) return Results.NotFound();
         if (!await typeSvc.CanAsync(type, "update", ct)) return Results.Forbid();
-        return new EventTypeEditModel(type, await EventForms.LoadAsync(actor.Value, db, svc, typeSvc, security, null, ct));
+        return new EventTypeEditModel(type, await administration.LoadFormAsync(null, ct));
     }
 
     /// <summary>Form model used by the new/admin pages.</summary>
-    public static async Task<object> EventForm(HttpContext http, ICurrentActorProvider actors, CoreDbContext db, EventService svc, EventTypeService typeSvc, SecurityService security, CancellationToken ct)
+    public static async Task<object> EventForm(HttpContext http, ICurrentActorProvider actors, EventAdministrationService administration, CancellationToken ct)
     {
         var actor = actors.TryGetActorUserId(http);
         if (actor is null) return Unauthorized;
-        return await EventForms.LoadAsync(actor.Value, db, svc, typeSvc, security, null, ct);
+        return await administration.LoadFormAsync(null, ct);
     }
 
     public static async Task<object> EventListPage(HttpContext http, ICurrentActorProvider actors, EventService svc, string? where, int? skip, int? take, CancellationToken ct)
@@ -190,32 +188,32 @@ public static class EventsResolvers
         return await svc.SaveAcademicPlanAsync(id, request, ct) ? Results.NoContent() : Results.Conflict();
     }
 
-    public static async Task<IResult> EventImportJsonPost(HttpRequest request, HttpContext http, ICurrentActorProvider actors, CoreDbContext db, SecurityService security, CancellationToken ct)
+    public static async Task<IResult> EventImportJsonPost(HttpRequest request, HttpContext http, ICurrentActorProvider actors, EventAdministrationService administration, CancellationToken ct)
     {
         var actor = actors.TryGetActorUserId(http);
         if (actor is null) return Unauthorized;
         if (!request.HasFormContentType) return Results.BadRequest(new { error = "Očekávám multipart/form-data." });
         var form = await request.ReadFormAsync(ct);
         if (!Guid.TryParse(form["rbacObjectId"], out var scope)) return Results.BadRequest(new { error = "Chybí RBAC rozsah." });
-        if (!await security.IsAllowedAsync(actor.Value, scope, "create", ct)) return Results.Forbid();
+        if (!await administration.CanImportAsync(scope, ct)) return Results.Forbid();
         var file = form.Files.GetFile("file");
         if (file is null || file.Length == 0 || file.Length > 100L * 1024 * 1024)
             return Results.BadRequest(new { error = "Soubor JSON musí mít 1 až 100 MB." });
         try
         {
             await using var content = file.OpenReadStream();
-            var result = await EventsJsonImport.RunAsync(content, actor.Value, scope, db, security, ct);
+            var result = await administration.ImportJsonAsync(content, scope, ct);
             return result is null ? Results.Forbid() : Results.Ok(result);
         }
         catch (System.Text.Json.JsonException ex) { return Results.BadRequest(new { error = "Neplatný JSON: " + ex.Message }); }
         catch (ArgumentException ex) { return Results.BadRequest(new { error = ex.Message }); }
     }
 
-    public static async Task<IResult> EventTypeImportStandardPost(StandardTypeImportRequest req, HttpContext http, ICurrentActorProvider actors, CoreDbContext db, SecurityService security, CancellationToken ct)
+    public static async Task<IResult> EventTypeImportStandardPost(StandardTypeImportRequest req, HttpContext http, ICurrentActorProvider actors, EventAdministrationService administration, CancellationToken ct)
     {
         var actor = actors.TryGetActorUserId(http);
         if (actor is null) return Unauthorized;
-        var result = await EventTypeImport.RunAsync(actor.Value, req.RbacObjectId, db, security, ct);
+        var result = await administration.ImportStandardTypesAsync(req.RbacObjectId, ct);
         return result is null ? Results.Forbid() : Results.Ok(result);
     }
 

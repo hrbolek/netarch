@@ -25,26 +25,79 @@ public sealed class RequestService(
     /// </summary>
     public async Task<RequestResponse> StartAsync(StartRequestRequest r, CancellationToken ct = default)
     {
-        var definition = await Security.GetByIdAsync<ProcessDefinitionVersionModel>(
-            r.process_definition_version_id, SecurityOperations.Read, ct)
-            ?? throw new KeyNotFoundException("Process definition version not found.");
+        ProcessDefinitionVersionModel definition;
+        if (r.process_definition_version_id != Guid.Empty)
+        {
+            definition = await Security.GetByIdAsync<ProcessDefinitionVersionModel>(
+                r.process_definition_version_id, SecurityOperations.Read, ct)
+                ?? throw new KeyNotFoundException("Process definition version not found.");
+        }
+        else
+        {
+            var processId = r.process_definition_id
+                ?? throw new InvalidOperationException("Either process_definition_version_id or process_definition_id must be specified.");
+            definition = Security.Query<ProcessDefinitionVersionModel>(SecurityOperations.Read)
+                .Where(x => x.process_definition_id == processId && x.is_published)
+                .OrderByDescending(x => x.version).FirstOrDefault()
+                ?? throw new InvalidOperationException("Process has no published version.");
+        }
         if (!definition.is_published)
             throw new InvalidOperationException("Requests can only start from a published process definition version.");
+        return await StartCoreAsync(definition, r.subject, r.target_group_id, false, ct);
+    }
 
+    public async Task<RequestResponse> CreateTestRequestAsync(Guid processDefinitionId, CancellationToken ct = default)
+    {
+        var definition = Security.Query<ProcessDefinitionVersionModel>(SecurityOperations.Read)
+            .Where(x => x.process_definition_id == processDefinitionId)
+            .OrderByDescending(x => x.version).FirstOrDefault()
+            ?? throw new KeyNotFoundException("Process definition has no readable version.");
+        return await StartCoreAsync(definition, "Testovací žádost", null, true, ct);
+    }
+
+    public async Task<RequestResponse> CreateTestRequestForWorkflowVersionAsync(Guid workflowVersionId, CancellationToken ct = default)
+    {
+        _ = await Security.GetByIdAsync<WorkflowVersionModel>(workflowVersionId, SecurityOperations.Read, ct)
+            ?? throw new KeyNotFoundException("Workflow version not found or not readable.");
+        var definition = Security.Query<ProcessDefinitionVersionModel>(SecurityOperations.Read)
+            .Where(x => x.workflow_version_id == workflowVersionId)
+            .OrderByDescending(x => x.updated_at)
+            .ThenByDescending(x => x.version)
+            .FirstOrDefault()
+            ?? throw new InvalidOperationException("This workflow version is not assigned to a process version, so it cannot be tested as a Request.");
+        return await StartCoreAsync(definition, "Testovací žádost", null, true, ct);
+    }
+
+    public async Task<RequestResponse> CreateTestRequestForProcessVersionAsync(Guid processVersionId, CancellationToken ct = default)
+    {
+        var definition = await Security.GetByIdAsync<ProcessDefinitionVersionModel>(
+            processVersionId, SecurityOperations.Read, ct)
+            ?? throw new KeyNotFoundException("Process version not found or not readable.");
+        return await StartCoreAsync(definition, "Testovací žádost", null, true, ct);
+    }
+
+    private async Task<RequestResponse> StartCoreAsync(
+        ProcessDefinitionVersionModel definition, string? subject, Guid? targetGroupId, bool seedHistory, CancellationToken ct)
+    {
         var process = await Security.GetByIdAsync<ProcessDefinitionModel>(
             definition.process_definition_id, SecurityOperations.Read, ct)
             ?? throw new KeyNotFoundException("Process definition not found.");
 
-        // The published version fixes WHERE new requests may be started.
-        // Group validity and type are checked against the actual DB row, never user-supplied data.
-        if (r.target_group_id is not Guid targetId || targetId == Guid.Empty)
-            throw new InvalidOperationException("TargetGroupId must be specified.");
-        if (definition.target_group_type_id is not Guid permittedType || permittedType == Guid.Empty)
-            throw new InvalidOperationException("Published process version has no TargetGroupTypeId.");
+        // Placeholder: the rule deciding which authorization contexts may host a request is not final yet.
+        // Without an explicit target, the process' own RBAC group is used and the group type is not enforced.
+        var useProcessGroup = targetGroupId is null || targetGroupId == Guid.Empty;
+        var targetId = useProcessGroup ? process.rbacobject_id : targetGroupId!.Value;
+        Guid? permittedType = null;
+        if (!useProcessGroup)
+        {
+            if (definition.target_group_type_id is not Guid type || type == Guid.Empty)
+                throw new InvalidOperationException("Published process version has no TargetGroupTypeId.");
+            permittedType = type;
+        }
 
         // Starting a process is a separate operation, not general Create on the faculty.
         var processGroup = Security.Query<GroupModel>(SecurityOperations.StartProcess)
-            .SingleOrDefault(x => x.id == targetId && x.valid && x.group_type_id == permittedType)
+            .SingleOrDefault(x => x.id == targetId && x.valid && (permittedType == null || x.group_type_id == permittedType))
             ?? throw new InvalidOperationException(
                 "Target group is absent, retired, has the wrong type, or caller lacks start_process.");
 
@@ -66,12 +119,21 @@ public sealed class RequestService(
         var submissionGroup = NewBoundaryGroup(
             submissionId, $"Submission 1", requestGroup, actor, now);
 
+        // Demo history: draft -> submitted -> draft; the two archived snapshots are empty, only the active one holds the form tree.
+        var forward = !seedHistory ? null : Security.Query<WorkflowTransitionModel>(SecurityOperations.Read)
+            .FirstOrDefault(x => x.source_state_id == initial.id && !x.note_required && x.target_state_id != initial.id);
+        var back = forward is null ? null : Security.Query<WorkflowTransitionModel>(SecurityOperations.Read)
+            .FirstOrDefault(x => x.source_state_id == forward.target_state_id && x.target_state_id == initial.id);
+        var seeded = forward is not null && back is not null;
+        var archivedIds = seeded ? new[] { Guid.NewGuid(), Guid.NewGuid() } : [];
+
         var request = new RequestModel(
-            requestId, definition.id, actor, initial.id, submissionId, r.subject,
+            requestId, definition.id, actor, initial.id, submissionId, subject,
             requestGroup.id, now, now, actor, actor);
         var submission = new SubmissionModel(
             submissionId, requestId, definition.form_version_id, 1, false, null,
             submissionGroup.id, now, now, actor, actor);
+        if (seeded) submission = submission with { version = 3 };
 
         return await Security.ExecuteInTransactionAsync(async token =>
         {
@@ -86,9 +148,27 @@ public sealed class RequestService(
             await writer.StageCreateAsync(request, token);
             await writer.StageCreateAsync(submission, token);
 
+            if (seeded)
+            {
+                var steps = new[] { (forward!, initial.id), (back!, forward!.target_state_id) };
+                for (var i = 0; i < archivedIds.Length; i++)
+                {
+                    var archivedGroup = NewBoundaryGroup(archivedIds[i], $"Submission {i + 1}", requestGroup, actor, now);
+                    await writer.StageCreateAsync(archivedGroup, token);
+                    await writer.StageCreateAsync(new SubmissionModel(
+                        archivedIds[i], requestId, definition.form_version_id, i + 1, true, now,
+                        archivedGroup.id, now, now, actor, actor), token);
+                    await writer.StageCreateAsync(new RequestTransitionHistoryModel(
+                        Guid.NewGuid(), requestId, steps[i].Item1.id, steps[i].Item2, steps[i].Item1.target_state_id,
+                        archivedIds[i], actor, i == 0 ? null : "Vráceno k doplnění (testovací data)", now.AddMinutes(i),
+                        requestGroup.id, now, now, actor, actor), token);
+                }
+            }
+
             var policy = LoadApplicantPolicy(definition.id, initial.id, formNodes);
             var instantiated = await InstantiateMinimumTreeAsync(
-                formNodes, submission, submissionGroup, requestGroup, actor, now, policy, writer, token);
+                formNodes, submission, submissionGroup, requestGroup, actor, now, policy, writer, token,
+                ensureInputNodes: seedHistory);
 
             await ApplyStateAccessRulesAsync(
                 initial.id, request, submission, instantiated, now, actor, token);
@@ -312,15 +392,23 @@ public sealed class RequestService(
         DateTimeOffset now,
         IReadOnlyDictionary<Guid, bool> applicantPolicy,
         IProcessRequestWriteScope writer,
-        CancellationToken ct)
+        CancellationToken ct,
+        bool ensureInputNodes = false)
     {
         var result = new List<SubmissionNodeModel>();
+        var valueTypeIds = ensureInputNodes
+            ? Security.Query<FormNodeTypeModel>(SecurityOperations.Read)
+                .Where(type => type.can_have_value).Select(type => type.id).ToHashSet()
+            : new HashSet<Guid>();
 
         async Task AddChildren(Guid? formParent, SubmissionNodeModel? submissionParent, GroupModel inheritedSecurityGroup)
         {
             foreach (var def in definitions.Where(x => x.parent_id == formParent).OrderBy(x => x.position))
             {
-                for (var occurrence = 0; occurrence < def.min_occurs; occurrence++)
+                var minimum = def.min_occurs;
+                if (valueTypeIds.Contains(def.node_type_id))
+                    minimum = Math.Max(1, minimum);
+                for (var occurrence = 0; occurrence < minimum; occurrence++)
                 {
                     var id = Guid.NewGuid();
                     var path = submissionParent is null

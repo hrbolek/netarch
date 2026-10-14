@@ -25,7 +25,7 @@
     [Parameter] public IReadOnlyCollection<FormNodeResponse> SectionNodes { get; set; } = Array.Empty<FormNodeResponse>();
     [Parameter] public IReadOnlyDictionary<string, JsonNode?> SectionValues { get; set; }
         = new Dictionary<string, JsonNode?>();
-    private string InputId => $"form-node-{Definition.id:N}";
+    private string InputId => $"form-node-{Value?.id ?? Definition.id:N}";
     private string? CurrentValue => RendererValue.AsString(Value);
 
     private IReadOnlyCollection<SelectOption> _dynamicOptions = Array.Empty<SelectOption>();

@@ -1,9 +1,10 @@
 using WebAppArchitecture.DigitalProcesses.DBLayer;
+using WebAppArchitecture.Base.Data;
 using WebAppArchitecture.DBLayer;
 namespace WebAppArchitecture.DigitalProcesses.DBLayer;
 
 /// <summary>An immutable source revision. Rendered documents can reference the exact revision used.</summary>
-public sealed class DocumentTemplateRevisionModel
+public sealed class DocumentTemplateRevisionModel : IEntityDBModel
 {
     public Guid id { get; set; }
     public Guid template_id { get; set; }
@@ -14,7 +15,7 @@ public sealed class DocumentTemplateRevisionModel
 }
 
 /// <summary>Stable mapping of a template token to a node of the owning form version.</summary>
-public sealed class TemplateFieldBindingModel
+public sealed class TemplateFieldBindingModel : IEntityDBModel
 {
     public Guid id { get; set; }
     public Guid revision_id { get; set; }

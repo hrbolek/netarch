@@ -13,4 +13,5 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 public interface IProcessDefinitionService : IBaseService<ProcessDefinitionModel>
 {
     Task<ProcessDefinitionResponse> CreateTypedAsync(CreateProcessDefinitionRequest request, CancellationToken ct = default);
+    Task<ProcessDefinitionDetailResponse> GetDetailAsync(Guid id, CancellationToken ct = default);
 }

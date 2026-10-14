@@ -64,4 +64,31 @@ public sealed class DigitalProcessesHttpTests
         Assert.True(paths.TryGetProperty("/digital-processes/SubmissionNodeResponse/value/{id}", out _));
         Assert.True(paths.TryGetProperty("/digital-processes/SubmissionNodeResponse/subtree/{id}", out _));
     }
+
+    [Fact]
+    public async Task FormDefinitionCreateApi_AcceptsAnInitialFormSchema()
+    {
+        using var app = new IsolatedHost();
+        using var client = app.CreateClient();
+        using var response = await client.GetAsync("/swagger/v1/swagger.json");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        using var document = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+        var paths = document.RootElement.GetProperty("paths");
+
+        var createOperation = paths.GetProperty("/digital-processes/FormDefinitionResponse/create-typed")
+            .GetProperty("post");
+        var bodySchema = createOperation.GetProperty("requestBody")
+            .GetProperty("content").GetProperty("application/json").GetProperty("schema");
+        if (bodySchema.TryGetProperty("$ref", out var reference))
+        {
+            var schemaName = reference.GetString()!.Split('/').Last();
+            bodySchema = document.RootElement.GetProperty("components").GetProperty("schemas").GetProperty(schemaName);
+        }
+
+        var properties = bodySchema.GetProperty("properties");
+        Assert.True(properties.TryGetProperty("name", out _));
+        Assert.True(properties.TryGetProperty("description", out _));
+        Assert.True(properties.TryGetProperty("children", out _));
+        Assert.True(paths.GetProperty("/digital-processes/form-node-search").TryGetProperty("post", out _));
+    }
 }

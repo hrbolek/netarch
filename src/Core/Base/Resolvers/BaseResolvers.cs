@@ -192,6 +192,9 @@ public static class BaseResolvers
         if (model is not ISecuredEntityDTOModel secured)
             return null;
 
+        // Architecture exception: IRbacService is the authorization substrate below secured
+        // entity services. This call decides access to an already projected DTO, not DB access;
+        // domain reads and writes must still go through the supplied secured entity service.
         var rbacService = httpContext.RequestServices.GetService<IRbacService>();
         if (rbacService is null)
             return null;
@@ -212,4 +215,3 @@ public static class BaseResolvers
     }
 
 }
-

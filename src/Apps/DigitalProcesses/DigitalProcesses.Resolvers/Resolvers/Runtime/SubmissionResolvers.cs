@@ -38,8 +38,8 @@ public static class SubmissionResolvers
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: UpdateSubmissionValuesAsync; pořadí a parametry viz implementace.
     /// </summary>
-    public static Task<SubmissionTreeResponse> BulkValues(Guid id, BulkSubmissionValuesRequest request, IBulkTreeService service, CancellationToken ct)
-        => service.UpdateSubmissionValuesAsync(id, request, ct);
+    public static Task<SubmissionTreeResponse> BulkValues(Guid id, BulkSubmissionValuesRequest request, ISubmissionService service, CancellationToken ct)
+        => service.UpdateValuesAsync(id, request, ct);
 
     /// <summary>
     /// Registruje routy Minimal API a vazbu endpointů na Razor/JSON reprezentaci; samotné požadavky zpracovávají příslušné resolver metody.

@@ -5,7 +5,13 @@
 <div class="container-fluid py-3">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div><h1 class="h4">Workflow editor · version @Model.version.version</h1><span class="text-muted">@(Model.version.is_published ? "Published (read-only)" : "Draft")</span></div>
-        <a href="/digital-processes/WorkflowDefinitionResponse/list" class="btn btn-outline-secondary">Workflow definitions</a>
+        <div class="d-flex gap-2">
+            <form method="post" action="/digital-processes/WorkflowVersionResponse/designer/test/@Model.version.id"
+                  onsubmit="return confirm('Vytvořit testovací žádost pro tuto verzi workflow?');">
+                <button type="submit" class="btn btn-outline-primary">Testovat verzi</button>
+            </form>
+            <a href="/digital-processes/WorkflowDefinitionResponse/list" class="btn btn-outline-secondary">Workflow definitions</a>
+        </div>
     </div>
     <details class="mb-3">
         <summary class="fw-semibold">Oprávnění verze workflow</summary>
@@ -13,9 +19,11 @@
         <EntityPermissions RbacId="@Model.version.rbacobject_id" App="architecture" />
     </details>
     <div class="card mb-3" id="workflow-preview-@Model.version.id">
-        <div class="card-header d-flex justify-content-between align-items-center"><strong>Workflow preview / test</strong><button class="btn btn-sm btn-outline-secondary" type="button" onclick="workflowPreviewReset(this)">Reset</button></div>
+        <div class="card-header d-flex justify-content-between align-items-center"><strong>Workflow visualization and test</strong><button class="btn btn-sm btn-outline-secondary" type="button" onclick="workflowPreviewReset(this)">Reset</button></div>
         <div class="card-body">
-            <p class="small text-muted">Simulate state transitions without changing any Request. Conditions, permissions and actions are displayed but not executed.</p>
+            <WorkflowGraph Id="@Model.version.id.ToString("N")" States="@Model.states" Transitions="@Model.transitions"
+                           CurrentStateId="@InitialStateId" />
+            <p class="small text-muted mt-3">Simulate state transitions without changing any Request. Conditions, permissions and actions are displayed but not executed.</p>
             <div class="mb-2">Current state: <strong data-workflow-current></strong></div>
             <div class="d-flex flex-wrap gap-2" data-workflow-transitions></div>
             <div class="mt-2 text-muted small" data-workflow-history aria-live="polite"></div>
@@ -31,7 +39,7 @@
                 {
                     <details class="border rounded p-2 mb-2" id="state-@state.id">
                         <summary><strong>@state.name</strong> <span class="small text-muted">(@state.key)</span> @if (state.is_initial) { <span class="badge bg-success">Initial</span> } @if (state.is_terminal) { <span class="badge bg-secondary">Terminal</span> }</summary>
-                        <form method="post" action="/digital-processes/WorkflowVersionResponse/designer/update-state" class="mt-3">
+                        <form method="post" action="/digital-processes/WorkflowVersionResponse/designer/update-state" class="mt-3" data-workflow-state-editor="@state.id">
                             <input type="hidden" name="id" value="@state.id"/><input type="hidden" name="workflow_version_id" value="@Model.version.id"/>
                             <label class="form-label">Key</label><input class="form-control mb-2" name="key" value="@state.key" required disabled="@Model.version.is_published"/>
                             <label class="form-label">Name</label><input class="form-control mb-2" name="name" value="@state.name" required disabled="@Model.version.is_published"/>
@@ -61,7 +69,7 @@
                     {
                         <details class="border rounded p-2 mb-2">
                             <summary><strong>@transition.name</strong> · @StateName(transition.source_state_id) → @StateName(transition.target_state_id)</summary>
-                            <form method="post" action="/digital-processes/WorkflowVersionResponse/designer/update-transition" class="mt-3">
+                            <form method="post" action="/digital-processes/WorkflowVersionResponse/designer/update-transition" class="mt-3" data-workflow-transition-editor="@transition.id">
                                 <input type="hidden" name="id" value="@transition.id"/><input type="hidden" name="workflow_version_id" value="@Model.version.id"/>
                                 <label class="form-label">Key</label><input class="form-control mb-2" name="key" value="@transition.key" required disabled="@Model.version.is_published"/>
                                 <label class="form-label">Name</label><input class="form-control mb-2" name="name" value="@transition.name" required disabled="@Model.version.is_published"/>
@@ -120,6 +128,21 @@ window.workflowPreviewRender = function(root) {
   root.dataset.state = current || '';
   const state = def.states.find(s => s.id === current);
   root.querySelector('[data-workflow-current]').textContent = state ? state.name : 'No state defined';
+  const graph = root.querySelector('[data-workflow-graph]');
+  if (graph) {
+    graph.querySelectorAll('[data-state-id]').forEach(node => {
+      const selected = node.dataset.stateId === current;
+      node.classList.toggle('is-current', selected);
+      const rect = node.querySelector('rect');
+      if (rect) { rect.setAttribute('fill', selected ? 'yellow' : 'url(#workflow-gradient-@Model.version.id.ToString("N"))'); rect.setAttribute('stroke-width', selected ? '2' : '1'); }
+      node.querySelectorAll('text').forEach(label => label.setAttribute('fill', selected ? 'blue' : 'black'));
+    });
+    graph.querySelectorAll('.workflow-edge').forEach(edge => {
+      const active = edge.dataset.sourceId === current;
+      edge.classList.toggle('is-current', active);
+      edge.querySelector('path')?.setAttribute('stroke', active ? '#e6b800' : 'green');
+    });
+  }
   const target = root.querySelector('[data-workflow-transitions]'); target.replaceChildren();
   for (const tr of def.transitions.filter(t => t.from === current)) {
     const btn = document.createElement('button'); btn.type = 'button';
@@ -129,7 +152,89 @@ window.workflowPreviewRender = function(root) {
     target.append(btn);
   }
   if (!target.children.length) target.textContent = 'No outgoing transitions from this state.';
+  workflowGraphSync(root);
 };
+function workflowGraphSync(root) {
+  const graph = document.querySelector('[data-workflow-graph]');
+  if (!graph) return;
+  const stateElements = new Map([...graph.querySelectorAll('[data-state-id]')].map(node => [node.dataset.stateId, node]));
+  document.querySelectorAll('[data-workflow-state-editor]').forEach(form => {
+    const node = stateElements.get(form.dataset.workflowStateEditor);
+    const name = form.querySelector('[name=name]')?.value;
+    const text = node?.querySelector('text');
+    if (text && name !== undefined) {
+      const lines = [];
+      let line = '';
+      for (const word of name.trim().split(/\\s+/)) {
+        if (line && line.length + word.length + 1 > 18) { lines.push(line); line = ''; }
+        line += (line ? ' ' : '') + word;
+      }
+      if (line) lines.push(line);
+      text.setAttribute('y', String(20 - (lines.length - 1) * 7.5));
+      text.replaceChildren(...lines.map((value, index) => {
+        const span = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+        span.setAttribute('x', '60'); span.setAttribute('dy', index ? '15' : '0'); span.textContent = value;
+        return span;
+      }));
+    }
+  });
+  const editors = new Map([...document.querySelectorAll('[data-workflow-transition-editor]')]
+    .map(form => [form.dataset.workflowTransitionEditor, form]));
+  const slots = new Map(), routes = [];
+  let upperBend = 0, lowerBend = 0;
+  const edges = [...graph.querySelectorAll('[data-transition-id]')];
+  edges.sort((a, b) => {
+    const key = edge => (editors.get(edge.dataset.transitionId)?.querySelector('[name=key]')?.value || edge.dataset.transitionKey).toLowerCase();
+    return key(a) < key(b) ? -1 : key(a) > key(b) ? 1 : 0;
+  });
+  edges.forEach(edge => {
+    const form = editors.get(edge.dataset.transitionId);
+    const source = form?.querySelector('[name=source_state_id]')?.value || edge.dataset.sourceId;
+    const target = form?.querySelector('[name=target_state_id]')?.value || edge.dataset.targetId;
+    const name = form?.querySelector('[name=name]')?.value;
+    const sourceNode = stateElements.get(source), targetNode = stateElements.get(target);
+    if (!sourceNode || !targetNode) return;
+    edge.dataset.sourceId = source; edge.dataset.targetId = target;
+    const sx = Number(sourceNode.dataset.x), tx = Number(targetNode.dataset.x);
+    const pair = source + ':' + target, slot = slots.get(pair) || 0;
+    slots.set(pair, slot + 1);
+    const bend = (45 + Math.floor(Math.abs(tx - sx) / 4) + slot * 28) / 3;
+    if (tx <= sx) upperBend = Math.max(upperBend, bend);
+    else lowerBend = Math.max(lowerBend, bend);
+    routes.push({ edge, sx, tx, bend, name });
+  });
+  const nodeY = Math.max(40, Math.ceil(upperBend) + 40);
+  stateElements.forEach(node => {
+    node.dataset.y = String(nodeY);
+    node.setAttribute('transform', `translate(${Number(node.dataset.x) - 60},${nodeY})`);
+  });
+  routes.forEach(({ edge, sx, tx, bend, name }) => {
+    const path = edge.querySelector('path');
+    const label = edge.querySelector('text');
+    const y = value => tx <= sx ? 2 * (nodeY + 20) - value : value;
+    const startY = nodeY + 40, controlY = startY + bend * 4 / 3;
+    const offset = (tx - sx) / 5;
+    const startX = sx === tx ? sx - 24 : sx, endX = sx === tx ? tx + 24 : tx;
+    const c1 = sx === tx ? sx - 100 : sx + offset, c2 = sx === tx ? tx + 100 : tx - offset;
+    const number = value => Number(value.toFixed(3));
+    path.setAttribute('d', `M ${startX} ${y(startY)} C ${c1} ${number(y(controlY))}, ${c2} ${number(y(controlY))}, ${endX} ${y(startY)}`);
+    label.setAttribute('x', (sx + tx) / 2);
+    label.setAttribute('y', y(startY + bend + 14));
+    if (name !== undefined) label.textContent = name;
+  });
+  const width = graph.viewBox.baseVal.width, height = Math.max(150, nodeY + 80 + Math.ceil(lowerBend));
+  graph.setAttribute('viewBox', `0 0 ${width} ${height}`);
+  graph.setAttribute('height', String(height));
+  graph.querySelector(':scope > rect')?.setAttribute('height', String(height));
+}
+document.addEventListener('input', event => {
+  const editor = event.target.closest('[data-workflow-state-editor], [data-workflow-transition-editor]');
+  if (editor) workflowGraphSync(document);
+});
+document.addEventListener('change', event => {
+  const editor = event.target.closest('[data-workflow-state-editor], [data-workflow-transition-editor]');
+  if (editor) workflowGraphSync(document);
+});
 window.workflowPreviewReset = btn => {const root = btn.closest('[id^=workflow-preview-]'); root.dataset.state = ''; root.querySelector('[data-workflow-history]').textContent = ''; workflowPreviewRender(root);};
 document.querySelectorAll('[id^=workflow-preview-]').forEach(workflowPreviewRender);
 </script>
@@ -143,5 +248,7 @@ document.querySelectorAll('[id^=workflow-preview-]').forEach(workflowPreviewRend
         states = Model.states.Select(s => new { id = s.id.ToString(), name = s.name, initial = s.is_initial }),
         transitions = Model.transitions.Select(t => new { from = t.source_state_id.ToString(), to = t.target_state_id.ToString(), name = t.name, condition = t.condition_query })
     }).Replace("<", "\\u003c");
+    private Guid? InitialStateId => Model.states.FirstOrDefault(s => s.is_initial)?.id
+        ?? Model.states.OrderBy(s => s.position).FirstOrDefault()?.id;
     private string StateName(Guid id) => Model.states.FirstOrDefault(x => x.id == id)?.name ?? id.ToString();
 }

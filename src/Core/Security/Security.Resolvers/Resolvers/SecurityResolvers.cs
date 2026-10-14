@@ -18,6 +18,13 @@ namespace WebAppArchitecture.Security.Resolvers;
 /// <summary>
 /// HTTP resolver pro Security Resolvers. Překládá požadavky Minimal API na volání služeb a návratové modely; obchodní pravidla a perzistence patří do Services/DBLayer.
 /// </summary>
+/// <remarks>
+/// Architecture exception: authorization decisions and the scope-authorized permission projection
+/// use SecurityService/SecurityPermissionService rather than SecuredBaseService entity CRUD.
+/// The former is below ISecurityLayer and must not depend recursively on it; the latter explains
+/// grants only after Read on the requested scope is checked here. Role mutations still delegate
+/// to the secured IRoleService. This is not an exception for direct resolver database access.
+/// </remarks>
 public static class SecurityResolvers
 {
     public static async Task<IResult> Operations(

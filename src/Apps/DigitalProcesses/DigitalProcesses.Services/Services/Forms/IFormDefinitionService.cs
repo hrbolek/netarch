@@ -15,4 +15,5 @@ public interface IFormDefinitionService : IBaseService<FormDefinitionModel>
 {
     Task<FormDefinitionResponse> CreateTypedAsync(CreateFormDefinitionRequest request, CancellationToken ct = default);
     Task<FormDefinitionDetailResponse> GetDetailAsync(Guid id, CancellationToken ct = default);
+    Task<bool> CanCreateAsync(CancellationToken ct = default);
 }

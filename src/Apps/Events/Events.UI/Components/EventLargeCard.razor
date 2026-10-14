@@ -1,11 +1,42 @@
 @namespace WebAppArchitecture.Events
-@using Microsoft.AspNetCore.Components
-@using WebAppArchitecture.Base.UI.Components
-<LargeCard TModel="EventModel" Model="@Model" HeaderText="@Model.Name">
- <ChildContent Context="item">
-  <p>@item.Description</p>
-  <dl class="row"><dt class="col-sm-3">Začátek</dt><dd class="col-sm-9">@item.StartsAt.ToString("dd.MM.yyyy HH:mm")</dd><dt class="col-sm-3">Konec</dt><dd class="col-sm-9">@item.EndsAt.ToString("dd.MM.yyyy HH:mm")</dd><dt class="col-sm-3">Typ</dt><dd class="col-sm-9">@item.EventTypeId</dd></dl>
-  <div class="d-flex gap-2 flex-wrap"><a class="btn btn-outline-primary" href="@($"/events/EventResponse/timetable/{item.id}")">Rozvrh</a><a class="btn btn-outline-primary" href="@($"/events/EventResponse/academic-plan/{item.id}")">Harmonogram</a><a class="btn btn-outline-secondary" href="@($"/events/EventResponse/edit/{item.id}")">Upravit</a></div>
- </ChildContent>
+
+<LargeCard TModel="EventModel" Model="@Model" HeaderText="Událost">
+    <SideContent Context="item">
+        <EventMediumCard Model="@item" />
+        <EntityLinks TModel="EventModel" Model="@item" Links="@GetLinks(item)" />
+        <EntityPermissions RbacId="@item.rbacobject_id" App="events" />
+    </SideContent>
+    <ChildContent Context="item">
+        <p>@item.Description</p>
+        <Attribute TModel="EventModel" Item="@item" Label="Typ">
+            <a href="@($"/events/EventTypeResponse/edit/{item.EventTypeId}")">@item.EventTypeId</a>
+        </Attribute>
+        <Attribute TModel="EventModel" Item="@item" Label="Nadřazená událost">
+            @if (item.ParentId is Guid parentId)
+            {
+                <a href="@($"/events/EventResponse/detail/{parentId}")">@parentId</a>
+            }
+            else
+            {
+                <span class="text-muted">žádná</span>
+            }
+        </Attribute>
+        @if (ChildContent is not null)
+        {
+            @ChildContent(item)
+        }
+    </ChildContent>
 </LargeCard>
-@code { [Parameter,EditorRequired] public EventModel Model {get;set;}=default!; }
+
+@code {
+    [Parameter, EditorRequired] public EventModel Model { get; set; } = default!;
+    [Parameter] public RenderFragment<EventModel>? ChildContent { get; set; }
+
+    private static EntityNavigationLink[] GetLinks(EventModel item)
+        =>
+        [
+            new("Rozvrh", $"/events/EventResponse/timetable/{item.id}", "Rozvrh události"),
+            new("Harmonogram", $"/events/EventResponse/academic-plan/{item.id}", "Akademický plán"),
+            new("Upravit", $"/events/EventResponse/edit/{item.id}", "Editace události")
+        ];
+}

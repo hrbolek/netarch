@@ -1,10 +1,18 @@
 @namespace WebAppArchitecture.Events
-@using Microsoft.AspNetCore.Components
-@using WebAppArchitecture.Base.UI.Components
-<MediumCard TModel="EventModel" Model="@Model" HeaderText="@Model.Name">
- <ChildContent Context="item">
-  <div class="small text-muted mb-2">@item.StartsAt.ToString("dd.MM.yyyy HH:mm") – @item.EndsAt.ToString("dd.MM.yyyy HH:mm")</div>
-  <a href="@($"/events/EventResponse/detail/{item.id}")">Detail</a> · <a href="@($"/events/EventResponse/edit/{item.id}")">Editovat</a> · <a href="@($"/events/EventResponse/timetable/{item.id}")">Rozvrh</a>
- </ChildContent>
+
+<MediumCard TModel="EventModel" Model="@Model" HeaderText="Událost">
+    <ChildContent Context="item">
+        <Attribute TModel="EventModel" Item="@item" Label="Název" AttributeName="Name" />
+        <Attribute TModel="EventModel" Item="@item" Label="Začátek" AttributeName="StartsAt" />
+        <Attribute TModel="EventModel" Item="@item" Label="Konec" AttributeName="EndsAt" />
+        <div class="mt-2">
+            <a href="@($"/events/EventResponse/detail/{item.id}")">Detail</a> ·
+            <a href="@($"/events/EventResponse/edit/{item.id}")">Editovat</a> ·
+            <a href="@($"/events/EventResponse/timetable/{item.id}")">Rozvrh</a>
+        </div>
+    </ChildContent>
 </MediumCard>
-@code { [Parameter,EditorRequired] public EventModel Model {get;set;}=default!; }
+
+@code {
+    [Parameter, EditorRequired] public EventModel Model { get; set; } = default!;
+}

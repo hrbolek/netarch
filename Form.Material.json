@@ -1,0 +1,422 @@
+{
+  "name": "Požadavek na majetek/službu",
+  "description": "Formulář vycházející z formuláře vzor.1.html.",
+  "children": {
+    "basic_information": {
+      "renderer_key": "section",
+      "label": "Základní informace",
+      "children": {
+        "request_name": {
+          "renderer_key": "input.text",
+          "label": "Název"
+        },
+        "project_code": {
+          "renderer_key": "input.text",
+          "label": "Projekt/záměr (kód)",
+          "description": "Zatím prostý text; výběr projektu a načítání jeho údajů není podporováno."
+        },
+        "project_abbreviation": {
+          "renderer_key": "input.text",
+          "label": "Projekt/záměr - zkratka"
+        },
+        "project_type": {
+          "renderer_key": "input.text",
+          "label": "Druh projektu/záměru"
+        },
+        "requester": {
+          "renderer_key": "input.graphql-search",
+          "label": "Žadatel/konkrétní řešitel",
+          "configuration": {
+            "query": "query userByPattern($fragment: Str) { choices: userByPattern(namefragment:$fragment) { id: UCO label: name } }",
+            "minLength": 3,
+            "variables": {}
+          }
+        },
+        "asset_recipient": {
+          "renderer_key": "input.graphql-search",
+          "label": "Osoba odpovědná za převzetí a trvalé užívání pořízeného majetku",
+          "configuration": {
+            "query": "query userByPattern($fragment: Str) { choices: userByPattern(namefragment:$fragment) { id: UCO label: name } }",
+            "minLength": 3,
+            "variables": {}
+          }
+        },
+        "prj": {
+          "renderer_key": "input.text",
+          "label": "PRJ"
+        },
+        "nipez": {
+          "renderer_key": "input.text",
+          "label": "NIPEZ"
+        },
+        "budget_item": {
+          "renderer_key": "input.text",
+          "label": "Rozpočtová položka",
+          "description": "Zatím prostý text; výběr více položek z rozpočtového číselníku není podporován."
+        },
+        "procurement_procedure": {
+          "renderer_key": "input.text",
+          "label": "Zadávací postup"
+        }
+      }
+    },
+    "procurement_specification": {
+      "renderer_key": "section",
+      "label": "Předmět zakázky, detailní specifikace",
+      "children": {
+        "acquisition_reason": {
+          "renderer_key": "input.textarea",
+          "label": "Důvod nabývání majetku/pořizování služeb"
+        },
+        "purchase_actions": {
+          "renderer_key": "input.textarea",
+          "label": "Popis úkonů souvisejících s nákupem"
+        },
+        "compliant_goods_examples": {
+          "renderer_key": "input.textarea",
+          "label": "Příklady zboží splňující parametry"
+        },
+        "graphic_documentation": {
+          "renderer_key": "input.textarea",
+          "label": "Grafická dokumentace, webové stránky, jiné informační zdroje"
+        },
+        "handover_and_training": {
+          "renderer_key": "input.textarea",
+          "label": "Požadavky k předání majetku/služby, asistenci, zaškolení"
+        },
+        "single_supplier_justification": {
+          "renderer_key": "input.textarea",
+          "label": "Odůvodnění požadování majetku/služby zajistitelného pouze jedním účastníkem"
+        },
+        "specification_item": {
+          "renderer_key": "section",
+          "label": "Položka specifikace (vzor jednoho řádku)",
+          "description": "Opakovatelná položka specifikace.",
+          "max_occurs": 50,
+          "children": {
+            "item_name_and_description": {
+              "renderer_key": "input.textarea",
+              "label": "Název - popis"
+            },
+            "item_quantity": {
+              "renderer_key": "input.number",
+              "label": "Množství"
+            },
+            "item_unit": {
+              "renderer_key": "input.text",
+              "label": "Jednotka"
+            },
+            "item_unit_price_with_vat": {
+              "renderer_key": "input.number",
+              "label": "Cena s DPH za jednotku (Kč)"
+            }
+          }
+        },
+        "market_research_entry": {
+          "renderer_key": "section",
+          "label": "Průzkum trhu / předběžná tržní konzultace",
+          "description": "Opakovatelný záznam průzkumu trhu.",
+          "max_occurs": 50,
+          "children": {
+            "research_type": {
+              "renderer_key": "input.select",
+              "label": "Způsob průzkumu",
+              "configuration": {
+                "options": [
+                  {
+                    "value": "email",
+                    "label": "E-mail, dopis, datová zpráva"
+                  },
+                  {
+                    "value": "internet",
+                    "label": "Internet"
+                  },
+                  {
+                    "value": "nen",
+                    "label": "NEN"
+                  },
+                  {
+                    "value": "other",
+                    "label": "Jiné"
+                  }
+                ]
+              }
+            },
+            "supplier_company": {
+              "renderer_key": "input.text",
+              "label": "Společnost"
+            },
+            "supplier_company_id": {
+              "renderer_key": "input.text",
+              "label": "IČO"
+            },
+            "supplier_telephone": {
+              "renderer_key": "input.text",
+              "label": "Telefon"
+            },
+            "supplier_email_contact": {
+              "renderer_key": "input.text",
+              "label": "E-mail / kontaktní osoba"
+            },
+            "research_date": {
+              "renderer_key": "input.date",
+              "label": "Datum"
+            },
+            "research_cost": {
+              "renderer_key": "input.number",
+              "label": "Cena (Kč)"
+            },
+            "nen_number": {
+              "renderer_key": "input.text",
+              "label": "Číslo NEN"
+            },
+            "kcm_or_nen": {
+              "renderer_key": "input.text",
+              "label": "KČM nebo NEN"
+            },
+            "research_item_name": {
+              "renderer_key": "input.text",
+              "label": "Název položky"
+            },
+            "research_description": {
+              "renderer_key": "input.textarea",
+              "label": "Popis průběhu průzkumu / konzultace"
+            }
+          }
+        },
+        "responsible_procurement": {
+          "renderer_key": "section",
+          "label": "Požadavky na odpovědné zadávání včetně odůvodnění",
+          "children": {
+            "social_procurement": {
+              "renderer_key": "section",
+              "label": "Sociální",
+              "children": {
+                "social_applicability": {
+                  "renderer_key": "input.select",
+                  "label": "Možnost uplatnění požadavku",
+                  "configuration": {
+                    "options": [
+                      {
+                        "value": "yes",
+                        "label": "Ano"
+                      },
+                      {
+                        "value": "no",
+                        "label": "Ne"
+                      },
+                      {
+                        "value": "not_identified",
+                        "label": "Možnost nebyla identifikována"
+                      }
+                    ]
+                  }
+                },
+                "social_justification": {
+                  "renderer_key": "input.textarea",
+                  "label": "Odůvodnění"
+                }
+              }
+            },
+            "environmental_procurement": {
+              "renderer_key": "section",
+              "label": "Environmentální",
+              "children": {
+                "environmental_applicability": {
+                  "renderer_key": "input.select",
+                  "label": "Možnost uplatnění požadavku",
+                  "configuration": {
+                    "options": [
+                      {
+                        "value": "yes",
+                        "label": "Ano"
+                      },
+                      {
+                        "value": "no",
+                        "label": "Ne"
+                      },
+                      {
+                        "value": "not_identified",
+                        "label": "Možnost nebyla identifikována"
+                      }
+                    ]
+                  }
+                },
+                "environmental_justification": {
+                  "renderer_key": "input.textarea",
+                  "label": "Odůvodnění"
+                }
+              }
+            },
+            "innovative_procurement": {
+              "renderer_key": "section",
+              "label": "Inovační",
+              "children": {
+                "innovative_applicability": {
+                  "renderer_key": "input.select",
+                  "label": "Možnost uplatnění požadavku",
+                  "configuration": {
+                    "options": [
+                      {
+                        "value": "yes",
+                        "label": "Ano"
+                      },
+                      {
+                        "value": "no",
+                        "label": "Ne"
+                      },
+                      {
+                        "value": "not_identified",
+                        "label": "Možnost nebyla identifikována"
+                      }
+                    ]
+                  }
+                },
+                "innovative_justification": {
+                  "renderer_key": "input.textarea",
+                  "label": "Odůvodnění"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "service_and_delivery": {
+      "renderer_key": "section",
+      "label": "Servis, údržba, přeprava",
+      "children": {
+        "warranty_service_period": {
+          "renderer_key": "input.text",
+          "label": "Doba záručního servisu"
+        },
+        "fault_resolution_deadline": {
+          "renderer_key": "input.text",
+          "label": "Časová lhůta na odstranění závad"
+        },
+        "packaging_requirements": {
+          "renderer_key": "input.textarea",
+          "label": "Požadavky na balení"
+        },
+        "transport_required": {
+          "renderer_key": "input.select",
+          "label": "Zajištění přepravy",
+          "configuration": {
+            "options": [
+              {
+                "value": "required",
+                "label": "Požaduji"
+              },
+              {
+                "value": "not_required",
+                "label": "Nepožaduji"
+              }
+            ]
+          }
+        },
+        "delivery_location": {
+          "renderer_key": "input.text",
+          "label": "Místo dodání"
+        },
+        "special_delivery_requirements": {
+          "renderer_key": "input.textarea",
+          "label": "Zvláštní požadavky"
+        }
+      }
+    },
+    "price_and_term": {
+      "renderer_key": "section",
+      "label": "Cena, doba",
+      "children": {
+        "estimated_price_with_vat": {
+          "renderer_key": "input.number",
+          "label": "Předpokládaná hodnota veřejné zakázky v Kč s DPH"
+        },
+        "estimated_price_without_vat": {
+          "renderer_key": "input.number",
+          "label": "Předpokládaná hodnota veřejné zakázky v Kč bez DPH",
+          "description": "Výpočet z ceny s DPH není v tomto návrhu automatizován."
+        },
+        "expected_delivery_date": {
+          "renderer_key": "input.date",
+          "label": "Předpokládaný termín doby dodání"
+        },
+        "staged_performance": {
+          "renderer_key": "input.checkbox",
+          "label": "Etapové plnění"
+        },
+        "multi_year_contract": {
+          "renderer_key": "input.checkbox",
+          "label": "Požadavek na uzavření víceleté smlouvy"
+        }
+      }
+    },
+    "documentation_and_other": {
+      "renderer_key": "section",
+      "label": "Dokumentace, komise, ostatní",
+      "children": {
+        "documentation_in_czech": {
+          "renderer_key": "input.select",
+          "label": "Dokumentace v českém jazyce",
+          "configuration": {
+            "options": [
+              {
+                "value": "yes",
+                "label": "Ano"
+              },
+              {
+                "value": "no",
+                "label": "Ne"
+              }
+            ]
+          }
+        },
+        "documentation_scope": {
+          "renderer_key": "input.textarea",
+          "label": "Požadavek na rozsah dokumentace"
+        },
+        "committee_member": {
+          "renderer_key": "input.graphql-search",
+          "label": "Člen komise",
+          "configuration": {
+            "query": "query userByPattern($fragment: Str) { choices: userList(where: { email: { _ilike: $fragment } }) { id label: email} }",
+            "minLength": 3,
+            "variables": {}
+          }
+        },
+        "committee_alternate": {
+          "renderer_key": "input.graphql-search",
+          "label": "Náhradník člena komise",
+          "configuration": {
+            "query": "query userByPattern($fragment: Str) { choices: userList(where: { email: { _ilike: $fragment } }) { id label: email} }",
+            "minLength": 3,
+            "variables": {}
+          }
+        },
+        "committee_required": {
+          "renderer_key": "input.checkbox",
+          "label": "Komise"
+        },
+        "participant_requirements": {
+          "renderer_key": "input.textarea",
+          "label": "Požadavky na účastníka/výrobce"
+        },
+        "other_requirements": {
+          "renderer_key": "input.textarea",
+          "label": "Různé"
+        }
+      }
+    },
+    "notes": {
+      "renderer_key": "section",
+      "label": "Poznámky",
+      "description": "Pole pro zadání nové poznámky. Historie poznámek a její auditní zobrazení jsou součástí procesu, nikoliv formulářového schématu.",
+      "children": {
+        "new_note": {
+          "renderer_key": "input.textarea",
+          "label": "Nová poznámka"
+        }
+      }
+    }
+  }
+}

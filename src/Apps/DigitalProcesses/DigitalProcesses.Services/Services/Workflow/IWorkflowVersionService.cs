@@ -15,4 +15,6 @@ public interface IWorkflowVersionService : IBaseService<WorkflowVersionModel>
     Task<WorkflowVersionResponse> PublishAsync(Guid id, CancellationToken ct = default);
     Task DeleteDraftAsync(Guid id, CancellationToken ct = default);
     Task<WorkflowDesignerResponse> GetDesignerAsync(Guid id, CancellationToken ct = default);
+    Task<WorkflowDesignerResponse> ReplaceDefinitionAsync(Guid id, WorkflowGraphDefinition request, CancellationToken ct = default);
+    Task<WorkflowVersionResponse> CreateNextAsync(Guid definitionId, CancellationToken ct = default);
 }

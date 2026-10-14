@@ -35,11 +35,19 @@ public sealed class DigitalProcessesModule : IModule
         services.AddHttpClient("digital-process-ai-agents");
         services.AddSingleton<PreviewFormInstanceStore>();
         services.AddScoped<RtfTemplateStore>();
+        services.AddScoped<IRtfTemplateService, RtfTemplateService>();
         services.AddScoped<IFormDefinitionService, FormDefinitionService>();
         services.AddScoped<IFormVersionService, FormVersionService>();
         services.AddScoped<IFormNodeTypeService, FormNodeTypeService>();
         services.AddScoped<IFormNodeService, FormNodeService>();
         services.AddScoped<IBulkTreeService, BulkTreeService>();
+        services.AddScoped(typeof(IDigitalProcessActionService<>), typeof(DigitalProcessActionService<>));
+        services.AddScoped<IFormSearchService, FormSearchService>();
+        services.AddScoped<IFormComponentCatalogService, FormComponentCatalogService>();
+        services.AddScoped<IFormDocumentService, FormDocumentService>();
+        services.AddScoped<IApplicantPolicyService, ApplicantPolicyService>();
+        services.AddScoped<IFormDesignAiService, FormDesignAiService>();
+        services.AddScoped<IDigitalProcessesManagementService, DigitalProcessesManagementService>();
         services.AddScoped<IWorkflowDefinitionService, WorkflowDefinitionService>();
         services.AddScoped<IWorkflowVersionService, WorkflowVersionService>();
         services.AddScoped<IWorkflowStateService, WorkflowStateService>();
@@ -121,16 +129,17 @@ public sealed class DigitalProcessesModule : IModule
                 workflows, submissions and Digital Processes administration.
                 """);
 
-        // Register preview routes in all environments so the designer never renders
-        // an HTMX action whose target route is absent (404). Preview remains
-        // experimental; protect access to the application until authorization
-        // and persistent form instances have been implemented.
+        // Temporary designer previews are an explicit architecture exception documented on
+        // PreviewFormEndpoints. They check source-form access but are not durable, user-owned
+        // Submissions. Keep routes available in all environments for designer HTMX actions;
+        // this exception does not extend to the production endpoints registered below.
         var scoped = endpoints.MapGroup("/" + prefix.Trim('/'));
         PreviewFormEndpoints.Map(scoped);
         FormDocumentEndpoints.Map(scoped);
         RtfDocumentEndpoints.Map(scoped);
         TemplateManagementEndpoints.Map(scoped);
         FormComponentCatalogEndpoints.Map(scoped);
+        FormSearchEndpoints.Map(scoped);
         FormDesignAiEndpoints.Map(scoped);
         DigitalProcessesManagementPages.Map(scoped);
         ApplicantPolicyEndpoints.Map(scoped);

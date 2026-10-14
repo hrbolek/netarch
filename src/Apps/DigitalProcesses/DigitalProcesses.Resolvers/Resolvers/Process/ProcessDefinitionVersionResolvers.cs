@@ -12,6 +12,7 @@ using WebAppArchitecture.DBLayer;
 using WebAppArchitecture.DigitalProcesses.Models;
 using WebAppArchitecture.DigitalProcesses.Services;
 using WebAppArchitecture.DigitalProcesses.UI.Pages;
+using WebAppArchitecture.DigitalProcesses.UI.Designer;
 
 namespace WebAppArchitecture.DigitalProcesses.Resolvers;
 
@@ -58,16 +59,41 @@ public static class ProcessDefinitionVersionResolvers
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateContainedAsync, PublishAsync, Query, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
     /// </summary>
-    public static async Task<IResult> CreateForm(HttpContext http, IProcessDefinitionVersionService service, ISecurityLayer security, CancellationToken ct)
+    public static async Task<IResult> CreateForm(HttpContext http, IProcessDefinitionVersionService service, CancellationToken ct)
     {
         var f = await http.Request.ReadFormAsync(ct);
-        var created = await service.CreateContainedAsync(new CreateProcessDefinitionVersionRequest(DigitalProcessCreateForm.GuidValue(f,"process_definition_id"),DigitalProcessCreateForm.GuidValue(f,"form_version_id"),DigitalProcessCreateForm.GuidValue(f,"workflow_version_id"),security.Query<ProcessDefinitionVersionModel>(SecurityOperations.Read).Where(x => x.process_definition_id == DigitalProcessCreateForm.GuidValue(f,"process_definition_id")).Select(x => x.version).ToArray().DefaultIfEmpty(0).Max()+1,DigitalProcessCreateForm.BoolValue(f,"publish"),DigitalProcessCreateForm.GuidValue(f,"target_group_type_id")), ct);
+        var created = await service.CreateNextAsync(new CreateProcessDefinitionVersionRequest(DigitalProcessCreateForm.GuidValue(f,"process_definition_id"),DigitalProcessCreateForm.GuidValue(f,"form_version_id"),DigitalProcessCreateForm.GuidValue(f,"workflow_version_id"),1,DigitalProcessCreateForm.BoolValue(f,"publish"),DigitalProcessCreateForm.GuidValue(f,"target_group_type_id")), ct);
         return Results.Redirect(Prefix + "/ProcessDefinitionResponse/view/" + created.process_definition_id);
     }
     /// <summary>
     /// Provádí přechod životního cyklu; služba ověřuje stavové předpoklady a oprávnění před uložením změn. Volání: PublishAsync; pořadí a parametry viz implementace.
     /// </summary>
     public static Task<ProcessDefinitionVersionResponse> Publish(Guid id, IProcessDefinitionVersionService service, CancellationToken ct) => service.PublishAsync(id, ct);
+
+    public static async Task<IResult> CreateTestRequest(Guid id, IRequestService service, CancellationToken ct)
+    {
+        var request = await service.CreateTestRequestForProcessVersionAsync(id, ct);
+        return Results.Redirect($"{Prefix}/ProcessDefinitionVersionResponse/test/{id}?requestId={request.id}");
+    }
+
+    public static async Task<ProcessVersionTestPageModel> TestPage(
+        Guid id,
+        Guid requestId,
+        IProcessDefinitionVersionService processVersions,
+        IRequestService requests,
+        IFormNodeService forms,
+        IWorkflowVersionService workflows,
+        CancellationToken ct)
+    {
+        var processVersion = await processVersions.GetByIdAsync<ProcessDefinitionVersionResponse>(id, ct)
+            ?? throw new KeyNotFoundException("Process version not found or not readable.");
+        var request = await requests.GetDetailAsync(requestId, ct);
+        if (request.request.process_definition_version_id != id)
+            throw new InvalidOperationException("The test request does not belong to this process version.");
+        var form = await forms.GetDesignerAsync(processVersion.form_version_id, ct);
+        var workflow = await workflows.GetDesignerAsync(processVersion.workflow_version_id, ct);
+        return new(processVersion, request, form, workflow);
+    }
 
     /// <summary>
     /// Registruje routy Minimal API a vazbu endpointů na Razor/JSON reprezentaci; samotné požadavky zpracovávají příslušné resolver metody.
@@ -81,6 +107,12 @@ public static class ProcessDefinitionVersionResolvers
             .WithDescription("""
                 Returns one ProcessDefinitionVersion visible to the current actor through the standard RBAC read operation. HTML or JSON is selected by content negotiation.
                 """);
+        group.MapGet("/test/{id:guid}", ProcessDefinitionVersionResolvers.TestPage)
+            .ApplyViewModel<ProcessVersionTestPage,ProcessVersionTestPageModel>()
+            .WithDescription("Opens a test Request for this exact process version, including its editable form tree, current workflow transitions and history.");
+        group.MapPost("/test/{id:guid}", ProcessDefinitionVersionResolvers.CreateTestRequest)
+            .DisableAntiforgery()
+            .WithDescription("Creates a test Request using this exact process version, including drafts, then redirects to its detail and transition history.");
         group.MapGet("/list", ProcessDefinitionVersionResolvers.List)
             .ApplyViewModel<DigitalProcessListPage<ProcessDefinitionVersionResponse>,ProcessDefinitionVersionResponse[]>()
             .WithDescription("""

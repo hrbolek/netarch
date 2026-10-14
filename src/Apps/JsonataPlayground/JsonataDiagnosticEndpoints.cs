@@ -9,6 +9,16 @@ using WebAppArchitecture.DigitalProcesses.Services;
 
 namespace WebAppArchitecture.JsonataPlayground;
 
+/// <summary>Development-only diagnostics for the configured GraphQL transport.</summary>
+/// <remarks>
+/// Architecture exception: inline handlers intentionally expose transport-level request/response
+/// diagnostics rather than an entity API. They use the configured HTTP client directly so the
+/// diagnostic view includes upstream status, headers and raw payload without domain projection.
+/// No database access is needed and SecuredBaseService has no entity to protect here.
+/// Mapping is gated by Development and the host build option; diagnostic output may contain
+/// credentials and personal data, so deployment access protection remains required.
+/// This exception does not authorize using the playground transport for production entity endpoints.
+/// </remarks>
 public static class JsonataDiagnosticEndpoints
 {
     public static void Map(WebApplication app)

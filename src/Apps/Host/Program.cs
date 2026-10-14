@@ -30,6 +30,9 @@ builder.Services.AddRazorComponents();
 builder.Services.AddHostDatabase(builder.Configuration);
 
 var app = builder.Build();
+#if !ARCHITECTURE_API_ONLY
+app.UseStaticFiles();
+#endif
 app.ConfigureModules();
 
 #if ARCHITECTURE_API_ONLY

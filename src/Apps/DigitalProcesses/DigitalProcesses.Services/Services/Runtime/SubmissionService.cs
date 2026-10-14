@@ -11,8 +11,11 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 /// <summary>
 /// Služba Submission Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public sealed class SubmissionService(ISecurityLayer security, IDBLayer unsecuredDb) : SecuredBaseService<SubmissionModel>(security, unsecuredDb),ISubmissionService
+public sealed class SubmissionService(ISecurityLayer security, IDBLayer unsecuredDb, IBulkTreeService bulk) : SecuredBaseService<SubmissionModel>(security, unsecuredDb),ISubmissionService
 {
+    public Task<SubmissionTreeResponse> UpdateValuesAsync(Guid id, BulkSubmissionValuesRequest request, CancellationToken ct = default)
+        => bulk.UpdateSubmissionValuesAsync(id, request, ct);
+
     /// <summary>
     /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: GetByIdAsync, Query; pořadí a parametry viz implementace.
     /// </summary>

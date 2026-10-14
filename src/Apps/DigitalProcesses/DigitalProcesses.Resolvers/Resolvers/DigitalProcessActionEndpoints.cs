@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Routing;
 using WebAppArchitecture.Base.Data;
 using WebAppArchitecture.Base.Endpoints;
 using WebAppArchitecture.Base.UI.Components;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.DigitalProcesses.Services;
 
 namespace WebAppArchitecture.DigitalProcesses.Resolvers;
 
@@ -14,29 +14,29 @@ namespace WebAppArchitecture.DigitalProcesses.Resolvers;
 /// Never expose an action for a record which is not readable through RBAC.
 /// Entity-specific actions (publish, clone, transitions) remain on their owning editors.
 /// </summary>
-/// <summary>
-/// Typ Digital Process Action Endpoints ve vrstvě Apps; dokumentuje kontrakt a roli typu v architektuře.
-/// </summary>
 public static class DigitalProcessActionEndpoints
 {
     public static RouteHandlerBuilder MapActions<TEntity>(
         this RouteGroupBuilder group, string entityName)
         where TEntity : class, ISecuredEntityDBModel
     {
-        return group.MapGet("/actions/{id:guid}", (Guid id, ISecurityLayer security, CancellationToken ct) =>
-                BuildActionsAsync<TEntity>(id, entityName, security, ct))
+        return group.MapGet("/actions/{id:guid}", DigitalProcessActionResolvers.Read<TEntity>)
             .ApplyViewModel<EntityActionMenu, EntityActionMenuModel>()
             .WithDescription($"Returns the contextual, RBAC-filtered action menu for {entityName}. " +
                 "Use Accept: application/json or text/html to select the representation.");
     }
 
-    private static async Task<object> BuildActionsAsync<TEntity>(
-        Guid id, string entityName, ISecurityLayer security, CancellationToken ct)
+}
+
+public static class DigitalProcessActionResolvers
+{
+    public static async Task<object> Read<TEntity>(
+        Guid id, IDigitalProcessActionService<TEntity> service, CancellationToken ct)
         where TEntity : class, ISecuredEntityDBModel
     {
-        var entity = await security.GetByIdAsync<TEntity>(id, SecurityOperations.Read, ct);
-        if (entity is null) return Results.NotFound();
+        if (!await service.CanReadAsync(id, ct)) return Results.NotFound();
 
+        var entityName = typeof(TEntity).Name.Replace("Model", "Response", StringComparison.Ordinal);
         var root = $"/digital-processes/{entityName}";
         var actions = new EntityAction[]
         {

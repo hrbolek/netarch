@@ -45,8 +45,17 @@ public static class FormDefinitionResolvers
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateTypedAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
     /// </summary>
-    public static Task<FormDefinitionResponse> CreateApi(CreateFormDefinitionRequest request, IFormDefinitionService service, CancellationToken ct)
-        => service.CreateTypedAsync(request, ct);
+    public static async Task<IResult> CreateApi(CreateFormDefinitionRequest request, IFormDefinitionService service, CancellationToken ct)
+    {
+        try
+        {
+            return Results.Ok(await service.CreateTypedAsync(request, ct));
+        }
+        catch (ArgumentException ex)
+        {
+            return Results.BadRequest(new { error = ex.Message });
+        }
+    }
 
     // This page form is a browser navigation, so an authorization failure must be
     // understandable HTML with HTTP 403 rather than a raw ASP.NET exception page.
@@ -74,11 +83,11 @@ public static class FormDefinitionResolvers
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: IsAllowedAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
     /// </summary>
-    public static async Task<IResult> CreatePermission(ISecurityLayer security, CancellationToken ct)
+    public static async Task<IResult> CreatePermission(IFormDefinitionService service, CancellationToken ct)
     {
         try
         {
-            var allowed = await security.IsAllowedAsync(RbacWellKnown.FormDefinitionCreationScopeId, SecurityOperations.Create, ct);
+            var allowed = await service.CanCreateAsync(ct);
             return Results.Ok(new {
                 allowed,
                 operation = SecurityOperations.Create,
@@ -101,11 +110,9 @@ public static class FormDefinitionResolvers
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: CreateContainedAsync, PublishAsync, DeleteDraftAsync, Query; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
     /// </summary>
-    public static async Task<IResult> NewVersion(Guid id, IFormDefinitionService definitions, IFormVersionService versions, WebAppArchitecture.SecurityLayer.ISecurityLayer security, CancellationToken ct)
+    public static async Task<IResult> NewVersion(Guid id, IFormVersionService versions, CancellationToken ct)
     {
-        _ = await definitions.GetDetailAsync(id, ct);
-        var next = security.Query<FormVersionModel>(WebAppArchitecture.SecurityLayer.SecurityOperations.Read).Where(v => v.form_definition_id == id).Select(v => v.version).ToArray().DefaultIfEmpty(0).Max() + 1;
-        var created = await versions.CreateContainedAsync(new CreateFormVersionRequest(id, next), ct);
+        var created = await versions.CreateNextAsync(id, ct);
         return Results.Redirect($"/digital-processes/FormVersionResponse/designer/{created.id}");
     }
     /// <summary>
@@ -156,6 +163,7 @@ public static class FormDefinitionResolvers
             .ApplyJsonModel<DigitalProcessModelPage<FormDefinitionResponse>,FormDefinitionResponse>()
             .WithDescription("""
                 Creates FormDefinition using typed creation scope for FormDefinition roots. The authorization target is derived server-side; clients cannot supply rbacobject_id.
+                Accepts name and optional description; an optional children object in the FormSchema renderer_key format creates the initial FormVersion tree in the same transaction.
                 """);
 
         group.MapGet("/create", FormDefinitionResolvers.CreatePage)

@@ -140,7 +140,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ApproveRequest"
+                "$ref": "#/components/schemas/ApproveFormDesignRequest"
               }
             }
           },
@@ -163,7 +163,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/DesignRequest"
+                "$ref": "#/components/schemas/FormDesignRequest"
               }
             }
           },
@@ -367,6 +367,29 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/digital-processes/form-node-search": {
+      "post": {
+        "tags": [
+          "DigitalProcesses.Forms"
+        ],
+        "description": "Searches a configured GraphQL-backed form lookup. The query comes from an RBAC-readable form node, never from the caller.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FormSearchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -605,7 +628,7 @@
         "tags": [
           "DigitalProcesses.Forms"
         ],
-        "description": "Creates FormDefinition using typed creation scope for FormDefinition roots. The authorization target is derived server-side; clients cannot supply rbacobject_id.",
+        "description": "Creates FormDefinition using typed creation scope for FormDefinition roots. The authorization target is derived server-side; clients cannot supply rbacobject_id.\nAccepts name and optional description; an optional children object in the FormSchema renderer_key format creates the initial FormVersion tree in the same transaction.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1076,7 +1099,7 @@
         "tags": [
           "DigitalProcesses.Forms"
         ],
-        "description": "Atomically create/update supplied form nodes. Omitted nodes are preserved; publishing locks the form. Authorization is verified per existing node.",
+        "description": "Atomically create/update supplied form nodes. Supply either nodes (bulk array with IDs) or children (form definition object with renderer_key, matching existing nodes by parent and key). Omitted nodes are preserved; publishing locks the form. Authorization is verified per existing node. Root name/description are ignored.",
         "parameters": [
           {
             "name": "id",
@@ -2102,6 +2125,73 @@
         }
       }
     },
+    "/digital-processes/ProcessDefinitionVersionResponse/test/{id}": {
+      "get": {
+        "tags": [
+          "DigitalProcesses.Process"
+        ],
+        "description": "Opens a test Request for this exact process version, including its editable form tree, current workflow transitions and history.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "requestId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProcessVersionTestPageModel"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProcessVersionTestPageModel"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "DigitalProcesses.Process"
+        ],
+        "description": "Creates a test Request using this exact process version, including drafts, then redirects to its detail and transition history.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/digital-processes/ProcessDefinitionVersionResponse/list": {
       "get": {
         "tags": [
@@ -2656,6 +2746,42 @@
         }
       }
     },
+    "/digital-processes/RequestResponse/test/{processId}": {
+      "post": {
+        "tags": [
+          "DigitalProcesses.Runtime"
+        ],
+        "description": "Creates a demo Request with transition history on the latest version of the process, including an unpublished one.",
+        "parameters": [
+          {
+            "name": "processId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestResponse"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/digital-processes/RequestResponse/transition/{id}": {
       "post": {
         "tags": [
@@ -2698,6 +2824,30 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/digital-processes/RequestResponse/transition-form/{id}": {
+      "post": {
+        "tags": [
+          "DigitalProcesses.Runtime"
+        ],
+        "description": "Executes an authorized workflow transition from the process test screen and redirects back to that exact test.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -3190,19 +3340,7 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SubmissionNodeResponse"
-                }
-              },
-              "text/html": {
-                "schema": {
-                  "$ref": "#/components/schemas/SubmissionNodeResponse"
-                }
-              }
-            }
+            "description": "OK"
           }
         }
       }
@@ -3431,7 +3569,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewRevisionRequest"
+                "$ref": "#/components/schemas/NewRtfRevisionRequest"
               }
             }
           },
@@ -3890,6 +4028,30 @@
         }
       }
     },
+    "/digital-processes/WorkflowVersionResponse/designer/test/{id}": {
+      "post": {
+        "tags": [
+          "DigitalProcesses.Workflow"
+        ],
+        "description": "Creates a test Request using the newest process version assigned to this exact workflow version, then redirects to the Request history.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/digital-processes/WorkflowVersionResponse/designer/add-state": {
       "post": {
         "tags": [
@@ -4076,7 +4238,7 @@
         "tags": [
           "DigitalProcesses.Workflow"
         ],
-        "description": "Creates WorkflowVersion using parent WorkflowDefinition. The authorization target is derived server-side; clients cannot supply rbacobject_id.",
+        "description": "Creates WorkflowVersion using parent WorkflowDefinition. Optional states and transitions supply the complete graph with source_key/target_key references; otherwise the previous version is cloned. The authorization target is derived server-side.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -4099,6 +4261,47 @@
               "text/html": {
                 "schema": {
                   "$ref": "#/components/schemas/WorkflowVersionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digital-processes/WorkflowVersionResponse/definition/{id}": {
+      "put": {
+        "tags": [
+          "DigitalProcesses.Workflow"
+        ],
+        "description": "Atomically replaces the graph of a draft workflow version. Items match by key; omitted transitions are deleted before omitted states. References from requests, history or access rules prevent deletion.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowGraphDefinition"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkflowDesignerResponse"
                 }
               }
             }
@@ -4832,6 +5035,14 @@
             }
           },
           {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
             "name": "take",
             "in": "query",
             "schema": {
@@ -4880,6 +5091,22 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
@@ -5070,6 +5297,14 @@
             }
           },
           {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
             "name": "take",
             "in": "query",
             "schema": {
@@ -5103,6 +5338,43 @@
         }
       }
     },
+    "/events/EventResponse/academic-plan/editor/{id}": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "description": "Razor academic-year calendar: ISO week half-cells, event-type palette, accessible read-only mode and RBAC-aware save via AcademicPlanPut.",
+        "operationId": "EventAcademicPlannerEditor",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcademicPlannerModel"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcademicPlannerModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/events/EventResponse/vector": {
       "get": {
         "tags": [
@@ -5110,6 +5382,24 @@
         ],
         "description": "Returns Event resource via /EventResponse/vector. Requires a signed-in actor; secured operations enforce RBAC. Uses the canonical Events domain contract.",
         "operationId": "EventVector",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -5158,6 +5448,22 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -5174,6 +5480,24 @@
         ],
         "description": "Returns EventType resource via /EventTypeResponse/tree. Requires a signed-in actor; secured operations enforce RBAC. Uses the canonical Events domain contract.",
         "operationId": "EventTypeTree",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -5218,43 +5542,6 @@
         "responses": {
           "200": {
             "description": "OK"
-          }
-        }
-      }
-    },
-    "/events/EventResponse/academic-plan/editor/{id}": {
-      "get": {
-        "tags": [
-          "Events"
-        ],
-        "description": "Razor academic-year calendar: ISO week half-cells, event-type palette, accessible read-only mode and RBAC-aware save via AcademicPlanPut.",
-        "operationId": "EventAcademicPlannerEditor",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AcademicPlannerModel"
-                }
-              },
-              "text/html": {
-                "schema": {
-                  "$ref": "#/components/schemas/AcademicPlannerModel"
-                }
-              }
-            }
           }
         }
       }
@@ -8585,7 +8872,7 @@
         },
         "additionalProperties": false
       },
-      "ApproveRequest": {
+      "ApproveFormDesignRequest": {
         "type": "object",
         "properties": {
           "formVersionId": {
@@ -8655,6 +8942,9 @@
               "$ref": "#/components/schemas/BulkFormTreeNode"
             },
             "nullable": true
+          },
+          "children": {
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -8695,6 +8985,9 @@
           },
           "description": {
             "type": "string",
+            "nullable": true
+          },
+          "children": {
             "nullable": true
           }
         },
@@ -9020,6 +9313,20 @@
           },
           "publish": {
             "type": "boolean"
+          },
+          "states": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowStateDefinition"
+            },
+            "nullable": true
+          },
+          "transitions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowTransitionDefinition"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -9072,20 +9379,6 @@
           },
           "processDefinition": {
             "$ref": "#/components/schemas/ProcessDefinitionResponse"
-          }
-        },
-        "additionalProperties": false
-      },
-      "DesignRequest": {
-        "type": "object",
-        "properties": {
-          "formVersionId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "instruction": {
-            "type": "string",
-            "nullable": true
           }
         },
         "additionalProperties": false
@@ -9428,14 +9721,18 @@
             "type": "string",
             "format": "uuid"
           },
-          "eventTypeId": {
-            "type": "string",
-            "format": "uuid"
-          },
           "parentId": {
             "type": "string",
             "format": "uuid",
             "nullable": true
+          },
+          "path": {
+            "type": "string",
+            "nullable": true
+          },
+          "eventTypeId": {
+            "type": "string",
+            "format": "uuid"
           },
           "name": {
             "type": "string",
@@ -9556,6 +9853,10 @@
             "format": "uuid",
             "nullable": true
           },
+          "path": {
+            "type": "string",
+            "nullable": true
+          },
           "code": {
             "type": "string",
             "nullable": true
@@ -9649,20 +9950,6 @@
         },
         "additionalProperties": false
       },
-      "FieldBindingRequest": {
-        "type": "object",
-        "properties": {
-          "placeholder": {
-            "type": "string",
-            "nullable": true
-          },
-          "formNodeId": {
-            "type": "string",
-            "format": "uuid"
-          }
-        },
-        "additionalProperties": false
-      },
       "FormDefinitionDetailResponse": {
         "type": "object",
         "properties": {
@@ -9715,6 +10002,20 @@
             "format": "uuid"
           },
           "visual_label": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FormDesignRequest": {
+        "type": "object",
+        "properties": {
+          "formVersionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "instruction": {
             "type": "string",
             "nullable": true
           }
@@ -9928,6 +10229,38 @@
             "type": "string",
             "nullable": true
           }
+        },
+        "additionalProperties": false
+      },
+      "FormSearchRequest": {
+        "type": "object",
+        "properties": {
+          "nodeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "pattern": {
+            "type": "string",
+            "nullable": true
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FormSearchValue"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FormSearchValue": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": { }
         },
         "additionalProperties": false
       },
@@ -10432,7 +10765,7 @@
         },
         "additionalProperties": false
       },
-      "NewRevisionRequest": {
+      "NewRtfRevisionRequest": {
         "type": "object",
         "properties": {
           "rtfBase64": {
@@ -10442,7 +10775,7 @@
           "bindings": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/FieldBindingRequest"
+              "$ref": "#/components/schemas/RtfFieldBindingRequest"
             },
             "nullable": true
           }
@@ -10589,6 +10922,24 @@
             "type": "string",
             "format": "uuid",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProcessVersionTestPageModel": {
+        "type": "object",
+        "properties": {
+          "processVersion": {
+            "$ref": "#/components/schemas/ProcessDefinitionVersionResponse"
+          },
+          "request": {
+            "$ref": "#/components/schemas/RequestDetailResponse"
+          },
+          "form": {
+            "$ref": "#/components/schemas/FormDesignerResponse"
+          },
+          "workflow": {
+            "$ref": "#/components/schemas/WorkflowDesignerResponse"
           }
         },
         "additionalProperties": false
@@ -11101,6 +11452,20 @@
         },
         "additionalProperties": false
       },
+      "RtfFieldBindingRequest": {
+        "type": "object",
+        "properties": {
+          "placeholder": {
+            "type": "string",
+            "nullable": true
+          },
+          "formNodeId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
       "SetApplicantVisibilityRequest": {
         "type": "object",
         "properties": {
@@ -11150,6 +11515,11 @@
             "nullable": true
           },
           "target_group_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "process_definition_id": {
             "type": "string",
             "format": "uuid",
             "nullable": true
@@ -11573,6 +11943,26 @@
         },
         "additionalProperties": false
       },
+      "WorkflowGraphDefinition": {
+        "type": "object",
+        "properties": {
+          "states": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowStateDefinition"
+            },
+            "nullable": true
+          },
+          "transitions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowTransitionDefinition"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "WorkflowStateAccessRuleResponse": {
         "type": "object",
         "properties": {
@@ -11624,6 +12014,34 @@
           "visual_label": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "WorkflowStateDefinition": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "is_initial": {
+            "type": "boolean"
+          },
+          "is_terminal": {
+            "type": "boolean"
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -11682,6 +12100,39 @@
             "format": "uuid"
           },
           "visual_label": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "WorkflowTransitionDefinition": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "nullable": true
+          },
+          "source_key": {
+            "type": "string",
+            "nullable": true
+          },
+          "target_key": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "note_required": {
+            "type": "boolean"
+          },
+          "condition_query": {
+            "type": "string",
+            "nullable": true
+          },
+          "action_query": {
             "type": "string",
             "nullable": true
           }

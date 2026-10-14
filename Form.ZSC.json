@@ -1,0 +1,335 @@
+{
+  "name": "Požadavek na zahraniční služební cestu",
+  "description": "Formulář podle vzor.ZSC.html: specifikace zahraniční cesty, účastníci, termíny a plánované finanční prostředky.",
+  "children": {
+    "trip_details": {
+      "renderer_key": "section",
+      "label": "Základní údaje",
+      "children": {
+        "event_name": {
+          "renderer_key": "input.text",
+          "label": "Název akce"
+        },
+        "applicant": {
+          "renderer_key": "input.graphql-search",
+          "label": "Žadatel",
+          "configuration": {
+            "query": "query userByPattern($fragment: Str) { choices: userList(where: { email: { _ilike: $fragment } }) { id label: email} }",
+            "minLength": 3,
+            "variables": {}
+          }
+        },
+        "project_code": {
+          "renderer_key": "input.text",
+          "label": "Projekt/záměr (kód)",
+          "description": "Kód nebo identifikátor projektu; konkrétní GraphQL dotaz pro vyhledávání projektu není ve vzoru uveden."
+        },
+        "project_abbreviation": {
+          "renderer_key": "input.text",
+          "label": "Projekt/záměr - zkratka"
+        },
+        "zcvpcn_number": {
+          "renderer_key": "input.text",
+          "label": "Číslo ZCVPCN"
+        },
+        "objective_code": {
+          "renderer_key": "input.text",
+          "label": "Cíl (kód)"
+        },
+        "destination_country": {
+          "renderer_key": "input.text",
+          "label": "Stát"
+        },
+        "destination_place": {
+          "renderer_key": "input.text",
+          "label": "Místo"
+        },
+        "purpose": {
+          "renderer_key": "input.textarea",
+          "label": "Účel akce"
+        },
+        "benefit_for_army": {
+          "renderer_key": "input.textarea",
+          "label": "Přínos pro AČR"
+        },
+        "benefit_for_university": {
+          "renderer_key": "input.textarea",
+          "label": "Přínos pro UO"
+        },
+        "strategic_partners": {
+          "renderer_key": "input.textarea",
+          "label": "Se kterými strategickými partnery bude jednáno"
+        },
+        "international_project_preparation": {
+          "renderer_key": "input.checkbox",
+          "label": "Součástí jednání je příprava mezinárodního projektu"
+        },
+        "first_country_after_czechia": {
+          "renderer_key": "input.text",
+          "label": "Země, do které cestující vstoupí po opuštění ČR"
+        },
+        "second_country_after_czechia": {
+          "renderer_key": "input.text",
+          "label": "2. země, do které cestující vstoupí po opuštění ČR"
+        },
+        "requested_transport": {
+          "renderer_key": "input.text",
+          "label": "Požadovaná doprava"
+        },
+        "substitute_function": {
+          "renderer_key": "input.text",
+          "label": "Zastupující ve funkci"
+        },
+        "project_name": {
+          "renderer_key": "input.text",
+          "label": "Projekt/záměr"
+        }
+      }
+    },
+    "participants": {
+      "renderer_key": "section",
+      "label": "Účastník",
+      "description": "Opakovatelný záznam účastníka zahraniční cesty.",
+      "max_occurs": 50,
+      "children": {
+        "person": {
+          "renderer_key": "input.graphql-search",
+          "label": "Osoba",
+          "configuration": {
+            "query": "query userByPattern($fragment: Str) { choices: userList(where: { email: { _ilike: $fragment } }) { id label: email} }",
+            "minLength": 3,
+            "variables": {}
+          }
+        },
+        "employee_type": {
+          "renderer_key": "input.select",
+          "label": "Typ zaměstnance",
+          "configuration": {
+            "options": [
+              {
+                "value": "civilian",
+                "label": "Občanský zaměstnanec"
+              },
+              {
+                "value": "military",
+                "label": "Vojenský zaměstnanec"
+              }
+            ]
+          }
+        },
+        "person_type": {
+          "renderer_key": "input.text",
+          "label": "Typ osoby"
+        },
+        "school_rank": {
+          "renderer_key": "input.text",
+          "label": "Školní rota"
+        }
+      }
+    },
+    "travel_schedule": {
+      "renderer_key": "section",
+      "label": "Termín - podmínky cesty",
+      "children": {
+        "event_start_date": {
+          "renderer_key": "input.date",
+          "label": "Začátek akce"
+        },
+        "event_end_date": {
+          "renderer_key": "input.date",
+          "label": "Konec akce"
+        },
+        "departure_start_place": {
+          "renderer_key": "input.text",
+          "label": "Místo nástupu na ZSC"
+        },
+        "departure_start_date": {
+          "renderer_key": "input.date",
+          "label": "Datum nástupu na ZSC"
+        },
+        "departure_start_time": {
+          "renderer_key": "input.time",
+          "label": "Čas nástupu na ZSC"
+        },
+        "border_crossing_out_place": {
+          "renderer_key": "input.text",
+          "label": "Místo překročení hranice"
+        },
+        "border_crossing_out_date": {
+          "renderer_key": "input.date",
+          "label": "Datum překročení hranice"
+        },
+        "border_crossing_out_time": {
+          "renderer_key": "input.time",
+          "label": "Čas překročení hranice"
+        },
+        "destination_arrival_place": {
+          "renderer_key": "input.text",
+          "label": "Příjezd do cílového místa"
+        },
+        "destination_arrival_date": {
+          "renderer_key": "input.date",
+          "label": "Datum příjezdu do cílového místa"
+        },
+        "destination_arrival_time": {
+          "renderer_key": "input.time",
+          "label": "Čas příjezdu do cílového místa"
+        },
+        "trip_duration_days": {
+          "renderer_key": "input.number",
+          "label": "Doba trvání (dny)",
+          "description": "Počet dní cesty."
+        },
+        "destination_departure_place": {
+          "renderer_key": "input.text",
+          "label": "Odjezd z cílového místa"
+        },
+        "destination_departure_date": {
+          "renderer_key": "input.date",
+          "label": "Datum odjezdu z cílového místa"
+        },
+        "destination_departure_time": {
+          "renderer_key": "input.time",
+          "label": "Čas odjezdu z cílového místa"
+        },
+        "border_crossing_back_place": {
+          "renderer_key": "input.text",
+          "label": "Místo překročení hranice zpět"
+        },
+        "border_crossing_back_date": {
+          "renderer_key": "input.date",
+          "label": "Datum překročení hranice zpět"
+        },
+        "border_crossing_back_time": {
+          "renderer_key": "input.time",
+          "label": "Čas překročení hranice zpět"
+        },
+        "trip_end_place": {
+          "renderer_key": "input.text",
+          "label": "Místo ukončení na ZSC"
+        },
+        "trip_end_date": {
+          "renderer_key": "input.date",
+          "label": "Datum ukončení na ZSC"
+        },
+        "trip_end_time": {
+          "renderer_key": "input.time",
+          "label": "Čas ukončení na ZSC"
+        }
+      }
+    },
+    "planned_expenses": {
+      "renderer_key": "section",
+      "label": "Plánované výdaje - položka",
+      "description": "Opakovatelná plánovaná finanční položka.",
+      "max_occurs": 50,
+      "children": {
+        "expense_type": {
+          "renderer_key": "input.select",
+          "label": "Položka",
+          "configuration": {
+            "options": [
+              {
+                "value": "accommodation",
+                "label": "Výdaje za ubytování"
+              },
+              {
+                "value": "meal_allowance",
+                "label": "Stravné"
+              },
+              {
+                "value": "pocket_money",
+                "label": "Kapesné"
+              },
+              {
+                "value": "necessary_incidental",
+                "label": "Nutné vedlejší výdaje"
+              }
+            ]
+          }
+        },
+        "amount_foreign_currency_eur": {
+          "renderer_key": "input.number",
+          "label": "Ve valutách (EUR)"
+        },
+        "amount_czk": {
+          "renderer_key": "input.number",
+          "label": "V Kč"
+        },
+        "amount_total_czk": {
+          "renderer_key": "input.number",
+          "label": "Celkem Kč"
+        }
+      }
+    },
+    "budget_allocations": {
+      "renderer_key": "section",
+      "label": "Rozpočtová položka - plán",
+      "description": "Opakovatelný záznam členění plánovaných výdajů podle rozpočtové položky.",
+      "max_occurs": 50,
+      "children": {
+        "budget_code": {
+          "renderer_key": "input.text",
+          "label": "Rozpočtová položka"
+        },
+        "amount_foreign_currency_eur": {
+          "renderer_key": "input.number",
+          "label": "Ve valutách (EUR)"
+        },
+        "amount_czk": {
+          "renderer_key": "input.number",
+          "label": "V Kč"
+        },
+        "amount_total_czk": {
+          "renderer_key": "input.number",
+          "label": "Celkem v Kč"
+        }
+      }
+    },
+    "conference_fee": {
+      "renderer_key": "section",
+      "label": "Konferenční poplatek a záloha",
+      "children": {
+        "conference_fee_payment_method": {
+          "renderer_key": "input.text",
+          "label": "Způsob platby konferenčního poplatku"
+        },
+        "conference_fee_due_date": {
+          "renderer_key": "input.date",
+          "label": "Datum splatnosti konferenčního poplatku"
+        },
+        "advance_payment_required": {
+          "renderer_key": "input.checkbox",
+          "label": "Požadovat vyplacení zálohy předem"
+        }
+      }
+    },
+    "actual_payments": {
+      "renderer_key": "section",
+      "label": "Skutečně zaplaceno - položka",
+      "description": "Opakovatelný záznam skutečně zaplacené částky podle rozpočtové položky.",
+      "max_occurs": 50,
+      "children": {
+        "budget_code": {
+          "renderer_key": "input.text",
+          "label": "Rozpočtová položka"
+        },
+        "amount_czk": {
+          "renderer_key": "input.number",
+          "label": "Kč"
+        }
+      }
+    },
+    "new_note": {
+      "renderer_key": "section",
+      "label": "Nová poznámka",
+      "description": "Zadání nové poznámky; historie poznámek a historie workflow patří do zobrazení Requestu.",
+      "children": {
+        "note_text": {
+          "renderer_key": "input.textarea",
+          "label": "Text poznámky"
+        }
+      }
+    }
+  }
+}

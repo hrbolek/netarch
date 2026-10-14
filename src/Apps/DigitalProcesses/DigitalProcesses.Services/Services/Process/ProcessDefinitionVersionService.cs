@@ -13,6 +13,14 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 /// </summary>
 public sealed class ProcessDefinitionVersionService(ISecurityLayer security, IDBLayer unsecuredDb) : SecuredBaseService<ProcessDefinitionVersionModel>(security, unsecuredDb),IProcessDefinitionVersionService
 {
+    public Task<ProcessDefinitionVersionResponse> CreateNextAsync(CreateProcessDefinitionVersionRequest request, CancellationToken ct = default)
+    {
+        var next = Security.Query<ProcessDefinitionVersionModel>(SecurityOperations.Read)
+            .Where(v => v.process_definition_id == request.process_definition_id)
+            .Select(v => v.version).ToArray().DefaultIfEmpty(0).Max() + 1;
+        return CreateContainedAsync(request with { version = next }, ct);
+    }
+
     private static void ValidateOwnedDefinitions(ProcessDefinitionModel process, FormVersionModel form, WorkflowVersionModel workflow)
     {
         if (process.form_definition_id is null || process.workflow_definition_id is null)

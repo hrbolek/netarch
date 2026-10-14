@@ -14,8 +14,10 @@ public static class DigitalProcessRendererRegistration
         registry.Register<TextAreaRenderer>("input.textarea");
         registry.Register<NumberInputRenderer>("input.number");
         registry.Register<DateInputRenderer>("input.date");
+        registry.Register<TimeInputRenderer>("input.time");
         registry.Register<CheckboxRenderer>("input.checkbox");
         registry.Register<SelectRenderer>("input.select");
+        registry.Register<GraphqlSearchRenderer>("input.graphql-search");
         registry.Register<ComputedUrlRenderer>("display.url");
         registry.Register<ActionButtonRenderer>("action.button");
         registry.Register<ExternalDataImportNodeRenderer>("action.import");

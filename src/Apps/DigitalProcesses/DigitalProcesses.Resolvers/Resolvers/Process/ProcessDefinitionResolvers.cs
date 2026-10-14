@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using WebAppArchitecture.DigitalProcesses.DBLayer;
 using WebAppArchitecture.SecurityLayer;
 using WebAppArchitecture.Base.Security;
@@ -48,30 +49,44 @@ public static class ProcessDefinitionResolvers
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateTypedAsync, GetByIdAsync, Query, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
     /// </summary>
-    public static Task<ProcessDefinitionResponse> CreateApi(CreateProcessDefinitionRequest request, IProcessDefinitionService service, CancellationToken ct)
-        => service.CreateTypedAsync(request, ct);
+    public static async Task<ProcessDefinitionResponse> CreateApi(CreateProcessDefinitionRequest request, IProcessDefinitionService service, IRequestService requests, ILoggerFactory logs, CancellationToken ct)
+    {
+        var created = await service.CreateTypedAsync(request, ct);
+        await TryCreateTestRequestAsync(created.id, requests, logs, ct);
+        return created;
+    }
+
+    // The demo request lets the new process and its history be inspected immediately; failure must not undo the creation.
+    private static async Task TryCreateTestRequestAsync(Guid processId, IRequestService requests, ILoggerFactory logs, CancellationToken ct)
+    {
+        try { await requests.CreateTestRequestAsync(processId, ct); }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            logs.CreateLogger("DigitalProcesses.TestRequest").LogWarning(ex, "Test request for process {ProcessId} was not created.", processId);
+        }
+    }
 
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateTypedAsync, GetByIdAsync, Query, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
     /// </summary>
-    public static async Task<IResult> CreateForm(HttpContext http, IProcessDefinitionService service, CancellationToken ct)
+    public static async Task<IResult> CreateForm(HttpContext http, IProcessDefinitionService service, IRequestService requests, ILoggerFactory logs, CancellationToken ct)
     {
         var f = await http.Request.ReadFormAsync(ct);
         var created = await service.CreateTypedAsync(new CreateProcessDefinitionRequest(
             DigitalProcessCreateForm.Required(f, "name"),
             description: DigitalProcessCreateForm.Optional(f, "description")), ct);
+        await TryCreateTestRequestAsync(created.id, requests, logs, ct);
         return Results.Redirect(Prefix + "/ProcessDefinitionResponse/view/" + created.id);
     }
 
     /// <summary>
     /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: PublishAsync, DeleteDraftAsync, GetByIdAsync, Query; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
     /// </summary>
-    public static async Task<DefinitionVersionsPageModel> Detail(Guid id, ISecurityLayer security, CancellationToken ct)
+    public static async Task<DefinitionVersionsPageModel> Detail(Guid id, IProcessDefinitionService service, CancellationToken ct)
     {
-        var definition = await security.GetByIdAsync<ProcessDefinitionModel>(id, SecurityOperations.Read, ct) ?? throw new KeyNotFoundException("Definition not found.");
-        var versions = security.Query<ProcessDefinitionVersionModel>(SecurityOperations.Read).Where(v => v.process_definition_id == id).OrderByDescending(v => v.version)
-            .Select(v => new DefinitionVersionItem(v.id, v.version, v.is_published, v.updated_at)).ToArray();
-        return new DefinitionVersionsPageModel(id, definition.name, "Process", versions, ProcessDefinition: ProcessDefinitionResponse.FromModel(definition));
+        var detail = await service.GetDetailAsync(id, ct);
+        var versions = detail.versions.Select(v => new DefinitionVersionItem(v.id, v.version, v.is_published, v.updated_at)).ToArray();
+        return new DefinitionVersionsPageModel(id, detail.definition.name, "Process", versions, ProcessDefinition: detail.definition);
     }
     /// <summary>
     /// Provádí přechod životního cyklu; služba ověřuje stavové předpoklady a oprávnění před uložením změn. Volání: PublishAsync, DeleteDraftAsync, CloneLatestAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).

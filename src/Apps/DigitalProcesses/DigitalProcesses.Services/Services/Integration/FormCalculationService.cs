@@ -21,6 +21,14 @@ public interface IFormCalculationService
 /// <summary>
 /// Služba Form Calculation Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
+/// <remarks>
+/// Architecture exception for the calculation helper, not for production endpoint orchestration:
+/// this service evaluates supplied configuration/values and owns no database entity. Its backend
+/// transport is deployment-configured; callers must load configuration and values through secured
+/// domain services before evaluation. It does not establish RBAC access to a form or submission.
+/// Direct use is allowed in temporary designer previews; production resolvers should obtain
+/// authorized domain results from a SecuredBaseService-derived service instead of orchestrating it.
+/// </remarks>
 public sealed class FormCalculationService(IFormDataBackend backend) : IFormCalculationService
 {
     public async Task<JsonNode?> EvaluateAsync(JsonObject configuration,
@@ -37,7 +45,7 @@ public sealed class FormCalculationService(IFormDataBackend backend) : IFormCalc
         var variables = calculation["variables"] as JsonObject;
         var arguments = variables?.DeepClone() as JsonObject ?? new JsonObject();
         // Previous select contract: section values are available as named query variables.
-        // Explicit values take precedence, all keys are still available via $form.
+        // Explicit values take precedence; all keys are also available via $.form.
         foreach (var (key, value) in sectionValues)
             if (!arguments.ContainsKey(key)) arguments[key] = value?.DeepClone();
 

@@ -58,12 +58,11 @@ public static class WorkflowDefinitionResolvers
     /// <summary>
     /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: PublishAsync, GetByIdAsync, Query; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
     /// </summary>
-    public static async Task<DefinitionVersionsPageModel> Detail(Guid id, ISecurityLayer security, CancellationToken ct)
+    public static async Task<DefinitionVersionsPageModel> Detail(Guid id, IWorkflowDefinitionService service, CancellationToken ct)
     {
-        var definition = await security.GetByIdAsync<WorkflowDefinitionModel>(id, SecurityOperations.Read, ct) ?? throw new KeyNotFoundException("Definition not found.");
-        var versions = security.Query<WorkflowVersionModel>(SecurityOperations.Read).Where(v => v.workflow_definition_id == id).OrderByDescending(v => v.version)
-            .Select(v => new DefinitionVersionItem(v.id, v.version, v.is_published, v.updated_at)).ToArray();
-        return new DefinitionVersionsPageModel(id, definition.name, "Workflow", versions, WorkflowDefinitionResponse.FromModel(definition));
+        var detail = await service.GetDetailAsync(id, ct);
+        var versions = detail.versions.Select(v => new DefinitionVersionItem(v.id, v.version, v.is_published, v.updated_at)).ToArray();
+        return new DefinitionVersionsPageModel(id, detail.definition.name, "Workflow", versions, detail.definition);
     }
     /// <summary>
     /// Provádí přechod životního cyklu; služba ověřuje stavové předpoklady a oprávnění před uložením změn. Volání: PublishAsync, CreateContainedAsync, DeleteDraftAsync, GetByIdAsync, Query; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
@@ -77,11 +76,9 @@ public static class WorkflowDefinitionResolvers
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: CreateContainedAsync, DeleteDraftAsync, GetByIdAsync, Query; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
     /// </summary>
-    public static async Task<IResult> NewVersion(Guid id, ISecurityLayer security, IWorkflowVersionService versions, CancellationToken ct)
+    public static async Task<IResult> NewVersion(Guid id, IWorkflowVersionService versions, CancellationToken ct)
     {
-        _ = await security.GetByIdAsync<WorkflowDefinitionModel>(id, SecurityOperations.Read, ct) ?? throw new KeyNotFoundException();
-        var next = security.Query<WorkflowVersionModel>(SecurityOperations.Read).Where(v => v.workflow_definition_id == id).Select(v => v.version).ToArray().DefaultIfEmpty(0).Max() + 1;
-        var created = await versions.CreateContainedAsync(new CreateWorkflowVersionRequest(id, next), ct);
+        var created = await versions.CreateNextAsync(id, ct);
         return Results.Redirect($"/digital-processes/WorkflowVersionResponse/designer/{created.id}");
     }
     /// <summary>

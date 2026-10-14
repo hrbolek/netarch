@@ -40,9 +40,9 @@ public static class RequestResolvers
     public static DigitalProcessCreatePageModel CreatePage() => DigitalProcessCreateForm.Page(
         "Create request", Prefix + "/RequestResponse/create-form", Prefix + "/RequestResponse/list",
         "Select a process and its published version. The acting user becomes the initiator.",
-        DigitalProcessCreateForm.EntityLookup("process_definition_id", "Process", Prefix + "/ProcessDefinitionResponse/list", ["name"]),
-        DigitalProcessCreateForm.EntityLookup("process_definition_version_id", "Published process version", Prefix + "/ProcessDefinitionVersionResponse/list?where=%7B%22is_published%22%3A%7B%22_eq%22%3Atrue%7D%7D", [], parentField: "process_definition_id", parentProperty: "process_definition_id"),
-        DigitalProcessCreateForm.EntityLookup("target_group_id", "Target organisation", "/architecture/GroupResponse/list", ["Name"]),
+        DigitalProcessCreateForm.EntityLookup("process_definition_id", "Process", Prefix + "/ProcessDefinitionResponse/list", ["name"], required: false),
+        DigitalProcessCreateForm.EntityLookup("process_definition_version_id", "Published process version (optional, latest published is used when empty)", Prefix + "/ProcessDefinitionVersionResponse/list?where=%7B%22is_published%22%3A%7B%22_eq%22%3Atrue%7D%7D", [], required: false, parentField: "process_definition_id", parentProperty: "process_definition_id"),
+        DigitalProcessCreateForm.EntityLookup("target_group_id", "Target authorization context (placeholder, defaults to the process group)", "/architecture/GroupResponse/list", ["Name"], required: false),
         DigitalProcessCreateForm.Text("subject", "Subject", false));
 
     /// <summary>
@@ -51,17 +51,36 @@ public static class RequestResolvers
     public static async Task<IResult> CreateForm(HttpContext http, IRequestService service, CancellationToken ct)
     {
         var f = await http.Request.ReadFormAsync(ct);
-        var created = await service.StartAsync(new StartRequestRequest(DigitalProcessCreateForm.GuidValue(f,"process_definition_version_id"),DigitalProcessCreateForm.Optional(f,"subject"),DigitalProcessCreateForm.GuidValue(f,"target_group_id")), ct);
+        var created = await service.StartAsync(new StartRequestRequest(
+            OptionalGuid(f, "process_definition_version_id") ?? Guid.Empty,
+            DigitalProcessCreateForm.Optional(f, "subject"),
+            OptionalGuid(f, "target_group_id"),
+            OptionalGuid(f, "process_definition_id")), ct);
         return Results.Redirect(Prefix + "/RequestResponse/detail/" + created.id);
     }
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: StartAsync, TransitionAsync, GetDetailAsync; pořadí a parametry viz implementace.
     /// </summary>
+    private static Guid? OptionalGuid(IFormCollection form, string name)
+        => Guid.TryParse(form[name].ToString(), out var value) && value != Guid.Empty ? value : null;
+
+    public static Task<RequestResponse> CreateTest(Guid processId, IRequestService service, CancellationToken ct) => service.CreateTestRequestAsync(processId, ct);
     public static Task<RequestResponse> Start(StartRequestRequest request, IRequestService service, CancellationToken ct) => service.StartAsync(request, ct);
     /// <summary>
     /// Provádí přechod životního cyklu; služba ověřuje stavové předpoklady a oprávnění před uložením změn. Volání: TransitionAsync, GetDetailAsync; pořadí a parametry viz implementace.
     /// </summary>
     public static Task<RequestResponse> Transition(Guid id, TransitionRequestRequest request, IRequestService service, CancellationToken ct) => service.TransitionAsync(id, request, ct);
+    public static async Task<IResult> TransitionForm(Guid id, HttpContext http, IRequestService service, CancellationToken ct)
+    {
+        var form = await http.Request.ReadFormAsync(ct);
+        var request = await service.GetByIdAsync<RequestResponse>(id, ct)
+            ?? throw new KeyNotFoundException("Request not found or not readable.");
+        var transitionId = Guid.TryParse(form["transition_id"], out var parsed)
+            ? parsed
+            : throw new BadHttpRequestException("transition_id must be a GUID.");
+        await service.TransitionAsync(id, new TransitionRequestRequest(transitionId, DigitalProcessCreateForm.Optional(form, "note")), ct);
+        return Results.Redirect($"{Prefix}/ProcessDefinitionVersionResponse/test/{request.process_definition_version_id}?requestId={id}");
+    }
     /// <summary>
     /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: GetDetailAsync; pořadí a parametry viz implementace.
     /// </summary>
@@ -105,11 +124,19 @@ public static class RequestResolvers
             .WithDescription("""
                 Starts a request, records the initiator and creates the first submission and RBAC scopes.
                 """);
+        group.MapPost("/test/{processId:guid}", RequestResolvers.CreateTest)
+            .ApplyJsonModel<DigitalProcessModelPage<RequestResponse>,RequestResponse>()
+            .WithDescription("""
+                Creates a demo Request with transition history on the latest version of the process, including an unpublished one.
+                """);
         group.MapPost("/transition/{id:guid}", RequestResolvers.Transition)
             .ApplyJsonModel<DigitalProcessModelPage<RequestResponse>,RequestResponse>()
             .WithDescription("""
                 Archives the current submission, creates a new RBAC-secured submission snapshot and moves the request to the target workflow state.
                 """);
+        group.MapPost("/transition-form/{id:guid}", RequestResolvers.TransitionForm)
+            .DisableAntiforgery()
+            .WithDescription("Executes an authorized workflow transition from the process test screen and redirects back to that exact test.");
         group.MapGet("/detail/{id:guid}", RequestResolvers.Detail)
             .ApplyViewModel<RequestDetailPage,RequestDetailResponse>()
             .WithDescription("""

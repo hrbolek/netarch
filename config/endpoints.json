@@ -1347,7 +1347,8 @@
     "name": "userList",
     "method": "GET",
     "url": "http://app:8080/architecture/UserResponse/list",
-    "forwardHeaders": true
+    "forwardHeaders": true,
+    "queryTransform": "{ \"where\": $type(args.where) = \"object\" ? $string(args.where) : args.where, \"skip\": args.skip, \"take\": args.take, \"order_by\": $type(args.order_by) = \"object\" ? $string(args.order_by) : args.order_by, \"operation\": args.operation }"
   },
   {
     "name": "userMemberships",

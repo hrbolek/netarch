@@ -13,6 +13,16 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 public sealed class WorkflowDefinitionService(ISecurityLayer security, ISecurityProjectionService securityProjection, IDBLayer unsecuredDb)
     : SecuredBaseService<WorkflowDefinitionModel>(security, unsecuredDb), IWorkflowDefinitionService
 {
+    public async Task<WorkflowDefinitionDetailResponse> GetDetailAsync(Guid id, CancellationToken ct = default)
+    {
+        var definition = await Security.GetByIdAsync<WorkflowDefinitionModel>(id, SecurityOperations.Read, ct)
+            ?? throw new KeyNotFoundException("Definition not found.");
+        var versions = Security.Query<WorkflowVersionModel>(SecurityOperations.Read)
+            .Where(v => v.workflow_definition_id == id).OrderByDescending(v => v.version)
+            .Select(WorkflowVersionResponse.Projection).ToArray();
+        return new(WorkflowDefinitionResponse.FromModel(definition), versions);
+    }
+
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CurrentUserId, ExecuteInTransactionAsync, StageCreateAsync; pořadí a parametry viz implementace.
     /// </summary>
@@ -31,8 +41,10 @@ public sealed class WorkflowDefinitionService(ISecurityLayer security, ISecurity
             var model = new WorkflowDefinitionModel(id, request.name, request.description, id, now, now, actor, actor);
             var created = await Security.StageCreateAsync(model, token);
             // The initial workflow draft is part of the same transaction as its definition.
-            await Security.StageCreateAsync(new WorkflowVersionModel(
-                Guid.NewGuid(), id, 1, false, null, id, now, now, actor, actor), token);
+            var firstVersion = new WorkflowVersionModel(
+                Guid.NewGuid(), id, 1, false, null, id, now, now, actor, actor);
+            await Security.StageCreateAsync(firstVersion, token);
+            await DefaultVersionContent.StageWorkflowAsync(unsecuredDb, firstVersion.id, id, now, actor, token);
             await Security.SaveChangesAsync(token);
             await securityProjection.SynchronizeRbacObjectAsync(id, token);
             return WorkflowDefinitionResponse.FromModel(created);

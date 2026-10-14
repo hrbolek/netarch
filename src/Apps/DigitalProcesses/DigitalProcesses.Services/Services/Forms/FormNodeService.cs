@@ -35,6 +35,7 @@ public sealed class FormNodeService(ISecurityLayer security, IDBLayer unsecuredD
 
     private async Task<FormNodeResponse> CreateCoreAsync(CreateFormNodeRequest request, Guid? parentId, CancellationToken ct)
     {
+        _ = FormNodeConfiguration.Parse(request.configuration_json);
         if (request.min_occurs < 0 || request.max_occurs < 1 || request.min_occurs > request.max_occurs)
             throw new ArgumentOutOfRangeException(nameof(request), "Require 0 <= min_occurs <= max_occurs and max_occurs >= 1.");
 
@@ -67,6 +68,8 @@ public sealed class FormNodeService(ISecurityLayer security, IDBLayer unsecuredD
                 Security, request.form_version_id, "contained", ct);
             creationRbac = scope.RbacObjectId;
         }
+        FormSectionRules.Validate(parentId, type, request.max_occurs, request.configuration_json, false);
+        FormSectionRules.ValidateParent(parent, type);
 
         var normalizedKey = request.key?.Trim();
         if (string.IsNullOrWhiteSpace(normalizedKey))
@@ -171,6 +174,7 @@ public sealed class FormNodeService(ISecurityLayer security, IDBLayer unsecuredD
     /// </summary>
     public async Task<FormNodeResponse> UpdateDefinitionAsync(Guid id, UpdateFormNodeRequest request, CancellationToken ct = default)
     {
+        _ = FormNodeConfiguration.Parse(request.configuration_json);
         if (string.IsNullOrWhiteSpace(request.key))
             throw new ArgumentException("Key is required.", nameof(request));
         if (request.min_occurs < 0 || request.max_occurs < 1 || request.min_occurs > request.max_occurs)
@@ -182,6 +186,16 @@ public sealed class FormNodeService(ISecurityLayer security, IDBLayer unsecuredD
             ?? throw new KeyNotFoundException("Form version not found.");
         if (version.is_published)
             throw new InvalidOperationException("Published form version is immutable.");
+
+        var type = await Security.GetByIdAsync<FormNodeTypeModel>(node.node_type_id, SecurityOperations.Read, ct)
+            ?? throw new KeyNotFoundException("Node type not found.");
+        if (request.max_occurs > 1 && !type.can_repeat)
+            throw new ArgumentException("Selected node type is not repeatable.");
+        var sectionTypes = Security.Query<FormNodeTypeModel>(SecurityOperations.Read)
+            .Where(x => x.renderer_key == "section").Select(x => x.id).ToArray();
+        var hasSections = Security.Query<FormNodeModel>(SecurityOperations.Read)
+            .Any(x => x.parent_id == id && sectionTypes.Contains(x.node_type_id));
+        FormSectionRules.Validate(node.parent_id, type, request.max_occurs, request.configuration_json, hasSections);
 
         var normalizedKey = request.key.Trim();
         var duplicate = Security.Query<FormNodeModel>(SecurityOperations.Read)
@@ -298,6 +312,11 @@ public sealed class FormNodeService(ISecurityLayer security, IDBLayer unsecuredD
                 updated_by = actor
             });
         }
+        var types = Security.Query<FormNodeTypeModel>(SecurityOperations.Read).ToDictionary(x => x.id);
+        foreach (var item in created)
+            FormSectionRules.Validate(item.parent_id, types[item.node_type_id], item.max_occurs, item.configuration_json,
+                created.Any(child => child.parent_id == item.id && types[child.node_type_id].renderer_key == "section"));
+        FormSectionRules.ValidateParent(targetParent, types[sourceRoot.node_type_id]);
 
         return await Security.ExecuteInTransactionAsync(async token =>
         {
@@ -322,7 +341,15 @@ public sealed class FormNodeService(ISecurityLayer security, IDBLayer unsecuredD
             parent=await Security.GetByIdAsync<FormNodeModel>(pid,SecurityOperations.Update,ct) ?? throw new KeyNotFoundException("New parent not found or not editable.");
             if(parent.form_version_id!=node.form_version_id) throw new InvalidOperationException("Cannot move between form versions.");
             if(MaterializedPath.IsDescendantOrSelf(parent.path,node.path)) throw new InvalidOperationException("Cannot move a node below itself or its descendant.");
+            var parentType = await Security.GetByIdAsync<FormNodeTypeModel>(parent.node_type_id, SecurityOperations.Read, ct)
+                ?? throw new KeyNotFoundException("Parent node type not found.");
+            if (!parentType.can_have_children) throw new ArgumentException("Parent node type cannot have children.");
         }
+        var types = Security.Query<FormNodeTypeModel>(SecurityOperations.Read).ToDictionary(x => x.id);
+        var hasSections = Security.Query<FormNodeModel>(SecurityOperations.Read).Where(x => x.parent_id == id)
+            .Select(x => x.node_type_id).ToArray().Any(typeId => types[typeId].renderer_key == "section");
+        FormSectionRules.Validate(request.parent_id, types[node.node_type_id], node.max_occurs, node.configuration_json, hasSections);
+        FormSectionRules.ValidateParent(parent, types[node.node_type_id]);
         if (Security.Query<FormNodeModel>(SecurityOperations.Read).Any(x =>
                 x.form_version_id == node.form_version_id && x.parent_id == request.parent_id &&
                 x.id != id && x.key == node.key))

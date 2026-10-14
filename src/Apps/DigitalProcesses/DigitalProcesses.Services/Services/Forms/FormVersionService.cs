@@ -9,9 +9,21 @@ namespace WebAppArchitecture.DigitalProcesses.Services;
 /// <summary>
 /// Služba Form Version Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public sealed class FormVersionService(ISecurityLayer security, IDBLayer unsecuredDb)
+public sealed class FormVersionService(ISecurityLayer security, IDBLayer unsecuredDb, IBulkTreeService bulk)
     : SecuredBaseService<FormVersionModel>(security, unsecuredDb), IFormVersionService
 {
+    public Task<FormTreeResponse> UpsertTreeAsync(Guid id, BulkFormTreeRequest request, CancellationToken ct = default)
+        => bulk.UpsertFormTreeAsync(id, request, ct);
+
+    public async Task<FormVersionResponse> CreateNextAsync(Guid definitionId, CancellationToken ct = default)
+    {
+        _ = await Security.GetByIdAsync<FormDefinitionModel>(definitionId, SecurityOperations.Read, ct)
+            ?? throw new KeyNotFoundException("Form definition not found or not readable.");
+        var next = Security.Query<FormVersionModel>(SecurityOperations.Read)
+            .Where(v => v.form_definition_id == definitionId).Select(v => v.version).ToArray().DefaultIfEmpty(0).Max() + 1;
+        return await CreateContainedAsync(new CreateFormVersionRequest(definitionId, next), ct);
+    }
+
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CurrentUserId, ExecuteInTransactionAsync, StageCreateAsync, Query; pořadí a parametry viz implementace.
     /// </summary>

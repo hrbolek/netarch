@@ -40,14 +40,34 @@ public static class FormNodeResolvers
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateContainedInVersionAsync, CreateContainedInNodeAsync, MoveAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
     /// </summary>
-    public static Task<FormNodeResponse> CreateInVersion(CreateFormNodeRequest request, IFormNodeService service, CancellationToken ct)
-        => service.CreateContainedInVersionAsync(request, ct);
+    public static async Task<IResult> CreateInVersion(CreateFormNodeRequest request, IFormNodeService service, CancellationToken ct)
+    {
+        try
+        {
+            return ApiResults.Ok(await service.CreateContainedInVersionAsync(request, ct));
+        }
+        catch (System.Text.Json.JsonException ex)
+        {
+            return Results.BadRequest(new { error = ex.Message });
+        }
+        catch (ArgumentException ex) { return Results.BadRequest(new { error = ex.Message }); }
+    }
 
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateContainedInNodeAsync, CreateContainedInVersionAsync, MoveAsync, GetSubtreeAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
     /// </summary>
-    public static Task<FormNodeResponse> CreateInNode(CreateFormNodeRequest request, IFormNodeService service, CancellationToken ct)
-        => service.CreateContainedInNodeAsync(request, ct);
+    public static async Task<IResult> CreateInNode(CreateFormNodeRequest request, IFormNodeService service, CancellationToken ct)
+    {
+        try
+        {
+            return ApiResults.Ok(await service.CreateContainedInNodeAsync(request, ct));
+        }
+        catch (System.Text.Json.JsonException ex)
+        {
+            return Results.BadRequest(new { error = ex.Message });
+        }
+        catch (ArgumentException ex) { return Results.BadRequest(new { error = ex.Message }); }
+    }
 
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateContainedInVersionAsync, CreateContainedInNodeAsync, MoveAsync, GetSubtreeAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
@@ -56,15 +76,27 @@ public static class FormNodeResolvers
     {
         var f = await http.Request.ReadFormAsync(ct);
         var request = new CreateFormNodeRequest(DigitalProcessCreateForm.GuidValue(f,"form_version_id"),DigitalProcessCreateForm.Required(f,"key"),DigitalProcessCreateForm.GuidValue(f,"node_type_id"),DigitalProcessCreateForm.OptionalGuid(f,"parent_id"),DigitalProcessCreateForm.Optional(f,"label"),DigitalProcessCreateForm.Optional(f,"description"),DigitalProcessCreateForm.IntValue(f,"position"),DigitalProcessCreateForm.IntValue(f,"min_occurs"),DigitalProcessCreateForm.IntValue(f,"max_occurs"),DigitalProcessCreateForm.BoolValue(f,"own_security_scope"),DigitalProcessCreateForm.Optional(f,"configuration_json"));
-        var created = request.parent_id is null
-            ? await service.CreateContainedInVersionAsync(request, ct)
-            : await service.CreateContainedInNodeAsync(request, ct);
-        return Results.Redirect(Prefix + "/FormNodeResponse/view/" + created.id);
+        try
+        {
+            var created = request.parent_id is null
+                ? await service.CreateContainedInVersionAsync(request, ct)
+                : await service.CreateContainedInNodeAsync(request, ct);
+            return Results.Redirect(Prefix + "/FormNodeResponse/view/" + created.id);
+        }
+        catch (System.Text.Json.JsonException ex)
+        {
+            return Results.BadRequest(new { error = ex.Message });
+        }
+        catch (ArgumentException ex) { return Results.BadRequest(new { error = ex.Message }); }
     }
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: MoveAsync, GetSubtreeAsync; pořadí a parametry viz implementace.
     /// </summary>
-    public static Task<FormNodeResponse> Move(Guid id, MoveFormNodeRequest request, IFormNodeService service, CancellationToken ct) => service.MoveAsync(id, request, ct);
+    public static async Task<object> Move(Guid id, MoveFormNodeRequest request, IFormNodeService service, CancellationToken ct)
+    {
+        try { return await service.MoveAsync(id, request, ct); }
+        catch (ArgumentException ex) { return Results.BadRequest(new { error = ex.Message }); }
+    }
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: GetSubtreeAsync; pořadí a parametry viz implementace.
     /// </summary>

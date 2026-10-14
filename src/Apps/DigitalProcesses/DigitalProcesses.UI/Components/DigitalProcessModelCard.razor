@@ -22,6 +22,15 @@
                 <a class="btn btn-sm btn-primary" href="/digital-processes/WorkflowVersionResponse/designer/@workflowVersion.id">Workflow editor</a>
             </div>
         }
+        @if (Model is ProcessDefinitionVersionResponse processVersion)
+        {
+            <form method="post"
+                  action="/digital-processes/ProcessDefinitionVersionResponse/test/@processVersion.id"
+                  class="mb-3"
+                  onsubmit="return confirm('Vytvořit testovací žádost pro tuto verzi procesu?');">
+                <button type="submit" class="btn btn-sm btn-outline-primary">Testovat tuto verzi</button>
+            </form>
+        }
         <dl class="row mb-0">
             @foreach (var property in typeof(TModel).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p => p.Name != "visual_label"))
             {

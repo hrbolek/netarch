@@ -8,5 +8,5 @@
 @code {
     [Parameter, EditorRequired] public FormNodeResponse Definition { get; set; } = default!;
     [Parameter] public SubmissionNodeResponse? Value { get; set; }
-    private string InputId => $"form-node-{Definition.id:N}";
+    private string InputId => $"form-node-{Value?.id ?? Definition.id:N}";
 }

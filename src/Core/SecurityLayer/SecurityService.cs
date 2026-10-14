@@ -7,6 +7,14 @@ namespace WebAppArchitecture.SecurityLayer;
 /// <summary>
 /// Služba Security Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
+/// <remarks>
+/// Architecture exception: this is the authorization substrate, not a domain entity service.
+/// SecuredBaseService depends on ISecurityLayer, which in turn calls this service; inheriting
+/// that base here would create a recursive authorization dependency. Raw RBAC projection and
+/// role-operation reads are necessary to decide access before a secured entity query can run.
+/// Resolvers may call its narrow authorization interfaces for permission decisions, not to
+/// retrieve or mutate arbitrary domain entities. Domain data access still belongs in secured services.
+/// </remarks>
 public sealed class SecurityService(IDBLayer db, ICurrentActorProvider actorProvider) : ISecurityService
 {
     /// <summary>

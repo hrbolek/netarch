@@ -37,7 +37,7 @@ public static class WorkflowStateAccessRuleResolvers
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: CreateContainedAsync; pořadí a parametry viz implementace.
     /// </summary>
-    public static DigitalProcessCreatePageModel CreatePage(ISecurityLayer security)
+    public static DigitalProcessCreatePageModel CreatePage()
     {
         return DigitalProcessCreateForm.Page("Create workflow state access rule", Prefix+"/WorkflowStateAccessRuleResponse/create-form", Prefix+"/WorkflowStateAccessRuleResponse/list",
             "Defines how source roles are compiled into RBAC roles for a request, submission or form-node scope.",
