@@ -1,0 +1,12 @@
+@using WebAppArchitecture.DigitalProcesses.Models.RequestTransitionHistory
+@namespace WebAppArchitecture.DigitalProcesses.UI.RequestTransitionHistory.Components
+<MediumCard TModel="RequestTransitionHistoryResponse" Model="@Model" HeaderText="RequestTransitionHistory" ActionsUrl="@($"/digital-processes/RequestTransitionHistoryResponse/actions/{Model.id}")">
+    <ChildContent Context="item">
+        <Attribute TModel="RequestTransitionHistoryResponse" Item="@item" Label="visual label" AttributeValue="@item.visual_label" />
+        <Attribute TModel="RequestTransitionHistoryResponse" Item="@item" Label="id" AttributeValue="@item.id" />
+    </ChildContent>
+</MediumCard>
+
+@code {
+    [Parameter, EditorRequired] public RequestTransitionHistoryResponse Model { get; set; } = default!;
+}

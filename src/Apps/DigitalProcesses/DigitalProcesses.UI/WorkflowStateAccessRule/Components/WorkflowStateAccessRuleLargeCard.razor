@@ -1,0 +1,21 @@
+@using WebAppArchitecture.DigitalProcesses.Models.WorkflowStateAccessRule
+@namespace WebAppArchitecture.DigitalProcesses.UI.WorkflowStateAccessRule.Components
+<LargeCard TModel="WorkflowStateAccessRuleResponse" Model="@Model" HeaderText="WorkflowStateAccessRule">
+    <SideContent Context="item">
+        <WorkflowStateAccessRuleMediumCard Model="@item" />
+        <EntityLinks TModel="WorkflowStateAccessRuleResponse" Model="@item" Links="@GetLinks(item)" />
+        <EntityPermissions RbacId="@item.rbacobject_id" />
+    </SideContent>
+    <ChildContent Context="item">
+        @if (ChildContent is not null) { @ChildContent(item) }
+        else { <WorkflowStateAccessRuleModelCard Model="@item" /> }
+    </ChildContent>
+</LargeCard>
+
+@code {
+    [Parameter, EditorRequired] public WorkflowStateAccessRuleResponse Model { get; set; } = default!;
+    [Parameter] public RenderFragment<WorkflowStateAccessRuleResponse>? ChildContent { get; set; }
+    private static EntityNavigationLink[] GetLinks(WorkflowStateAccessRuleResponse item) =>
+    [
+    ];
+}

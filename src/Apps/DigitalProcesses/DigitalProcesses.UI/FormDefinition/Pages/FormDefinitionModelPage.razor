@@ -1,0 +1,10 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormDefinition
+@using WebAppArchitecture.DigitalProcesses.UI.FormDefinition.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormDefinition.Pages
+
+<PageView TModel="FormDefinitionResponse" TComponent="FormDefinitionLargeCard" Model="@Model" Title="FormDefinition" />
+
+@code {
+    [Parameter, EditorRequired] public FormDefinitionResponse Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
+}

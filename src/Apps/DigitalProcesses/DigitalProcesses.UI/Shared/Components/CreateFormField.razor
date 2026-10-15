@@ -1,0 +1,54 @@
+@namespace WebAppArchitecture.DigitalProcesses.UI.Shared.Components
+
+@if (Field.InputType == "checkbox")
+{
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" name="@Field.Name" value="true" id="field-@Field.Name" checked="@Field.Checked" />
+        <label class="form-check-label" for="field-@Field.Name">@Field.Label</label>
+        @if (!string.IsNullOrWhiteSpace(Field.HelpText))
+        {
+            <div class="form-text">@Field.HelpText</div>
+        }
+    </div>
+}
+else
+{
+    <div class="mb-3">
+        @if (Field.InputType != "entity-select")
+        {
+            <label class="form-label" for="field-@Field.Name">@Field.Label</label>
+        }
+        @if (Field.InputType == "entity-select" && !string.IsNullOrWhiteSpace(Field.LookupUrl))
+        {
+            <EntityLookupSelect Name="@Field.Name" Label="@Field.Label" ListUrl="@Field.LookupUrl" SearchFields="@(Field.SearchFields ?? Array.Empty<string>())" Required="@Field.Required" MinChars="2" Take="25" ParentField="@Field.ParentField" ParentProperty="@Field.ParentProperty" />
+        }
+        else if (Field.InputType == "entity-select")
+        {
+            <label class="form-label" for="field-@Field.Name">@Field.Label</label>
+            <select class="form-select" id="field-@Field.Name" name="@Field.Name" required="@Field.Required">
+                <option value="">Select an entity</option>
+                @foreach (var option in (Field.Options ?? Array.Empty<DigitalProcessSelectOption>()).Take(25))
+                {
+                    <option value="@option.Id">@option.Label</option>
+                }
+            </select>
+        }
+        else if (Field.InputType == "textarea")
+        {
+            <textarea class="form-control" id="field-@Field.Name" name="@Field.Name" rows="@Field.Rows" required="@Field.Required">@Field.DefaultValue</textarea>
+        }
+        else
+        {
+            <input class="form-control" id="field-@Field.Name" name="@Field.Name" type="@Field.InputType"
+                   value="@Field.DefaultValue" required="@Field.Required" min="@Field.Min" max="@Field.Max" />
+        }
+        @if (!string.IsNullOrWhiteSpace(Field.HelpText))
+        {
+            <div class="form-text">@Field.HelpText</div>
+        }
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public DigitalProcessCreateField Field { get; set; } = default!;
+}

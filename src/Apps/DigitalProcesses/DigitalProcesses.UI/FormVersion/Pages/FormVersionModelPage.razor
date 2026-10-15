@@ -1,0 +1,10 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormVersion
+@using WebAppArchitecture.DigitalProcesses.UI.FormVersion.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormVersion.Pages
+
+<PageView TModel="FormVersionResponse" TComponent="FormVersionLargeCard" Model="@Model" Title="FormVersion" />
+
+@code {
+    [Parameter, EditorRequired] public FormVersionResponse Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
+}

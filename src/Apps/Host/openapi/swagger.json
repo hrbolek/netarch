@@ -1900,12 +1900,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DefinitionVersionsPageModel"
+                  "$ref": "#/components/schemas/DefinitionProcessVersionPageModel"
                 }
               },
               "text/html": {
                 "schema": {
-                  "$ref": "#/components/schemas/DefinitionVersionsPageModel"
+                  "$ref": "#/components/schemas/DefinitionProcessVersionPageModel"
                 }
               }
             }
@@ -3630,7 +3630,7 @@
         }
       }
     },
-    "/digital-processes/form-versions/{id}/templates": {
+    "/digital-processes/FormVersionResponse/templates/{id}": {
       "get": {
         "tags": [
           "DigitalProcesses.Templates"
@@ -3803,12 +3803,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DefinitionVersionsPageModel"
+                  "$ref": "#/components/schemas/DefinitionWorkflowVersionPageModel"
                 }
               },
               "text/html": {
                 "schema": {
-                  "$ref": "#/components/schemas/DefinitionVersionsPageModel"
+                  "$ref": "#/components/schemas/DefinitionWorkflowVersionPageModel"
                 }
               }
             }
@@ -6050,6 +6050,426 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/digital-processes/FormNodeResponse/editor/{id}": {
+      "get": {
+        "tags": [
+          "FormNode"
+        ],
+        "description": "Edits a readable stored node and its readable subtree using the existing form designer. Optional test=true selects preview. Original parent, identity and version are retained; mutations retain their own RBAC checks.",
+        "operationId": "FormNodeEditor",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "test",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FormDesignerPageResponse"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/FormDesignerPageResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digital-processes/FormNodeResponse/library": {
+      "get": {
+        "tags": [
+          "FormNode"
+        ],
+        "description": "RBAC-filtered node library; case-insensitive key/label/description and configuration text filters, exact renderer/type/source-version filters. Stable paging uses offset >= 0 and limit 1..50 (default 20). No source mutation.",
+        "operationId": "FormNodeLibrary",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "node_type_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "renderer_key",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "configuration",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "form_version_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FormNodeLibraryPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digital-processes/FormNodeResponse/renderer-examples": {
+      "get": {
+        "tags": [
+          "FormNode"
+        ],
+        "description": "Readable renderer types and existing built-in configuration examples; HTML uses the real registered Razor components, JSON returns example metadata.",
+        "operationId": "FormNodeRendererExamples",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FormRendererExample"
+                  }
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FormRendererExample"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digital-processes/FormNodeResponse/draft": {
+      "post": {
+        "tags": [
+          "FormNode"
+        ],
+        "description": "Creates a detached client-owned draft from exactly one readable source node or renderer type. Optional include_children=false copies only the source node. New temporary IDs and remapped internal configuration references; no writes or server session.",
+        "operationId": "FormNodePrepareDraft",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PrepareFormNodeDraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FormNodeDraft"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digital-processes/FormNodeResponse/draft/workspace": {
+      "post": {
+        "tags": [
+          "FormNode"
+        ],
+        "description": "Validates and renders a client-memory draft using shared node properties and real tree renderers. Requires Read on target version and draft types; no persisted changes or preview values in draft.",
+        "operationId": "FormNodeDraftWorkspace",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FormNodeDraftWorkspaceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FormNodeDraftWorkspaceResponse"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/FormNodeDraftWorkspaceResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digital-processes/FormNodeResponse/draft/preview": {
+      "post": {
+        "tags": [
+          "FormNode"
+        ],
+        "description": "Revalidates a draft and renders only its interactive preview. Read on target form required. Does not create Submission or save test values.",
+        "operationId": "FormNodeDraftPreview",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FormNodeDraftWorkspaceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FormNodeDraftWorkspaceResponse"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/FormNodeDraftWorkspaceResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digital-processes/FormNodeResponse/insert-draft": {
+      "post": {
+        "tags": [
+          "FormNode"
+        ],
+        "description": "Atomically inserts a validated draft at target parent/position. Rechecks Create in target, draft version, tree rules and sibling keys; shifts following siblings with Update authorization. Fresh UUIDs, target-derived RBAC/audit, internal configuration references remapped. Returns inserted nodes in parent-first order.",
+        "operationId": "FormNodeInsertDraft",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InsertFormNodeDraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FormNodeResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digital-processes/FormNodeResponse/draft/search": {
+      "post": {
+        "tags": [
+          "FormNode"
+        ],
+        "description": "Runs configured GraphQL search against a validated detached draft after target Read authorization. Same fixed choices/id/label contract and form-derived variables as normal search; preview values are never saved.",
+        "operationId": "FormNodeDraftSearch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FormNodeDraftSearchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
           }
         }
       }
@@ -9331,6 +9751,35 @@
         },
         "additionalProperties": false
       },
+      "DefinitionProcessVersionPageModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "versions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DefinitionVersionItem"
+            },
+            "nullable": true
+          },
+          "processDefinition": {
+            "$ref": "#/components/schemas/ProcessDefinitionResponse"
+          },
+          "kind": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
       "DefinitionVersionItem": {
         "type": "object",
         "properties": {
@@ -9352,7 +9801,7 @@
         },
         "additionalProperties": false
       },
-      "DefinitionVersionsPageModel": {
+      "DefinitionWorkflowVersionPageModel": {
         "type": "object",
         "properties": {
           "id": {
@@ -9360,10 +9809,6 @@
             "format": "uuid"
           },
           "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "kind": {
             "type": "string",
             "nullable": true
           },
@@ -9377,8 +9822,10 @@
           "workflowDefinition": {
             "$ref": "#/components/schemas/WorkflowDefinitionResponse"
           },
-          "processDefinition": {
-            "$ref": "#/components/schemas/ProcessDefinitionResponse"
+          "kind": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
           }
         },
         "additionalProperties": false
@@ -10030,6 +10477,18 @@
           },
           "test_mode": {
             "type": "boolean"
+          },
+          "root_node_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "ancestor_nodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FormNodeResponse"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -10086,6 +10545,203 @@
           "renderer_key": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FormNodeDraft": {
+        "type": "object",
+        "properties": {
+          "root_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FormNodeDraftNode"
+            },
+            "nullable": true
+          },
+          "reference_paths": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FormNodeDraftNode": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "parent_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "key": {
+            "type": "string",
+            "nullable": true
+          },
+          "node_type_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "label": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "min_occurs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "max_occurs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "configuration_json": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FormNodeDraftSearchRequest": {
+        "type": "object",
+        "properties": {
+          "workspace": {
+            "$ref": "#/components/schemas/FormNodeDraftWorkspaceRequest"
+          },
+          "node_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "pattern": {
+            "type": "string",
+            "nullable": true
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FormSearchValue"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FormNodeDraftWorkspaceRequest": {
+        "type": "object",
+        "properties": {
+          "target_version_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "draft": {
+            "$ref": "#/components/schemas/FormNodeDraft"
+          },
+          "selected_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FormNodeDraftWorkspaceResponse": {
+        "type": "object",
+        "properties": {
+          "target_version_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "draft": {
+            "$ref": "#/components/schemas/FormNodeDraft"
+          },
+          "selected_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "preview_nodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FormNodeResponse"
+            },
+            "nullable": true
+          },
+          "node_types": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FormNodeTypeResponse"
+            },
+            "nullable": true
+          },
+          "examples": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FormRendererExample"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FormNodeLibraryEntry": {
+        "type": "object",
+        "properties": {
+          "node": {
+            "$ref": "#/components/schemas/FormNodeResponse"
+          },
+          "type_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "renderer_key": {
+            "type": "string",
+            "nullable": true
+          },
+          "child_count": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FormNodeLibraryPage": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FormNodeLibraryEntry"
+            },
+            "nullable": true
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "offset": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -10232,6 +10888,23 @@
         },
         "additionalProperties": false
       },
+      "FormRendererExample": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/FormNodeTypeResponse"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "configuration_json": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "FormSearchRequest": {
         "type": "object",
         "properties": {
@@ -10325,6 +10998,13 @@
           },
           "visual_label": {
             "type": "string",
+            "nullable": true
+          },
+          "templates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RtfTemplateInfo"
+            },
             "nullable": true
           }
         },
@@ -10602,6 +11282,28 @@
         },
         "additionalProperties": false
       },
+      "InsertFormNodeDraftRequest": {
+        "type": "object",
+        "properties": {
+          "form_version_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "parent_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "draft": {
+            "$ref": "#/components/schemas/FormNodeDraft"
+          }
+        },
+        "additionalProperties": false
+      },
       "JsonNode": {
         "type": "object",
         "properties": {
@@ -10806,6 +11508,52 @@
           }
         },
         "additionalProperties": false
+      },
+      "PrepareFormNodeDraftRequest": {
+        "type": "object",
+        "properties": {
+          "source_node_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "node_type_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "include_children": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
       },
       "ProcessDefinitionResponse": {
         "type": "object",
@@ -11462,6 +12210,28 @@
           "formNodeId": {
             "type": "string",
             "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RtfTemplateInfo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "formVersionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "additionalProperties": false

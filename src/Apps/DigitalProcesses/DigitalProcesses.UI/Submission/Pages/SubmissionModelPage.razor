@@ -1,0 +1,10 @@
+@using WebAppArchitecture.DigitalProcesses.Models.Submission
+@using WebAppArchitecture.DigitalProcesses.UI.Submission.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.Submission.Pages
+
+<PageView TModel="SubmissionResponse" TComponent="SubmissionLargeCard" Model="@Model" Title="Submission" />
+
+@code {
+    [Parameter, EditorRequired] public SubmissionResponse Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
+}

@@ -1,0 +1,26 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormNode
+@using WebAppArchitecture.DigitalProcesses.Models.FormVersion
+@using WebAppArchitecture.DigitalProcesses.UI.FormNode.Components
+@using WebAppArchitecture.DigitalProcesses.UI.FormVersion.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormVersion.Components
+
+<div class="card mb-3 border-info" data-ai-form-version="@FormVersionId">
+    <div class="card-header"><strong>AI návrh formuláře</strong></div>
+    <div class="card-body">
+        <label class="form-label" for="dp-ai-instruction">Pokyn pro agenta</label>
+        <textarea id="dp-ai-instruction" class="form-control mb-2" rows="4" maxlength="8000" placeholder="Například: Přidej sekci Vyjádření nadřízeného se dvěma poli…"></textarea>
+        <button id="dp-ai-propose" type="button" class="btn btn-sm btn-outline-primary">Navrhnout změny</button>
+        <p id="dp-ai-status" class="small mt-2" role="status"></p>
+        <div id="dp-ai-result" hidden>
+            <div id="dp-ai-diff" class="small alert alert-info" role="status"></div>
+            <label class="form-label" for="dp-ai-json">Návrh schématu (JSON) – před uložením lze upravit</label>
+            <textarea id="dp-ai-json" class="form-control font-monospace mb-2" rows="16" spellcheck="false"></textarea>
+            <button id="dp-ai-approve" type="button" class="btn btn-sm btn-primary">Potvrdit a uložit návrh</button>
+            <div class="form-text">Zápis je možný pouze do rozpracované verze; vynechané stávající uzly se nemažou. Po uložení se obnoví návrhář.</div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public Guid FormVersionId { get; set; }
+}

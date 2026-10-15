@@ -1,0 +1,47 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormNode
+@using WebAppArchitecture.DigitalProcesses.Models.SubmissionNode
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormNode.Renderers
+@using System.Text.Json
+@using System.Text.Json.Nodes
+
+<div class="mb-3" data-form-node-id="@Definition.id" data-graphql-search>
+    <label class="form-label" for="@InputId">@(Definition.label ?? Definition.key)</label>
+    <div class="position-relative">
+        <input id="@InputId" class="form-control" type="search" autocomplete="off"
+               value="@SelectedLabel" data-search-input
+               aria-autocomplete="list" aria-controls="@($"{InputId}-options")" />
+        <input type="hidden" name="@($"node-{Definition.id:N}")"
+               value="@SelectedValueJson" data-search-value />
+        <div id="@($"{InputId}-options")" class="list-group position-absolute start-0 top-100 w-100 shadow"
+             style="z-index:1000"
+             role="listbox" data-search-options hidden></div>
+    </div>
+    <div class="form-text" data-search-status aria-live="polite"></div>
+    @if (!string.IsNullOrWhiteSpace(Definition.description))
+    {
+        <div class="form-text">@Definition.description</div>
+    }
+</div>
+<script src="/_content/DigitalProcesses.UI/digital-processes-search.js"></script>
+
+@code {
+    [Parameter, EditorRequired] public FormNodeResponse Definition { get; set; } = default!;
+    [Parameter] public SubmissionNodeResponse? Value { get; set; }
+    private string InputId => $"form-node-{Value?.id ?? Definition.id:N}";
+    private JsonObject? Selection
+    {
+        get
+        {
+            try
+            {
+                return JsonNode.Parse(Value?.value_json ?? "") as JsonObject;
+            }
+            catch (JsonException)
+            {
+                return null;
+            }
+        }
+    }
+    private string? SelectedLabel => Selection?["label"]?.ToString();
+    private string SelectedValueJson => Selection?.ToJsonString() ?? "";
+}

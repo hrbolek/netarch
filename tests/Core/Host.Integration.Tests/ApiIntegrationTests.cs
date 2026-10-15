@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.Models.FormDefinition;
 using Microsoft.Extensions.DependencyInjection;
 using WebAppArchitecture.DBLayer;
 using WebAppArchitecture.DigitalProcesses;
@@ -28,7 +29,7 @@ public sealed class CoreHostIntegrationTests
         using var scope = app.Services.CreateScope();
         var hostDb = scope.ServiceProvider.GetRequiredService<HostDbContext>();
         Assert.Same(hostDb, scope.ServiceProvider.GetRequiredService<CoreDbContext>());
-        Assert.NotNull(hostDb.Model.FindEntityType(typeof(WebAppArchitecture.DigitalProcesses.DBLayer.FormDefinitionModel)));
+        Assert.NotNull(hostDb.Model.FindEntityType(typeof(WebAppArchitecture.DigitalProcesses.Models.FormDefinition.FormDefinitionModel)));
     }
 
     [Fact]

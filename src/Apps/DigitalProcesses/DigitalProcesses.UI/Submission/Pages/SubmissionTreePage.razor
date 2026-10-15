@@ -1,0 +1,40 @@
+@using WebAppArchitecture.DigitalProcesses.Models.Submission
+@using WebAppArchitecture.DigitalProcesses.Models.SubmissionNode
+@namespace WebAppArchitecture.DigitalProcesses.UI.Submission.Pages
+
+<Page Title="Submission tree">
+    <div class="container py-3">
+        <h1 class="h4">@Model.submission.visual_label</h1>
+        @if (Model.submission.is_archived)
+        {
+            <div class="alert alert-secondary">Archived submission — immutable snapshot.</div>
+        }
+        <div class="card border-info mb-3" data-ai-placeholder="submission-assistant" data-submission-id="@Model.submission.id">
+            <div class="card-header"><strong>AI asistent vyplňování</strong> <span class="badge text-bg-secondary">Připravuje se</span></div>
+            <div class="card-body">
+                <p class="small text-muted mb-2">Budoucí poradce navrhne text rozhodnutí, prověří úplnost a porovná oprávněně dostupné předchozí případy. Navržené hodnoty budou vyžadovat potvrzení.</p>
+                <button type="button" class="btn btn-sm btn-outline-secondary" disabled>Připravit návrh rozhodnutí</button>
+            </div>
+        </div>
+        <div class="list-group">
+            @foreach (var node in Model.nodes.OrderBy(x => x.path).ThenBy(x => x.position))
+            {
+                var depth = Math.Max(0, node.path.Count(c => c == '/') - 1);
+                <div class="list-group-item" style="padding-left:@(1 + depth * 1.5)rem">
+                    <EntityLink TModel="SubmissionNodeResponse" Model="@node" App="digital-processes" />
+                    <span class="badge text-bg-light ms-2">occurrence @node.occurrence</span>
+                    @if (!string.IsNullOrWhiteSpace(node.value_json))
+                    {
+                        <code class="d-block mt-1">@node.value_json</code>
+                    }
+                    <code class="d-block small text-muted">@node.path</code>
+                </div>
+            }
+        </div>
+    </div>
+</Page>
+
+@code {
+    [Parameter, EditorRequired] public SubmissionTreeResponse Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
+}

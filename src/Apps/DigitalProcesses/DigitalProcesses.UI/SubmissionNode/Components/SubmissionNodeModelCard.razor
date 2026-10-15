@@ -1,0 +1,48 @@
+@using WebAppArchitecture.DigitalProcesses.Models.SubmissionNode
+@namespace WebAppArchitecture.DigitalProcesses.UI.SubmissionNode.Components
+@using System.Text.Json
+@using WebAppArchitecture.Base.UI.Components
+
+<div class="card mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span>@Title</span>
+        <EntityLink TModel="SubmissionNodeResponse" Model="@Model" App="digital-processes" />
+    </div>
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-4 text-muted small">id</dt>
+            <dd class="col-sm-8 text-break">@(Model.id.ToString())</dd>
+            <dt class="col-sm-4 text-muted small">submission id</dt>
+            <dd class="col-sm-8 text-break">@(Model.submission_id.ToString())</dd>
+            <dt class="col-sm-4 text-muted small">form node id</dt>
+            <dd class="col-sm-8 text-break">@(Model.form_node_id.ToString())</dd>
+            <dt class="col-sm-4 text-muted small">parent id</dt>
+            <dd class="col-sm-8 text-break">@((Model.parent_id?.ToString() ?? "\u2014"))</dd>
+            <dt class="col-sm-4 text-muted small">path</dt>
+            <dd class="col-sm-8 text-break">@(Model.path.ToString())</dd>
+            <dt class="col-sm-4 text-muted small">occurrence</dt>
+            <dd class="col-sm-8 text-break">@(Model.occurrence.ToString())</dd>
+            <dt class="col-sm-4 text-muted small">position</dt>
+            <dd class="col-sm-8 text-break">@(Model.position.ToString())</dd>
+            <dt class="col-sm-4 text-muted small">value json</dt>
+            <dd class="col-sm-8 text-break">@((Model.value_json?.ToString() ?? "\u2014"))</dd>
+            <dt class="col-sm-4 text-muted small">rbacobject id</dt>
+            <dd class="col-sm-8 text-break">@(Model.rbacobject_id.ToString())</dd>
+            <dt class="col-sm-4 text-muted small">created at</dt>
+            <dd class="col-sm-8 text-break">@(Model.created_at.ToString())</dd>
+            <dt class="col-sm-4 text-muted small">updated at</dt>
+            <dd class="col-sm-8 text-break">@(Model.updated_at.ToString())</dd>
+            <dt class="col-sm-4 text-muted small">created by</dt>
+            <dd class="col-sm-8 text-break">@(Model.created_by.ToString())</dd>
+            <dt class="col-sm-4 text-muted small">updated by</dt>
+            <dd class="col-sm-8 text-break">@(Model.updated_by.ToString())</dd>
+        </dl>
+        <details class="mt-3"><summary class="small text-muted">Raw JSON (diagnostics)</summary><pre class="small mt-2">@JsonSerializer.Serialize(Model, JsonOptions)</pre></details>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public SubmissionNodeResponse Model { get; set; } = default!;
+    [Parameter] public string Title { get; set; } = typeof(SubmissionNodeResponse).Name;
+    private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
+}

@@ -1,0 +1,15 @@
+@using WebAppArchitecture.DigitalProcesses.Models.WorkflowVersion
+@namespace WebAppArchitecture.DigitalProcesses.UI.WorkflowVersion.Components
+<MediumCard TModel="WorkflowVersionResponse" Model="@Model" HeaderText="WorkflowVersion" ActionsUrl="@($"/digital-processes/WorkflowVersionResponse/actions/{Model.id}")">
+    <ChildContent Context="item">
+        <Attribute TModel="WorkflowVersionResponse" Item="@item" Label="visual label" AttributeValue="@item.visual_label" />
+        <Attribute TModel="WorkflowVersionResponse" Item="@item" Label="version" AttributeValue="@item.version" />
+        <Attribute TModel="WorkflowVersionResponse" Item="@item" Label="is published" AttributeValue="@item.is_published" />
+        <Attribute TModel="WorkflowVersionResponse" Item="@item" Label="id" AttributeValue="@item.id" />
+        <WorkflowVersionForeignKeyLinks Model="@item" />
+    </ChildContent>
+</MediumCard>
+
+@code {
+    [Parameter, EditorRequired] public WorkflowVersionResponse Model { get; set; } = default!;
+}

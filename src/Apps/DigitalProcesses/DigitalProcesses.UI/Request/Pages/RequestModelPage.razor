@@ -1,0 +1,10 @@
+@using WebAppArchitecture.DigitalProcesses.Models.Request
+@using WebAppArchitecture.DigitalProcesses.UI.Request.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.Request.Pages
+
+<PageView TModel="RequestResponse" TComponent="RequestLargeCard" Model="@Model" Title="Request" />
+
+@code {
+    [Parameter, EditorRequired] public RequestResponse Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
+}

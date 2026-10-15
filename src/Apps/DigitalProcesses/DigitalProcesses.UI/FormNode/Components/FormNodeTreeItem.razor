@@ -1,0 +1,100 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormNode
+@using WebAppArchitecture.DigitalProcesses.Models.FormNodeType
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormNode.Components
+
+@if (NodeType is not null)
+{
+    @if (NodeType.can_have_children)
+    {
+        <section class="card mb-3" data-form-node-id="@Node.id" data-max-occurs="@Node.max_occurs" data-repeat-section="@(Node.max_occurs > 1 ? "true" : "false")">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <strong>@(Node.label ?? Node.key)</strong>
+                @if (!TestMode)
+                {
+                    <span class="d-flex gap-2 align-items-center"><span class="small text-muted">@NodeType.name · @Node.key</span><FormNodeActions NodeId="@Node.id" ParentId="@Node.parent_id" Position="@Node.position" FormVersionId="@Node.form_version_id" CanAdd="true" /></span>
+                }
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Node.description))
+            {
+                <div class="card-body pb-0 text-muted small">@Node.description</div>
+            }
+            @if (FormSectionLayout.IsTable(Node))
+            {
+                <div class="card-body">
+                    <div class="table-responsive" data-section-table>
+                        <table class="table table-bordered align-middle">
+                            <thead>
+                                <tr>
+                                    @foreach (var child in Children) { <th scope="col">@(child.label ?? child.key)</th> }
+                                    @if (TestMode) { <th scope="col">Actions</th> }
+                                </tr>
+                            </thead>
+                            <tbody data-repeat-body id="@($"repeat-body-{Node.id:N}")">
+                                @for (var occurrence = 0; occurrence < Math.Max(1, Node.min_occurs); occurrence++)
+                                {
+                                    <tr data-repeat-instance data-occurrence="@occurrence">
+                                        @foreach (var child in Children)
+                                        {
+                                            <FormTableCell Editable="@IsInput(child)" Label="@(child.label ?? child.key)">
+                                                <FormNodeTreeItem Node="@child" Nodes="@Nodes" Types="@Types" TestMode="@TestMode" SectionValues="@SectionValues" />
+                                            </FormTableCell>
+                                        }
+                                        @if (TestMode) { <td data-row-actions></td> }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    @if (TestMode)
+                    {
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-repeat-add disabled="@(Node.min_occurs >= Node.max_occurs)" onclick="digitalProcessesAddOccurrence(this)">Add occurrence</button>
+                        <span class="small text-muted">Maximum @Node.max_occurs</span>
+                    }
+                </div>
+            }
+            else
+            {
+            <div class="card-body" data-repeat-body id="@($"repeat-body-{Node.id:N}")">
+                <div data-repeat-instance data-occurrence="0">
+                @foreach (var child in Children)
+                {
+                    <FormNodeTreeItem Node="@child" Nodes="@Nodes" Types="@Types" TestMode="@TestMode" SectionValues="@SectionValues" />
+                }
+                </div>
+                @if (!TestMode && !Children.Any())
+                {
+                    <div class="text-muted small">Empty section.</div>
+                }
+                @if (TestMode && Node.max_occurs > 1)
+                {
+                    <div class="d-flex align-items-center gap-2 mt-2" data-repeat-controls>
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="digitalProcessesAddOccurrence(this)">Add occurrence</button>
+                        <span class="small text-muted">Maximum @Node.max_occurs</span>
+                    </div>
+                }
+            </div>
+            }
+        </section>
+    }
+    else
+    {
+        <FormNodeRenderer RendererKey="@NodeType.renderer_key" Definition="@Node" SectionValues="@SectionValues" SectionNodes="@SectionNodes" FormNodes="@Nodes" />
+    }
+}
+
+@code {
+    [Parameter, EditorRequired] public FormNodeResponse Node { get; set; } = default!;
+    [Parameter, EditorRequired] public IReadOnlyCollection<FormNodeResponse> Nodes { get; set; } = Array.Empty<FormNodeResponse>();
+    [Parameter, EditorRequired] public IReadOnlyCollection<FormNodeTypeResponse> Types { get; set; } = Array.Empty<FormNodeTypeResponse>();
+    [Parameter] public bool TestMode { get; set; }
+    // The enclosing section owns the variables visible to its descendants.
+    [Parameter] public IReadOnlyDictionary<string, System.Text.Json.Nodes.JsonNode?> SectionValues { get; set; }
+        = new Dictionary<string, System.Text.Json.Nodes.JsonNode?>();
+    private IReadOnlyCollection<FormNodeResponse> SectionNodes => Node.parent_id is Guid sectionId
+        ? Nodes.Where(x => x.parent_id == sectionId).ToArray()
+        : Nodes.Where(x => x.parent_id is null).ToArray();
+
+    private FormNodeTypeResponse? NodeType => Types.FirstOrDefault(x => x.id == Node.node_type_id);
+    private bool IsInput(FormNodeResponse node) => Types.Any(x => x.id == node.node_type_id && x.renderer_key.StartsWith("input.", StringComparison.Ordinal));
+    private IEnumerable<FormNodeResponse> Children => Nodes.Where(x => x.parent_id == Node.id).OrderBy(x => x.position).ThenBy(x => x.key);
+}

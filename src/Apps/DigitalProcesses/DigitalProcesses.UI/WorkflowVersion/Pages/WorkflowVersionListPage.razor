@@ -1,0 +1,15 @@
+@using WebAppArchitecture.DigitalProcesses.Models.WorkflowVersion
+@using WebAppArchitecture.DigitalProcesses.UI.WorkflowVersion.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.WorkflowVersion.Pages
+
+<PageViewList TModel="WorkflowVersionResponse" Items="@Model" Title="Workflow versions" ShowFilter="@ShowFilter">
+    <ChildContent Context="item">
+        <WorkflowVersionMediumCard Model="@item" />
+    </ChildContent>
+</PageViewList>
+
+@code {
+    [Parameter, EditorRequired] public WorkflowVersionResponse[] Model { get; set; } = [];
+    [Parameter] public bool IsFragment { get; set; }
+    [Parameter] public bool ShowFilter { get; set; } = true;
+}

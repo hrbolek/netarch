@@ -1,0 +1,10 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormNode
+@using WebAppArchitecture.DigitalProcesses.UI.FormNode.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormNode.Pages
+
+<PageView TModel="FormNodeResponse" TComponent="FormNodeLargeCard" Model="@Model" Title="FormNode" />
+
+@code {
+    [Parameter, EditorRequired] public FormNodeResponse Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
+}

@@ -1,0 +1,21 @@
+@using WebAppArchitecture.DigitalProcesses.Models.Submission
+@namespace WebAppArchitecture.DigitalProcesses.UI.Submission.Components
+<LargeCard TModel="SubmissionResponse" Model="@Model" HeaderText="Submission">
+    <SideContent Context="item">
+        <SubmissionMediumCard Model="@item" />
+        <EntityLinks TModel="SubmissionResponse" Model="@item" Links="@GetLinks(item)" />
+        <EntityPermissions RbacId="@item.rbacobject_id" />
+    </SideContent>
+    <ChildContent Context="item">
+        @if (ChildContent is not null) { @ChildContent(item) }
+        else { <SubmissionModelCard Model="@item" /> }
+    </ChildContent>
+</LargeCard>
+
+@code {
+    [Parameter, EditorRequired] public SubmissionResponse Model { get; set; } = default!;
+    [Parameter] public RenderFragment<SubmissionResponse>? ChildContent { get; set; }
+    private static EntityNavigationLink[] GetLinks(SubmissionResponse item) =>
+    [
+    ];
+}

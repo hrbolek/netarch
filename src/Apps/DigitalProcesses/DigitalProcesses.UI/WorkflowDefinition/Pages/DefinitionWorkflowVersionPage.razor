@@ -1,0 +1,35 @@
+@using WebAppArchitecture.DigitalProcesses.Models.WorkflowDefinition
+@using WebAppArchitecture.DigitalProcesses.Models.WorkflowVersion
+@using WebAppArchitecture.DigitalProcesses.UI.WorkflowDefinition.Components
+@using WebAppArchitecture.DigitalProcesses.UI.Shared.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.WorkflowDefinition.Pages
+
+<Page Title="@Model.Name">
+    @if (Model.WorkflowDefinition is not null)
+    {
+        <WorkflowDefinitionLargeCard Model="@Model.WorkflowDefinition">
+            <ChildContent Context="definition">
+                <DefinitionVersionsTable DefinitionId="@Model.Id" Name="@Model.Name" Versions="@Model.Versions"
+                                         DefinitionPath="/digital-processes/WorkflowDefinitionResponse">
+                    <CreateVersionAction>
+                        <form method="post" action="@($"/digital-processes/WorkflowDefinitionResponse/new-version/{Model.Id}")">
+                            <button class="btn btn-sm btn-primary" type="submit">Copy to new draft</button>
+                        </form>
+                    </CreateVersionAction>
+                    <VersionActions Context="version">
+                        <a class="btn btn-sm btn-outline-primary me-2" href="@($"/digital-processes/WorkflowVersionResponse/designer/{version.Id}")">@(version.Published ? "View workflow" : "Edit states and transitions")</a>
+                    </VersionActions>
+                </DefinitionVersionsTable>
+            </ChildContent>
+        </WorkflowDefinitionLargeCard>
+    }
+    else
+    {
+        <div class="alert alert-danger">Definition was not loaded.</div>
+    }
+</Page>
+
+@code {
+    [Parameter, EditorRequired] public DefinitionWorkflowVersionPageModel Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
+}

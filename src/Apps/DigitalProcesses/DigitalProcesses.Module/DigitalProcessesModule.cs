@@ -1,4 +1,41 @@
-using WebAppArchitecture.DigitalProcesses.Security;
+using WebAppArchitecture.DigitalProcesses.Models.FormDefinition;
+using WebAppArchitecture.DigitalProcesses.Models.FormNode;
+using WebAppArchitecture.DigitalProcesses.Models.FormNodeApplicantAccess;
+using WebAppArchitecture.DigitalProcesses.Models.FormNodeType;
+using WebAppArchitecture.DigitalProcesses.Models.FormVersion;
+using WebAppArchitecture.DigitalProcesses.Models.ProcessDefinition;
+using WebAppArchitecture.DigitalProcesses.Models.ProcessDefinitionVersion;
+using WebAppArchitecture.DigitalProcesses.Models.Request;
+using WebAppArchitecture.DigitalProcesses.Models.RequestTransitionHistory;
+using WebAppArchitecture.DigitalProcesses.Models.Submission;
+using WebAppArchitecture.DigitalProcesses.Models.SubmissionNode;
+using WebAppArchitecture.DigitalProcesses.Models.WorkflowDefinition;
+using WebAppArchitecture.DigitalProcesses.Models.WorkflowState;
+using WebAppArchitecture.DigitalProcesses.Models.WorkflowStateAccessRule;
+using WebAppArchitecture.DigitalProcesses.Models.WorkflowTransition;
+using WebAppArchitecture.DigitalProcesses.Models.WorkflowVersion;
+using WebAppArchitecture.DigitalProcesses.Resolvers.Shared;
+using WebAppArchitecture.DigitalProcesses.Services.DocumentTemplate;
+using WebAppArchitecture.DigitalProcesses.Services.FormDefinition;
+using WebAppArchitecture.DigitalProcesses.Services.FormNode;
+using WebAppArchitecture.DigitalProcesses.Services.FormNodeApplicantAccess;
+using WebAppArchitecture.DigitalProcesses.Services.FormNodeType;
+using WebAppArchitecture.DigitalProcesses.Services.FormVersion;
+using WebAppArchitecture.DigitalProcesses.Services.Infrastructure;
+using WebAppArchitecture.DigitalProcesses.Services.ProcessDefinition;
+using WebAppArchitecture.DigitalProcesses.Services.ProcessDefinitionVersion;
+using WebAppArchitecture.DigitalProcesses.Services.Request;
+using WebAppArchitecture.DigitalProcesses.Services.RequestTransitionHistory;
+using WebAppArchitecture.DigitalProcesses.Services.Shared;
+using WebAppArchitecture.DigitalProcesses.Services.Submission;
+using WebAppArchitecture.DigitalProcesses.Services.SubmissionNode;
+using WebAppArchitecture.DigitalProcesses.Services.WorkflowDefinition;
+using WebAppArchitecture.DigitalProcesses.Services.WorkflowState;
+using WebAppArchitecture.DigitalProcesses.Services.WorkflowStateAccessRule;
+using WebAppArchitecture.DigitalProcesses.Services.WorkflowTransition;
+using WebAppArchitecture.DigitalProcesses.Services.WorkflowVersion;
+using WebAppArchitecture.DigitalProcesses.UI.FormNode.Renderers;
+using WebAppArchitecture.DigitalProcesses.UI.Shared.Routing;
 using WebAppArchitecture.DigitalProcesses.DBLayer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -10,12 +47,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebAppArchitecture.Base.Endpoints;
+using WebAppArchitecture.Base.Data;
+using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.Base.UI.Pages;
 using WebAppArchitecture.Base.UI.Routing;
-using WebAppArchitecture.DigitalProcesses.Models;
-using WebAppArchitecture.DigitalProcesses.Resolvers;
-using WebAppArchitecture.DigitalProcesses.Services;
-using WebAppArchitecture.DigitalProcesses.UI.Routing;
 using WebAppArchitecture.Hosting;
 using WebAppArchitecture.SecurityLayer;
 
@@ -36,31 +71,31 @@ public sealed class DigitalProcessesModule : IModule
         services.AddSingleton<PreviewFormInstanceStore>();
         services.AddScoped<RtfTemplateStore>();
         services.AddScoped<IRtfTemplateService, RtfTemplateService>();
-        services.AddScoped<IFormDefinitionService, FormDefinitionService>();
-        services.AddScoped<IFormVersionService, FormVersionService>();
-        services.AddScoped<IFormNodeTypeService, FormNodeTypeService>();
-        services.AddScoped<IFormNodeService, FormNodeService>();
-        services.AddScoped<IBulkTreeService, BulkTreeService>();
+        AddEntityService<FormDefinitionModel, IFormDefinitionService, FormDefinitionService>(services);
+        AddEntityService<FormVersionModel, IFormVersionService, FormVersionService>(services);
+        AddEntityService<FormNodeTypeModel, IFormNodeTypeService, FormNodeTypeService>(services);
+        AddEntityService<FormNodeModel, IFormNodeService, FormNodeService>(services);
+        AddEntityService<FormNodeApplicantAccessModel, IFormNodeApplicantAccessService, FormNodeApplicantAccessService>(services);
+        services.AddScoped<IFormNodeInsertionService, FormNodeInsertionService>();
         services.AddScoped(typeof(IDigitalProcessActionService<>), typeof(DigitalProcessActionService<>));
         services.AddScoped<IFormSearchService, FormSearchService>();
         services.AddScoped<IFormComponentCatalogService, FormComponentCatalogService>();
         services.AddScoped<IFormDocumentService, FormDocumentService>();
         services.AddScoped<IApplicantPolicyService, ApplicantPolicyService>();
         services.AddScoped<IFormDesignAiService, FormDesignAiService>();
-        services.AddScoped<IDigitalProcessesManagementService, DigitalProcessesManagementService>();
-        services.AddScoped<IWorkflowDefinitionService, WorkflowDefinitionService>();
-        services.AddScoped<IWorkflowVersionService, WorkflowVersionService>();
-        services.AddScoped<IWorkflowStateService, WorkflowStateService>();
-        services.AddScoped<IWorkflowStateAccessRuleService, WorkflowStateAccessRuleService>();
-        services.AddScoped<IWorkflowTransitionService, WorkflowTransitionService>();
-        services.AddScoped<IProcessDefinitionService, ProcessDefinitionService>();
-        services.AddScoped<IProcessDefinitionVersionService, ProcessDefinitionVersionService>();
+        AddEntityService<WorkflowDefinitionModel, IWorkflowDefinitionService, WorkflowDefinitionService>(services);
+        AddEntityService<WorkflowVersionModel, IWorkflowVersionService, WorkflowVersionService>(services);
+        AddEntityService<WorkflowStateModel, IWorkflowStateService, WorkflowStateService>(services);
+        AddEntityService<WorkflowStateAccessRuleModel, IWorkflowStateAccessRuleService, WorkflowStateAccessRuleService>(services);
+        AddEntityService<WorkflowTransitionModel, IWorkflowTransitionService, WorkflowTransitionService>(services);
+        AddEntityService<ProcessDefinitionModel, IProcessDefinitionService, ProcessDefinitionService>(services);
+        AddEntityService<ProcessDefinitionVersionModel, IProcessDefinitionVersionService, ProcessDefinitionVersionService>(services);
         services.AddScoped<ITrustedSubmissionSnapshotReader, TrustedSubmissionSnapshotReader>();
         services.AddScoped<IProcessRequestProvisioner, ProcessRequestProvisioner>();
-        services.AddScoped<IRequestService, RequestService>();
-        services.AddScoped<ISubmissionService, SubmissionService>();
-        services.AddScoped<ISubmissionNodeService, SubmissionNodeService>();
-        services.AddScoped<IRequestTransitionHistoryService, RequestTransitionHistoryService>();
+        AddEntityService<RequestModel, IRequestService, RequestService>(services);
+        AddEntityService<SubmissionModel, ISubmissionService, SubmissionService>(services);
+        AddEntityService<SubmissionNodeModel, ISubmissionNodeService, SubmissionNodeService>(services);
+        AddEntityService<RequestTransitionHistoryModel, IRequestTransitionHistoryService, RequestTransitionHistoryService>(services);
         services.AddSingleton<IDigitalProcessIntegration, UnconfiguredDigitalProcessIntegration>();
         services.AddHttpContextAccessor();
         services.AddSingleton(new FormDataBackendOptions
@@ -83,6 +118,15 @@ public sealed class DigitalProcessesModule : IModule
         services.AddSingleton<IFormUrlTemplateRenderer, FormUrlTemplateRenderer>();
         services.AddHostedService<DigitalProcessesBootstrapHostedService>();
         services.AddDigitalProcessRenderers();
+    }
+
+    private static void AddEntityService<TModel, TService, TImplementation>(IServiceCollection services)
+        where TModel : class, ISecuredEntityDBModel
+        where TService : class, IBaseService<TModel>
+        where TImplementation : SecuredBaseService<TModel>, TService
+    {
+        services.AddScoped<TService, TImplementation>();
+        services.AddScoped<IBaseService<TModel>>(provider => provider.GetRequiredService<TService>());
     }
 
     public void ConfigureDatabase(ModelBuilder modelBuilder)

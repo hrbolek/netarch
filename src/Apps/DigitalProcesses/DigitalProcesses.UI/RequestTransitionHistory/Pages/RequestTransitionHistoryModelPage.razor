@@ -1,0 +1,10 @@
+@using WebAppArchitecture.DigitalProcesses.Models.RequestTransitionHistory
+@using WebAppArchitecture.DigitalProcesses.UI.RequestTransitionHistory.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.RequestTransitionHistory.Pages
+
+<PageView TModel="RequestTransitionHistoryResponse" TComponent="RequestTransitionHistoryLargeCard" Model="@Model" Title="RequestTransitionHistory" />
+
+@code {
+    [Parameter, EditorRequired] public RequestTransitionHistoryResponse Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
+}

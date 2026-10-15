@@ -1,0 +1,51 @@
+@namespace WebAppArchitecture.DigitalProcesses.UI.Shared.Components
+
+<div class="container py-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h4">@Name</h1>
+        <a class="btn btn-outline-secondary" href="@($"{DefinitionPath}/list")">Back</a>
+    </div>
+    <div class="card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <strong>Versions</strong>
+            @CreateVersionAction
+        </div>
+        <table class="table table-hover mb-0">
+            <thead><tr><th>Version</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+                @foreach (var version in Versions.OrderByDescending(x => x.Number))
+                {
+                    <tr>
+                        <td>Version @version.Number</td>
+                        <td>@(version.Published ? "Published" : "Draft")</td>
+                        <td>
+                            @VersionActions(version)
+                            @if (!version.Published)
+                            {
+                                <form class="d-inline" method="post" action="@($"{DefinitionPath}/publish-version/{version.Id}?definitionId={DefinitionId}")">
+                                    <button class="btn btn-sm btn-success" type="submit">Publish</button>
+                                </form>
+                                <form method="post" class="d-inline" action="@($"{DefinitionPath}/delete-version/{version.Id}?definitionId={DefinitionId}")" onsubmit="return confirm('Delete draft version?');">
+                                    <button class="btn btn-sm btn-outline-danger" type="submit">Delete draft</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @if (Versions.Count == 0)
+    {
+        <div class="alert alert-warning">No versions yet. Create a draft to begin.</div>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public Guid DefinitionId { get; set; }
+    [Parameter, EditorRequired] public string Name { get; set; } = default!;
+    [Parameter, EditorRequired] public string DefinitionPath { get; set; } = default!;
+    [Parameter, EditorRequired] public IReadOnlyList<DefinitionVersionItem> Versions { get; set; } = [];
+    [Parameter, EditorRequired] public RenderFragment CreateVersionAction { get; set; } = default!;
+    [Parameter, EditorRequired] public RenderFragment<DefinitionVersionItem> VersionActions { get; set; } = default!;
+}

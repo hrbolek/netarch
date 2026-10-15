@@ -1,0 +1,31 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormNode
+@using WebAppArchitecture.DigitalProcesses.Models.FormNodeType
+@using WebAppArchitecture.DigitalProcesses.UI.FormNode.Renderers
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormNode.Components
+@inject IFormNodeRendererRegistry Registry
+
+<div class="row g-3" data-renderer-gallery>
+    @foreach (var example in Model.Where(x => Registry.Resolve(x.type.renderer_key) is not null))
+    {
+        <div class="col-lg-4">
+            <div class="card h-100">
+                <div class="card-header"><strong>@example.type.name</strong> <code>@example.type.renderer_key</code></div>
+                <div class="card-body">
+                    <div data-gallery-preview>
+                        <FormNodeRenderer RendererKey="@example.type.renderer_key" Definition="@Sample(example)" />
+                    </div>
+                    <p class="small text-muted">@example.description</p>
+                    <button type="button" class="btn btn-sm btn-primary" data-wizard-renderer="@example.type.id">Select renderer</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<FormRendererExample> Model { get; set; } = [];
+    [Parameter] public bool IsFragment { get; set; }
+    private static FormNodeResponse Sample(FormRendererExample example) => new(Guid.NewGuid(), Guid.Empty, null, "/", "example",
+        example.type.name, null, example.type.id, 0, 1, 1, false, example.configuration_json,
+        Guid.Empty, DateTimeOffset.UtcNow, DateTimeOffset.UtcNow, Guid.Empty, Guid.Empty);
+}

@@ -1,0 +1,25 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormDefinition
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormDefinition.Components
+<LargeCard TModel="FormDefinitionResponse" Model="@Model" HeaderText="FormDefinition">
+    <SideContent Context="item">
+        @if (ChildContent is not null)
+        {
+            <FormDefinitionMediumCard Model="@item" />
+        }
+        <EntityLinks TModel="FormDefinitionResponse" Model="@item" Links="@GetLinks(item)" />
+        <EntityPermissions RbacId="@item.rbacobject_id" />
+    </SideContent>
+    <ChildContent Context="item">
+        @if (ChildContent is not null) { @ChildContent(item) }
+        else { <FormDefinitionMediumCard Model="@item" /> }
+    </ChildContent>
+</LargeCard>
+
+@code {
+    [Parameter, EditorRequired] public FormDefinitionResponse Model { get; set; } = default!;
+    [Parameter] public RenderFragment<FormDefinitionResponse>? ChildContent { get; set; }
+    private static EntityNavigationLink[] GetLinks(FormDefinitionResponse item) =>
+    [
+        new("Versions", $"/digital-processes/FormDefinitionResponse/view/{item.id}", "Form versions and publishing"),
+    ];
+}

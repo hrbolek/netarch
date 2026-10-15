@@ -1,0 +1,39 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormNode
+@using WebAppArchitecture.DigitalProcesses.Models.FormVersion
+@using WebAppArchitecture.DigitalProcesses.UI.FormNode.Components
+@using WebAppArchitecture.DigitalProcesses.UI.FormVersion.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormNode.Components
+
+<div class="card">
+    <div class="card-header"><strong>Library</strong></div>
+    <div class="card-body">
+        <p class="small text-muted">Reusable root sections from other readable form versions. Import creates an independent deep copy.</p>
+        @if (!Editor.Model.designer.library_items.Any())
+        {
+            <div class="text-muted small">No reusable sections available yet.</div>
+        }
+        @foreach (var item in Editor.Model.designer.library_items)
+        {
+            <form method="post" action="/digital-processes/FormVersionResponse/designer/import-form" class="border rounded p-2 mb-2">
+                <input type="hidden" name="source_node_id" value="@item.source_node_id" />
+                <input type="hidden" name="target_form_version_id" value="@Editor.Model.designer.form.id" />
+                <div class="fw-semibold">@item.label</div>
+                <div class="small text-muted mb-2">@item.key · @item.renderer_key</div>
+                <label class="form-label small">Target section</label>
+                <select class="form-select form-select-sm mb-2" name="target_parent_id">
+                    <option value="">Form root</option>
+                    @foreach (var target in Editor.Containers.Where(x => !FormSectionLayout.IsTable(x)))
+                    {
+                        <option value="@target.id">@(target.label ?? target.key)</option>
+                    }
+                </select>
+                <input class="form-control form-control-sm mb-2" name="key_prefix" placeholder="Optional key prefix" />
+                <button class="btn btn-sm btn-outline-primary" type="submit">Import copy</button>
+            </form>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public FormNodeEditorView Editor { get; set; } = default!;
+}

@@ -1,0 +1,21 @@
+@using WebAppArchitecture.DigitalProcesses.Models.RequestTransitionHistory
+@namespace WebAppArchitecture.DigitalProcesses.UI.RequestTransitionHistory.Components
+<LargeCard TModel="RequestTransitionHistoryResponse" Model="@Model" HeaderText="RequestTransitionHistory">
+    <SideContent Context="item">
+        <RequestTransitionHistoryMediumCard Model="@item" />
+        <EntityLinks TModel="RequestTransitionHistoryResponse" Model="@item" Links="@GetLinks(item)" />
+        <EntityPermissions RbacId="@item.rbacobject_id" />
+    </SideContent>
+    <ChildContent Context="item">
+        @if (ChildContent is not null) { @ChildContent(item) }
+        else { <RequestTransitionHistoryModelCard Model="@item" /> }
+    </ChildContent>
+</LargeCard>
+
+@code {
+    [Parameter, EditorRequired] public RequestTransitionHistoryResponse Model { get; set; } = default!;
+    [Parameter] public RenderFragment<RequestTransitionHistoryResponse>? ChildContent { get; set; }
+    private static EntityNavigationLink[] GetLinks(RequestTransitionHistoryResponse item) =>
+    [
+    ];
+}

@@ -1,0 +1,10 @@
+@using WebAppArchitecture.DigitalProcesses.Models.WorkflowStateAccessRule
+@using WebAppArchitecture.DigitalProcesses.UI.WorkflowStateAccessRule.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.WorkflowStateAccessRule.Pages
+
+<PageView TModel="WorkflowStateAccessRuleResponse" TComponent="WorkflowStateAccessRuleLargeCard" Model="@Model" Title="WorkflowStateAccessRule" />
+
+@code {
+    [Parameter, EditorRequired] public WorkflowStateAccessRuleResponse Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
+}

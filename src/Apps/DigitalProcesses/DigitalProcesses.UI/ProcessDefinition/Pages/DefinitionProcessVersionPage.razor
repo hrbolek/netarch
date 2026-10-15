@@ -1,0 +1,43 @@
+@using WebAppArchitecture.DigitalProcesses.Models.ProcessDefinition
+@using WebAppArchitecture.DigitalProcesses.Models.ProcessDefinitionVersion
+@using WebAppArchitecture.DigitalProcesses.UI.ProcessDefinition.Components
+@using WebAppArchitecture.DigitalProcesses.UI.Shared.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.ProcessDefinition.Pages
+
+<Page Title="@Model.Name">
+    @if (Model.ProcessDefinition is not null)
+    {
+        <ProcessDefinitionLargeCard Model="@Model.ProcessDefinition">
+            <ChildContent Context="definition">
+                <DefinitionVersionsTable DefinitionId="@Model.Id" Name="@Model.Name" Versions="@Model.Versions"
+                                         DefinitionPath="/digital-processes/ProcessDefinitionResponse">
+                    <CreateVersionAction>
+                        @if (Model.Versions.Count > 0)
+                        {
+                            <form method="post" action="@($"/digital-processes/ProcessDefinitionResponse/new-version/{Model.Id}")">
+                                <button class="btn btn-sm btn-primary" type="submit">Copy to new draft</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <a class="btn btn-sm btn-primary" href="@($"/digital-processes/ProcessDefinitionVersionResponse/create?processId={Model.Id}")">Create first version</a>
+                        }
+                    </CreateVersionAction>
+                    <VersionActions Context="version">
+                        <a class="btn btn-sm btn-outline-primary me-2" href="@($"/digital-processes/ProcessDefinitionVersionResponse/view/{version.Id}")">View</a>
+                        <a class="btn btn-sm btn-outline-secondary me-2" href="@($"/digital-processes/process-versions/{version.Id}/permissions")">Oprávnění polí</a>
+                    </VersionActions>
+                </DefinitionVersionsTable>
+            </ChildContent>
+        </ProcessDefinitionLargeCard>
+    }
+    else
+    {
+        <div class="alert alert-danger">Definition was not loaded.</div>
+    }
+</Page>
+
+@code {
+    [Parameter, EditorRequired] public DefinitionProcessVersionPageModel Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
+}

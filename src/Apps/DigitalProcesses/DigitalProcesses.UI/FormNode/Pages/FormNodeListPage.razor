@@ -1,0 +1,15 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormNode
+@using WebAppArchitecture.DigitalProcesses.UI.FormNode.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormNode.Pages
+
+<PageViewList TModel="FormNodeResponse" Items="@Model" Title="Form nodes" ShowFilter="@ShowFilter">
+    <ChildContent Context="item">
+        <FormNodeMediumCard Model="@item" />
+    </ChildContent>
+</PageViewList>
+
+@code {
+    [Parameter, EditorRequired] public FormNodeResponse[] Model { get; set; } = [];
+    [Parameter] public bool IsFragment { get; set; }
+    [Parameter] public bool ShowFilter { get; set; } = true;
+}

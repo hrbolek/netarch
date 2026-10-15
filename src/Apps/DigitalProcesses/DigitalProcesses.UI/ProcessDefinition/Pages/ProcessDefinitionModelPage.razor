@@ -1,0 +1,10 @@
+@using WebAppArchitecture.DigitalProcesses.Models.ProcessDefinition
+@using WebAppArchitecture.DigitalProcesses.UI.ProcessDefinition.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.ProcessDefinition.Pages
+
+<PageView TModel="ProcessDefinitionResponse" TComponent="ProcessDefinitionLargeCard" Model="@Model" Title="ProcessDefinition" />
+
+@code {
+    [Parameter, EditorRequired] public ProcessDefinitionResponse Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
+}

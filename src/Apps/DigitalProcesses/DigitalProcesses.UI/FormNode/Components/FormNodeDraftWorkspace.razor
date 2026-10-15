@@ -1,0 +1,67 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormNode
+@using WebAppArchitecture.DigitalProcesses.Models.FormNodeType
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormNode.Components
+
+<div data-draft-workspace>
+    <div class="row g-3">
+        <div class="col-lg-3">
+            <h3 class="h6">Structure</h3>
+            @foreach (var node in Model.preview_nodes)
+            {
+                <div class="d-flex gap-1 mb-1">
+                    <button type="button" class="btn btn-sm @(node.id == Model.selected_id ? "btn-primary" : "btn-outline-primary") text-start flex-grow-1"
+                            data-draft-select="@node.id">@(node.label ?? node.key)</button>
+                    @if (node.id != Model.draft.root_id)
+                    {
+                        <button type="button" class="btn btn-sm btn-outline-danger" data-draft-remove="@node.id" aria-label="Remove node">&#215;</button>
+                    }
+                </div>
+            }
+            <label class="form-label mt-2">Add child renderer</label>
+            <select class="form-select form-select-sm mb-2" data-draft-child-type disabled="@(!SelectedType.can_have_children)">
+                @foreach (var example in Model.examples)
+                {
+                    <option value="@example.type.id">@example.type.name</option>
+                }
+            </select>
+            <button type="button" class="btn btn-sm btn-outline-primary" data-draft-add disabled="@(!SelectedType.can_have_children)">Add child</button>
+        </div>
+        <div class="col-lg-4">
+            <h3 class="h6">Temporary Draft · @(Selected.label ?? Selected.key)</h3>
+            <form data-draft-properties onsubmit="return false">
+                <FormNodeProperties Node="@Selected" RendererKey="@SelectedType.renderer_key" Temporary="true"
+                    HasSectionChildren="@Model.preview_nodes.Any(x => x.parent_id == Selected.id && Model.node_types.Any(t => t.id == x.node_type_id && t.renderer_key == "section"))" />
+                @if (Selected.id != Model.draft.root_id)
+                {
+                    <label class="form-label">Parent</label>
+                    <select class="form-select form-select-sm mb-2" name="parent_id">
+                        @foreach (var candidate in Model.preview_nodes.Where(x => x.id != Selected.id && !x.path.StartsWith(Selected.path + "/", StringComparison.Ordinal) && Model.node_types.Any(t => t.id == x.node_type_id && t.can_have_children)))
+                        {
+                            <option value="@candidate.id" selected="@(candidate.id == Selected.parent_id)">@(candidate.label ?? candidate.key)</option>
+                        }
+                    </select>
+                }
+                <label class="form-label">Position</label>
+                <input class="form-control form-control-sm" name="position" type="number" min="0" value="@Selected.position" />
+            </form>
+        </div>
+        <div class="col-lg-5">
+            <h3 class="h6">Interactive preview</h3>
+            <div class="d-flex gap-2 flex-wrap mb-2">
+                <label><input type="checkbox" data-preview-readonly /> Readonly</label>
+                <label><input type="checkbox" data-preview-disabled /> Disabled</label>
+                <label><input type="checkbox" data-preview-invalid /> Validation error</label>
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-refresh-draft-preview>Refresh</button>
+            </div>
+            <div class="small text-muted mb-2">Test values stay only in this dialog. Import/export/document actions cannot change persisted data here.</div>
+            <div data-draft-preview-host><FormNodeDraftPreview Model="@Model" /></div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public FormNodeDraftWorkspaceResponse Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
+    private FormNodeResponse Selected => Model.preview_nodes.Single(x => x.id == Model.selected_id);
+    private FormNodeTypeResponse SelectedType => Model.node_types.Single(x => x.id == Selected.node_type_id);
+}

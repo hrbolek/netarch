@@ -36,7 +36,7 @@ The existing Architecture navigation has been moved from hard-coded Razor markup
 
 Digital Processes defines its navigation in:
 
-`src/Apps/DigitalProcesses/DigitalProcesses.UI/Routing/DigitalProcessNavigationRegistration.cs`
+`src/Apps/DigitalProcesses/DigitalProcesses.UI/Shared/Routing/DigitalProcessNavigationRegistration.cs`
 
 Sections include:
 

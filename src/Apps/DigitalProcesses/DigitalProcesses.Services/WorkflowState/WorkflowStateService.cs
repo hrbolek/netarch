@@ -1,0 +1,79 @@
+using WebAppArchitecture.DigitalProcesses.Models.WorkflowState;
+using WebAppArchitecture.DigitalProcesses.Models.WorkflowTransition;
+using WebAppArchitecture.DigitalProcesses.Models.WorkflowVersion;
+using WebAppArchitecture.Base.Services;
+using WebAppArchitecture.DBLayer;
+using WebAppArchitecture.SecurityLayer;
+
+namespace WebAppArchitecture.DigitalProcesses.Services.WorkflowState;
+/// <summary>
+/// Služba Workflow State Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
+/// </summary>
+public sealed class WorkflowStateService(ISecurityLayer security, IDBLayer unsecuredDb)
+    : SecuredBaseService<WorkflowStateModel>(security, unsecuredDb), IWorkflowStateService
+{
+    /// <summary>
+    /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: Query, CurrentUserId; pořadí a parametry viz implementace.
+    /// </summary>
+    public async Task<WorkflowStateResponse> CreateContainedAsync(CreateWorkflowStateRequest request, CancellationToken ct = default)
+    {
+        var (workflowVersion, _) = await CreationScopeGuard.RequireEntityAsync<WorkflowVersionModel>(
+            Security, request.workflow_version_id, "contained", ct);
+        if (workflowVersion.is_published)
+            throw new InvalidOperationException("Published workflow version is immutable.");
+        if (request.is_initial && Security.Query<WorkflowStateModel>(SecurityOperations.Read)
+                .Any(x => x.workflow_version_id == request.workflow_version_id && x.is_initial))
+            throw new InvalidOperationException("Workflow version already has an initial state.");
+
+        var now = DateTimeOffset.UtcNow;
+        var actor = Security.CurrentUserId;
+        var model = new WorkflowStateModel(
+            Guid.NewGuid(), workflowVersion.id, request.key, request.name, request.description,
+            request.is_initial, request.is_terminal, request.position,
+            workflowVersion.rbacobject_id, now, now, actor, actor);
+        return await Security.ExecuteInTransactionAsync(async token =>
+        {
+            var x = await Security.StageCreateAsync(model, token);
+            await Security.SaveChangesAsync(token);
+            return WorkflowStateResponse.FromModel(x);
+        }, ct);
+    }
+    /// <summary>
+    /// Zpracovává změnu existující entity; ověření oprávnění a integrity musí probíhat ve službě, ne pouze v UI. Volání: GetByIdAsync, Query, StageUpdateAsync, CurrentUserId, SaveChangesAsync; pořadí a parametry viz implementace.
+    /// </summary>
+    public async Task UpdateDefinitionAsync(Guid id, string key, string name, string? description, bool isInitial, bool isTerminal, int position, CancellationToken ct = default)
+    {
+        var state = await Security.GetByIdAsync<WorkflowStateModel>(id, SecurityOperations.Update, ct)
+            ?? throw new KeyNotFoundException("State not editable.");
+        var version = await Security.GetByIdAsync<WorkflowVersionModel>(state.workflow_version_id, SecurityOperations.Update, ct)
+            ?? throw new KeyNotFoundException("Version not editable.");
+        if (version.is_published) throw new InvalidOperationException("Published workflow is immutable.");
+        if (isInitial && Security.Query<WorkflowStateModel>(SecurityOperations.Read)
+            .Any(x => x.workflow_version_id == version.id && x.id != id && x.is_initial))
+            throw new InvalidOperationException("Only one state may be initial.");
+        if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(name))
+            throw new ArgumentException("Key and name are required.");
+        await Security.StageUpdateAsync(state with { key = key, name = name, description = description,
+            is_initial = isInitial, is_terminal = isTerminal, position = position,
+            updated_at = DateTimeOffset.UtcNow, updated_by = Security.CurrentUserId }, ct);
+        await Security.SaveChangesAsync(ct);
+    }
+
+    /// <summary>
+    /// Požaduje odstranění entity; pravidla mazání závislostí a RBAC se uplatňují ve službě. Volání: GetByIdAsync, Query, StageDeleteAsync, SaveChangesAsync; pořadí a parametry viz implementace.
+    /// </summary>
+    public async Task DeleteDefinitionAsync(Guid id, CancellationToken ct = default)
+    {
+        var state = await Security.GetByIdAsync<WorkflowStateModel>(id, SecurityOperations.Delete, ct)
+            ?? throw new KeyNotFoundException("State not deletable.");
+        var version = await Security.GetByIdAsync<WorkflowVersionModel>(state.workflow_version_id, SecurityOperations.Update, ct)
+            ?? throw new KeyNotFoundException("Version not editable.");
+        if (version.is_published) throw new InvalidOperationException("Published workflow is immutable.");
+        if (Security.Query<WorkflowTransitionModel>(SecurityOperations.Read)
+            .Any(x => x.source_state_id == id || x.target_state_id == id))
+            throw new InvalidOperationException("Delete transitions connected to this state first.");
+        await Security.StageDeleteAsync<WorkflowStateModel>(id, ct);
+        await Security.SaveChangesAsync(ct);
+    }
+
+}

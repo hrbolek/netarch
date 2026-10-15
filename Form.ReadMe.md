@@ -30,7 +30,14 @@ Dokumentační metadata server ignoruje.
   Jeden řádek pak odpovídá jednomu opakování, buňka se edituje po kliknutí.
   U vyhledaných hodnot se zobrazuje `label` uloženého JSON objektu.
   Výchozí vnořené zobrazení je `"stacked"`. Podrobnosti jsou v
-  [dokumentaci rendererů](./src/Apps/DigitalProcesses/DigitalProcesses.UI/Renderers/README.md).
+  [dokumentaci rendererů](./src/Apps/DigitalProcesses/DigitalProcesses.UI/FormNode/Renderers/README.md).
+- Jednotlivé sekce i pole lze otevřít ve stejném návrháři na
+  `/digital-processes/FormNodeResponse/editor/{id}`. Akce **Vložit prvek**
+  umožňuje vyhledat čitelný uzel knihovny nebo vybrat základní renderer,
+  upravit jeho pracovní kopii a potvrdit vložení do cíle. Do potvrzení se
+  nemění zdroj ani cíl; zavření průvodce pracovní kopii zahodí. Testovací
+  hodnoty náhledu se nekopírují do konfigurace. API a omezení jsou popsány
+  v dokumentaci rendererů výše.
 - Upravovat lze pouze **nepublikované** verze. Publikovanou verzi neměňte;
   vytvořte další draft v odpovídající definici.
 - Nový DigitalProcess již vlastní FormDefinition, WorkflowDefinition i jejich

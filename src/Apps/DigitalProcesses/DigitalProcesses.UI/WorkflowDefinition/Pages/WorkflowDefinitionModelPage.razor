@@ -1,0 +1,10 @@
+@using WebAppArchitecture.DigitalProcesses.Models.WorkflowDefinition
+@using WebAppArchitecture.DigitalProcesses.UI.WorkflowDefinition.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.WorkflowDefinition.Pages
+
+<PageView TModel="WorkflowDefinitionResponse" TComponent="WorkflowDefinitionLargeCard" Model="@Model" Title="WorkflowDefinition" />
+
+@code {
+    [Parameter, EditorRequired] public WorkflowDefinitionResponse Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
+}

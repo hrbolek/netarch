@@ -1,0 +1,22 @@
+@using WebAppArchitecture.DigitalProcesses.Models.WorkflowVersion
+@namespace WebAppArchitecture.DigitalProcesses.UI.WorkflowVersion.Components
+<LargeCard TModel="WorkflowVersionResponse" Model="@Model" HeaderText="WorkflowVersion">
+    <SideContent Context="item">
+        <WorkflowVersionMediumCard Model="@item" />
+        <EntityLinks TModel="WorkflowVersionResponse" Model="@item" Links="@GetLinks(item)" />
+        <EntityPermissions RbacId="@item.rbacobject_id" />
+    </SideContent>
+    <ChildContent Context="item">
+        @if (ChildContent is not null) { @ChildContent(item) }
+        else { <WorkflowVersionModelCard Model="@item" /> }
+    </ChildContent>
+</LargeCard>
+
+@code {
+    [Parameter, EditorRequired] public WorkflowVersionResponse Model { get; set; } = default!;
+    [Parameter] public RenderFragment<WorkflowVersionResponse>? ChildContent { get; set; }
+    private static EntityNavigationLink[] GetLinks(WorkflowVersionResponse item) =>
+    [
+        new("Workflow designer", $"/digital-processes/WorkflowVersionResponse/designer/{item.id}", "States, transitions and simulation"),
+    ];
+}

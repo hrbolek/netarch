@@ -1,5 +1,5 @@
+using WebAppArchitecture.DigitalProcesses.Resolvers.DocumentTemplate;
 using Microsoft.AspNetCore.Routing;
-using WebAppArchitecture.DigitalProcesses.Resolvers;
 
 namespace WebAppArchitecture.DigitalProcesses;
 

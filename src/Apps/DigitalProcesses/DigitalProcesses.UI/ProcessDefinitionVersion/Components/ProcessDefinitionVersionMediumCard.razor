@@ -1,0 +1,15 @@
+@using WebAppArchitecture.DigitalProcesses.Models.ProcessDefinitionVersion
+@namespace WebAppArchitecture.DigitalProcesses.UI.ProcessDefinitionVersion.Components
+<MediumCard TModel="ProcessDefinitionVersionResponse" Model="@Model" HeaderText="ProcessDefinitionVersion" ActionsUrl="@($"/digital-processes/ProcessDefinitionVersionResponse/actions/{Model.id}")">
+    <ChildContent Context="item">
+        <Attribute TModel="ProcessDefinitionVersionResponse" Item="@item" Label="visual label" AttributeValue="@item.visual_label" />
+        <Attribute TModel="ProcessDefinitionVersionResponse" Item="@item" Label="version" AttributeValue="@item.version" />
+        <Attribute TModel="ProcessDefinitionVersionResponse" Item="@item" Label="is published" AttributeValue="@item.is_published" />
+        <Attribute TModel="ProcessDefinitionVersionResponse" Item="@item" Label="id" AttributeValue="@item.id" />
+        <ProcessDefinitionVersionForeignKeyLinks Model="@item" />
+    </ChildContent>
+</MediumCard>
+
+@code {
+    [Parameter, EditorRequired] public ProcessDefinitionVersionResponse Model { get; set; } = default!;
+}

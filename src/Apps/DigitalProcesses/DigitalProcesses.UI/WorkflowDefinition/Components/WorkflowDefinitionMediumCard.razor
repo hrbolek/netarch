@@ -1,0 +1,14 @@
+@using WebAppArchitecture.DigitalProcesses.Models.WorkflowDefinition
+@namespace WebAppArchitecture.DigitalProcesses.UI.WorkflowDefinition.Components
+<MediumCard TModel="WorkflowDefinitionResponse" Model="@Model" HeaderText="WorkflowDefinition" ActionsUrl="@($"/digital-processes/WorkflowDefinitionResponse/actions/{Model.id}")">
+    <ChildContent Context="item">
+        <Attribute TModel="WorkflowDefinitionResponse" Item="@item" Label="visual label" AttributeValue="@item.visual_label" />
+        <Attribute TModel="WorkflowDefinitionResponse" Item="@item" Label="name" AttributeValue="@item.name" />
+        <Attribute TModel="WorkflowDefinitionResponse" Item="@item" Label="description" AttributeValue="@item.description" />
+        <Attribute TModel="WorkflowDefinitionResponse" Item="@item" Label="id" AttributeValue="@item.id" />
+    </ChildContent>
+</MediumCard>
+
+@code {
+    [Parameter, EditorRequired] public WorkflowDefinitionResponse Model { get; set; } = default!;
+}

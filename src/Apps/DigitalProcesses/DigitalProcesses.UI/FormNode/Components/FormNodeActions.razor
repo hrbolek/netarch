@@ -1,0 +1,43 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormNode
+@using WebAppArchitecture.DigitalProcesses.Models.FormVersion
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormNode.Components
+<details class="dropdown d-inline-block position-relative dp-node-actions">
+    <summary class="btn btn-sm btn-outline-secondary" title="Node actions" aria-label="Node actions" style="list-style:none;cursor:pointer">&#8942;</summary>
+    <ul class="dropdown-menu show" style="position:absolute;right:0;left:auto;z-index:1050">
+        @if (CanAdd)
+        {
+            <li><button type="button" class="dropdown-item" onclick="document.getElementById('add-node-@NodeId').showModal()">Add child</button></li>
+        }
+        <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#edit-node-@NodeId">Edit properties</button></li>
+        <li><a class="dropdown-item" href="/digital-processes/FormNodeResponse/editor/@NodeId">Open subtree editor</a></li>
+        @if (CanAdd)
+        {
+            <li><button type="button" class="dropdown-item" data-open-node-wizard data-insertion-parent="@NodeId">Vložit prvek</button></li>
+        }
+        <li><hr class="dropdown-divider" /></li>
+        <li><form method="post" action="/digital-processes/FormVersionResponse/designer/move-form">
+            <input type="hidden" name="id" value="@NodeId" /><input type="hidden" name="form_version_id" value="@FormVersionId" />
+            <input type="hidden" name="parent_id" value="@ParentId" /><input type="hidden" name="position" value="@(Position - 1)" />
+            <button class="dropdown-item" type="submit">Move up</button></form></li>
+        <li><form method="post" action="/digital-processes/FormVersionResponse/designer/move-form">
+            <input type="hidden" name="id" value="@NodeId" /><input type="hidden" name="form_version_id" value="@FormVersionId" />
+            <input type="hidden" name="parent_id" value="@ParentId" /><input type="hidden" name="position" value="@(Position + 1)" />
+            <button class="dropdown-item" type="submit">Move down</button></form></li>
+        <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#move-node-@NodeId">Set position / parent…</button></li>
+        <li><hr class="dropdown-divider" /></li>
+        <li>
+            <form method="post" action="/digital-processes/FormVersionResponse/designer/delete-form" onsubmit="return confirm('Delete this node and all its descendants?');">
+                <input type="hidden" name="id" value="@NodeId" />
+                <input type="hidden" name="form_version_id" value="@FormVersionId" />
+                <button class="dropdown-item text-danger" type="submit">Delete</button>
+            </form>
+        </li>
+    </ul>
+</details>
+@code {
+    [Parameter] public Guid NodeId { get; set; }
+    [Parameter] public Guid FormVersionId { get; set; }
+    [Parameter] public Guid? ParentId { get; set; }
+    [Parameter] public int Position { get; set; }
+    [Parameter] public bool CanAdd { get; set; }
+}

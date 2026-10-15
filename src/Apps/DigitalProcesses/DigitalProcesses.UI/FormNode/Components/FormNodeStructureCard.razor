@@ -1,0 +1,24 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormNode
+@using WebAppArchitecture.DigitalProcesses.Models.FormVersion
+@using WebAppArchitecture.DigitalProcesses.UI.FormNode.Components
+@using WebAppArchitecture.DigitalProcesses.UI.FormVersion.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormNode.Components
+
+<div class="card mb-3">
+    <div class="card-header"><strong>Structure</strong></div>
+    <div class="list-group list-group-flush">
+        @foreach (var node in Editor.OrderedNodes)
+        {
+            var baseDepth = Editor.Model.root_node_id is Guid viewRoot ? Editor.Model.designer.nodes.Single(x => x.id == viewRoot).path.Count(c => c == '/') : 1;
+            var depth = Math.Max(0, node.path.Count(c => c == '/') - baseDepth);
+            <div class="list-group-item py-2 d-flex justify-content-between align-items-center" style="padding-left:@(1 + depth * 1.15)rem">
+                <button type="button" class="btn btn-link text-decoration-none text-start flex-grow-1 p-0" data-bs-toggle="modal" data-bs-target="#edit-node-@node.id">@(node.label ?? node.key)<span class="text-muted small d-block">@node.key</span></button>
+                <FormNodeActions NodeId="@node.id" ParentId="@node.parent_id" Position="@node.position" FormVersionId="@Editor.Model.designer.form.id" CanAdd="@Editor.Containers.Any(x => x.id == node.id)" />
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public FormNodeEditorView Editor { get; set; } = default!;
+}

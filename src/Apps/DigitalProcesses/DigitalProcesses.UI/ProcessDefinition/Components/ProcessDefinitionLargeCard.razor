@@ -1,0 +1,22 @@
+@using WebAppArchitecture.DigitalProcesses.Models.ProcessDefinition
+@namespace WebAppArchitecture.DigitalProcesses.UI.ProcessDefinition.Components
+<LargeCard TModel="ProcessDefinitionResponse" Model="@Model" HeaderText="ProcessDefinition">
+    <SideContent Context="item">
+        <ProcessDefinitionMediumCard Model="@item" />
+        <EntityLinks TModel="ProcessDefinitionResponse" Model="@item" Links="@GetLinks(item)" />
+        <EntityPermissions RbacId="@item.rbacobject_id" />
+    </SideContent>
+    <ChildContent Context="item">
+        @if (ChildContent is not null) { @ChildContent(item) }
+        else { <ProcessDefinitionModelCard Model="@item" /> }
+    </ChildContent>
+</LargeCard>
+
+@code {
+    [Parameter, EditorRequired] public ProcessDefinitionResponse Model { get; set; } = default!;
+    [Parameter] public RenderFragment<ProcessDefinitionResponse>? ChildContent { get; set; }
+    private static EntityNavigationLink[] GetLinks(ProcessDefinitionResponse item) =>
+    [
+        new("Versions", $"/digital-processes/ProcessDefinitionResponse/view/{item.id}", "Process versions and publishing"),
+    ];
+}

@@ -1,0 +1,10 @@
+@using WebAppArchitecture.DigitalProcesses.Models.WorkflowVersion
+@using WebAppArchitecture.DigitalProcesses.UI.WorkflowVersion.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.WorkflowVersion.Pages
+
+<PageView TModel="WorkflowVersionResponse" TComponent="WorkflowVersionLargeCard" Model="@Model" Title="WorkflowVersion" />
+
+@code {
+    [Parameter, EditorRequired] public WorkflowVersionResponse Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
+}

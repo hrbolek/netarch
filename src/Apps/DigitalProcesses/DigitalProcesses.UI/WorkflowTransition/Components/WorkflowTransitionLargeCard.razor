@@ -1,0 +1,21 @@
+@using WebAppArchitecture.DigitalProcesses.Models.WorkflowTransition
+@namespace WebAppArchitecture.DigitalProcesses.UI.WorkflowTransition.Components
+<LargeCard TModel="WorkflowTransitionResponse" Model="@Model" HeaderText="WorkflowTransition">
+    <SideContent Context="item">
+        <WorkflowTransitionMediumCard Model="@item" />
+        <EntityLinks TModel="WorkflowTransitionResponse" Model="@item" Links="@GetLinks(item)" />
+        <EntityPermissions RbacId="@item.rbacobject_id" />
+    </SideContent>
+    <ChildContent Context="item">
+        @if (ChildContent is not null) { @ChildContent(item) }
+        else { <WorkflowTransitionModelCard Model="@item" /> }
+    </ChildContent>
+</LargeCard>
+
+@code {
+    [Parameter, EditorRequired] public WorkflowTransitionResponse Model { get; set; } = default!;
+    [Parameter] public RenderFragment<WorkflowTransitionResponse>? ChildContent { get; set; }
+    private static EntityNavigationLink[] GetLinks(WorkflowTransitionResponse item) =>
+    [
+    ];
+}

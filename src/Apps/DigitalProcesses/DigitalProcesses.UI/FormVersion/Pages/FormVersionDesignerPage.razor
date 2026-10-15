@@ -1,0 +1,51 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormVersion
+@using WebAppArchitecture.DigitalProcesses.UI.FormNode.Components
+@using WebAppArchitecture.DigitalProcesses.UI.FormVersion.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormVersion.Pages
+
+<Page Title="Form designer">
+    <FormVersionLargeCard Model="@Model.designer.form">
+        <ChildContent Context="version">
+            <div class="container-fluid py-3">
+                <FormVersionDesignerHeader Editor="@Editor" />
+                @* <details class="mb-3">
+                    <summary class="fw-semibold">Oprávnění verze formuláře</summary>
+                    <p class="small text-muted mb-0">Role se vyhodnocují vůči RBAC objektu této verze. Nastavení vyžaduje odpovídající oprávnění.</p>
+                    <EntityPermissions RbacId="@Model.designer.form.rbacobject_id" App="architecture" />
+                </details> *@
+                @if (Model.test_mode)
+                {
+                    <FormVersionDesignerPreview Model="@Model" />
+                }
+                else if (Model.designer.form.is_published)
+                {
+                    <div class="alert alert-warning">Published form versions are immutable. Use Test mode to inspect the form or create a new draft version.</div>
+                    <FormEditorCanvas Model="@Model" TestMode="true" />
+                }
+                else
+                {
+                    <FormVersionDesignerWorkspace Editor="@Editor" />
+                }
+            </div>
+        </ChildContent>
+    </FormVersionLargeCard>
+    @if (!Model.designer.form.is_published)
+    {
+        <FormNodeInsertionWizard Model="@Model" />
+    }
+</Page>
+
+<script src="@ScriptUrl("digital-processes-form-ai-designer.js")"></script>
+<script src="@ScriptUrl("digital-processes-node-actions.js")"></script>
+<script src="@ScriptUrl("digital-processes-form-preview.js")"></script>
+
+@code {
+    [Parameter, EditorRequired] public FormDesignerPageResponse Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
+    private FormNodeEditorView Editor { get; set; } = default!;
+
+    protected override void OnParametersSet() => Editor = new(Model);
+
+    private static string ScriptUrl(string name) =>
+        $"/_content/DigitalProcesses.UI/{name}?v={typeof(FormVersionDesignerPage).Assembly.ManifestModule.ModuleVersionId:N}";
+}

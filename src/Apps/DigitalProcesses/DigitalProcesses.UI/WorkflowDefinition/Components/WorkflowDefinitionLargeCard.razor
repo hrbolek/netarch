@@ -1,0 +1,22 @@
+@using WebAppArchitecture.DigitalProcesses.Models.WorkflowDefinition
+@namespace WebAppArchitecture.DigitalProcesses.UI.WorkflowDefinition.Components
+<LargeCard TModel="WorkflowDefinitionResponse" Model="@Model" HeaderText="WorkflowDefinition">
+    <SideContent Context="item">
+        <WorkflowDefinitionMediumCard Model="@item" />
+        <EntityLinks TModel="WorkflowDefinitionResponse" Model="@item" Links="@GetLinks(item)" />
+        <EntityPermissions RbacId="@item.rbacobject_id" />
+    </SideContent>
+    <ChildContent Context="item">
+        @if (ChildContent is not null) { @ChildContent(item) }
+        else { <WorkflowDefinitionModelCard Model="@item" /> }
+    </ChildContent>
+</LargeCard>
+
+@code {
+    [Parameter, EditorRequired] public WorkflowDefinitionResponse Model { get; set; } = default!;
+    [Parameter] public RenderFragment<WorkflowDefinitionResponse>? ChildContent { get; set; }
+    private static EntityNavigationLink[] GetLinks(WorkflowDefinitionResponse item) =>
+    [
+        new("Versions", $"/digital-processes/WorkflowDefinitionResponse/view/{item.id}", "Workflow versions and editing"),
+    ];
+}

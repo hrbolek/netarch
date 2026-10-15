@@ -1,3 +1,7 @@
+using WebAppArchitecture.DigitalProcesses.Models.FormDefinition;
+using WebAppArchitecture.DigitalProcesses.Models.FormVersion;
+using WebAppArchitecture.DigitalProcesses.Models.WorkflowDefinition;
+using WebAppArchitecture.DigitalProcesses.Models.WorkflowVersion;
 using System.Net;
 using System.Net.Http.Json;
 using Microsoft.EntityFrameworkCore;
@@ -5,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.DBLayer;
 using WebAppArchitecture.DigitalProcesses.DBLayer;
-using WebAppArchitecture.DigitalProcesses.Models;
 using WebAppArchitecture.Tests.Shared;
 using Xunit;
 

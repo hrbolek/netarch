@@ -1,0 +1,15 @@
+@using WebAppArchitecture.DigitalProcesses.Models.ProcessDefinitionVersion
+@using WebAppArchitecture.DigitalProcesses.UI.ProcessDefinitionVersion.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.ProcessDefinitionVersion.Pages
+
+<PageViewList TModel="ProcessDefinitionVersionResponse" Items="@Model" Title="Process definition versions" ShowFilter="@ShowFilter">
+    <ChildContent Context="item">
+        <ProcessDefinitionVersionMediumCard Model="@item" />
+    </ChildContent>
+</PageViewList>
+
+@code {
+    [Parameter, EditorRequired] public ProcessDefinitionVersionResponse[] Model { get; set; } = [];
+    [Parameter] public bool IsFragment { get; set; }
+    [Parameter] public bool ShowFilter { get; set; } = true;
+}

@@ -1,0 +1,10 @@
+@using WebAppArchitecture.DigitalProcesses.Models.WorkflowTransition
+@using WebAppArchitecture.DigitalProcesses.UI.WorkflowTransition.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.WorkflowTransition.Pages
+
+<PageView TModel="WorkflowTransitionResponse" TComponent="WorkflowTransitionLargeCard" Model="@Model" Title="WorkflowTransition" />
+
+@code {
+    [Parameter, EditorRequired] public WorkflowTransitionResponse Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
+}

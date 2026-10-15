@@ -1,0 +1,9 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormNode
+@using WebAppArchitecture.DigitalProcesses.Models.SubmissionNode
+@using WebAppArchitecture.DigitalProcesses.UI.FormNode.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormNode.Renderers
+<ExternalDataImportSection ActionId="@Definition.id" ActionLabel="@(Definition.label ?? "Export dat")" IsExport="true" />
+@code {
+    [Parameter, EditorRequired] public FormNodeResponse Definition { get; set; } = default!;
+    [Parameter] public SubmissionNodeResponse? Value { get; set; }
+}

@@ -1,0 +1,25 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormNode
+@using WebAppArchitecture.DigitalProcesses.Models.FormVersion
+@using WebAppArchitecture.DigitalProcesses.UI.FormNode.Components
+@using WebAppArchitecture.DigitalProcesses.UI.FormVersion.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormVersion.Components
+
+<div class="alert alert-info py-2">Preview uses temporary server state (40-minute sliding expiry), not a Submission. Changes are saved on the server; Import saves current values before executing.</div>
+<CascadingValue Name="PreviewInstanceId" Value="@PreviewInstanceId">
+<CascadingValue Name="PreviewFormVersionId" Value="@Model.designer.form.id">
+<form id="dp-preview-form" onsubmit="return false;"
+      data-preview-version="@Model.designer.form.id"
+      hx-post="/digital-processes/form-preview/values"
+      hx-trigger="change delay:300ms"
+      hx-swap="none">
+    <input type="hidden" name="previewInstanceId" value="@PreviewInstanceId" />
+    <input type="hidden" name="formVersionId" value="@Model.designer.form.id" />
+    <FormEditorCanvas Model="@Model" TestMode="true" />
+</form>
+</CascadingValue>
+</CascadingValue>
+
+@code {
+    [Parameter, EditorRequired] public FormDesignerPageResponse Model { get; set; } = default!;
+    private readonly Guid PreviewInstanceId = Guid.NewGuid();
+}

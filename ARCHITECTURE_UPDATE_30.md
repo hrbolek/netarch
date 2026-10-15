@@ -6,8 +6,8 @@ Digital Processes now exposes real browser-facing create operations in addition 
 
 A reusable Razor page was added:
 
-- `src/Apps/DigitalProcesses/DigitalProcesses.UI/Pages/DigitalProcessCreatePage.razor`
-- `src/Apps/DigitalProcesses/DigitalProcesses.UI/Pages/DigitalProcessCreatePageModel.cs`
+- `src/Apps/DigitalProcesses/DigitalProcesses.UI/Shared/Components/DigitalProcessCreateContent.razor` (shared content used by entity-specific create pages)
+- `src/Apps/DigitalProcesses/DigitalProcesses.UI/Shared/Components/DigitalProcessCreatePageModel.cs`
 
 Create endpoint mappings and HTML form-to-command conversion are isolated in:
 

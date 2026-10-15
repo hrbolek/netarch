@@ -6,7 +6,7 @@
 - UI volá `POST /digital-processes/ai/form-design` (kontrakt verze 86, FastAPI + PydanticAI).
 - Uživatel může JSON zkontrolovat/upravit a explicitně potvrdit přes **Potvrdit a uložit návrh**.
 - Nový `POST /digital-processes/ai/form-design/approve` provádí serverové ověření RBAC (`Update` na FormVersion a uzlech), režimu draft, povolených rendererů, platných technických klíčů, hloubky, počtu uzlů a převádí strom na `BulkFormTreeRequest`.
-- Atomický zápis používá existující `IBulkTreeService`. Stávající uzly se párují podle technických klíčů a rodičů. **Vynechané uzly se nemažou.** Přesun uzlu a změna jeho rendereru nejsou dovoleny. Po uložení se obnoví návrhář.
+- Atomický zápis používá zabezpečenou službu `IFormVersionService.UpsertTreeAsync` (dřívější `IBulkTreeService` byl při entity-first reorganizaci odstraněn). Stávající uzly se párují podle technických klíčů a rodičů. **Vynechané uzly se nemažou.** Přesun uzlu a změna jeho rendereru nejsou dovoleny. Po uložení se obnoví návrhář.
 - Autorizovaný návrh se ukládá pouze do existující *draft* FormVersion. Publikovanou verzi nelze upravit a novou FormVersion zatím UI samo nevytváří.
 
 ## Identita agenta

@@ -1,0 +1,21 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormNodeType
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormNodeType.Components
+<LargeCard TModel="FormNodeTypeResponse" Model="@Model" HeaderText="FormNodeType">
+    <SideContent Context="item">
+        <FormNodeTypeMediumCard Model="@item" />
+        <EntityLinks TModel="FormNodeTypeResponse" Model="@item" Links="@GetLinks(item)" />
+        <EntityPermissions RbacId="@item.rbacobject_id" />
+    </SideContent>
+    <ChildContent Context="item">
+        @if (ChildContent is not null) { @ChildContent(item) }
+        else { <FormNodeTypeModelCard Model="@item" /> }
+    </ChildContent>
+</LargeCard>
+
+@code {
+    [Parameter, EditorRequired] public FormNodeTypeResponse Model { get; set; } = default!;
+    [Parameter] public RenderFragment<FormNodeTypeResponse>? ChildContent { get; set; }
+    private static EntityNavigationLink[] GetLinks(FormNodeTypeResponse item) =>
+    [
+    ];
+}

@@ -1,0 +1,21 @@
+@using WebAppArchitecture.DigitalProcesses.Models.Request
+@namespace WebAppArchitecture.DigitalProcesses.UI.Request.Components
+<LargeCard TModel="RequestResponse" Model="@Model" HeaderText="Request">
+    <SideContent Context="item">
+        <RequestMediumCard Model="@item" />
+        <EntityLinks TModel="RequestResponse" Model="@item" Links="@GetLinks(item)" />
+        <EntityPermissions RbacId="@item.rbacobject_id" />
+    </SideContent>
+    <ChildContent Context="item">
+        @if (ChildContent is not null) { @ChildContent(item) }
+        else { <RequestModelCard Model="@item" /> }
+    </ChildContent>
+</LargeCard>
+
+@code {
+    [Parameter, EditorRequired] public RequestResponse Model { get; set; } = default!;
+    [Parameter] public RenderFragment<RequestResponse>? ChildContent { get; set; }
+    private static EntityNavigationLink[] GetLinks(RequestResponse item) =>
+    [
+    ];
+}

@@ -1,0 +1,61 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormVersion
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormNode.Components
+<dialog data-node-wizard data-target-version="@Model.designer.form.id" data-editor-root="@Model.root_node_id"
+        data-asset-version="@AssetVersion"
+        data-insertion-return-url="@($"/digital-processes/FormVersionResponse/designer/{Model.designer.form.id}")"
+        class="border rounded shadow p-4" style="width:min(96vw,1500px);max-height:94vh;overflow:auto">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h4">Vložit prvek</h2>
+        <button type="button" class="btn-close" data-wizard-cancel aria-label="Cancel insertion"></button>
+    </div>
+    <p class="small text-muted">A/B: Choose source · C: Edit temporary copy · D: Insert. No target changes occur before confirmation.</p>
+    <div class="row g-2 mb-3">
+        <div class="col">
+            <label class="form-label">Target container</label>
+            <select class="form-select" data-wizard-target>
+                <option value="">Form root (sections only)</option>
+                @foreach (var node in Model.designer.nodes.Where(x => Model.designer.node_types.Any(t => t.id == x.node_type_id && t.can_have_children)))
+                {
+                    <option value="@node.id" selected="@(node.id == Model.root_node_id)">@(node.label ?? node.key)</option>
+                }
+            </select>
+        </div>
+        <div class="col-auto">
+            <label class="form-label">Position</label>
+            <input class="form-control" data-wizard-position type="number" min="0" value="0" />
+        </div>
+    </div>
+    <div data-wizard-source>
+        <div class="btn-group mb-3">
+            <button type="button" class="btn btn-outline-primary" data-wizard-library>Library</button>
+            <button type="button" class="btn btn-outline-primary" data-wizard-gallery>Basic renderers</button>
+        </div>
+        <form data-library-filter onsubmit="return false" class="row g-2 mb-3">
+            <div class="col"><input class="form-control" name="search" placeholder="Key, label or description" aria-label="Library search" /></div>
+            <div class="col"><select class="form-select" name="node_type_id" aria-label="Node type"><option value="">All types</option>@foreach (var type in Model.designer.node_types) { <option value="@type.id">@type.name</option> }</select></div>
+            <div class="col"><input class="form-control" name="renderer_key" placeholder="renderer_key" aria-label="Renderer key" /></div>
+            <div class="col"><input class="form-control" name="configuration" placeholder="Configuration text" aria-label="Configuration search" /></div>
+            <div class="col"><input class="form-control" name="form_version_id" placeholder="Source form version UUID" aria-label="Source form" /></div>
+            <div class="col-auto"><button type="submit" class="btn btn-primary">Search</button></div>
+        </form>
+        <label class="mb-2"><input type="checkbox" data-include-children checked /> Copy whole subtree (uncheck for node only)</label>
+        <div data-wizard-results></div>
+        <div class="btn-group my-2" data-library-paging>
+            <button type="button" class="btn btn-sm btn-outline-secondary" data-library-previous>Previous</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" data-library-next>Next</button>
+        </div>
+    </div>
+    <div data-wizard-edit hidden>
+        <button type="button" class="btn btn-sm btn-outline-secondary mb-3" data-wizard-back>Back to sources</button>
+        <div data-wizard-workspace></div>
+        <button type="button" class="btn btn-success mt-3" data-wizard-insert>Confirm insertion</button>
+    </div>
+    <div class="small mt-2" role="status" data-wizard-status></div>
+    <button type="button" class="btn btn-outline-secondary mt-3" data-wizard-cancel>Cancel and discard</button>
+</dialog>
+<script src="@($"/_content/DigitalProcesses.UI/digital-processes-node-editor.js?v={AssetVersion}")"></script>
+
+@code {
+    [Parameter, EditorRequired] public FormDesignerPageResponse Model { get; set; } = default!;
+    private static string AssetVersion => typeof(FormNodeInsertionWizard).Assembly.ManifestModule.ModuleVersionId.ToString("N");
+}

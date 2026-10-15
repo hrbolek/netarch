@@ -1,0 +1,22 @@
+@using WebAppArchitecture.DigitalProcesses.Models.ProcessDefinitionVersion
+@namespace WebAppArchitecture.DigitalProcesses.UI.ProcessDefinitionVersion.Components
+<LargeCard TModel="ProcessDefinitionVersionResponse" Model="@Model" HeaderText="ProcessDefinitionVersion">
+    <SideContent Context="item">
+        <ProcessDefinitionVersionMediumCard Model="@item" />
+        <EntityLinks TModel="ProcessDefinitionVersionResponse" Model="@item" Links="@GetLinks(item)" />
+        <EntityPermissions RbacId="@item.rbacobject_id" />
+    </SideContent>
+    <ChildContent Context="item">
+        @if (ChildContent is not null) { @ChildContent(item) }
+        else { <ProcessDefinitionVersionModelCard Model="@item" /> }
+    </ChildContent>
+</LargeCard>
+
+@code {
+    [Parameter, EditorRequired] public ProcessDefinitionVersionResponse Model { get; set; } = default!;
+    [Parameter] public RenderFragment<ProcessDefinitionVersionResponse>? ChildContent { get; set; }
+    private static EntityNavigationLink[] GetLinks(ProcessDefinitionVersionResponse item) =>
+    [
+        new("Form permissions", $"/digital-processes/process-versions/{item.id}/permissions", "Applicant deny rules by workflow state and FormNode"),
+    ];
+}

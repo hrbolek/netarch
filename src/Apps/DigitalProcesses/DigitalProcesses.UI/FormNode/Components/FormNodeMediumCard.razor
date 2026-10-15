@@ -1,0 +1,16 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormNode
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormNode.Components
+<MediumCard TModel="FormNodeResponse" Model="@Model" HeaderText="FormNode" ActionsUrl="@($"/digital-processes/FormNodeResponse/actions/{Model.id}")">
+    <ChildContent Context="item">
+        <Attribute TModel="FormNodeResponse" Item="@item" Label="visual label" AttributeValue="@item.visual_label" />
+        <Attribute TModel="FormNodeResponse" Item="@item" Label="key" AttributeValue="@item.key" />
+        <Attribute TModel="FormNodeResponse" Item="@item" Label="label" AttributeValue="@item.label" />
+        <Attribute TModel="FormNodeResponse" Item="@item" Label="description" AttributeValue="@item.description" />
+        <Attribute TModel="FormNodeResponse" Item="@item" Label="id" AttributeValue="@item.id" />
+        <FormNodeForeignKeyLinks Model="@item" />
+    </ChildContent>
+</MediumCard>
+
+@code {
+    [Parameter, EditorRequired] public FormNodeResponse Model { get; set; } = default!;
+}

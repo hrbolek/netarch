@@ -1,0 +1,86 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormNode
+@using WebAppArchitecture.DigitalProcesses.Models.SubmissionNode
+@using WebAppArchitecture.DigitalProcesses.Services.FormNode
+@using System.Text.Json
+@using System.Text.Json.Nodes
+@inject IFormCalculationService Calculations
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormNode.Renderers
+
+<div class="mb-3" data-form-node-id="@Definition.id" data-form-backend-kind="select">
+    <label class="form-label" for="@InputId">@(Definition.label ?? Definition.key)</label>
+    <select id="@InputId" name="@($"node-{Definition.id:N}")" class="form-select">
+        <option value="">-- select --</option>
+        @foreach (var option in Options)
+        {
+            <option value="@option.Value" selected="@(option.Value == CurrentValue)">@option.Label</option>
+        }
+    </select>
+    @if (!string.IsNullOrWhiteSpace(Definition.description))
+    {
+        <div class="form-text">@Definition.description</div>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public FormNodeResponse Definition { get; set; } = default!;
+    [Parameter] public SubmissionNodeResponse? Value { get; set; }
+    [Parameter] public IReadOnlyCollection<FormNodeResponse> SectionNodes { get; set; } = Array.Empty<FormNodeResponse>();
+    [Parameter] public IReadOnlyDictionary<string, JsonNode?> SectionValues { get; set; }
+        = new Dictionary<string, JsonNode?>();
+    private string InputId => $"form-node-{Value?.id ?? Definition.id:N}";
+    private string? CurrentValue => RendererValue.AsString(Value);
+
+    private IReadOnlyCollection<SelectOption> _dynamicOptions = Array.Empty<SelectOption>();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _dynamicOptions = Array.Empty<SelectOption>();
+        if (string.IsNullOrWhiteSpace(Definition.configuration_json)) return;
+        try
+        {
+            using var document = JsonDocument.Parse(Definition.configuration_json);
+            if (!document.RootElement.TryGetProperty("dataSource", out var source)
+                || source.ValueKind != JsonValueKind.Object) return;
+            if (!source.TryGetProperty("query", out var queryElement)
+                || queryElement.ValueKind != JsonValueKind.String) return;
+            var query = queryElement.GetString();
+            if (string.IsNullOrWhiteSpace(query)) return;
+            var configuration = JsonNode.Parse(Definition.configuration_json) as JsonObject
+                ?? new JsonObject();
+            var result = await Calculations.EvaluateAsync(configuration, SectionValues);
+            if (result is JsonArray array)
+                _dynamicOptions = array.OfType<JsonObject>().Select(user => new SelectOption(
+                    user["value"]?.ToString() ?? "", user["label"]?.ToString() ?? "")).ToArray();
+        }
+        catch (Exception ex) when (ex is JsonException or InvalidOperationException or NotSupportedException)
+        {
+            // Invalid or unavailable data sources leave the static options usable.
+        }
+    }
+
+    private IReadOnlyCollection<SelectOption> Options
+    {
+        get
+        {
+            if (_dynamicOptions.Count > 0) return _dynamicOptions;
+            if (string.IsNullOrWhiteSpace(Definition.configuration_json)) return Array.Empty<SelectOption>();
+            try
+            {
+                using var document = JsonDocument.Parse(Definition.configuration_json);
+                if (!document.RootElement.TryGetProperty("options", out var options) || options.ValueKind != JsonValueKind.Array)
+                    return Array.Empty<SelectOption>();
+                return options.EnumerateArray()
+                    .Select(x => new SelectOption(
+                        x.TryGetProperty("value", out var value) ? value.ToString() : string.Empty,
+                        x.TryGetProperty("label", out var label) ? label.GetString() ?? string.Empty : string.Empty))
+                    .ToArray();
+            }
+            catch (JsonException)
+            {
+                return Array.Empty<SelectOption>();
+            }
+        }
+    }
+
+    private sealed record SelectOption(string Value, string Label);
+}

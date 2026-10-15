@@ -1,0 +1,153 @@
+@using WebAppArchitecture.DigitalProcesses.Models.WorkflowState
+@using WebAppArchitecture.DigitalProcesses.Models.WorkflowTransition
+@namespace WebAppArchitecture.DigitalProcesses.UI.WorkflowVersion.Components
+
+@{
+    var graphLayout = Layout;
+}
+
+<div class="workflow-graph-scroll" role="region" aria-label="Workflow diagram" tabindex="0">
+    <svg class="workflow-graph" viewBox="0 0 @graphLayout.Width @graphLayout.Height"
+         width="@graphLayout.Width" height="@graphLayout.Height" role="img"
+         aria-label="@($"Workflow with {OrderedStates.Count} states and {Transitions.Count} transitions")"
+         data-workflow-graph>
+        <defs>
+            <linearGradient id="@GradientId" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="gainsboro" />
+                <stop offset="50%" stop-color="rgb(240,240,240)" />
+                <stop offset="100%" stop-color="gainsboro" />
+            </linearGradient>
+        </defs>
+        <rect x="0" y="0" width="@graphLayout.Width" height="@graphLayout.Height" fill="#cce0ff" />
+        <g data-workflow-edges>
+            @foreach (var edge in graphLayout.Edges)
+            {
+                <g class="workflow-edge @(edge.IsCurrent ? "is-current" : null)"
+                   data-transition-id="@edge.Transition.id"
+                   data-transition-key="@edge.Transition.key"
+                   data-source-id="@edge.Transition.source_state_id"
+                   data-target-id="@edge.Transition.target_state_id">
+                    <path d="@edge.Path" fill="none" stroke="@(edge.IsCurrent ? "yellow" : "green")"
+                          stroke-width="4" />
+                    <text x="@edge.LabelX" y="@edge.LabelY" text-anchor="middle"
+                          class="workflow-edge-label">@edge.Transition.name</text>
+                </g>
+            }
+        </g>
+        <g data-workflow-states>
+            @foreach (var item in graphLayout.States)
+            {
+                <g class="workflow-state @(item.IsCurrent ? "is-current" : null)"
+                   data-state-id="@item.State.id" data-x="@item.X" data-y="@item.Y"
+                   transform="@($"translate({item.X - 60},{item.Y})")">
+                    <rect x="0" y="0" width="120" height="40" rx="10" ry="10"
+                          fill="@(item.IsCurrent ? "yellow" : $"url(#{GradientId})")"
+                          stroke="black" stroke-width="@(item.IsCurrent ? "2" : "1")" />
+                    <text x="60" y="@LineY(0, item.Lines.Length)" text-anchor="middle"
+                          dominant-baseline="middle" fill="@(item.IsCurrent ? "blue" : "black")">
+                        @foreach (var line in item.Lines.Select((text, index) => (text, index)))
+                        {
+                            <tspan x="60" dy="@(line.index == 0 ? "0" : "15")">@line.text</tspan>
+                        }
+                    </text>
+                </g>
+            }
+        </g>
+    </svg>
+</div>
+
+<style>
+    .workflow-graph-scroll { overflow-x: auto; background: #cce0ff; }
+    .workflow-graph { display: block; min-width: 100%; font-family: Arial, sans-serif; }
+    .workflow-edge-label { fill: #172033; font-size: 11px; paint-order: stroke; stroke: #cce0ff; stroke-width: 4px; stroke-linejoin: round; }
+    .workflow-edge.is-current path { stroke: #e6b800; }
+    .workflow-state.is-current rect { fill: yellow; stroke-width: 2; }
+    .workflow-state.is-current text { fill: blue; }
+</style>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyCollection<WorkflowStateResponse> States { get; set; } = [];
+    [Parameter, EditorRequired] public IReadOnlyCollection<WorkflowTransitionResponse> Transitions { get; set; } = [];
+    [Parameter] public Guid? CurrentStateId { get; set; }
+    [Parameter] public string Id { get; set; } = "workflow";
+
+    private string GradientId => $"workflow-gradient-{Id}";
+    private IReadOnlyList<WorkflowStateResponse> OrderedStates => States
+        .OrderByDescending(x => x.is_initial)
+        .ThenBy(x => x.position)
+        .ThenBy(x => x.name, StringComparer.OrdinalIgnoreCase)
+        .ToArray();
+
+    private GraphLayout Layout
+    {
+        get
+        {
+            const int nodeGap = 180;
+            const int startX = 100;
+            var ordered = OrderedStates;
+            var positions = ordered.Select((state, index) =>
+                (state.id, X: startX + index * nodeGap)).ToDictionary(x => x.id, x => x.X);
+            var routeSlots = new Dictionary<(Guid Source, Guid Target), int>();
+            var routes = new List<(WorkflowTransitionResponse Transition, int SourceX, int TargetX, int Slot)>();
+            var upperBend = 0d;
+            var lowerBend = 0d;
+
+            foreach (var transition in Transitions.OrderBy(x => x.key, StringComparer.OrdinalIgnoreCase))
+            {
+                if (!positions.TryGetValue(transition.source_state_id, out var sourceX) ||
+                    !positions.TryGetValue(transition.target_state_id, out var targetX))
+                    continue;
+
+                var routeKey = (transition.source_state_id, transition.target_state_id);
+                routeSlots.TryGetValue(routeKey, out var slot);
+                routeSlots[routeKey] = slot + 1;
+                var bend = WorkflowEdgeGeometry.Bend(sourceX, targetX, slot);
+                if (targetX <= sourceX) upperBend = Math.Max(upperBend, bend);
+                else lowerBend = Math.Max(lowerBend, bend);
+                routes.Add((transition, sourceX, targetX, slot));
+            }
+
+            var nodeY = Math.Max(40, (int)Math.Ceiling(upperBend) + 40);
+            var edges = routes.Select(route =>
+            {
+                var geometry = WorkflowEdgeGeometry.Create(route.SourceX, route.TargetX, nodeY, route.Slot);
+                return new GraphEdge(route.Transition, geometry.Path, geometry.LabelX, geometry.LabelY,
+                    route.Transition.source_state_id == CurrentStateId);
+            }).ToArray();
+            var stateLayouts = ordered.Select(state =>
+            {
+                var lines = Wrap(state.name);
+                return new GraphState(state, positions[state.id], nodeY,
+                    lines, state.id == CurrentStateId);
+            }).ToArray();
+            var width = Math.Max(280, startX * 2 + Math.Max(0, ordered.Count - 1) * nodeGap);
+            var height = Math.Max(150, nodeY + 80 + (int)Math.Ceiling(lowerBend));
+            return new GraphLayout(width, height, stateLayouts, edges);
+        }
+    }
+
+    private static int LineY(int index, int count) => 20 + (index - (count - 1) / 2) * 15;
+
+    private static string[] Wrap(string value)
+    {
+        const int maxLineLength = 18;
+        var words = value.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var lines = new List<string>();
+        var line = "";
+        foreach (var word in words)
+        {
+            if (line.Length > 0 && line.Length + 1 + word.Length > maxLineLength)
+            {
+                lines.Add(line);
+                line = "";
+            }
+            line = line.Length == 0 ? word : $"{line} {word}";
+        }
+        if (line.Length > 0) lines.Add(line);
+        return lines.Count == 0 ? [value] : lines.ToArray();
+    }
+
+    private sealed record GraphState(WorkflowStateResponse State, int X, int Y, string[] Lines, bool IsCurrent);
+    private sealed record GraphEdge(WorkflowTransitionResponse Transition, string Path, double LabelX, double LabelY, bool IsCurrent);
+    private sealed record GraphLayout(int Width, int Height, GraphState[] States, IReadOnlyCollection<GraphEdge> Edges);
+}

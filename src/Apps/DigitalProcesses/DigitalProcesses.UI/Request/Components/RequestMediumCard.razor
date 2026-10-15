@@ -1,0 +1,15 @@
+@using WebAppArchitecture.DigitalProcesses.Models.Request
+@namespace WebAppArchitecture.DigitalProcesses.UI.Request.Components
+<MediumCard TModel="RequestResponse" Model="@Model" HeaderText="Request" ActionsUrl="@($"/digital-processes/RequestResponse/actions/{Model.id}")">
+    <ChildContent Context="item">
+        <Attribute TModel="RequestResponse" Item="@item" Label="visual label" AttributeValue="@item.visual_label" />
+        <Attribute TModel="RequestResponse" Item="@item" Label="subject" AttributeValue="@item.subject" />
+        <Attribute TModel="RequestResponse" Item="@item" Label="current state id" AttributeValue="@item.current_state_id" />
+        <Attribute TModel="RequestResponse" Item="@item" Label="id" AttributeValue="@item.id" />
+        <RequestForeignKeyLinks Model="@item" />
+    </ChildContent>
+</MediumCard>
+
+@code {
+    [Parameter, EditorRequired] public RequestResponse Model { get; set; } = default!;
+}

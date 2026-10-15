@@ -1,3 +1,4 @@
+using WebAppArchitecture.DigitalProcesses.Services.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 using System.Diagnostics;
@@ -5,7 +6,6 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Microsoft.AspNetCore.Http;
-using WebAppArchitecture.DigitalProcesses.Services;
 
 namespace WebAppArchitecture.JsonataPlayground;
 

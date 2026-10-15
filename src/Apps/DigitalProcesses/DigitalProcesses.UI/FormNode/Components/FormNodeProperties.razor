@@ -1,0 +1,45 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormNode
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormNode.Components
+<div data-node-properties>
+    <label class="form-label">Key</label>
+    <input class="form-control form-control-sm mb-2" name="key" value="@Node.key" required maxlength="200" />
+    <label class="form-label">Label</label>
+    <input class="form-control form-control-sm mb-2" name="label" value="@Node.label" maxlength="2000" />
+    <label class="form-label">Description</label>
+    <textarea class="form-control form-control-sm mb-2" name="description" maxlength="8000">@Node.description</textarea>
+    <div class="row g-2 mb-2">
+        <div class="col"><label class="form-label">Min</label><input class="form-control form-control-sm" type="number" name="min_occurs" value="@Node.min_occurs" min="0" /></div>
+        <div class="col"><label class="form-label">Max</label><input class="form-control form-control-sm" type="number" name="max_occurs" value="@Node.max_occurs" min="1" /></div>
+    </div>
+    @if (IsSection)
+    {
+        <label class="form-label">Section visualization</label>
+        @if (Node.parent_id is null && !Temporary)
+        {
+            <div class="form-text mb-2">Top sections are displayed as tabs; only the active section is visible.</div>
+        }
+        else
+        {
+            <select class="form-select form-select-sm mb-2" data-section-visualization data-table-eligible="@(!HasSectionChildren ? "true" : "false")">
+                <option value="stacked" selected="@(FormSectionLayout.Read(Node.configuration_json) != "table")">Stacked</option>
+                <option value="table" selected="@(FormSectionLayout.Read(Node.configuration_json) == "table")" disabled="@(Node.max_occurs <= 1 || HasSectionChildren)">Table (repeated section without child sections)</option>
+            </select>
+            <div class="form-text mb-2">Table requires Max &gt; 1 and no child sections.</div>
+        }
+    }
+    <label class="form-label">Configuration JSON</label>
+    <textarea class="form-control form-control-sm mb-2 font-monospace" name="configuration_json" rows="8" maxlength="64000">@Node.configuration_json</textarea>
+    <div class="form-text mb-2">JSON object. Preview test values are not configuration or defaults.</div>
+    @if (RendererKey == "input.graphql-search")
+    {
+        <div class="form-text mb-2">GraphQL must return data.choices with id and label. Search input is the fragment variable. Escape query newlines as \n.</div>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public FormNodeResponse Node { get; set; } = default!;
+    [Parameter] public string? RendererKey { get; set; }
+    [Parameter] public bool HasSectionChildren { get; set; }
+    [Parameter] public bool Temporary { get; set; }
+    private bool IsSection => RendererKey == "section";
+}

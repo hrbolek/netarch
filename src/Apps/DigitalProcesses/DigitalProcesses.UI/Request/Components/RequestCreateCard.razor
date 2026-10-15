@@ -1,0 +1,16 @@
+@namespace WebAppArchitecture.DigitalProcesses.UI.Request.Components
+
+<div class="card shadow-sm">
+    <div class="card-header fw-semibold">@Model.Title</div>
+    <form method="post" action="@Model.Action" class="card-body">
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "process_definition_id")' />
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "process_definition_version_id")' />
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "target_group_id")' />
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "subject")' />
+        <div><button type="submit" class="btn btn-primary">@Model.SubmitLabel</button></div>
+    </form>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public DigitalProcessCreatePageModel Model { get; set; } = default!;
+}

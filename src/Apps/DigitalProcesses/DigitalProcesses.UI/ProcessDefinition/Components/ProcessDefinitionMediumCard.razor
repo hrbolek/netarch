@@ -1,0 +1,15 @@
+@using WebAppArchitecture.DigitalProcesses.Models.ProcessDefinition
+@namespace WebAppArchitecture.DigitalProcesses.UI.ProcessDefinition.Components
+<MediumCard TModel="ProcessDefinitionResponse" Model="@Model" HeaderText="ProcessDefinition" ActionsUrl="@($"/digital-processes/ProcessDefinitionResponse/actions/{Model.id}")">
+    <ChildContent Context="item">
+        <Attribute TModel="ProcessDefinitionResponse" Item="@item" Label="visual label" AttributeValue="@item.visual_label" />
+        <Attribute TModel="ProcessDefinitionResponse" Item="@item" Label="name" AttributeValue="@item.name" />
+        <Attribute TModel="ProcessDefinitionResponse" Item="@item" Label="description" AttributeValue="@item.description" />
+        <Attribute TModel="ProcessDefinitionResponse" Item="@item" Label="id" AttributeValue="@item.id" />
+        <ProcessDefinitionForeignKeyLinks Model="@item" />
+    </ChildContent>
+</MediumCard>
+
+@code {
+    [Parameter, EditorRequired] public ProcessDefinitionResponse Model { get; set; } = default!;
+}

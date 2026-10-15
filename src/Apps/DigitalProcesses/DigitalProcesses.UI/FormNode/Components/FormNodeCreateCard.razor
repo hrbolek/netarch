@@ -1,0 +1,23 @@
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormNode.Components
+
+<div class="card shadow-sm">
+    <div class="card-header fw-semibold">@Model.Title</div>
+    <form method="post" action="@Model.Action" class="card-body">
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "form_version_id")' />
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "key")' />
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "node_type_id")' />
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "parent_id")' />
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "label")' />
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "description")' />
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "position")' />
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "min_occurs")' />
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "max_occurs")' />
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "own_security_scope")' />
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "configuration_json")' />
+        <div><button type="submit" class="btn btn-primary">@Model.SubmitLabel</button></div>
+    </form>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public DigitalProcessCreatePageModel Model { get; set; } = default!;
+}

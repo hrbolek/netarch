@@ -1,0 +1,12 @@
+@using WebAppArchitecture.DigitalProcesses.Models.WorkflowStateAccessRule
+@namespace WebAppArchitecture.DigitalProcesses.UI.WorkflowStateAccessRule.Components
+<MediumCard TModel="WorkflowStateAccessRuleResponse" Model="@Model" HeaderText="WorkflowStateAccessRule" ActionsUrl="@($"/digital-processes/WorkflowStateAccessRuleResponse/actions/{Model.id}")">
+    <ChildContent Context="item">
+        <Attribute TModel="WorkflowStateAccessRuleResponse" Item="@item" Label="visual label" AttributeValue="@item.visual_label" />
+        <Attribute TModel="WorkflowStateAccessRuleResponse" Item="@item" Label="id" AttributeValue="@item.id" />
+    </ChildContent>
+</MediumCard>
+
+@code {
+    [Parameter, EditorRequired] public WorkflowStateAccessRuleResponse Model { get; set; } = default!;
+}

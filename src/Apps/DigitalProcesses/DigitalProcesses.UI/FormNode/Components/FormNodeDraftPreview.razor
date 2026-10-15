@@ -1,0 +1,17 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormNode
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormNode.Components
+<form data-draft-preview onsubmit="return false">
+    <FormNodeTreeItem Node="@Root" Nodes="@PreviewNodes" Types="@Model.node_types" TestMode="true" />
+    <div class="invalid-feedback" data-preview-validation hidden>Simulated validation error (not a saved value).</div>
+    <script type="application/json" data-draft-state>@((MarkupString)System.Text.Json.JsonSerializer.Serialize(Model.draft))</script>
+</form>
+<script src="/_content/DigitalProcesses.UI/digital-processes-sections.js"></script>
+
+@code {
+    [Parameter, EditorRequired] public FormNodeDraftWorkspaceResponse Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
+    private IReadOnlyCollection<FormNodeResponse> PreviewNodes => Model.preview_nodes.Select(x =>
+        x.id == Model.draft.root_id && Model.node_types.Any(t => t.id == x.node_type_id && t.renderer_key == "section") &&
+        FormSectionLayout.Read(x.configuration_json) == "table" ? x with { parent_id = Guid.Empty } : x).ToArray();
+    private FormNodeResponse Root => PreviewNodes.Single(x => x.id == Model.draft.root_id);
+}

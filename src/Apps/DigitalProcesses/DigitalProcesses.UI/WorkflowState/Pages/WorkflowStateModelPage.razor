@@ -1,0 +1,10 @@
+@using WebAppArchitecture.DigitalProcesses.Models.WorkflowState
+@using WebAppArchitecture.DigitalProcesses.UI.WorkflowState.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.WorkflowState.Pages
+
+<PageView TModel="WorkflowStateResponse" TComponent="WorkflowStateLargeCard" Model="@Model" Title="WorkflowState" />
+
+@code {
+    [Parameter, EditorRequired] public WorkflowStateResponse Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
+}

@@ -1,0 +1,19 @@
+@namespace WebAppArchitecture.DigitalProcesses.UI.WorkflowState.Components
+
+<div class="card shadow-sm">
+    <div class="card-header fw-semibold">@Model.Title</div>
+    <form method="post" action="@Model.Action" class="card-body">
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "workflow_version_id")' />
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "key")' />
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "name")' />
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "description")' />
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "is_initial")' />
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "is_terminal")' />
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "position")' />
+        <div><button type="submit" class="btn btn-primary">@Model.SubmitLabel</button></div>
+    </form>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public DigitalProcessCreatePageModel Model { get; set; } = default!;
+}

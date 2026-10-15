@@ -1,0 +1,16 @@
+@using WebAppArchitecture.DigitalProcesses.Models.WorkflowState
+@namespace WebAppArchitecture.DigitalProcesses.UI.WorkflowState.Components
+<MediumCard TModel="WorkflowStateResponse" Model="@Model" HeaderText="WorkflowState" ActionsUrl="@($"/digital-processes/WorkflowStateResponse/actions/{Model.id}")">
+    <ChildContent Context="item">
+        <Attribute TModel="WorkflowStateResponse" Item="@item" Label="visual label" AttributeValue="@item.visual_label" />
+        <Attribute TModel="WorkflowStateResponse" Item="@item" Label="name" AttributeValue="@item.name" />
+        <Attribute TModel="WorkflowStateResponse" Item="@item" Label="key" AttributeValue="@item.key" />
+        <Attribute TModel="WorkflowStateResponse" Item="@item" Label="description" AttributeValue="@item.description" />
+        <Attribute TModel="WorkflowStateResponse" Item="@item" Label="id" AttributeValue="@item.id" />
+        <WorkflowStateForeignKeyLinks Model="@item" />
+    </ChildContent>
+</MediumCard>
+
+@code {
+    [Parameter, EditorRequired] public WorkflowStateResponse Model { get; set; } = default!;
+}

@@ -1,0 +1,15 @@
+@using WebAppArchitecture.DigitalProcesses.Models.WorkflowTransition
+@namespace WebAppArchitecture.DigitalProcesses.UI.WorkflowTransition.Components
+<MediumCard TModel="WorkflowTransitionResponse" Model="@Model" HeaderText="WorkflowTransition" ActionsUrl="@($"/digital-processes/WorkflowTransitionResponse/actions/{Model.id}")">
+    <ChildContent Context="item">
+        <Attribute TModel="WorkflowTransitionResponse" Item="@item" Label="visual label" AttributeValue="@item.visual_label" />
+        <Attribute TModel="WorkflowTransitionResponse" Item="@item" Label="name" AttributeValue="@item.name" />
+        <Attribute TModel="WorkflowTransitionResponse" Item="@item" Label="key" AttributeValue="@item.key" />
+        <Attribute TModel="WorkflowTransitionResponse" Item="@item" Label="id" AttributeValue="@item.id" />
+        <WorkflowTransitionForeignKeyLinks Model="@item" />
+    </ChildContent>
+</MediumCard>
+
+@code {
+    [Parameter, EditorRequired] public WorkflowTransitionResponse Model { get; set; } = default!;
+}

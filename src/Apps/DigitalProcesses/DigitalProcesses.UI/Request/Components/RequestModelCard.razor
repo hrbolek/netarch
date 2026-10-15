@@ -1,0 +1,44 @@
+@using WebAppArchitecture.DigitalProcesses.Models.Request
+@namespace WebAppArchitecture.DigitalProcesses.UI.Request.Components
+@using System.Text.Json
+@using WebAppArchitecture.Base.UI.Components
+
+<div class="card mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span>@Title</span>
+        <EntityLink TModel="RequestResponse" Model="@Model" App="digital-processes" />
+    </div>
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-4 text-muted small">id</dt>
+            <dd class="col-sm-8 text-break">@(Model.id.ToString())</dd>
+            <dt class="col-sm-4 text-muted small">process definition version id</dt>
+            <dd class="col-sm-8 text-break">@(Model.process_definition_version_id.ToString())</dd>
+            <dt class="col-sm-4 text-muted small">initiator user id</dt>
+            <dd class="col-sm-8 text-break">@(Model.initiator_user_id.ToString())</dd>
+            <dt class="col-sm-4 text-muted small">current state id</dt>
+            <dd class="col-sm-8 text-break">@(Model.current_state_id.ToString())</dd>
+            <dt class="col-sm-4 text-muted small">current submission id</dt>
+            <dd class="col-sm-8 text-break">@(Model.current_submission_id.ToString())</dd>
+            <dt class="col-sm-4 text-muted small">subject</dt>
+            <dd class="col-sm-8 text-break">@((Model.subject?.ToString() ?? "\u2014"))</dd>
+            <dt class="col-sm-4 text-muted small">rbacobject id</dt>
+            <dd class="col-sm-8 text-break">@(Model.rbacobject_id.ToString())</dd>
+            <dt class="col-sm-4 text-muted small">created at</dt>
+            <dd class="col-sm-8 text-break">@(Model.created_at.ToString())</dd>
+            <dt class="col-sm-4 text-muted small">updated at</dt>
+            <dd class="col-sm-8 text-break">@(Model.updated_at.ToString())</dd>
+            <dt class="col-sm-4 text-muted small">created by</dt>
+            <dd class="col-sm-8 text-break">@(Model.created_by.ToString())</dd>
+            <dt class="col-sm-4 text-muted small">updated by</dt>
+            <dd class="col-sm-8 text-break">@(Model.updated_by.ToString())</dd>
+        </dl>
+        <details class="mt-3"><summary class="small text-muted">Raw JSON (diagnostics)</summary><pre class="small mt-2">@JsonSerializer.Serialize(Model, JsonOptions)</pre></details>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public RequestResponse Model { get; set; } = default!;
+    [Parameter] public string Title { get; set; } = typeof(RequestResponse).Name;
+    private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
+}

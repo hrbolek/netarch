@@ -1,8 +1,9 @@
+using WebAppArchitecture.DigitalProcesses.Models.FormVersion;
+using WebAppArchitecture.DigitalProcesses.Resolvers.FormVersion;
+using WebAppArchitecture.DigitalProcesses.Services.Shared;
 using System.Reflection;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
-using WebAppArchitecture.DigitalProcesses.Resolvers;
-using WebAppArchitecture.DigitalProcesses.Services;
 using WebAppArchitecture.DigitalProcesses.DBLayer;
 using WebAppArchitecture.Events;
 using WebAppArchitecture.SecurityLayer;
@@ -36,7 +37,7 @@ public sealed class EndpointLayeringTests
     }
 
     [Fact]
-    public void DomainResolvers_InjectSecuredServices_NotPersistenceOrSecurityLayer()
+    public void DomainResolvers_InjectSecuredOrComposedServices_NotPersistenceOrSecurityLayer()
     {
         using var host = new IsolatedHost();
         using var scope = host.Services.CreateScope();
@@ -69,11 +70,28 @@ public sealed class EndpointLayeringTests
                 dependency == typeof(WebAppArchitecture.Security.Services.ISecurityPermissionService))
                 continue;
             var instance = scope.ServiceProvider.GetRequiredService(dependency);
-            Assert.True(IsSecured(instance.GetType()),
-                $"{context} uses {instance.GetType().Name}, which does not derive from SecuredBaseService.");
+            AssertSecuredOrComposed(instance.GetType(), scope.ServiceProvider, context);
         }
-        Assert.True(IsSecured(scope.ServiceProvider
-            .GetRequiredService<IDigitalProcessActionService<FormVersionModel>>().GetType()));
+        AssertSecuredOrComposed(scope.ServiceProvider
+            .GetRequiredService<IDigitalProcessActionService<FormVersionModel>>().GetType(),
+            scope.ServiceProvider, "DigitalProcessActionService");
+    }
+
+    private static void AssertSecuredOrComposed(Type type, IServiceProvider services, string context)
+    {
+        if (IsSecured(type)) return;
+        Assert.Equal(typeof(IDigitalProcessActionService<>).Assembly, type.Assembly);
+        var dependencies = type.GetConstructors().Single().GetParameters().Select(parameter => parameter.ParameterType).ToArray();
+        Assert.DoesNotContain(dependencies, dependency => dependency == typeof(ISecurityLayer) ||
+            typeof(WebAppArchitecture.DBLayer.IDBLayer).IsAssignableFrom(dependency) ||
+            typeof(Microsoft.EntityFrameworkCore.DbContext).IsAssignableFrom(dependency));
+        var entityContracts = dependencies.Where(dependency => dependency.GetInterfaces().Append(dependency)
+            .Any(contract => contract.IsGenericType &&
+                contract.GetGenericTypeDefinition() == typeof(WebAppArchitecture.Base.Services.IBaseService<>))).ToArray();
+        Assert.True(entityContracts.Length > 0, $"{context} uses {type.Name} without a secured entity-service dependency.");
+        foreach (var dependency in entityContracts)
+            Assert.True(IsSecured(services.GetRequiredService(dependency).GetType()),
+                $"{context} composes {dependency.Name}, which must resolve to a secured entity service.");
     }
 
     private static bool IsSecured(Type? type)

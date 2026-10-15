@@ -1,0 +1,42 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormNode
+@using WebAppArchitecture.DigitalProcesses.Models.FormVersion
+@using WebAppArchitecture.DigitalProcesses.UI.FormNode.Components
+@using WebAppArchitecture.DigitalProcesses.UI.FormVersion.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormNode.Components
+
+<div class="card mb-3">
+    <div class="card-header"><strong>Add node</strong></div>
+    <div class="card-body">
+        <form method="post" action="/digital-processes/FormVersionResponse/designer/add-form">
+            <input type="hidden" name="form_version_id" value="@Editor.Model.designer.form.id" />
+            <label class="form-label">Parent</label>
+            <select class="form-select mb-2" name="parent_id" data-node-parent>
+                <option value="">Form root</option>
+                @foreach (var target in Editor.Containers)
+                {
+                    <option value="@target.id" data-table-section="@(FormSectionLayout.IsTable(target) ? "true" : "false")">@(target.label ?? target.key)</option>
+                }
+            </select>
+            <label class="form-label">Type</label>
+            <select class="form-select mb-2" name="node_type_id" required>
+                @foreach (var type in Editor.OrderedNodeTypes)
+                {
+                    <option value="@type.id" data-node-renderer="@type.renderer_key">@type.name</option>
+                }
+            </select>
+            <label class="form-label">Key</label>
+            <input class="form-control mb-2" name="key" required />
+            <label class="form-label">Label</label>
+            <input class="form-control mb-2" name="label" />
+            <label class="form-label">Configuration JSON (for Import/Export dat)</label>
+            <textarea class="form-control mb-2" name="configuration_json" rows="3" placeholder="{&quot;label&quot;:&quot;Import dat&quot;,&quot;query&quot;:&quot;query { whoami { hostname } }&quot;,&quot;variables&quot;:{}}"></textarea>
+            <label class="form-label">Position</label>
+            <input class="form-control mb-3" type="number" name="position" value="0" />
+            <button class="btn btn-primary" type="submit">Add</button>
+        </form>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public FormNodeEditorView Editor { get; set; } = default!;
+}

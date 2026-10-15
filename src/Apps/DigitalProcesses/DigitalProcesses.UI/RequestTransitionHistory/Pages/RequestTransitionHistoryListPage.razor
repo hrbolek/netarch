@@ -1,0 +1,15 @@
+@using WebAppArchitecture.DigitalProcesses.Models.RequestTransitionHistory
+@using WebAppArchitecture.DigitalProcesses.UI.RequestTransitionHistory.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.RequestTransitionHistory.Pages
+
+<PageViewList TModel="RequestTransitionHistoryResponse" Items="@Model" Title="Request transition history" ShowFilter="@ShowFilter">
+    <ChildContent Context="item">
+        <RequestTransitionHistoryMediumCard Model="@item" />
+    </ChildContent>
+</PageViewList>
+
+@code {
+    [Parameter, EditorRequired] public RequestTransitionHistoryResponse[] Model { get; set; } = [];
+    [Parameter] public bool IsFragment { get; set; }
+    [Parameter] public bool ShowFilter { get; set; } = true;
+}

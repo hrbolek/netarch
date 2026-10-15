@@ -1,0 +1,45 @@
+@using WebAppArchitecture.DigitalProcesses.Models.WorkflowDefinition
+@using WebAppArchitecture.DigitalProcesses.Models.WorkflowVersion
+@namespace WebAppArchitecture.DigitalProcesses.UI.WorkflowVersion.Components
+
+@* Only real domain foreign keys with a known view endpoint are navigable.
+   Audit fields and RBAC identifiers are deliberately excluded. *@
+@if (Links.Count > 0)
+{
+    <div class="border-top pt-2 mt-2" aria-label="Related entities">
+        <div class="small text-muted mb-1">Related entities</div>
+        @foreach (var link in Links)
+        {
+            <div class="d-flex justify-content-between gap-2 py-1">
+                <span class="text-muted">@link.Label</span>
+                <EntityLink TModel="EntityLinkResponse"
+                            Model="@(new EntityLinkResponse(link.Id, link.Id.ToString(), link.Entity, "digital-processes", "view"))"
+                            App="digital-processes"
+                            Entity="@link.Entity"
+                            Operation="view"
+                            CssClass="text-break">
+                    <ChildContent Context="target">@target.visual_label</ChildContent>
+                </EntityLink>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public WorkflowVersionResponse Model { get; set; } = default!;
+
+    private sealed record Relation(string Label, string Entity, Guid Id);
+
+    private IReadOnlyList<Relation> Links => GetLinks(Model);
+
+    private static IReadOnlyList<Relation> GetLinks(WorkflowVersionResponse item)
+    {
+        var links = new List<Relation>();
+        void Add(string label, string entity, Guid id)
+        {
+            if (id != Guid.Empty) links.Add(new Relation(label, entity, id));
+        }
+        Add("Workflow definition", nameof(WorkflowDefinitionResponse), item.workflow_definition_id);
+        return links;
+    }
+}

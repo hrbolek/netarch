@@ -1,0 +1,17 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormVersion
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormNode.Components
+@if (Model.root_node_id is Guid root)
+{
+    <FormNodeTreeItem Node="@Model.designer.nodes.Single(x => x.id == root)" Nodes="@Model.designer.nodes" Types="@Model.designer.node_types" TestMode="@TestMode" />
+}
+else
+{
+    <FormSectionTabs Sections="@Model.designer.nodes.Where(x => x.parent_id is null).OrderBy(x => x.position).ThenBy(x => x.key).ToArray()" Context="node">
+        <FormNodeTreeItem Node="@node" Nodes="@Model.designer.nodes" Types="@Model.designer.node_types" TestMode="@TestMode" />
+    </FormSectionTabs>
+}
+
+@code {
+    [Parameter, EditorRequired] public FormDesignerPageResponse Model { get; set; } = default!;
+    [Parameter] public bool TestMode { get; set; }
+}

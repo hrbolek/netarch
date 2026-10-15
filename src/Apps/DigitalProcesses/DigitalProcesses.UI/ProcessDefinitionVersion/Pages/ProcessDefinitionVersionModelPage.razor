@@ -1,0 +1,10 @@
+@using WebAppArchitecture.DigitalProcesses.Models.ProcessDefinitionVersion
+@using WebAppArchitecture.DigitalProcesses.UI.ProcessDefinitionVersion.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.ProcessDefinitionVersion.Pages
+
+<PageView TModel="ProcessDefinitionVersionResponse" TComponent="ProcessDefinitionVersionLargeCard" Model="@Model" Title="ProcessDefinitionVersion" />
+
+@code {
+    [Parameter, EditorRequired] public ProcessDefinitionVersionResponse Model { get; set; } = default!;
+    [Parameter] public bool IsFragment { get; set; }
+}

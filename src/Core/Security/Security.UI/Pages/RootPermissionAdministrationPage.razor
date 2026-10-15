@@ -16,6 +16,8 @@
         <EntityPermissions RbacId="@RbacWellKnown.RootGroupId" App="architecture" />
         <h2 class="h5 mt-4">Oprávnění pro vytváření objektů</h2>
         <p class="small text-muted">Pokud nejde vytvořit formulář nebo workflow, zkontrolujte příslušnou skupinu i zděděná oprávnění z Root.</p>
+        <p>Pro povolení vytváření přiřaďte na odpovídající skupině roli s operací <strong>Create</strong>. Například vytvoření formuláře kontroluje skupinu <strong>Create Form Definitions</strong>. Tlačítko <strong>Add role</strong> je dostupné pouze uživateli s oprávněním Create na dané skupině; zobrazení oprávnění vyžaduje Read.</p>
+        <p class="small text-muted">Identifikátor RBAC skupiny níže je autorizačním cílem operace vytvoření, nikoli volitelným polem formuláře. Server určuje rbacobject_id nového objektu. Role konkrétního objektu spravujte v jeho detailu v části Valid Permissions; u podřízených objektů se oprávnění k vytvoření kontroluje vůči jejich nadřazenému objektu.</p>
         @foreach (var scope in CreationScopes)
         {
             <details class="mb-3">
@@ -28,6 +30,8 @@
 </Page>
 
 @code {
+    [Parameter] public bool IsFragment { get; set; }
+
     [Parameter, EditorRequired]
     public WebAppArchitecture.Security.Models.RbacPermissionResponse Model { get; set; } = default!;
 

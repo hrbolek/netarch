@@ -75,7 +75,7 @@ Update 25 contained only the renderer infrastructure:
 Update 26 adds an initial concrete renderer set under:
 
 ```text
-src/Apps/DigitalProcesses/DigitalProcesses.UI/Renderers/
+src/Apps/DigitalProcesses/DigitalProcesses.UI/FormNode/Renderers/
 ```
 
 Registered renderer keys:
@@ -90,7 +90,7 @@ Registered renderer keys:
 Registration is centralized in:
 
 ```text
-DigitalProcesses.UI/Routing/DigitalProcessRendererRegistration.cs
+DigitalProcesses.UI/FormNode/Renderers/DigitalProcessRendererRegistration.cs
 ```
 
 and Host calls:
@@ -99,7 +99,7 @@ and Host calls:
 builder.Services.AddDigitalProcessRenderers();
 ```
 
-A new renderer should be added as a Razor component in `DigitalProcesses.UI/Renderers/` and registered under a stable `renderer_key`. The database `FormNodeType.renderer_key` remains the indirection between low-code metadata and the actual Razor component.
+A new renderer should be added as a Razor component in `DigitalProcesses.UI/FormNode/Renderers/` and registered under a stable `renderer_key`. The database `FormNodeType.renderer_key` remains the indirection between low-code metadata and the actual Razor component.
 
 The current basic renderers are intentionally only visual primitives. In particular `action.button` does not yet encode a GraphQL/JSONata execution endpoint, and dynamic dropdown/data-source renderers still need the runtime action/data-source layer to be wired into the form renderer.
 

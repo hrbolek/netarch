@@ -1,0 +1,49 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormNode
+@using WebAppArchitecture.DigitalProcesses.Models.FormVersion
+@using WebAppArchitecture.DigitalProcesses.UI.FormNode.Components
+@using WebAppArchitecture.DigitalProcesses.UI.FormVersion.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormVersion.Components
+
+<div class="row g-3">
+    <div class="col-xl-3">
+        <FormNodeStructureCard Editor="@Editor" />
+        @if (Editor.Model.root_node_id is null)
+        {
+            @* <FormNodeLibraryCard Editor="@Editor" /> *@
+            <FormNodeAddCard Editor="@Editor" />
+            <FormVersionTemplateCard FormVersionId="@Editor.Model.designer.form.id" />
+            <FormVersionAiDesignerCard FormVersionId="@Editor.Model.designer.form.id" />
+        }
+    </div>
+    <div class="col-xl-9">
+        <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <strong>Form</strong><span class="text-muted small">Same renderer as Test/runtime</span>
+            </div>
+            <div class="card-body">
+                <FormEditorCanvas Model="@Editor.Model" />
+                @if (!Editor.Roots.Any())
+                {
+                    <div class="text-muted">The form is empty. Add a root section.</div>
+                }
+            </div>
+        </div>
+    </div>
+    @* <div class="col-xl-3">
+        @if (Editor.Model.root_node_id is null)
+        {
+            <FormNodeAddCard Editor="@Editor" />
+            <FormVersionTemplateCard FormVersionId="@Editor.Model.designer.form.id" />
+        }
+        <FormVersionAiDesignerCard FormVersionId="@Editor.Model.designer.form.id" />
+        <div class="card">
+            <div class="card-header"><strong>Node properties</strong></div>
+            <div class="card-body small text-muted">Select a node from Structure to navigate to it. Use the kebab menu on a node to edit its properties or position.</div>
+        </div>
+    </div> *@
+</div>
+<FormNodeEditorDialogs Editor="@Editor" />
+
+@code {
+    [Parameter, EditorRequired] public FormNodeEditorView Editor { get; set; } = default!;
+}

@@ -1,0 +1,15 @@
+@using WebAppArchitecture.DigitalProcesses.Models.Request
+@using WebAppArchitecture.DigitalProcesses.UI.Request.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.Request.Pages
+
+<PageViewList TModel="RequestResponse" Items="@Model" Title="Requests" ShowFilter="@ShowFilter">
+    <ChildContent Context="item">
+        <RequestMediumCard Model="@item" />
+    </ChildContent>
+</PageViewList>
+
+@code {
+    [Parameter, EditorRequired] public RequestResponse[] Model { get; set; } = [];
+    [Parameter] public bool IsFragment { get; set; }
+    [Parameter] public bool ShowFilter { get; set; } = true;
+}

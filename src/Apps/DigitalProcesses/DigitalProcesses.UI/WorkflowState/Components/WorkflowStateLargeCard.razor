@@ -1,0 +1,21 @@
+@using WebAppArchitecture.DigitalProcesses.Models.WorkflowState
+@namespace WebAppArchitecture.DigitalProcesses.UI.WorkflowState.Components
+<LargeCard TModel="WorkflowStateResponse" Model="@Model" HeaderText="WorkflowState">
+    <SideContent Context="item">
+        <WorkflowStateMediumCard Model="@item" />
+        <EntityLinks TModel="WorkflowStateResponse" Model="@item" Links="@GetLinks(item)" />
+        <EntityPermissions RbacId="@item.rbacobject_id" />
+    </SideContent>
+    <ChildContent Context="item">
+        @if (ChildContent is not null) { @ChildContent(item) }
+        else { <WorkflowStateModelCard Model="@item" /> }
+    </ChildContent>
+</LargeCard>
+
+@code {
+    [Parameter, EditorRequired] public WorkflowStateResponse Model { get; set; } = default!;
+    [Parameter] public RenderFragment<WorkflowStateResponse>? ChildContent { get; set; }
+    private static EntityNavigationLink[] GetLinks(WorkflowStateResponse item) =>
+    [
+    ];
+}

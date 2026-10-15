@@ -58,7 +58,8 @@
                 controller = new AbortController();
                 status.textContent = "Vyhledávám…";
                 try {
-                    const response = await fetch("/digital-processes/form-node-search", {
+                    const wizard = root.closest("[data-node-wizard]");
+                    const response = wizard?.searchDraft ? null : await fetch("/digital-processes/form-node-search", {
                         method: "POST",
                         credentials: "same-origin",
                         headers: { "Content-Type": "application/json" },
@@ -69,13 +70,14 @@
                         }),
                         signal: controller.signal
                     });
-                    if (!response.ok) {
+                    if (response && !response.ok) {
                         const contentType = response.headers.get("Content-Type") || "";
                         const problem = contentType.includes("json") ? await response.json() : null;
                         throw new Error(problem?.detail || problem?.title || `Vyhledávání selhalo (HTTP ${response.status}).`);
                     }
 
-                    const result = await response.json();
+                    const result = response ? await response.json() :
+                        await wizard.searchDraft(root.dataset.formNodeId, pattern, collectFormValues());
                     if (sequence !== requestSequence) return;
                     const choices = result?.data?.choices;
                     if (!Array.isArray(choices)) {

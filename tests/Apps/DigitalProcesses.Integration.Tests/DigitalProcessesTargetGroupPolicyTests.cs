@@ -1,5 +1,5 @@
+using WebAppArchitecture.DigitalProcesses.Models.ProcessDefinitionVersion;
 using WebAppArchitecture.DigitalProcesses.DBLayer;
-using WebAppArchitecture.DigitalProcesses.Models;
 using Xunit;
 
 namespace DigitalProcesses.Integration.Tests;

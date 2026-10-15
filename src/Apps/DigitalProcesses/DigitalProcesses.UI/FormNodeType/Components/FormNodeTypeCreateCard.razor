@@ -1,0 +1,19 @@
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormNodeType.Components
+
+<div class="card shadow-sm">
+    <div class="card-header fw-semibold">@Model.Title</div>
+    <form method="post" action="@Model.Action" class="card-body">
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "name")' />
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "renderer_key")' />
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "can_have_children")' />
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "can_have_value")' />
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "can_repeat")' />
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "parent_type_id")' />
+        <CreateFormField Field='@Model.Fields.Single(field => field.Name == "configuration_schema_json")' />
+        <div><button type="submit" class="btn btn-primary">@Model.SubmitLabel</button></div>
+    </form>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public DigitalProcessCreatePageModel Model { get; set; } = default!;
+}

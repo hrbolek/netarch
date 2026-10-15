@@ -1,0 +1,24 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormVersion
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormVersion.Components
+<LargeCard TModel="FormVersionResponse" Model="@Model" HeaderText="FormVersion">
+    <SideContent Context="item">
+        <FormVersionMediumCard Model="@item" />
+        <EntityLinks TModel="FormVersionResponse" Model="@item" Links="@GetLinks(item)" />
+        <EntityPermissions RbacId="@item.rbacobject_id" />
+    </SideContent>
+    <ChildContent Context="item">
+        @if (ChildContent is not null) { @ChildContent(item) }
+        else { <FormVersionModelCard Model="@item" /> }
+    </ChildContent>
+</LargeCard>
+
+@code {
+    [Parameter, EditorRequired] public FormVersionResponse Model { get; set; } = default!;
+    [Parameter] public RenderFragment<FormVersionResponse>? ChildContent { get; set; }
+    private static EntityNavigationLink[] GetLinks(FormVersionResponse item) =>
+    [
+        new("Designer", $"/digital-processes/FormVersionResponse/designer/{item.id}", "Edit form nodes"),
+        new("Test", $"/digital-processes/FormVersionResponse/test/{item.id}", "Try the form"),
+        new("RTF templates", $"/digital-processes/FormVersionResponse/templates/{item.id}", "Manage document templates"),
+    ];
+}

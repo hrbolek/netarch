@@ -1,0 +1,15 @@
+@using WebAppArchitecture.DigitalProcesses.Models.WorkflowStateAccessRule
+@using WebAppArchitecture.DigitalProcesses.UI.WorkflowStateAccessRule.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.WorkflowStateAccessRule.Pages
+
+<PageViewList TModel="WorkflowStateAccessRuleResponse" Items="@Model" Title="Workflow state access rules" ShowFilter="@ShowFilter">
+    <ChildContent Context="item">
+        <WorkflowStateAccessRuleMediumCard Model="@item" />
+    </ChildContent>
+</PageViewList>
+
+@code {
+    [Parameter, EditorRequired] public WorkflowStateAccessRuleResponse[] Model { get; set; } = [];
+    [Parameter] public bool IsFragment { get; set; }
+    [Parameter] public bool ShowFilter { get; set; } = true;
+}

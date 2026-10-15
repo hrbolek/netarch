@@ -13,6 +13,18 @@
 
 Core DBLayer has no source declarations of DigitalProcesses entity types. DigitalProcesses.Models depends on Core DBLayer, not the other way around. The application host composes the derived EF context and shares it with Core via DI.
 
+### Current entity-first layout
+
+Entity sources now reside in `DigitalProcesses.Models/<Entity>/` with namespaces
+`WebAppArchitecture.DigitalProcesses.Models.<Entity>`, alongside their DTOs.
+`TemplateFieldBindingModel` has its own file and directory; there are still 19
+entity types. Request provisioning now resides in `DigitalProcesses.Services/Request/`
+and trusted submission reading in `DigitalProcesses.Services/Submission/`.
+EF configuration remains in the Module project. Table, column, key, index and
+foreign-key mappings are unchanged; offline SQL generation using the original
+and reorganized namespaces produces an identical SHA-256 fingerprint, guarded
+by `EntityOrganizationTests`. No migration was added or applied.
+
 ## Verification scope
 
 Performed static checks for leftover model declarations and dependency direction, as well as ZIP integrity. The .NET SDK is not installed here, so compilation, test execution, and verification of resulting PostgreSQL migrations remain to be performed. Examine EF migration snapshots before applying migration changes to production data.

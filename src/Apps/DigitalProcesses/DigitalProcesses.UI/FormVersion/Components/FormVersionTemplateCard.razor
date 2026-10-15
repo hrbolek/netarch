@@ -1,0 +1,27 @@
+@using WebAppArchitecture.DigitalProcesses.Models.FormNode
+@using WebAppArchitecture.DigitalProcesses.Models.FormVersion
+@using WebAppArchitecture.DigitalProcesses.UI.FormNode.Components
+@using WebAppArchitecture.DigitalProcesses.UI.FormVersion.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.FormVersion.Components
+
+<div class="card mb-3" data-template-management-form-version="@FormVersionId">
+    <div class="card-header"><strong>Dokumentové šablony</strong></div>
+    <div class="card-body">
+        <p class="small text-muted">Šablony jsou uloženy u této verze formuláře v PostgreSQL. Nová revize uchová původní RTF pro audit a naváže placeholdery na stabilní ID polí.</p>
+        <div class="d-grid gap-2">
+            <a class="btn btn-sm btn-outline-primary" href="@($"/digital-processes/FormVersionResponse/rtf-templates/{FormVersionId}")">Seznam šablon (API)</a>
+            <a class="btn btn-sm btn-outline-secondary" href="@($"/digital-processes/document-templates/form-schema/{FormVersionId}")">Schéma pro tvorbu šablon</a>
+        </div>
+        <hr />
+        <div class="text-muted small" data-ai-placeholder="template-designer">
+            <strong>AI návrh šablony ze vzorového dokumentu</strong><br />
+            Budoucí MCP agent porovná DOCX/RTF/PDF vzor se schématem FormNodes a navrhne RTF a vazby ke schválení.
+        </div>
+        <input class="form-control form-control-sm my-2" type="file" accept=".docx,.rtf,.pdf" disabled aria-label="Vzorový dokument pro budoucího AI agenta" />
+        <button type="button" class="btn btn-sm btn-outline-secondary" disabled>Navrhnout šablonu pomocí AI</button>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public Guid FormVersionId { get; set; }
+}

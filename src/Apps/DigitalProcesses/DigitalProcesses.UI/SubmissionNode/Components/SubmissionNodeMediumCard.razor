@@ -1,0 +1,12 @@
+@using WebAppArchitecture.DigitalProcesses.Models.SubmissionNode
+@namespace WebAppArchitecture.DigitalProcesses.UI.SubmissionNode.Components
+<MediumCard TModel="SubmissionNodeResponse" Model="@Model" HeaderText="SubmissionNode" ActionsUrl="@($"/digital-processes/SubmissionNodeResponse/actions/{Model.id}")">
+    <ChildContent Context="item">
+        <Attribute TModel="SubmissionNodeResponse" Item="@item" Label="visual label" AttributeValue="@item.visual_label" />
+        <Attribute TModel="SubmissionNodeResponse" Item="@item" Label="id" AttributeValue="@item.id" />
+    </ChildContent>
+</MediumCard>
+
+@code {
+    [Parameter, EditorRequired] public SubmissionNodeResponse Model { get; set; } = default!;
+}

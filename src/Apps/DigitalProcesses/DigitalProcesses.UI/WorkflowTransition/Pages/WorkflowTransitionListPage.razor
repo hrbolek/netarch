@@ -1,0 +1,15 @@
+@using WebAppArchitecture.DigitalProcesses.Models.WorkflowTransition
+@using WebAppArchitecture.DigitalProcesses.UI.WorkflowTransition.Components
+@namespace WebAppArchitecture.DigitalProcesses.UI.WorkflowTransition.Pages
+
+<PageViewList TModel="WorkflowTransitionResponse" Items="@Model" Title="Workflow transitions" ShowFilter="@ShowFilter">
+    <ChildContent Context="item">
+        <WorkflowTransitionMediumCard Model="@item" />
+    </ChildContent>
+</PageViewList>
+
+@code {
+    [Parameter, EditorRequired] public WorkflowTransitionResponse[] Model { get; set; } = [];
+    [Parameter] public bool IsFragment { get; set; }
+    [Parameter] public bool ShowFilter { get; set; } = true;
+}
