@@ -24,8 +24,8 @@
                                 @foreach (var child in TableChildren)
                                 {
                                     var value = Values.FirstOrDefault(x => x.parent_id == instance.id && x.form_node_id == child.id);
-                                    <FormTableCell Editable="@(value is not null && IsInput(child))" Label="@(child.label ?? child.key)" ValueJson="@value?.value_json">
-                                        <ProcessTestFormNode Node="@child" Nodes="@Nodes" Types="@Types" Values="@Values" ParentInstanceId="@instance.id" />
+                                    <FormTableCell Editable="@(value is not null && CanEdit(value.id) && IsInput(child))" Label="@(child.label ?? child.key)" ValueJson="@value?.value_json">
+                                        <SubmissionFormNode Node="@child" Nodes="@Nodes" Types="@Types" Values="@Values" ParentInstanceId="@instance.id" EditableNodeIds="@EditableNodeIds" />
                                     </FormTableCell>
                                 }
                             </tr>
@@ -50,8 +50,8 @@
                 <div class="card-body" data-repeat-instance data-occurrence="@instance.occurrence">
                     @foreach (var child in Children)
                     {
-                        <ProcessTestFormNode Node="@child" Nodes="@Nodes" Types="@Types" Values="@Values"
-                                             ParentInstanceId="@instance.id" />
+                        <SubmissionFormNode Node="@child" Nodes="@Nodes" Types="@Types" Values="@Values"
+                                             ParentInstanceId="@instance.id" EditableNodeIds="@EditableNodeIds" />
                     }
                 </div>
             </section>
@@ -59,8 +59,10 @@
         else
         {
             <div data-submission-node-id="@instance.id" class="mb-3">
-                <FormNodeRenderer RendererKey="@NodeType.renderer_key" Definition="@Node" Value="@instance"
-                                  SectionNodes="@SectionNodes" SectionValues="@SectionValues" FormNodes="@Nodes" />
+                <fieldset disabled="@(!CanEdit(instance.id))">
+                    <FormNodeRenderer RendererKey="@NodeType.renderer_key" Definition="@Node" Value="@instance"
+                                      SectionNodes="@SectionNodes" SectionValues="@SectionValues" FormNodes="@Nodes" />
+                </fieldset>
                 <span class="small text-muted" data-save-status aria-live="polite"></span>
             </div>
         }
@@ -74,6 +76,9 @@
     [Parameter, EditorRequired] public IReadOnlyCollection<FormNodeTypeResponse> Types { get; set; } = [];
     [Parameter, EditorRequired] public IReadOnlyCollection<SubmissionNodeResponse> Values { get; set; } = [];
     [Parameter] public Guid? ParentInstanceId { get; set; }
+    [Parameter] public IReadOnlyCollection<Guid>? EditableNodeIds { get; set; }
+
+    private bool CanEdit(Guid id) => EditableNodeIds is null || EditableNodeIds.Contains(id);
 
     private FormNodeTypeResponse? NodeType => Types.FirstOrDefault(x => x.id == Node.node_type_id);
     private bool IsInput(FormNodeResponse node) => Types.Any(x => x.id == node.node_type_id && x.renderer_key.StartsWith("input.", StringComparison.Ordinal));

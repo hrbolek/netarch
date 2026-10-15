@@ -2833,7 +2833,7 @@
         "tags": [
           "DigitalProcesses.Runtime"
         ],
-        "description": "Executes an authorized workflow transition from the process test screen and redirects back to that exact test.",
+        "description": "Executes an authorized workflow transition and returns to the request detail when return_to=request, otherwise to the process test.",
         "parameters": [
           {
             "name": "id",
@@ -11675,6 +11675,9 @@
         "additionalProperties": false
       },
       "ProcessVersionTestPageModel": {
+        "required": [
+          "workspace"
+        ],
         "type": "object",
         "properties": {
           "processVersion": {
@@ -11688,6 +11691,9 @@
           },
           "workflow": {
             "$ref": "#/components/schemas/WorkflowDesignerResponse"
+          },
+          "workspace": {
+            "$ref": "#/components/schemas/RequestWorkspaceResponse"
           }
         },
         "additionalProperties": false
@@ -11869,6 +11875,9 @@
           "visual_label": {
             "type": "string",
             "nullable": true
+          },
+          "workspace": {
+            "$ref": "#/components/schemas/RequestWorkspaceResponse"
           }
         },
         "additionalProperties": false
@@ -11935,6 +11944,32 @@
           "visual_label": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RequestWorkspaceResponse": {
+        "type": "object",
+        "properties": {
+          "request": {
+            "$ref": "#/components/schemas/RequestDetailResponse"
+          },
+          "form": {
+            "$ref": "#/components/schemas/FormDesignerResponse"
+          },
+          "workflow": {
+            "$ref": "#/components/schemas/WorkflowDesignerResponse"
+          },
+          "editableNodeIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "nullable": true
+          },
+          "mayTransition": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false

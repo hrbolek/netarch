@@ -25,6 +25,9 @@ using WebAppArchitecture.DigitalProcesses.Services.FormNodeApplicantAccess;
 using WebAppArchitecture.DigitalProcesses.Services.FormNodeType;
 using WebAppArchitecture.DigitalProcesses.Services.FormVersion;
 using WebAppArchitecture.DigitalProcesses.Services.ProcessDefinition;
+using WebAppArchitecture.DigitalProcesses.Services.Request;
+using WebAppArchitecture.DigitalProcesses.Models.Request;
+using WebAppArchitecture.DigitalProcesses.Models.Submission;
 using WebAppArchitecture.DigitalProcesses.Services.Shared;
 using WebAppArchitecture.DigitalProcesses.Services.Submission;
 using WebAppArchitecture.Tests.Shared;
@@ -35,6 +38,121 @@ namespace DigitalProcesses.Integration.Tests;
 
 public sealed class ComposedServiceBehaviorTests
 {
+    [Fact]
+    public async Task RequestViewEditsSubmissionTransitionsAndKeepsHistoryAtCanonicalUrl()
+    {
+        using var host = new IsolatedHost();
+        using var scope = ActorScope(host);
+        var seed = await Seed(scope.ServiceProvider);
+        var requests = scope.ServiceProvider.GetRequiredService<IRequestService>();
+        var created = await requests.CreateTestRequestForProcessVersionAsync(seed.id);
+        var view = await requests.GetViewAsync(created.id);
+        var workspace = Assert.IsType<RequestWorkspaceResponse>(view!.workspace);
+        Assert.True(workspace.MayTransition);
+        var node = Assert.Single(workspace.Request.active_submission.nodes, item => item.form_node_id == seed.node_id);
+        Assert.Contains(node.id, workspace.EditableNodeIds);
+        var transition = Assert.Single(workspace.Workflow.transitions, item => item.source_state_id == created.current_state_id);
+        var historyCount = workspace.Request.history.Count;
+        using var client = host.CreateClient(new() { AllowAutoRedirect = false });
+        var url = $"/digital-processes/RequestResponse/view/{created.id}";
+        using (var request = ActingRequest.Get(url, RbacWellKnown.BootstrapAdminUserId))
+        {
+            request.Headers.Add("X-Response-Type", "html");
+            using var response = await client.SendAsync(request);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var html = await response.Content.ReadAsStringAsync();
+            Assert.Contains($"data-submission-node-id=\"{node.id}\"", html);
+            Assert.Contains("Historie", System.Net.WebUtility.HtmlDecode(html));
+            Assert.Contains($"name=\"transition_id\" value=\"{transition.id}\"", html);
+            Assert.Contains("name=\"return_to\" value=\"request\"", html);
+        }
+        using (var save = ActingRequest.Get($"/digital-processes/SubmissionNodeResponse/value/{node.id}",
+            RbacWellKnown.BootstrapAdminUserId))
+        {
+            save.Method = HttpMethod.Put;
+            save.Content = JsonContent.Create(new { value_json = "\"Saved request value\"" });
+            using var response = await client.SendAsync(save);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+        using (var change = ActingRequest.Get($"/digital-processes/RequestResponse/transition-form/{created.id}",
+            RbacWellKnown.BootstrapAdminUserId))
+        {
+            change.Method = HttpMethod.Post;
+            change.Content = new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                ["transition_id"] = transition.id.ToString(), ["note"] = "Request detail transition",
+                ["return_to"] = "request"
+            });
+            using var response = await client.SendAsync(change);
+            Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
+            Assert.Equal(url, response.Headers.Location!.OriginalString);
+        }
+        using (var request = ActingRequest.Get(url, RbacWellKnown.BootstrapAdminUserId))
+        {
+            request.Headers.Add("X-Response-Type", "json");
+            using var response = await client.SendAsync(request);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var updated = (await response.Content.ReadFromJsonAsync<RequestResponse>())!;
+            Assert.Equal(created.id, updated.id);
+            Assert.Equal(transition.target_state_id, updated.current_state_id);
+            Assert.Equal(historyCount + 1, updated.workspace!.Request.history.Count);
+            Assert.Contains(updated.workspace.Request.history, item => item.note == "Request detail transition");
+            Assert.Equal("\"Saved request value\"", Assert.Single(updated.workspace.Request.active_submission.nodes,
+                item => item.form_node_id == seed.node_id).value_json);
+        }
+        var db = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
+        db.ChangeTracker.Clear();
+        Assert.True((await db.Set<SubmissionModel>().FindAsync(created.current_submission_id))!.is_archived);
+        using (var denied = await client.SendAsync(ActingRequest.Get(url, Guid.NewGuid())))
+            Assert.Equal(HttpStatusCode.NotFound, denied.StatusCode);
+        using (var test = ActingRequest.Get(
+            $"/digital-processes/ProcessDefinitionVersionResponse/test/{seed.id}?requestId={created.id}",
+            RbacWellKnown.BootstrapAdminUserId))
+        {
+            test.Headers.Add("X-Response-Type", "html");
+            using var response = await client.SendAsync(test);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var html = await response.Content.ReadAsStringAsync();
+            Assert.Contains("data-request-workspace", html);
+            Assert.DoesNotContain("name=\"return_to\"", html);
+        }
+        SetActor(scope.ServiceProvider, RbacWellKnown.BootstrapAdminUserId);
+        var actor = RbacWellKnown.BootstrapAdminUserId;
+        var readScopeId = Guid.NewGuid();
+        var now = DateTimeOffset.UtcNow;
+        var root = await db.Groups.SingleAsync(group => group.id == RbacWellKnown.RootGroupId);
+        db.Groups.Add(new(readScopeId, "Read-only request workspace", root.group_type_id, root.id,
+            root.path + $"{readScopeId:D}/", false, readScopeId, now, now, actor, actor));
+        var roleType = Guid.NewGuid();
+        db.RoleTypes.Add(new(roleType, $"Workspace read only {roleType:N}", root.id, now, now, actor, actor));
+        var read = await db.Operations.SingleAsync(operation => operation.name == SecurityOperations.Read);
+        db.RoleTypeOperations.Add(new(Guid.NewGuid(), roleType, read.id));
+        db.Roles.Add(new(Guid.NewGuid(), readScopeId, actor, roleType, false, now.AddMinutes(-1),
+            null, null, readScopeId, now, now, actor, actor));
+        var current = (await db.Set<RequestModel>().FindAsync(created.id))!;
+        var submission = (await db.Set<SubmissionModel>().FindAsync(current.current_submission_id))!;
+        db.Entry(current).CurrentValues.SetValues(current with { rbacobject_id = readScopeId });
+        db.Entry(submission).CurrentValues.SetValues(submission with { rbacobject_id = readScopeId });
+        foreach (var item in await db.Set<WebAppArchitecture.DigitalProcesses.Models.SubmissionNode.SubmissionNodeModel>()
+            .Where(item => item.submission_id == submission.id).ToArrayAsync())
+            db.Entry(item).CurrentValues.SetValues(item with { rbacobject_id = readScopeId });
+        await db.SaveChangesAsync();
+        await scope.ServiceProvider.GetRequiredService<ISecurityProjectionService>().SynchronizeRbacObjectAsync(readScopeId);
+        var readOnly = (await requests.GetViewAsync(created.id))!.workspace!;
+        Assert.False(readOnly.MayTransition);
+        Assert.Empty(readOnly.EditableNodeIds);
+        using (var request = ActingRequest.Get(url, actor))
+        {
+            request.Headers.Add("X-Response-Type", "html");
+            using var response = await client.SendAsync(request);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var html = await response.Content.ReadAsStringAsync();
+            Assert.Contains("<fieldset disabled", html);
+            Assert.DoesNotMatch("<form[^>]*data-process-test-transition", html);
+            Assert.Contains("Saved request value", html);
+        }
+    }
+
     [Fact]
     public async Task TemplatesPreserveOwnerAuthorizationAtomicRevisionsAndCascadeDeletion()
     {

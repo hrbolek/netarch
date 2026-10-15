@@ -23,7 +23,7 @@ namespace WebAppArchitecture.DigitalProcesses.Services.Request;
 /// <summary>
 /// Vstupní kontrakt Request Service. Přijímá pouze údaje od klienta; identita konajícího uživatele a bezpečnostní kontext se ověřují na serveru.
 /// </summary>
-public sealed class RequestService(
+public sealed partial class RequestService(
     ISecurityLayer security,
     IDigitalProcessIntegration integration,
     IRbacAccessBindingManager bindingManager,

@@ -7,6 +7,9 @@ namespace WebAppArchitecture.DigitalProcesses.Resolvers.FormVersion;
 
 public static class FormVersionTemplatesResolvers
 {
+    public static IResult LegacyTemplatePage(Guid id)
+        => Results.Redirect($"/digital-processes/FormVersionResponse/templates/{id}");
+
     public static async Task<IResult> TemplatePage(Guid id, IFormVersionService versions, CancellationToken ct)
     {
         var page = await versions.TemplatePageAsync(id, ct);

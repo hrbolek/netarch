@@ -27,7 +27,11 @@ public static class RequestResolvers
     /// <summary>
     /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: Read, List, Link, StartAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
     /// </summary>
-    public static Task<IResult> Read(Guid id, HttpContext http, IRequestService service, CancellationToken ct) => BaseResolvers.Read<RequestModel,RequestResponse,IRequestService>(id,http,service,ct);
+    public static async Task<IResult> Read(Guid id, IRequestService service, CancellationToken ct)
+    {
+        var request = await service.GetViewAsync(id, ct);
+        return request is null ? Results.NotFound() : ApiResults.Ok(request);
+    }
     /// <summary>
     /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: List, Link, StartAsync, ReadFormAsync; pořadí a parametry viz implementace. Návratová hodnota reprezentuje HTTP výsledek (případně přesměrování či chybu).
     /// </summary>
@@ -53,7 +57,7 @@ public static class RequestResolvers
             CreateFormValues.Optional(f, "subject"),
             OptionalGuid(f, "target_group_id"),
             OptionalGuid(f, "process_definition_id")), ct);
-        return Results.Redirect(Prefix + "/RequestResponse/detail/" + created.id);
+        return Results.Redirect(Prefix + "/RequestResponse/view/" + created.id);
     }
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: StartAsync, TransitionAsync, GetDetailAsync; pořadí a parametry viz implementace.
@@ -76,7 +80,9 @@ public static class RequestResolvers
             ? parsed
             : throw new BadHttpRequestException("transition_id must be a GUID.");
         await service.TransitionAsync(id, new TransitionRequestRequest(transitionId, CreateFormValues.Optional(form, "note")), ct);
-        return Results.Redirect($"{Prefix}/ProcessDefinitionVersionResponse/test/{request.process_definition_version_id}?requestId={id}");
+        return form["return_to"] == "request"
+            ? Results.Redirect($"{Prefix}/RequestResponse/view/{id}")
+            : Results.Redirect($"{Prefix}/ProcessDefinitionVersionResponse/test/{request.process_definition_version_id}?requestId={id}");
     }
     /// <summary>
     /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: GetDetailAsync; pořadí a parametry viz implementace.
@@ -133,7 +139,7 @@ public static class RequestResolvers
                 """);
         group.MapPost("/transition-form/{id:guid}", RequestResolvers.TransitionForm)
             .DisableAntiforgery()
-            .WithDescription("Executes an authorized workflow transition from the process test screen and redirects back to that exact test.");
+            .WithDescription("Executes an authorized workflow transition and returns to the request detail when return_to=request, otherwise to the process test.");
         group.MapGet("/detail/{id:guid}", RequestResolvers.Detail)
             .ApplyViewModel<RequestDetailPage,RequestDetailResponse>()
             .WithDescription("""

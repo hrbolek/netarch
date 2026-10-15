@@ -79,18 +79,19 @@ public static class ProcessDefinitionVersionResolvers
         Guid requestId,
         IProcessDefinitionVersionService processVersions,
         IRequestService requests,
-        IFormNodeService forms,
-        IWorkflowVersionService workflows,
         CancellationToken ct)
     {
         var processVersion = await processVersions.GetByIdAsync<ProcessDefinitionVersionResponse>(id, ct)
             ?? throw new KeyNotFoundException("Process version not found or not readable.");
-        var request = await requests.GetDetailAsync(requestId, ct);
-        if (request.request.process_definition_version_id != id)
+        var view = await requests.GetViewAsync(requestId, ct)
+            ?? throw new KeyNotFoundException("Request not found or not readable.");
+        if (view.process_definition_version_id != id)
             throw new InvalidOperationException("The test request does not belong to this process version.");
-        var form = await forms.GetDesignerAsync(processVersion.form_version_id, ct);
-        var workflow = await workflows.GetDesignerAsync(processVersion.workflow_version_id, ct);
-        return new(processVersion, request, form, workflow);
+        var workspace = view.workspace ?? throw new InvalidOperationException("Request workspace was not loaded.");
+        return new(processVersion, workspace.Request, workspace.Form, workspace.Workflow)
+        {
+            Workspace = workspace
+        };
     }
 
     /// <summary>

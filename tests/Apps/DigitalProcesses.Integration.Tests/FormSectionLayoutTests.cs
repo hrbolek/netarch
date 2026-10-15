@@ -131,7 +131,7 @@ public sealed class FormSectionLayoutTests
         var hidden = Definition("Unreadable field", DigitalProcessWellKnown.FormNodeTypes.Text, section.id);
         var first = Value(section.id, null, 0, null);
         var second = Value(section.id, null, 1, null);
-        var html = await Render<ProcessTestFormNode>(scope.ServiceProvider, new()
+        var html = await Render<SubmissionFormNode>(scope.ServiceProvider, new()
         {
             ["Node"] = section, ["Nodes"] = new[] { section, search, text, hidden }, ["Types"] = types,
             ["Values"] = new[] { first, second, Value(search.id, first.id, 0, """{"id":"secret-id-1","label":"First user"}"""),

@@ -2,7 +2,21 @@
 @using WebAppArchitecture.DigitalProcesses.UI.Request.Components
 @namespace WebAppArchitecture.DigitalProcesses.UI.Request.Pages
 
-<PageView TModel="RequestResponse" TComponent="RequestLargeCard" Model="@Model" Title="Request" />
+<Page Title="Request">
+    <RequestLargeCard Model="@Model">
+        <ChildContent>
+            @if (Model.workspace is { } workspace)
+            {
+                <RequestWorkspace Model="@workspace" />
+            }
+            else
+            {
+                <RequestModelCard Model="@Model" />
+            }
+        </ChildContent>
+    </RequestLargeCard>
+
+</Page>
 
 @code {
     [Parameter, EditorRequired] public RequestResponse Model { get; set; } = default!;

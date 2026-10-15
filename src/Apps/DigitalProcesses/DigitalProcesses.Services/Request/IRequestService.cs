@@ -20,4 +20,5 @@ public interface IRequestService : IBaseService<RequestModel>
     Task<RequestResponse> CreateTestRequestForProcessVersionAsync(Guid processVersionId, CancellationToken ct = default);
     Task<RequestResponse> TransitionAsync(Guid requestId, TransitionRequestRequest request, CancellationToken ct = default);
     Task<RequestDetailResponse> GetDetailAsync(Guid requestId, CancellationToken ct = default);
+    Task<RequestResponse?> GetViewAsync(Guid requestId, CancellationToken ct = default);
 }

@@ -9,4 +9,7 @@ public sealed record ProcessVersionTestPageModel(
     ProcessDefinitionVersionResponse ProcessVersion,
     RequestDetailResponse Request,
     FormDesignerResponse Form,
-    WorkflowDesignerResponse Workflow);
+    WorkflowDesignerResponse Workflow)
+{
+    public required RequestWorkspaceResponse Workspace { get; init; }
+}

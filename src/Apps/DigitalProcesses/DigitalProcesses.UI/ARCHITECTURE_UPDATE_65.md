@@ -76,6 +76,18 @@ Both FormVersion and FormNode editor resolvers use FormVersionDesignerPage.
 
 ## Entity-owned cards
 
+`RequestResponse/view/{id}` renders the runtime Request workspace, not just the
+technical entity card. RequestService.GetViewAsync supplies an optional workspace
+on RequestResponse with the active submission, authorized form definitions,
+workflow states/transitions, ordered history and per-node edit permissions.
+RequestWorkspace is shared with the process test page: values use the existing
+secured SubmissionNode value endpoint; transitions save editable fields first,
+then call the existing Request transition command. The request view posts
+`return_to=request` to return to its canonical URI; process tests keep their
+existing return target. Read-only/archived nodes have disabled inputs and actors
+without the required Request/Submission/group Update grants get no transition
+buttons. Server-side mutation authorization remains authoritative.
+
 Each displayed entity owns its cards under Entity/Components.
 FormDefinition uses a single MediumCard with explicit Attribute components for
 all fields, including RBAC/audit metadata, and expandable JSON diagnostics;

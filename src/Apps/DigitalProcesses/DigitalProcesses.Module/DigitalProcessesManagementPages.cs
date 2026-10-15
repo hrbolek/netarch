@@ -17,8 +17,7 @@ public static class DigitalProcessesManagementPages
         endpoints.MapGet("/FormVersionResponse/templates/{id:guid}", FormVersionTemplatesResolvers.TemplatePage)
             .WithTags("DigitalProcesses.Templates")
             .WithDescription("Razor-based RTF template management for a FormVersion.");
-        endpoints.MapGet("/form-versions/{id:guid}/templates", (Guid id) =>
-            Results.Redirect($"/digital-processes/FormVersionResponse/templates/{id}"))
+        endpoints.MapGet("/form-versions/{id:guid}/templates", FormVersionTemplatesResolvers.LegacyTemplatePage)
             .ExcludeFromDescription();
     }
 }

@@ -82,7 +82,8 @@ public sealed class EntityCardsTests
             var decoded = WebUtility.HtmlDecode(html);
             var fields = dto.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(property => property.Name != "visual_label" &&
-                    !(entity == "FormVersion" && property.Name == "templates")).ToArray();
+                    !(entity == "FormVersion" && property.Name == "templates") &&
+                    !(entity == "Request" && property.Name == "workspace")).ToArray();
             var labels = Regex.Matches(decoded, @"<dt[^>]*>(.*?)</dt>").Select(match => match.Groups[1].Value).ToArray();
             var values = Regex.Matches(decoded, @"<dd[^>]*>(.*?)</dd>").Select(match => match.Groups[1].Value).ToArray();
             if (entity == "FormDefinition")
@@ -186,6 +187,8 @@ public sealed class EntityCardsTests
 
     private static object? SampleValue(Type type, string name, bool nullOptionals)
     {
+        if (type == typeof(WebAppArchitecture.DigitalProcesses.Models.Request.RequestWorkspaceResponse))
+            return null;
         if (type == typeof(IReadOnlyList<WebAppArchitecture.DigitalProcesses.Models.DocumentTemplate.RtfTemplateInfo>))
             return nullOptionals ? null : Array.Empty<WebAppArchitecture.DigitalProcesses.Models.DocumentTemplate.RtfTemplateInfo>();
         if (Nullable.GetUnderlyingType(type) is { } underlying)

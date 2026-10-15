@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using System.Text.Json.Serialization;
 using WebAppArchitecture.Base.Data;
 using WebAppArchitecture.DBLayer;
 
@@ -21,6 +22,9 @@ public sealed record RequestResponse(
     string visual_label = ""
 ) : IEntityProjection<RequestModel, RequestResponse>, IEntityMapper<RequestModel, RequestResponse>, ISecuredEntityDTOModel
 {
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public RequestWorkspaceResponse? workspace { get; init; }
+
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
     /// </summary>
