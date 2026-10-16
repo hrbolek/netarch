@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Architecture.Attributes/Architecture.Attributes.csproj" />
+    <Project Path="src/Architecture.Auditor/Architecture.Auditor.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Architecture.Auditor.Tests/Architecture.Auditor.Tests.csproj" />
+  </Folder>
+</Solution>
