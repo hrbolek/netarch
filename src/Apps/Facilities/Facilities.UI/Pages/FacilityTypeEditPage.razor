@@ -1,0 +1,73 @@
+@namespace WebAppArchitecture.Facilities
+
+<PageEdit TModel="FacilityTypeResponse" Model="@Model" Title="Edit facility type">
+    <ChildContent Context="type">
+        <div class="container py-3">
+            <h1 class="h3">Edit facility type</h1>
+            <form id="facility-type-edit" class="card card-body">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-4"><label class="form-label" for="facility-type-edit-code">Code</label><input id="facility-type-edit-code" class="form-control" maxlength="100" required value="@type.Code" /></div>
+                    <div class="col-md-8"><label class="form-label" for="facility-type-edit-name">Name</label><input id="facility-type-edit-name" class="form-control" maxlength="200" required value="@type.Name" /></div>
+                </div>
+                <div class="mb-3"><label class="form-label" for="facility-type-edit-description">Description</label><textarea id="facility-type-edit-description" class="form-control" rows="3">@type.Description</textarea></div>
+                <div class="form-check mb-2"><input id="facility-type-edit-reservable" class="form-check-input" type="checkbox" checked="@type.Reservable" /><label class="form-check-label" for="facility-type-edit-reservable">Reservable</label></div>
+                <div class="form-check mb-3"><input id="facility-type-edit-containment" class="form-check-input" type="checkbox" checked="@type.CanContainChildren" /><label class="form-check-label" for="facility-type-edit-containment">Can contain child facilities</label></div>
+                <div class="mb-3">
+                    <label class="form-label" for="facility-type-edit-children">Allowed child facility types</label>
+                    <select id="facility-type-edit-children" class="form-select" multiple size="6">
+                        @foreach (var candidate in Types.Where(item => item.id != type.id))
+                        {
+                            <option value="@candidate.id" selected="@type.AllowedChildTypeIds.Contains(candidate.id)">@candidate.Name (@candidate.Code)</option>
+                        }
+                    </select>
+                </div>
+                <div id="facility-type-edit-error" class="alert alert-danger d-none" role="alert"></div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-primary" type="submit">Save changes</button>
+                    <a class="btn btn-outline-secondary" href="/facilities/FacilityTypeResponse/list">Cancel</a>
+                </div>
+            </form>
+        </div>
+        <script>
+            (() => {
+                const form = document.getElementById('facility-type-edit');
+                if (!form || form.dataset.bound) return;
+                form.dataset.bound = '1';
+                form.addEventListener('submit', async event => {
+                    event.preventDefault();
+                    const error = document.getElementById('facility-type-edit-error');
+                    error.classList.add('d-none');
+                    const payload = {
+                        id: '@type.id',
+                        updated_at: '@type.updated_at.ToString("O")',
+                        code: document.getElementById('facility-type-edit-code').value,
+                        name: document.getElementById('facility-type-edit-name').value,
+                        description: document.getElementById('facility-type-edit-description').value || null,
+                        reservable: document.getElementById('facility-type-edit-reservable').checked,
+                        canContainChildren: document.getElementById('facility-type-edit-containment').checked,
+                        allowedChildTypeIds: [...document.getElementById('facility-type-edit-children').selectedOptions].map(option => option.value)
+                    };
+                    try {
+                        const response = await fetch('/facilities/FacilityTypeResponse/update', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                            credentials: 'same-origin',
+                            body: JSON.stringify(payload)
+                        });
+                        if (!response.ok) throw new Error(`Saving failed (HTTP ${response.status}).`);
+                        window.location.assign('/facilities/FacilityTypeResponse/list');
+                    } catch (exception) {
+                        error.textContent = exception.message;
+                        error.classList.remove('d-none');
+                    }
+                });
+            })();
+        </script>
+    </ChildContent>
+</PageEdit>
+
+@code {
+    [Parameter, EditorRequired] public FacilityTypeResponse Model { get; set; } = default!;
+    [Parameter] public IReadOnlyCollection<FacilityTypeResponse> Types { get; set; } = Array.Empty<FacilityTypeResponse>();
+    [Parameter] public bool IsFragment { get; set; }
+}

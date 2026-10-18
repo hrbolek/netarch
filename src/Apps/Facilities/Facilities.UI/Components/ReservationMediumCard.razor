@@ -1,0 +1,34 @@
+@namespace WebAppArchitecture.Facilities
+
+<MediumCard TModel="ReservationResponse" Model="@Model" HeaderText="Reservation">
+    <ChildContent Context="item">
+        <Attribute TModel="ReservationResponse" Item="@item" Label="Facility" AttributeName="FacilityId" />
+        <Attribute TModel="ReservationResponse" Item="@item" Label="Event" AttributeName="EventId" />
+        <Attribute TModel="ReservationResponse" Item="@item" Label="Starts" AttributeName="StartsAt" />
+        <Attribute TModel="ReservationResponse" Item="@item" Label="Ends" AttributeName="EndsAt" />
+        <Attribute TModel="ReservationResponse" Item="@item" Label="Status" AttributeName="Status" />
+        @if (!string.IsNullOrWhiteSpace(item.Note))
+        {
+            <Attribute TModel="ReservationResponse" Item="@item" Label="Request note" AttributeName="Note" />
+        }
+        @if (!string.IsNullOrWhiteSpace(item.DecisionReason))
+        {
+            <Attribute TModel="ReservationResponse" Item="@item" Label="Decision reason" AttributeName="DecisionReason" />
+        }
+        <div class="mt-2" data-reservation-actions data-id="@item.id" data-updated-at="@item.updated_at">
+            @if (item.Status == ReservationStatuses.Requested)
+            {
+                <button type="button" class="btn btn-sm btn-success" data-action="confirm">Confirm</button>
+                <button type="button" class="btn btn-sm btn-outline-danger" data-action="reject">Reject</button>
+            }
+            @if (item.Status is ReservationStatuses.Requested or ReservationStatuses.Confirmed)
+            {
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-action="cancel">Cancel</button>
+            }
+        </div>
+    </ChildContent>
+</MediumCard>
+
+@code {
+    [Parameter, EditorRequired] public ReservationResponse Model { get; set; } = default!;
+}

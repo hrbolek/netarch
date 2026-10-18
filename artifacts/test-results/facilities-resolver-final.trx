@@ -1,0 +1,1066 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="08f8d437-77f6-488c-b479-5440bbfdcad7" name="@672e2b22df40 2026-10-18 16:06:11" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-18T16:06:11.9365510+00:00" queuing="2026-10-18T16:06:11.9365513+00:00" start="2026-10-18T16:06:02.3313195+00:00" finish="2026-10-18T16:08:13.3499625+00:00" />
+  <TestSettings name="default" id="8b795991-b0e5-491b-9d42-f5c46be675dc">
+    <Deployment runDeploymentRoot="_672e2b22df40_2026-10-18_16_06_11" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="e84da080-b772-46c3-90aa-6e824828ae07" testId="582428e7-c4a1-64e9-2000-92005aa611f3" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.AvailabilityForwardsHalfOpenIntervalToService" computerName="672e2b22df40" duration="00:00:04.2122261" startTime="2026-10-18T16:08:07.4217230+00:00" endTime="2026-10-18T16:08:07.4217251+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e84da080-b772-46c3-90aa-6e824828ae07" />
+    <UnitTestResult executionId="a16cf583-66b8-4c35-beb8-740522a8b16e" testId="820fa493-188a-134e-3cb5-0fc7af93aabb" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.AnonymousListsNeverInvokeDomainServices(route: &quot;/facilities/FacilityResponse/list&quot;)" computerName="672e2b22df40" duration="00:00:04.2883425" startTime="2026-10-18T16:06:32.9098461+00:00" endTime="2026-10-18T16:06:32.9098468+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a16cf583-66b8-4c35-beb8-740522a8b16e" />
+    <UnitTestResult executionId="ca860ffb-0135-43c6-b0ce-34fad7685974" testId="c9f68db5-cb49-03ca-9919-43bc2f6b0d44" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.ReservationRelationsUseBoundIdentifiers(route: &quot;by-facility&quot;, method: &quot;ListByFacilityAsync&quot;)" computerName="672e2b22df40" duration="00:00:03.7329005" startTime="2026-10-18T16:06:25.2233449+00:00" endTime="2026-10-18T16:06:25.2233454+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ca860ffb-0135-43c6-b0ce-34fad7685974" />
+    <UnitTestResult executionId="62f362eb-2702-41c2-8bf3-e3ed89c0ea92" testId="b954fa7d-858e-6b21-f9e3-53567ab5ba04" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.TreeNavigationDelegatesTheBoundParent(route: &quot;descendants&quot;, method: &quot;ListDescendantsAsync&quot;)" computerName="672e2b22df40" duration="00:00:03.0886242" startTime="2026-10-18T16:06:14.8977581+00:00" endTime="2026-10-18T16:06:14.8977587+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="62f362eb-2702-41c2-8bf3-e3ed89c0ea92" />
+    <UnitTestResult executionId="32bcec25-5afb-4bae-8da0-f6ed9c8d1244" testId="fb844ff1-d2d7-8934-154c-bcc930610218" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.CallerSelectedOperationIsRejectedWithoutServiceCalls(route: &quot;/facilities/FacilityTypeResponse/list&quot;)" computerName="672e2b22df40" duration="00:00:04.5458799" startTime="2026-10-18T16:06:46.4682556+00:00" endTime="2026-10-18T16:06:46.4682561+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="32bcec25-5afb-4bae-8da0-f6ed9c8d1244" />
+    <UnitTestResult executionId="dd5e43ce-e559-4acd-b9b6-52980425d89c" testId="0b1bcf8c-c6d7-04b7-b7b1-68ae8ba55000" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.ReservationRequestDoesNotAcceptCallerSelectedStatusOrActor" computerName="672e2b22df40" duration="00:00:03.7792437" startTime="2026-10-18T16:07:04.3292047+00:00" endTime="2026-10-18T16:07:04.3292052+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dd5e43ce-e559-4acd-b9b6-52980425d89c" />
+    <UnitTestResult executionId="73035c9c-e445-41f9-9531-df080e48eddf" testId="51953f9e-ca56-a7b5-7c0e-d0468f07a654" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.CreatePreservesTypedInputAndNeverTurnsDenialIntoSuccess(denied: True)" computerName="672e2b22df40" duration="00:00:04.8242051" startTime="2026-10-18T16:08:03.2098563+00:00" endTime="2026-10-18T16:08:03.2098569+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="73035c9c-e445-41f9-9531-df080e48eddf" />
+    <UnitTestResult executionId="8ec70228-10b0-4b7e-add0-900dadc4d38a" testId="d0fa9b01-cfe6-8b56-d3f3-aebdbcd3c8a7" testName="Core.Host.Integration.Tests.SecurityBoundary.ResolverDependencyTests.CompiledResolversCannotAccessPersistenceEvenThroughServiceLocationOrAsyncHelpers" computerName="672e2b22df40" duration="00:00:07.4256906" startTime="2026-10-18T16:06:12.3209961+00:00" endTime="2026-10-18T16:06:12.3209964+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8ec70228-10b0-4b7e-add0-900dadc4d38a" />
+    <UnitTestResult executionId="052d7aca-b7ab-409c-a384-b9801c9e6991" testId="c8b1d28f-1187-34cb-41bd-0c3f7882a020" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.ReservationTransitionsUseOnlyDesignatedService(route: &quot;confirm&quot;, method: &quot;ConfirmAsync&quot;)" computerName="672e2b22df40" duration="00:00:06.2516622" startTime="2026-10-18T16:07:37.0358780+00:00" endTime="2026-10-18T16:07:37.0358788+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="052d7aca-b7ab-409c-a384-b9801c9e6991" />
+    <UnitTestResult executionId="bb6be02c-28d0-46b2-acb4-65f09ee31098" testId="cff6d2f1-0e6e-24c6-8b82-ac943a96b756" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.ReservationTransitionsUseOnlyDesignatedService(route: &quot;cancel&quot;, method: &quot;CancelAsync&quot;)" computerName="672e2b22df40" duration="00:00:04.9255066" startTime="2026-10-18T16:07:30.7873758+00:00" endTime="2026-10-18T16:07:30.7873764+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bb6be02c-28d0-46b2-acb4-65f09ee31098" />
+    <UnitTestResult executionId="c63429c9-6877-4348-8a7b-3fbd08229d2b" testId="826a5705-73ac-72a8-c94a-30d6982a7fa6" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.CreatePreservesTypedInputAndNeverTurnsDenialIntoSuccess(denied: False)" computerName="672e2b22df40" duration="00:00:03.4504667" startTime="2026-10-18T16:07:58.2956566+00:00" endTime="2026-10-18T16:07:58.2956572+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c63429c9-6877-4348-8a7b-3fbd08229d2b" />
+    <UnitTestResult executionId="ec8ea11a-362c-4af8-be32-5ea825c5beae" testId="3fd11657-55e5-6ebc-cab7-15f21ae82576" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.TypeCreateUsesOnlyTypeService" computerName="672e2b22df40" duration="00:00:03.4318004" startTime="2026-10-18T16:07:46.2426347+00:00" endTime="2026-10-18T16:07:46.2426351+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ec8ea11a-362c-4af8-be32-5ea825c5beae" />
+    <UnitTestResult executionId="04ba3aad-9cdf-4b91-a11c-c6f5446bdbcc" testId="405fd980-3920-fd91-be7a-e4d731091b18" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.TreeNavigationDelegatesTheBoundParent(route: &quot;ancestors&quot;, method: &quot;ListAncestorsAsync&quot;)" computerName="672e2b22df40" duration="00:00:03.3111753" startTime="2026-10-18T16:06:18.2108122+00:00" endTime="2026-10-18T16:06:18.2108126+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="04ba3aad-9cdf-4b91-a11c-c6f5446bdbcc" />
+    <UnitTestResult executionId="50595c6c-f0f7-492f-ac17-705506242251" testId="97703594-9365-5315-8c31-8bd0e9168bb2" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.AnonymousListsNeverInvokeDomainServices(route: &quot;/facilities/FacilityResponse/tree&quot;)" computerName="672e2b22df40" duration="00:00:03.8981075" startTime="2026-10-18T16:06:36.8053965+00:00" endTime="2026-10-18T16:06:36.8053971+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="50595c6c-f0f7-492f-ac17-705506242251" />
+    <UnitTestResult executionId="9c53540b-fa6d-4480-9b05-2f3bf2af62fa" testId="96260d9f-c2fd-fe34-2c71-0660b0e3ae54" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.ListsUseOnlyTheirDesignatedServiceAndTrustedActor(route: &quot;/list&quot;)" computerName="672e2b22df40" duration="00:00:04.0060796" startTime="2026-10-18T16:07:18.8904555+00:00" endTime="2026-10-18T16:07:18.8904558+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9c53540b-fa6d-4480-9b05-2f3bf2af62fa" />
+    <UnitTestResult executionId="a91ec744-e46c-4967-a3c6-054cb5d1c43f" testId="bad3f586-e9fc-8fa0-360d-fed7591b5a0d" testName="Core.Host.Integration.Tests.SecurityBoundary.EndpointSecurityInventoryTests.EveryRegisteredEndpointAppearsInSecurityCoverageReport" computerName="672e2b22df40" duration="00:00:06.9605303" startTime="2026-10-18T16:06:11.8940754+00:00" endTime="2026-10-18T16:06:11.8940756+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a91ec744-e46c-4967-a3c6-054cb5d1c43f" />
+    <UnitTestResult executionId="3a921eb4-e9c6-47cd-b602-45fb0fb61497" testId="e6fd000e-fa02-d64e-22be-6005b3c480aa" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.ReservationTransitionsUseOnlyDesignatedService(route: &quot;reject&quot;, method: &quot;RejectAsync&quot;)" computerName="672e2b22df40" duration="00:00:03.1092808" startTime="2026-10-18T16:07:25.8068194+00:00" endTime="2026-10-18T16:07:25.8068199+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3a921eb4-e9c6-47cd-b602-45fb0fb61497" />
+    <UnitTestResult executionId="9a63a09d-3ef0-4e8e-a9d3-a3d82412ce3f" testId="aa90634f-04d4-010b-7a2c-3c6fb3560147" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.CallerSelectedOperationIsRejectedWithoutServiceCalls(route: &quot;/facilities/FacilityResponse/list&quot;)" computerName="672e2b22df40" duration="00:00:05.3554463" startTime="2026-10-18T16:06:51.8257924+00:00" endTime="2026-10-18T16:06:51.8257928+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9a63a09d-3ef0-4e8e-a9d3-a3d82412ce3f" />
+    <UnitTestResult executionId="97db1658-154b-49bc-aa55-d738221407b1" testId="21cf7747-1348-cdde-ad4c-1a4957af1fd9" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.MoveDelegatesDestinationAndTokenWithoutChoosingRbacOperations(denied: True)" computerName="672e2b22df40" duration="00:00:04.0211815" startTime="2026-10-18T16:07:11.7138491+00:00" endTime="2026-10-18T16:07:11.7138494+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="97db1658-154b-49bc-aa55-d738221407b1" />
+    <UnitTestResult executionId="0113dd61-604f-4f23-b947-2806bcfe27fc" testId="035d699a-6168-482f-9cb7-7f5a215fd8e8" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.CallerSelectedOperationIsRejectedWithoutServiceCalls(route: &quot;/facilities/FacilityResponse/tree&quot;)" computerName="672e2b22df40" duration="00:00:05.1127671" startTime="2026-10-18T16:06:41.9204281+00:00" endTime="2026-10-18T16:06:41.9204285+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0113dd61-604f-4f23-b947-2806bcfe27fc" />
+    <UnitTestResult executionId="dc030030-97e6-4703-b032-b3b89ce211d0" testId="88a3a0db-6151-13fa-f9fd-bd637825cee7" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.AnonymousListsNeverInvokeDomainServices(route: &quot;/facilities/FacilityTypeResponse/list&quot;)" computerName="672e2b22df40" duration="00:00:03.3943979" startTime="2026-10-18T16:06:28.6194341+00:00" endTime="2026-10-18T16:06:28.6194346+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dc030030-97e6-4703-b032-b3b89ce211d0" />
+    <UnitTestResult executionId="59b3c58e-bf17-4e0e-a60b-4c78530ed232" testId="a4e0e664-819e-f737-97d4-e61c57634b3f" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.UnexpectedServiceFailureCannotBecomeSuccessfulResponse" computerName="672e2b22df40" duration="00:00:05.3204404" startTime="2026-10-18T16:08:12.7443354+00:00" endTime="2026-10-18T16:08:12.7443357+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="59b3c58e-bf17-4e0e-a60b-4c78530ed232" />
+    <UnitTestResult executionId="3e1121c5-48b9-4fce-bb86-a95205de8e15" testId="3b7a2b56-c14f-7ea3-2e38-eb5f96a23a84" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.DeleteCallsOnlyTheTokenBearingServiceMethod" computerName="672e2b22df40" duration="00:00:05.7710334" startTime="2026-10-18T16:07:42.8085969+00:00" endTime="2026-10-18T16:07:42.8085972+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3e1121c5-48b9-4fce-bb86-a95205de8e15" />
+    <UnitTestResult executionId="bce951a2-4b22-4b17-bdcb-cd181ba04a0b" testId="111e1905-f35d-88f4-f2de-7825a56ea148" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.MoveDelegatesDestinationAndTokenWithoutChoosingRbacOperations(denied: False)" computerName="672e2b22df40" duration="00:00:03.3599867" startTime="2026-10-18T16:07:07.6911969+00:00" endTime="2026-10-18T16:07:07.6911974+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bce951a2-4b22-4b17-bdcb-cd181ba04a0b" />
+    <UnitTestResult executionId="237ea548-ff98-4659-b2fc-35bbf661f7b7" testId="fcef7b23-b510-8f1e-1617-acae2bf47924" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.ReservationRelationsUseBoundIdentifiers(route: &quot;by-event&quot;, method: &quot;ListByEventAsync&quot;)" computerName="672e2b22df40" duration="00:00:03.2725989" startTime="2026-10-18T16:06:21.4889764+00:00" endTime="2026-10-18T16:06:21.4889768+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="237ea548-ff98-4659-b2fc-35bbf661f7b7" />
+    <UnitTestResult executionId="97ad5c38-cf4c-4241-93c4-22d0a9cc5ce2" testId="abb6035a-2ded-c1ac-d494-63c2e00758cf" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.RouteBodyMismatchStopsUpdateBeforeService" computerName="672e2b22df40" duration="00:00:03.1671507" startTime="2026-10-18T16:07:14.8830739+00:00" endTime="2026-10-18T16:07:14.8830746+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="97ad5c38-cf4c-4241-93c4-22d0a9cc5ce2" />
+    <UnitTestResult executionId="3610d2b7-a2bd-4e9d-8de0-c154f128b930" testId="92e18425-226b-433e-b475-188461c83a67" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.UpdateForwardsConcurrencyTokenAndServiceConflict(conflict: True)" computerName="672e2b22df40" duration="00:00:04.3770220" startTime="2026-10-18T16:07:00.5511708+00:00" endTime="2026-10-18T16:07:00.5511718+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3610d2b7-a2bd-4e9d-8de0-c154f128b930" />
+    <UnitTestResult executionId="76dba91d-4b37-49bf-b65c-c7773335e3ce" testId="18fcc1ee-9c46-a5cf-888a-36b5ba2c88db" testName="Core.Host.Integration.Tests.SecurityBoundary.ResolverDependencyTests.InspectorDetectsCompiledPersistenceCallsAndCapturedDependencies" computerName="672e2b22df40" duration="00:00:00.2471192" startTime="2026-10-18T16:06:14.5980400+00:00" endTime="2026-10-18T16:06:14.5980402+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="76dba91d-4b37-49bf-b65c-c7773335e3ce" />
+    <UnitTestResult executionId="fa4cddab-360e-4b32-9d39-486a26cba911" testId="ba30f6c1-6edd-4f2a-ddeb-1c46a1223479" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.UpdateForwardsConcurrencyTokenAndServiceConflict(conflict: False)" computerName="672e2b22df40" duration="00:00:04.3442050" startTime="2026-10-18T16:06:56.1718644+00:00" endTime="2026-10-18T16:06:56.1718650+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fa4cddab-360e-4b32-9d39-486a26cba911" />
+    <UnitTestResult executionId="3a8ac3ff-06a9-4e47-aa9b-c0938cf9b4d0" testId="462f4785-2cfd-2cec-e246-6285baeedb22" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.EmptyListRendersThroughRazorWithoutPersistence" computerName="672e2b22df40" duration="00:00:04.5313644" startTime="2026-10-18T16:07:54.8434267+00:00" endTime="2026-10-18T16:07:54.8434271+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3a8ac3ff-06a9-4e47-aa9b-c0938cf9b4d0" />
+    <UnitTestResult executionId="181e9293-2856-4493-9df3-9de3f9554450" testId="f91cf8a8-462a-4248-97fa-0c0cd8580140" testName="Core.Host.Integration.Tests.SecurityBoundary.ResolverDependencyTests.ResolverProjectReferencesCannotAddPersistenceDependencies" computerName="672e2b22df40" duration="00:00:02.0301683" startTime="2026-10-18T16:06:14.3506260+00:00" endTime="2026-10-18T16:06:14.3506262+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="181e9293-2856-4493-9df3-9de3f9554450" />
+    <UnitTestResult executionId="59dde424-8a59-48ac-a69b-5bbfff8acc91" testId="a123556b-b5dc-1e13-697e-f7e0fe13e058" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.ListsUseOnlyTheirDesignatedServiceAndTrustedActor(route: &quot;/tree&quot;)" computerName="672e2b22df40" duration="00:00:03.8035678" startTime="2026-10-18T16:07:22.6957049+00:00" endTime="2026-10-18T16:07:22.6957054+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="59dde424-8a59-48ac-a69b-5bbfff8acc91" />
+    <UnitTestResult executionId="d5291820-4cf2-401a-9a06-398d0bcf5c42" testId="f55dfeef-1a45-d8ca-da36-306fb4f7295e" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.TreeNavigationDelegatesTheBoundParent(route: &quot;children&quot;, method: &quot;ListChildrenAsync&quot;)" computerName="672e2b22df40" duration="00:00:06.8310075" startTime="2026-10-18T16:06:11.8062922+00:00" endTime="2026-10-18T16:06:11.8065381+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d5291820-4cf2-401a-9a06-398d0bcf5c42" />
+    <UnitTestResult executionId="3953876e-1f19-46b8-9d1e-19980281a536" testId="b858a47d-6134-89dc-6790-908f711b11ec" testName="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.OpenApiDocumentsFacilitiesOperationsAndRepresentations" computerName="672e2b22df40" duration="00:00:04.0654698" startTime="2026-10-18T16:07:50.3099233+00:00" endTime="2026-10-18T16:07:50.3099238+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3953876e-1f19-46b8-9d1e-19980281a536" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.UnexpectedServiceFailureCannotBecomeSuccessfulResponse" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="a4e0e664-819e-f737-97d4-e61c57634b3f">
+      <Execution id="59b3c58e-bf17-4e0e-a60b-4c78530ed232" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="UnexpectedServiceFailureCannotBecomeSuccessfulResponse" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.UpdateForwardsConcurrencyTokenAndServiceConflict(conflict: True)" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="92e18425-226b-433e-b475-188461c83a67">
+      <Execution id="3610d2b7-a2bd-4e9d-8de0-c154f128b930" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="UpdateForwardsConcurrencyTokenAndServiceConflict" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.AvailabilityForwardsHalfOpenIntervalToService" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="582428e7-c4a1-64e9-2000-92005aa611f3">
+      <Execution id="e84da080-b772-46c3-90aa-6e824828ae07" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="AvailabilityForwardsHalfOpenIntervalToService" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.ReservationTransitionsUseOnlyDesignatedService(route: &quot;confirm&quot;, method: &quot;ConfirmAsync&quot;)" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="c8b1d28f-1187-34cb-41bd-0c3f7882a020">
+      <Execution id="052d7aca-b7ab-409c-a384-b9801c9e6991" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="ReservationTransitionsUseOnlyDesignatedService" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.TreeNavigationDelegatesTheBoundParent(route: &quot;children&quot;, method: &quot;ListChildrenAsync&quot;)" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="f55dfeef-1a45-d8ca-da36-306fb4f7295e">
+      <Execution id="d5291820-4cf2-401a-9a06-398d0bcf5c42" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="TreeNavigationDelegatesTheBoundParent" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.CallerSelectedOperationIsRejectedWithoutServiceCalls(route: &quot;/facilities/FacilityResponse/list&quot;)" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="aa90634f-04d4-010b-7a2c-3c6fb3560147">
+      <Execution id="9a63a09d-3ef0-4e8e-a9d3-a3d82412ce3f" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="CallerSelectedOperationIsRejectedWithoutServiceCalls" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.MoveDelegatesDestinationAndTokenWithoutChoosingRbacOperations(denied: True)" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="21cf7747-1348-cdde-ad4c-1a4957af1fd9">
+      <Execution id="97db1658-154b-49bc-aa55-d738221407b1" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="MoveDelegatesDestinationAndTokenWithoutChoosingRbacOperations" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.ReservationRequestDoesNotAcceptCallerSelectedStatusOrActor" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="0b1bcf8c-c6d7-04b7-b7b1-68ae8ba55000">
+      <Execution id="dd5e43ce-e559-4acd-b9b6-52980425d89c" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="ReservationRequestDoesNotAcceptCallerSelectedStatusOrActor" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.AnonymousListsNeverInvokeDomainServices(route: &quot;/facilities/FacilityTypeResponse/list&quot;)" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="88a3a0db-6151-13fa-f9fd-bd637825cee7">
+      <Execution id="dc030030-97e6-4703-b032-b3b89ce211d0" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="AnonymousListsNeverInvokeDomainServices" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.MoveDelegatesDestinationAndTokenWithoutChoosingRbacOperations(denied: False)" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="111e1905-f35d-88f4-f2de-7825a56ea148">
+      <Execution id="bce951a2-4b22-4b17-bdcb-cd181ba04a0b" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="MoveDelegatesDestinationAndTokenWithoutChoosingRbacOperations" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.ListsUseOnlyTheirDesignatedServiceAndTrustedActor(route: &quot;/tree&quot;)" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="a123556b-b5dc-1e13-697e-f7e0fe13e058">
+      <Execution id="59dde424-8a59-48ac-a69b-5bbfff8acc91" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="ListsUseOnlyTheirDesignatedServiceAndTrustedActor" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.RouteBodyMismatchStopsUpdateBeforeService" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="abb6035a-2ded-c1ac-d494-63c2e00758cf">
+      <Execution id="97ad5c38-cf4c-4241-93c4-22d0a9cc5ce2" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="RouteBodyMismatchStopsUpdateBeforeService" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.CreatePreservesTypedInputAndNeverTurnsDenialIntoSuccess(denied: False)" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="826a5705-73ac-72a8-c94a-30d6982a7fa6">
+      <Execution id="c63429c9-6877-4348-8a7b-3fbd08229d2b" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="CreatePreservesTypedInputAndNeverTurnsDenialIntoSuccess" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.ReservationRelationsUseBoundIdentifiers(route: &quot;by-event&quot;, method: &quot;ListByEventAsync&quot;)" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="fcef7b23-b510-8f1e-1617-acae2bf47924">
+      <Execution id="237ea548-ff98-4659-b2fc-35bbf661f7b7" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="ReservationRelationsUseBoundIdentifiers" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.ResolverDependencyTests.CompiledResolversCannotAccessPersistenceEvenThroughServiceLocationOrAsyncHelpers" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="d0fa9b01-cfe6-8b56-d3f3-aebdbcd3c8a7">
+      <Execution id="8ec70228-10b0-4b7e-add0-900dadc4d38a" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.ResolverDependencyTests" name="CompiledResolversCannotAccessPersistenceEvenThroughServiceLocationOrAsyncHelpers" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.ReservationTransitionsUseOnlyDesignatedService(route: &quot;reject&quot;, method: &quot;RejectAsync&quot;)" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="e6fd000e-fa02-d64e-22be-6005b3c480aa">
+      <Execution id="3a921eb4-e9c6-47cd-b602-45fb0fb61497" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="ReservationTransitionsUseOnlyDesignatedService" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.AnonymousListsNeverInvokeDomainServices(route: &quot;/facilities/FacilityResponse/tree&quot;)" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="97703594-9365-5315-8c31-8bd0e9168bb2">
+      <Execution id="50595c6c-f0f7-492f-ac17-705506242251" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="AnonymousListsNeverInvokeDomainServices" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.EndpointSecurityInventoryTests.EveryRegisteredEndpointAppearsInSecurityCoverageReport" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="bad3f586-e9fc-8fa0-360d-fed7591b5a0d">
+      <Execution id="a91ec744-e46c-4967-a3c6-054cb5d1c43f" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.EndpointSecurityInventoryTests" name="EveryRegisteredEndpointAppearsInSecurityCoverageReport" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.EmptyListRendersThroughRazorWithoutPersistence" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="462f4785-2cfd-2cec-e246-6285baeedb22">
+      <Execution id="3a8ac3ff-06a9-4e47-aa9b-c0938cf9b4d0" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="EmptyListRendersThroughRazorWithoutPersistence" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.TreeNavigationDelegatesTheBoundParent(route: &quot;descendants&quot;, method: &quot;ListDescendantsAsync&quot;)" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="b954fa7d-858e-6b21-f9e3-53567ab5ba04">
+      <Execution id="62f362eb-2702-41c2-8bf3-e3ed89c0ea92" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="TreeNavigationDelegatesTheBoundParent" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.ResolverDependencyTests.ResolverProjectReferencesCannotAddPersistenceDependencies" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="f91cf8a8-462a-4248-97fa-0c0cd8580140">
+      <Execution id="181e9293-2856-4493-9df3-9de3f9554450" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.ResolverDependencyTests" name="ResolverProjectReferencesCannotAddPersistenceDependencies" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.TypeCreateUsesOnlyTypeService" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="3fd11657-55e5-6ebc-cab7-15f21ae82576">
+      <Execution id="ec8ea11a-362c-4af8-be32-5ea825c5beae" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="TypeCreateUsesOnlyTypeService" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.ReservationTransitionsUseOnlyDesignatedService(route: &quot;cancel&quot;, method: &quot;CancelAsync&quot;)" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="cff6d2f1-0e6e-24c6-8b82-ac943a96b756">
+      <Execution id="bb6be02c-28d0-46b2-acb4-65f09ee31098" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="ReservationTransitionsUseOnlyDesignatedService" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.ListsUseOnlyTheirDesignatedServiceAndTrustedActor(route: &quot;/list&quot;)" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="96260d9f-c2fd-fe34-2c71-0660b0e3ae54">
+      <Execution id="9c53540b-fa6d-4480-9b05-2f3bf2af62fa" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="ListsUseOnlyTheirDesignatedServiceAndTrustedActor" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.TreeNavigationDelegatesTheBoundParent(route: &quot;ancestors&quot;, method: &quot;ListAncestorsAsync&quot;)" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="405fd980-3920-fd91-be7a-e4d731091b18">
+      <Execution id="04ba3aad-9cdf-4b91-a11c-c6f5446bdbcc" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="TreeNavigationDelegatesTheBoundParent" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.ResolverDependencyTests.InspectorDetectsCompiledPersistenceCallsAndCapturedDependencies" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="18fcc1ee-9c46-a5cf-888a-36b5ba2c88db">
+      <Execution id="76dba91d-4b37-49bf-b65c-c7773335e3ce" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.ResolverDependencyTests" name="InspectorDetectsCompiledPersistenceCallsAndCapturedDependencies" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.OpenApiDocumentsFacilitiesOperationsAndRepresentations" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="b858a47d-6134-89dc-6790-908f711b11ec">
+      <Execution id="3953876e-1f19-46b8-9d1e-19980281a536" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="OpenApiDocumentsFacilitiesOperationsAndRepresentations" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.AnonymousListsNeverInvokeDomainServices(route: &quot;/facilities/FacilityResponse/list&quot;)" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="820fa493-188a-134e-3cb5-0fc7af93aabb">
+      <Execution id="a16cf583-66b8-4c35-beb8-740522a8b16e" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="AnonymousListsNeverInvokeDomainServices" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.UpdateForwardsConcurrencyTokenAndServiceConflict(conflict: False)" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="ba30f6c1-6edd-4f2a-ddeb-1c46a1223479">
+      <Execution id="fa4cddab-360e-4b32-9d39-486a26cba911" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="UpdateForwardsConcurrencyTokenAndServiceConflict" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.CreatePreservesTypedInputAndNeverTurnsDenialIntoSuccess(denied: True)" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="51953f9e-ca56-a7b5-7c0e-d0468f07a654">
+      <Execution id="73035c9c-e445-41f9-9531-df080e48eddf" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="CreatePreservesTypedInputAndNeverTurnsDenialIntoSuccess" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.CallerSelectedOperationIsRejectedWithoutServiceCalls(route: &quot;/facilities/FacilityResponse/tree&quot;)" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="035d699a-6168-482f-9cb7-7f5a215fd8e8">
+      <Execution id="0113dd61-604f-4f23-b947-2806bcfe27fc" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="CallerSelectedOperationIsRejectedWithoutServiceCalls" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.DeleteCallsOnlyTheTokenBearingServiceMethod" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="3b7a2b56-c14f-7ea3-2e38-eb5f96a23a84">
+      <Execution id="3e1121c5-48b9-4fce-bb86-a95205de8e15" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="DeleteCallsOnlyTheTokenBearingServiceMethod" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.ReservationRelationsUseBoundIdentifiers(route: &quot;by-facility&quot;, method: &quot;ListByFacilityAsync&quot;)" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="c9f68db5-cb49-03ca-9919-43bc2f6b0d44">
+      <Execution id="ca860ffb-0135-43c6-b0ce-34fad7685974" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="ReservationRelationsUseBoundIdentifiers" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.CallerSelectedOperationIsRejectedWithoutServiceCalls(route: &quot;/facilities/FacilityTypeResponse/list&quot;)" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="fb844ff1-d2d7-8934-154c-bcc930610218">
+      <Execution id="32bcec25-5afb-4bae-8da0-f6ed9c8d1244" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests" name="CallerSelectedOperationIsRejectedWithoutServiceCalls" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="582428e7-c4a1-64e9-2000-92005aa611f3" executionId="e84da080-b772-46c3-90aa-6e824828ae07" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="820fa493-188a-134e-3cb5-0fc7af93aabb" executionId="a16cf583-66b8-4c35-beb8-740522a8b16e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c9f68db5-cb49-03ca-9919-43bc2f6b0d44" executionId="ca860ffb-0135-43c6-b0ce-34fad7685974" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b954fa7d-858e-6b21-f9e3-53567ab5ba04" executionId="62f362eb-2702-41c2-8bf3-e3ed89c0ea92" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fb844ff1-d2d7-8934-154c-bcc930610218" executionId="32bcec25-5afb-4bae-8da0-f6ed9c8d1244" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0b1bcf8c-c6d7-04b7-b7b1-68ae8ba55000" executionId="dd5e43ce-e559-4acd-b9b6-52980425d89c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="51953f9e-ca56-a7b5-7c0e-d0468f07a654" executionId="73035c9c-e445-41f9-9531-df080e48eddf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d0fa9b01-cfe6-8b56-d3f3-aebdbcd3c8a7" executionId="8ec70228-10b0-4b7e-add0-900dadc4d38a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c8b1d28f-1187-34cb-41bd-0c3f7882a020" executionId="052d7aca-b7ab-409c-a384-b9801c9e6991" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cff6d2f1-0e6e-24c6-8b82-ac943a96b756" executionId="bb6be02c-28d0-46b2-acb4-65f09ee31098" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="826a5705-73ac-72a8-c94a-30d6982a7fa6" executionId="c63429c9-6877-4348-8a7b-3fbd08229d2b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3fd11657-55e5-6ebc-cab7-15f21ae82576" executionId="ec8ea11a-362c-4af8-be32-5ea825c5beae" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="405fd980-3920-fd91-be7a-e4d731091b18" executionId="04ba3aad-9cdf-4b91-a11c-c6f5446bdbcc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="97703594-9365-5315-8c31-8bd0e9168bb2" executionId="50595c6c-f0f7-492f-ac17-705506242251" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="96260d9f-c2fd-fe34-2c71-0660b0e3ae54" executionId="9c53540b-fa6d-4480-9b05-2f3bf2af62fa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bad3f586-e9fc-8fa0-360d-fed7591b5a0d" executionId="a91ec744-e46c-4967-a3c6-054cb5d1c43f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e6fd000e-fa02-d64e-22be-6005b3c480aa" executionId="3a921eb4-e9c6-47cd-b602-45fb0fb61497" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="aa90634f-04d4-010b-7a2c-3c6fb3560147" executionId="9a63a09d-3ef0-4e8e-a9d3-a3d82412ce3f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="21cf7747-1348-cdde-ad4c-1a4957af1fd9" executionId="97db1658-154b-49bc-aa55-d738221407b1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="035d699a-6168-482f-9cb7-7f5a215fd8e8" executionId="0113dd61-604f-4f23-b947-2806bcfe27fc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="88a3a0db-6151-13fa-f9fd-bd637825cee7" executionId="dc030030-97e6-4703-b032-b3b89ce211d0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a4e0e664-819e-f737-97d4-e61c57634b3f" executionId="59b3c58e-bf17-4e0e-a60b-4c78530ed232" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3b7a2b56-c14f-7ea3-2e38-eb5f96a23a84" executionId="3e1121c5-48b9-4fce-bb86-a95205de8e15" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="111e1905-f35d-88f4-f2de-7825a56ea148" executionId="bce951a2-4b22-4b17-bdcb-cd181ba04a0b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fcef7b23-b510-8f1e-1617-acae2bf47924" executionId="237ea548-ff98-4659-b2fc-35bbf661f7b7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="abb6035a-2ded-c1ac-d494-63c2e00758cf" executionId="97ad5c38-cf4c-4241-93c4-22d0a9cc5ce2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="92e18425-226b-433e-b475-188461c83a67" executionId="3610d2b7-a2bd-4e9d-8de0-c154f128b930" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="18fcc1ee-9c46-a5cf-888a-36b5ba2c88db" executionId="76dba91d-4b37-49bf-b65c-c7773335e3ce" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ba30f6c1-6edd-4f2a-ddeb-1c46a1223479" executionId="fa4cddab-360e-4b32-9d39-486a26cba911" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="462f4785-2cfd-2cec-e246-6285baeedb22" executionId="3a8ac3ff-06a9-4e47-aa9b-c0938cf9b4d0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f91cf8a8-462a-4248-97fa-0c0cd8580140" executionId="181e9293-2856-4493-9df3-9de3f9554450" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a123556b-b5dc-1e13-697e-f7e0fe13e058" executionId="59dde424-8a59-48ac-a69b-5bbfff8acc91" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f55dfeef-1a45-d8ca-da36-306fb4f7295e" executionId="d5291820-4cf2-401a-9a06-398d0bcf5c42" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b858a47d-6134-89dc-6790-908f711b11ec" executionId="3953876e-1f19-46b8-9d1e-19980281a536" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="34" executed="34" passed="34" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 10.0.12)
+[xUnit.net 00:00:00.54]   Discovering: Host.Integration.Tests
+[xUnit.net 00:00:00.91]   Discovered:  Host.Integration.Tests
+[xUnit.net 00:00:00.94]   Starting:    Host.Integration.Tests
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/facilities/FacilityResponse/children/62000000-0000-0000-0000-000000000001 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /facilities/FacilityResponse/children/{id:guid} =&gt; FacilityChildren'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FacilityResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /facilities/FacilityResponse/children/{id:guid} =&gt; FacilityChildren'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/facilities/FacilityResponse/children/62000000-0000-0000-0000-000000000001 - 200 - application/json;+charset=utf-8 4187.7012ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/facilities/FacilityResponse/descendants/62000000-0000-0000-0000-000000000001 - - -
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /facilities/FacilityResponse/descendants/{id:guid} =&gt; FacilityDescendants'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FacilityResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /facilities/FacilityResponse/descendants/{id:guid} =&gt; FacilityDescendants'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/facilities/FacilityResponse/descendants/62000000-0000-0000-0000-000000000001 - 200 - application/json;+charset=utf-8 2769.6353ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/facilities/FacilityResponse/ancestors/62000000-0000-0000-0000-000000000001 - - -
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /facilities/FacilityResponse/ancestors/{id:guid} =&gt; FacilityAncestors'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FacilityResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /facilities/FacilityResponse/ancestors/{id:guid} =&gt; FacilityAncestors'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/facilities/FacilityResponse/ancestors/62000000-0000-0000-0000-000000000001 - 200 - application/json;+charset=utf-8 3132.0268ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/facilities/FacilityReservationResponse/by-event/62000000-0000-0000-0000-000000000001 - - -
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /facilities/FacilityReservationResponse/by-event/{eventId:guid} =&gt; ReservationsByEvent'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'ReservationResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /facilities/FacilityReservationResponse/by-event/{eventId:guid} =&gt; ReservationsByEvent'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/facilities/FacilityReservationResponse/by-event/62000000-0000-0000-0000-000000000001 - 200 - application/json;+charset=utf-8 3037.3597ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/facilities/FacilityReservationResponse/by-facility/62000000-0000-0000-0000-000000000001 - - -
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /facilities/FacilityReservationResponse/by-facility/{facilityId:guid} =&gt; ReservationOverviewPage'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'ReservationResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /facilities/FacilityReservationResponse/by-facility/{facilityId:guid} =&gt; ReservationOverviewPage'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/facilities/FacilityReservationResponse/by-facility/62000000-0000-0000-0000-000000000001 - 200 - application/json;+charset=utf-8 3523.5983ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/facilities/FacilityTypeResponse/list - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /facilities/FacilityTypeResponse/list =&gt; FacilityTypeListPage'
+info: Microsoft.AspNetCore.Http.Result.UnauthorizedResult[1]
+      Setting HTTP status code 401.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /facilities/FacilityTypeResponse/list =&gt; FacilityTypeListPage'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/facilities/FacilityTypeResponse/list - 401 - - 3252.3986ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/facilities/FacilityResponse/list - - -
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /facilities/FacilityResponse/list =&gt; FacilityListPage'
+info: Microsoft.AspNetCore.Http.Result.UnauthorizedResult[1]
+      Setting HTTP status code 401.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /facilities/FacilityResponse/list =&gt; FacilityListPage'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/facilities/FacilityResponse/list - 401 - - 4108.5387ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/facilities/FacilityResponse/tree - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /facilities/FacilityResponse/tree =&gt; FacilityTreePage'
+info: Microsoft.AspNetCore.Http.Result.UnauthorizedResult[1]
+      Setting HTTP status code 401.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /facilities/FacilityResponse/tree =&gt; FacilityTreePage'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/facilities/FacilityResponse/tree - 401 - - 3669.2113ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/facilities/FacilityResponse/tree?operation=create - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /facilities/FacilityResponse/tree =&gt; FacilityTreePage'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[3]
+      Writing value of type '&lt;&gt;f__AnonymousType0`1' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /facilities/FacilityResponse/tree =&gt; FacilityTreePage'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/facilities/FacilityResponse/tree?operation=create - 400 - application/json;+charset=utf-8 4762.4468ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/facilities/FacilityTypeResponse/list?operation=create - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /facilities/FacilityTypeResponse/list =&gt; FacilityTypeListPage'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[3]
+      Writing value of type '&lt;&gt;f__AnonymousType0`1' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /facilities/FacilityTypeResponse/list =&gt; FacilityTypeListPage'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/facilities/FacilityTypeResponse/list?operation=create - 400 - application/json;+charset=utf-8 4347.0072ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/facilities/FacilityResponse/list?operation=create - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /facilities/FacilityResponse/list =&gt; FacilityListPage'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[3]
+      Writing value of type '&lt;&gt;f__AnonymousType0`1' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /facilities/FacilityResponse/list =&gt; FacilityListPage'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/facilities/FacilityResponse/list?operation=create - 400 - application/json;+charset=utf-8 5181.4612ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 PUT http://localhost/facilities/FacilityResponse/update - application/json;+charset=utf-8 250
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: PUT /facilities/FacilityResponse/update =&gt; FacilityUpdate'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FacilityResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: PUT /facilities/FacilityResponse/update =&gt; FacilityUpdate'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 PUT http://localhost/facilities/FacilityResponse/update - 200 - application/json;+charset=utf-8 4225.3319ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 PUT http://localhost/facilities/FacilityResponse/update - application/json;+charset=utf-8 250
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: PUT /facilities/FacilityResponse/update =&gt; FacilityUpdate'
+info: Microsoft.AspNetCore.Http.Result.ConflictObjectResult[1]
+      Setting HTTP status code 409.
+info: Microsoft.AspNetCore.Http.Result.ConflictObjectResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: PUT /facilities/FacilityResponse/update =&gt; FacilityUpdate'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 PUT http://localhost/facilities/FacilityResponse/update - 409 - application/json;+charset=utf-8 4176.2495ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/facilities/FacilityReservationResponse/request - application/json;+charset=utf-8 308
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /facilities/FacilityReservationResponse/request =&gt; ReservationRequest'
+info: Microsoft.AspNetCore.Http.Result.StatusCodeResult[1]
+      Setting HTTP status code 403.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /facilities/FacilityReservationResponse/request =&gt; ReservationRequest'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/facilities/FacilityReservationResponse/request - 403 - - 3491.3748ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/facilities/FacilityResponse/move/62000000-0000-0000-0000-000000000001 - application/json;+charset=utf-8 220
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /facilities/FacilityResponse/move/{id:guid} =&gt; FacilityMove'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FacilityResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /facilities/FacilityResponse/move/{id:guid} =&gt; FacilityMove'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/facilities/FacilityResponse/move/62000000-0000-0000-0000-000000000001 - 200 - application/json;+charset=utf-8 3223.6363ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/facilities/FacilityResponse/move/62000000-0000-0000-0000-000000000001 - application/json;+charset=utf-8 220
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /facilities/FacilityResponse/move/{id:guid} =&gt; FacilityMove'
+info: Microsoft.AspNetCore.Http.Result.StatusCodeResult[1]
+      Setting HTTP status code 403.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /facilities/FacilityResponse/move/{id:guid} =&gt; FacilityMove'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/facilities/FacilityResponse/move/62000000-0000-0000-0000-000000000001 - 403 - - 3879.1406ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 PUT http://localhost/facilities/FacilityResponse/update/62000000-0000-0000-0000-000000000001 - application/json;+charset=utf-8 184
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: PUT /facilities/FacilityResponse/update/{id:guid} =&gt; FacilityUpdateById'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[3]
+      Writing value of type 'ProblemDetails' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: PUT /facilities/FacilityResponse/update/{id:guid} =&gt; FacilityUpdateById'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 PUT http://localhost/facilities/FacilityResponse/update/62000000-0000-0000-0000-000000000001 - 400 - application/json;+charset=utf-8 2994.5401ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/facilities/FacilityResponse/list?search=room&amp;skip=2&amp;take=7&amp;actor_user_id=00000000-0000-0000-0000-000000000000 - - -
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /facilities/FacilityResponse/list =&gt; FacilityListPage'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FacilityResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /facilities/FacilityResponse/list =&gt; FacilityListPage'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/facilities/FacilityResponse/list?search=room&amp;skip=2&amp;take=7&amp;actor_user_id=00000000-0000-0000-0000-000000000000 - 200 - application/json;+charset=utf-8 3789.3572ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/facilities/FacilityResponse/tree?search=room&amp;skip=2&amp;take=7&amp;actor_user_id=00000000-0000-0000-0000-000000000000 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /facilities/FacilityResponse/tree =&gt; FacilityTreePage'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FacilityResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /facilities/FacilityResponse/tree =&gt; FacilityTreePage'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/facilities/FacilityResponse/tree?search=room&amp;skip=2&amp;take=7&amp;actor_user_id=00000000-0000-0000-0000-000000000000 - 200 - application/json;+charset=utf-8 3670.2283ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/facilities/FacilityReservationResponse/reject/62000000-0000-0000-0000-000000000001 - application/json;+charset=utf-8 136
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /facilities/FacilityReservationResponse/reject/{id:guid} =&gt; ReservationReject'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'ReservationResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /facilities/FacilityReservationResponse/reject/{id:guid} =&gt; ReservationReject'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/facilities/FacilityReservationResponse/reject/62000000-0000-0000-0000-000000000001 - 200 - application/json;+charset=utf-8 2939.9817ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/facilities/FacilityReservationResponse/cancel/62000000-0000-0000-0000-000000000001 - application/json;+charset=utf-8 136
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /facilities/FacilityReservationResponse/cancel/{id:guid} =&gt; ReservationCancel'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'ReservationResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /facilities/FacilityReservationResponse/cancel/{id:guid} =&gt; ReservationCancel'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/facilities/FacilityReservationResponse/cancel/62000000-0000-0000-0000-000000000001 - 200 - application/json;+charset=utf-8 4753.8127ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/facilities/FacilityReservationResponse/confirm/62000000-0000-0000-0000-000000000001 - application/json;+charset=utf-8 136
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /facilities/FacilityReservationResponse/confirm/{id:guid} =&gt; ReservationConfirm'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'ReservationResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /facilities/FacilityReservationResponse/confirm/{id:guid} =&gt; ReservationConfirm'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/facilities/FacilityReservationResponse/confirm/62000000-0000-0000-0000-000000000001 - 200 - application/json;+charset=utf-8 5848.6605ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 DELETE http://localhost/facilities/FacilityResponse/delete/62000000-0000-0000-0000-000000000001 - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: DELETE /facilities/FacilityResponse/delete/{id:guid} =&gt; FacilityDelete'
+info: Microsoft.AspNetCore.Http.Result.StatusCodeResult[1]
+      Setting HTTP status code 403.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: DELETE /facilities/FacilityResponse/delete/{id:guid} =&gt; FacilityDelete'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 DELETE http://localhost/facilities/FacilityResponse/delete/62000000-0000-0000-0000-000000000001 - 403 - - 5571.6305ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/facilities/FacilityTypeResponse/create - application/json;+charset=utf-8 153
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /facilities/FacilityTypeResponse/create =&gt; FacilityTypeCreate'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FacilityTypeResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /facilities/FacilityTypeResponse/create =&gt; FacilityTypeCreate'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/facilities/FacilityTypeResponse/create - 200 - application/json;+charset=utf-8 3254.3362ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/swagger/v1/swagger.json - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/swagger/v1/swagger.json - 200 - application/json;charset=utf-8 3869.2234ms
+info: Host[0]
+      OpenAPI document v1 exported to /workspace/src/Apps/Host/openapi/swagger.json
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/facilities/FacilityResponse/list - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /facilities/FacilityResponse/list =&gt; FacilityListPage'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /facilities/FacilityResponse/list =&gt; FacilityListPage'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/facilities/FacilityResponse/list - 200 - text/html;+charset=utf-8 4450.4697ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/facilities/FacilityResponse/create - application/json;+charset=utf-8 326
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /facilities/FacilityResponse/create =&gt; FacilityCreate'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FacilityResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /facilities/FacilityResponse/create =&gt; FacilityCreate'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/facilities/FacilityResponse/create - 200 - application/json;+charset=utf-8 3322.7884ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost/facilities/FacilityResponse/create - application/json;+charset=utf-8 326
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /facilities/FacilityResponse/create =&gt; FacilityCreate'
+info: Microsoft.AspNetCore.Http.Result.StatusCodeResult[1]
+      Setting HTTP status code 403.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /facilities/FacilityResponse/create =&gt; FacilityCreate'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost/facilities/FacilityResponse/create - 403 - - 4560.2424ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/facilities/FacilityReservationResponse/availability/62000000-0000-0000-0000-000000000001?startsAt=2026-10-18T10%3A00%3A00.0000000%2B00%3A00&amp;endsAt=2026-10-18T11%3A00%3A00.0000000%2B00%3A00 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /facilities/FacilityReservationResponse/availability/{facilityId:guid} =&gt; FacilityAvailability'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FacilityAvailabilityResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /facilities/FacilityReservationResponse/availability/{facilityId:guid} =&gt; FacilityAvailability'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/facilities/FacilityReservationResponse/availability/62000000-0000-0000-0000-000000000001?startsAt=2026-10-18T10%3A00%3A00.0000000%2B00%3A00&amp;endsAt=2026-10-18T11%3A00%3A00.0000000%2B00%3A00 - 200 - application/json;+charset=utf-8 3977.4309ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/facilities/FacilityResponse/view/62000000-0000-0000-0000-000000000001 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /facilities/FacilityResponse/view/{id:guid} =&gt; FacilityRead'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /facilities/FacilityResponse/view/{id:guid} =&gt; FacilityRead'
+fail: Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.IOException: controlled service failure
+         at Core.Host.Integration.Tests.SecurityBoundary.FacilitiesResolverBoundaryTests.&lt;&gt;c.&lt;UnexpectedServiceFailureCannotBecomeSuccessfulResponse&gt;b__19_0(ServiceCall _) in /workspace/tests/Core/Host.Integration.Tests/SecurityBoundary/FacilitiesResolverBoundaryTests.cs:line 245
+         at Core.Host.Integration.Tests.SecurityBoundary.StrictServiceSpy.Invoke(MethodInfo targetMethod, Object[] args) in /workspace/tests/Core/Host.Integration.Tests/SecurityBoundary/StrictServiceSpy.cs:line 76
+         at generatedProxy_1.GetByIdAsync[TDTO](Guid, CancellationToken)
+         at WebAppArchitecture.Facilities.FacilitiesResolvers.&lt;&gt;c__DisplayClass2_0.&lt;FacilityRead&gt;b__0() in /workspace/src/Apps/Facilities/Facilities.Resolvers/FacilitiesResolvers.cs:line 21
+         at WebAppArchitecture.Facilities.FacilitiesResolvers.ExecuteModel[T](HttpContext http, ICurrentActorProvider actors, Func`1 operation, Boolean rejectOperation) in /workspace/src/Apps/Facilities/Facilities.Resolvers/FacilitiesResolvers.cs:line 253
+         at Microsoft.AspNetCore.Http.RequestDelegateFactory.&lt;TaskOfTToValueTaskOfObject&gt;g__ExecuteAwaited|92_0[T](Task`1 task)
+         at WebAppArchitecture.Base.Endpoints.ViewModelEndpointExtensions.&lt;&gt;c__DisplayClass3_0`2.&lt;&lt;ApplyRepresentation&gt;b__0&gt;d.MoveNext() in /workspace/src/Core/Base/Resolvers/ViewModelEndpointExtensions.cs:line 108
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Http.RequestDelegateFactory.&lt;ExecuteValueTaskOfObject&gt;g__ExecuteAwaited|130_0(ValueTask`1 valueTask, HttpContext httpContext, JsonTypeInfo`1 jsonTypeInfo)
+         at Microsoft.AspNetCore.Routing.EndpointMiddleware.&lt;Invoke&gt;g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+         at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+         at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+         at WebAppArchitecture.Base.Security.EasyEntraHeaderPrincipalExtensions.&lt;&gt;c.&lt;&lt;UseEasyEntraHeaderPrincipal&gt;b__0_0&gt;d.MoveNext() in /workspace/src/Core/Hosting/Identity/EasyEntraHeaderPrincipalExtensions.cs:line 27
+      --- End of stack trace from previous location ---
+         at WebAppArchitecture.Hosting.CoreModule.&lt;&gt;c__DisplayClass1_0.&lt;&lt;ConfigureApplication&gt;b__0&gt;d.MoveNext() in /workspace/src/Core/Hosting/CoreModule.cs:line 89
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/facilities/FacilityResponse/view/62000000-0000-0000-0000-000000000001 - 500 - text/plain;+charset=utf-8 4994.0380ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+[xUnit.net 00:02:08.96]   Finished:    Host.Integration.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

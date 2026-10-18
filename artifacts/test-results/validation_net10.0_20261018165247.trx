@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="25fb94ae-39c7-49b0-a337-b3eb81f91789" name="@672e2b22df40 2026-10-18 16:52:36" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-18T16:52:36.5131646+00:00" queuing="2026-10-18T16:52:36.5131649+00:00" start="2026-10-18T16:52:25.7644519+00:00" finish="2026-10-18T16:52:47.6887313+00:00" />
+  <TestSettings name="default" id="46f1df29-1aaa-4556-a1e9-442ab7d4847a">
+    <Deployment runDeploymentRoot="_672e2b22df40_2026-10-18_16_52_36" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="7f143e10-fc08-447f-82e7-720e37483944" testId="aa8691e0-f66c-93e2-156e-43bc21a42932" testName="Facilities.Integration.Tests.FacilityPermissionTreeHelperTests.SourceLocksBlockOtherDatabaseWritersUntilTransactionEnds" computerName="672e2b22df40" duration="00:00:01.3703129" startTime="2026-10-18T16:52:36.2017589+00:00" endTime="2026-10-18T16:52:36.2018283+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7f143e10-fc08-447f-82e7-720e37483944" />
+    <UnitTestResult executionId="1ce0199d-fdbe-42e6-bd9d-28587c3b31af" testId="3d8dc11b-7f82-4398-dbb1-bcefbc07b0a7" testName="Facilities.Integration.Tests.FacilitiesRelationalTests.MoveRejectsStaleClientTokenBeforeCopyingScopesOrChangingPaths" computerName="672e2b22df40" duration="00:00:00.5643534" startTime="2026-10-18T16:52:45.0484383+00:00" endTime="2026-10-18T16:52:45.0484389+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1ce0199d-fdbe-42e6-bd9d-28587c3b31af" />
+    <UnitTestResult executionId="961c0dc1-ec67-45f1-b4c3-4c71fc84b72a" testId="95508b72-829c-705d-a3a9-fc54e62a7f34" testName="Facilities.Integration.Tests.FacilitiesRelationalTests.ReservationTransitionsRequireUpdateOnFacilityEventAndReservation" computerName="672e2b22df40" duration="00:00:00.4352668" startTime="2026-10-18T16:52:40.8342769+00:00" endTime="2026-10-18T16:52:40.8342771+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="961c0dc1-ec67-45f1-b4c3-4c71fc84b72a" />
+    <UnitTestResult executionId="0b77feb3-44b6-4402-8800-38c4fd10f15a" testId="1375a2a2-5f2a-bd44-dc4d-867a4b907e9f" testName="Facilities.Integration.Tests.FacilitiesRelationalTests.ConfirmRejectsOverlapsButAllowsAdjacentIntervals" computerName="672e2b22df40" duration="00:00:00.4179412" startTime="2026-10-18T16:52:43.1204051+00:00" endTime="2026-10-18T16:52:43.1204054+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0b77feb3-44b6-4402-8800-38c4fd10f15a" />
+    <UnitTestResult executionId="d1b5642b-85fb-4b8b-94e7-a0b41d44d04c" testId="19ffeb35-b47c-e06a-76a5-5e73e07a2a49" testName="Facilities.Integration.Tests.FacilityPermissionTreeHelperTests.CreateOwnedGroupRequiresCreateOnParentAndCreatesADistinctScope" computerName="672e2b22df40" duration="00:00:01.5714041" startTime="2026-10-18T16:52:37.7811217+00:00" endTime="2026-10-18T16:52:37.7811220+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d1b5642b-85fb-4b8b-94e7-a0b41d44d04c" />
+    <UnitTestResult executionId="0e38a70d-d816-40ce-aad0-8a4324b0e609" testId="c73beba3-f4b2-320f-1184-19844f827418" testName="Facilities.Integration.Tests.FacilitiesRelationalTests.CancellationRequiresFacilityUpdateRatherThanOnlyRead" computerName="672e2b22df40" duration="00:00:00.2221779" startTime="2026-10-18T16:52:44.4816359+00:00" endTime="2026-10-18T16:52:44.4816363+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0e38a70d-d816-40ce-aad0-8a4324b0e609" />
+    <UnitTestResult executionId="3be3b116-2eff-49a6-95e5-bc0dcaf34541" testId="87c57c3a-b0d4-f95a-39b5-680a1a86db66" testName="Facilities.Integration.Tests.FacilitiesRelationalTests.FacilityReadsAreRbacFilteredAndUnauthorizedCrudOrMoveLeavesRowsUnchanged" computerName="672e2b22df40" duration="00:00:00.4025329" startTime="2026-10-18T16:52:43.5245369+00:00" endTime="2026-10-18T16:52:43.5245373+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3be3b116-2eff-49a6-95e5-bc0dcaf34541" />
+    <UnitTestResult executionId="ee65b0ef-b6e0-4365-bdcf-7579985c34a6" testId="153778e4-0f21-39f7-43c1-100b6e85ba69" testName="Facilities.Integration.Tests.FacilitiesRelationalTests.ReservationReadRequiresReadOnReservationFacilityAndEvent" computerName="672e2b22df40" duration="00:00:00.3002351" startTime="2026-10-18T16:52:47.3788351+00:00" endTime="2026-10-18T16:52:47.3788354+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ee65b0ef-b6e0-4365-bdcf-7579985c34a6" />
+    <UnitTestResult executionId="6b563b2f-97d0-4792-9348-6a70e152d82c" testId="f737d0b7-e5d3-dd27-59a1-d2ebab8cad15" testName="Facilities.Integration.Tests.FacilitiesRelationalTests.StaleMoveWaitsForTreeTransactionLockBeforeValidatingClientToken" computerName="672e2b22df40" duration="00:00:00.7314157" startTime="2026-10-18T16:52:44.2578607+00:00" endTime="2026-10-18T16:52:44.2578611+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6b563b2f-97d0-4792-9348-6a70e152d82c" />
+    <UnitTestResult executionId="74acc59f-f7f1-4e54-b261-92cbc4f1f547" testId="3fee638f-72fb-c286-a31a-09850b159eb9" testName="Facilities.Integration.Tests.FacilitiesRelationalTests.TreeCreationRelationsAncestorsDescendantsAndTypeContainmentPersistInPostgres" computerName="672e2b22df40" duration="00:00:00.5262397" startTime="2026-10-18T16:52:46.0161967+00:00" endTime="2026-10-18T16:52:46.0161970+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="74acc59f-f7f1-4e54-b261-92cbc4f1f547" />
+    <UnitTestResult executionId="01f83c28-bd4e-4eb4-9ad1-26f02781da29" testId="c68f074e-9b9e-fa2e-f993-c63e82ffa20d" testName="Facilities.Integration.Tests.FacilitiesRelationalTests.CancellationRestoresAvailabilityAndAuditAndRejectsStaleTokens" computerName="672e2b22df40" duration="00:00:01.3629966" startTime="2026-10-18T16:52:40.3976511+00:00" endTime="2026-10-18T16:52:40.3976513+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="01f83c28-bd4e-4eb4-9ad1-26f02781da29" />
+    <UnitTestResult executionId="5f70689e-7442-4394-97c0-a24a18decf05" testId="410ec822-92e8-c817-ff45-f81019c37ade" testName="Facilities.Integration.Tests.FacilitiesRelationalTests.ReservationForeignKeyRestrictsEventDeletion" computerName="672e2b22df40" duration="00:00:00.1246694" startTime="2026-10-18T16:52:46.6626511+00:00" endTime="2026-10-18T16:52:46.6626514+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5f70689e-7442-4394-97c0-a24a18decf05" />
+    <UnitTestResult executionId="68f55914-b32c-47db-a4d4-fbb58c0857ba" testId="f8e840e1-0349-a5b0-5eda-929f933c9906" testName="Facilities.Integration.Tests.FacilitiesRelationalTests.ReservationRequestRequiresFacilityReadEventUpdateAndExplicitReservationCreateScope" computerName="672e2b22df40" duration="00:00:00.5186021" startTime="2026-10-18T16:52:46.5365041+00:00" endTime="2026-10-18T16:52:46.5365044+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="68f55914-b32c-47db-a4d4-fbb58c0857ba" />
+    <UnitTestResult executionId="8b4df8b9-a168-47f0-9e89-d6b90335ca69" testId="833223bc-938d-af31-a7cf-1d35096fb0d4" testName="Facilities.Integration.Tests.FacilitiesRelationalTests.CreatingChildRequiresCreateOnParentAndIgnoresCallerSelectedScope" computerName="672e2b22df40" duration="00:00:04.2168721" startTime="2026-10-18T16:52:39.0332836+00:00" endTime="2026-10-18T16:52:39.0332839+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8b4df8b9-a168-47f0-9e89-d6b90335ca69" />
+    <UnitTestResult executionId="824465a9-8cdb-47a3-a94f-9db5e8d6f08d" testId="00d4d40d-40dd-2d99-b34f-6f724b6d5b19" testName="Facilities.Integration.Tests.FacilitiesRelationalTests.ConcurrentConfirmationsForOverlappingRequestsCannotBothCommit" computerName="672e2b22df40" duration="00:00:00.4370165" startTime="2026-10-18T16:52:45.4878035+00:00" endTime="2026-10-18T16:52:45.4878040+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="824465a9-8cdb-47a3-a94f-9db5e8d6f08d" />
+    <UnitTestResult executionId="145c9db4-531b-4070-b50d-0f8c2624013f" testId="db790fa6-d81d-d7e0-ea1a-96fb72701d24" testName="Facilities.Integration.Tests.FacilitiesRelationalTests.AvailabilityRequiresReservationReadScopeAndReturnsNoReservationDetails" computerName="672e2b22df40" duration="00:00:00.1712947" startTime="2026-10-18T16:52:41.0421465+00:00" endTime="2026-10-18T16:52:41.0421467+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="145c9db4-531b-4070-b50d-0f8c2624013f">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.UnauthorizedAccessException)</Message>
+          <StackTrace>   at Facilities.Integration.Tests.FacilitiesRelationalTests.AvailabilityRequiresReservationReadScopeAndReturnsNoReservationDetails() in /workspace/tests/Apps/Facilities.Integration.Tests/FacilitiesRelationalTests.cs:line 669
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="281f80aa-db61-4c4e-9073-158cc6eaa1d3" testId="2ff1f2d5-c3d4-ecd6-74a9-a382d7a7d4a7" testName="Facilities.Integration.Tests.FacilitiesRelationalTests.UnauthorizedDestinationCannotMoveOrChangeSourcePaths" computerName="672e2b22df40" duration="00:00:00.4133875" startTime="2026-10-18T16:52:47.0774106+00:00" endTime="2026-10-18T16:52:47.0774109+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="281f80aa-db61-4c4e-9073-158cc6eaa1d3" />
+    <UnitTestResult executionId="e054b74c-599d-45d4-b894-beb2c1ddd566" testId="04a6ac4f-2f43-0880-7e50-36a0acafebe7" testName="Facilities.Integration.Tests.FacilityPermissionTreeHelperTests.FailedMoveCallbackRollsBackCopiedGroupsRolesMembershipsAndDenies" computerName="672e2b22df40" duration="00:00:01.6457707" startTime="2026-10-18T16:52:39.4389534+00:00" endTime="2026-10-18T16:52:39.4389537+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e054b74c-599d-45d4-b894-beb2c1ddd566" />
+    <UnitTestResult executionId="8c96617b-f529-4438-8365-f7f6ea61cb83" testId="a703a15a-e10c-4bbd-e53b-af1cc7063e46" testName="Facilities.Integration.Tests.FacilitiesRelationalTests.TypedAndGenericFacilityUpdatesRejectStaleClientTokensWithoutChangingPersistedData" computerName="672e2b22df40" duration="00:00:00.3851318" startTime="2026-10-18T16:52:42.7008280+00:00" endTime="2026-10-18T16:52:42.7008283+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8c96617b-f529-4438-8365-f7f6ea61cb83" />
+    <UnitTestResult executionId="1cf6d499-d515-4156-ae94-ade0a8815beb" testId="e12afbbc-d1a9-9753-7c81-b24071437018" testName="Facilities.Integration.Tests.FacilityPermissionTreeHelperTests.PermissionTreeLockRequiresAnExistingSharedTransaction" computerName="672e2b22df40" duration="00:00:00.0077318" startTime="2026-10-18T16:52:37.7904661+00:00" endTime="2026-10-18T16:52:37.7904665+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1cf6d499-d515-4156-ae94-ade0a8815beb" />
+    <UnitTestResult executionId="4494a178-2709-4a34-9f0e-dcb43db7b00b" testId="d566b31a-c08f-433f-87e3-f5fc33d48796" testName="Facilities.Integration.Tests.FacilitiesRelationalTests.MoveCopiesPermissionSubtreeRebindsFacilitiesAndPreservesSourcePermissions" computerName="672e2b22df40" duration="00:00:01.2774076" startTime="2026-10-18T16:52:42.3096147+00:00" endTime="2026-10-18T16:52:42.3096151+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4494a178-2709-4a34-9f0e-dcb43db7b00b" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Facilities.Integration.Tests.FacilitiesRelationalTests.ConfirmRejectsOverlapsButAllowsAdjacentIntervals" storage="/workspace/.build/bin/facilities.integration.tests/release/facilities.integration.tests.dll" id="1375a2a2-5f2a-bd44-dc4d-867a4b907e9f">
+      <Execution id="0b77feb3-44b6-4402-8800-38c4fd10f15a" />
+      <TestMethod codeBase="/workspace/.build/bin/Facilities.Integration.Tests/release/Facilities.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Facilities.Integration.Tests.FacilitiesRelationalTests" name="ConfirmRejectsOverlapsButAllowsAdjacentIntervals" />
+    </UnitTest>
+    <UnitTest name="Facilities.Integration.Tests.FacilitiesRelationalTests.TreeCreationRelationsAncestorsDescendantsAndTypeContainmentPersistInPostgres" storage="/workspace/.build/bin/facilities.integration.tests/release/facilities.integration.tests.dll" id="3fee638f-72fb-c286-a31a-09850b159eb9">
+      <Execution id="74acc59f-f7f1-4e54-b261-92cbc4f1f547" />
+      <TestMethod codeBase="/workspace/.build/bin/Facilities.Integration.Tests/release/Facilities.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Facilities.Integration.Tests.FacilitiesRelationalTests" name="TreeCreationRelationsAncestorsDescendantsAndTypeContainmentPersistInPostgres" />
+    </UnitTest>
+    <UnitTest name="Facilities.Integration.Tests.FacilitiesRelationalTests.UnauthorizedDestinationCannotMoveOrChangeSourcePaths" storage="/workspace/.build/bin/facilities.integration.tests/release/facilities.integration.tests.dll" id="2ff1f2d5-c3d4-ecd6-74a9-a382d7a7d4a7">
+      <Execution id="281f80aa-db61-4c4e-9073-158cc6eaa1d3" />
+      <TestMethod codeBase="/workspace/.build/bin/Facilities.Integration.Tests/release/Facilities.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Facilities.Integration.Tests.FacilitiesRelationalTests" name="UnauthorizedDestinationCannotMoveOrChangeSourcePaths" />
+    </UnitTest>
+    <UnitTest name="Facilities.Integration.Tests.FacilitiesRelationalTests.StaleMoveWaitsForTreeTransactionLockBeforeValidatingClientToken" storage="/workspace/.build/bin/facilities.integration.tests/release/facilities.integration.tests.dll" id="f737d0b7-e5d3-dd27-59a1-d2ebab8cad15">
+      <Execution id="6b563b2f-97d0-4792-9348-6a70e152d82c" />
+      <TestMethod codeBase="/workspace/.build/bin/Facilities.Integration.Tests/release/Facilities.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Facilities.Integration.Tests.FacilitiesRelationalTests" name="StaleMoveWaitsForTreeTransactionLockBeforeValidatingClientToken" />
+    </UnitTest>
+    <UnitTest name="Facilities.Integration.Tests.FacilitiesRelationalTests.ReservationForeignKeyRestrictsEventDeletion" storage="/workspace/.build/bin/facilities.integration.tests/release/facilities.integration.tests.dll" id="410ec822-92e8-c817-ff45-f81019c37ade">
+      <Execution id="5f70689e-7442-4394-97c0-a24a18decf05" />
+      <TestMethod codeBase="/workspace/.build/bin/Facilities.Integration.Tests/release/Facilities.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Facilities.Integration.Tests.FacilitiesRelationalTests" name="ReservationForeignKeyRestrictsEventDeletion" />
+    </UnitTest>
+    <UnitTest name="Facilities.Integration.Tests.FacilitiesRelationalTests.MoveRejectsStaleClientTokenBeforeCopyingScopesOrChangingPaths" storage="/workspace/.build/bin/facilities.integration.tests/release/facilities.integration.tests.dll" id="3d8dc11b-7f82-4398-dbb1-bcefbc07b0a7">
+      <Execution id="1ce0199d-fdbe-42e6-bd9d-28587c3b31af" />
+      <TestMethod codeBase="/workspace/.build/bin/Facilities.Integration.Tests/release/Facilities.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Facilities.Integration.Tests.FacilitiesRelationalTests" name="MoveRejectsStaleClientTokenBeforeCopyingScopesOrChangingPaths" />
+    </UnitTest>
+    <UnitTest name="Facilities.Integration.Tests.FacilityPermissionTreeHelperTests.CreateOwnedGroupRequiresCreateOnParentAndCreatesADistinctScope" storage="/workspace/.build/bin/facilities.integration.tests/release/facilities.integration.tests.dll" id="19ffeb35-b47c-e06a-76a5-5e73e07a2a49">
+      <Execution id="d1b5642b-85fb-4b8b-94e7-a0b41d44d04c" />
+      <TestMethod codeBase="/workspace/.build/bin/Facilities.Integration.Tests/release/Facilities.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Facilities.Integration.Tests.FacilityPermissionTreeHelperTests" name="CreateOwnedGroupRequiresCreateOnParentAndCreatesADistinctScope" />
+    </UnitTest>
+    <UnitTest name="Facilities.Integration.Tests.FacilitiesRelationalTests.ReservationRequestRequiresFacilityReadEventUpdateAndExplicitReservationCreateScope" storage="/workspace/.build/bin/facilities.integration.tests/release/facilities.integration.tests.dll" id="f8e840e1-0349-a5b0-5eda-929f933c9906">
+      <Execution id="68f55914-b32c-47db-a4d4-fbb58c0857ba" />
+      <TestMethod codeBase="/workspace/.build/bin/Facilities.Integration.Tests/release/Facilities.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Facilities.Integration.Tests.FacilitiesRelationalTests" name="ReservationRequestRequiresFacilityReadEventUpdateAndExplicitReservationCreateScope" />
+    </UnitTest>
+    <UnitTest name="Facilities.Integration.Tests.FacilitiesRelationalTests.FacilityReadsAreRbacFilteredAndUnauthorizedCrudOrMoveLeavesRowsUnchanged" storage="/workspace/.build/bin/facilities.integration.tests/release/facilities.integration.tests.dll" id="87c57c3a-b0d4-f95a-39b5-680a1a86db66">
+      <Execution id="3be3b116-2eff-49a6-95e5-bc0dcaf34541" />
+      <TestMethod codeBase="/workspace/.build/bin/Facilities.Integration.Tests/release/Facilities.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Facilities.Integration.Tests.FacilitiesRelationalTests" name="FacilityReadsAreRbacFilteredAndUnauthorizedCrudOrMoveLeavesRowsUnchanged" />
+    </UnitTest>
+    <UnitTest name="Facilities.Integration.Tests.FacilitiesRelationalTests.CancellationRequiresFacilityUpdateRatherThanOnlyRead" storage="/workspace/.build/bin/facilities.integration.tests/release/facilities.integration.tests.dll" id="c73beba3-f4b2-320f-1184-19844f827418">
+      <Execution id="0e38a70d-d816-40ce-aad0-8a4324b0e609" />
+      <TestMethod codeBase="/workspace/.build/bin/Facilities.Integration.Tests/release/Facilities.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Facilities.Integration.Tests.FacilitiesRelationalTests" name="CancellationRequiresFacilityUpdateRatherThanOnlyRead" />
+    </UnitTest>
+    <UnitTest name="Facilities.Integration.Tests.FacilitiesRelationalTests.CreatingChildRequiresCreateOnParentAndIgnoresCallerSelectedScope" storage="/workspace/.build/bin/facilities.integration.tests/release/facilities.integration.tests.dll" id="833223bc-938d-af31-a7cf-1d35096fb0d4">
+      <Execution id="8b4df8b9-a168-47f0-9e89-d6b90335ca69" />
+      <TestMethod codeBase="/workspace/.build/bin/Facilities.Integration.Tests/release/Facilities.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Facilities.Integration.Tests.FacilitiesRelationalTests" name="CreatingChildRequiresCreateOnParentAndIgnoresCallerSelectedScope" />
+    </UnitTest>
+    <UnitTest name="Facilities.Integration.Tests.FacilitiesRelationalTests.ConcurrentConfirmationsForOverlappingRequestsCannotBothCommit" storage="/workspace/.build/bin/facilities.integration.tests/release/facilities.integration.tests.dll" id="00d4d40d-40dd-2d99-b34f-6f724b6d5b19">
+      <Execution id="824465a9-8cdb-47a3-a94f-9db5e8d6f08d" />
+      <TestMethod codeBase="/workspace/.build/bin/Facilities.Integration.Tests/release/Facilities.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Facilities.Integration.Tests.FacilitiesRelationalTests" name="ConcurrentConfirmationsForOverlappingRequestsCannotBothCommit" />
+    </UnitTest>
+    <UnitTest name="Facilities.Integration.Tests.FacilitiesRelationalTests.MoveCopiesPermissionSubtreeRebindsFacilitiesAndPreservesSourcePermissions" storage="/workspace/.build/bin/facilities.integration.tests/release/facilities.integration.tests.dll" id="d566b31a-c08f-433f-87e3-f5fc33d48796">
+      <Execution id="4494a178-2709-4a34-9f0e-dcb43db7b00b" />
+      <TestMethod codeBase="/workspace/.build/bin/Facilities.Integration.Tests/release/Facilities.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Facilities.Integration.Tests.FacilitiesRelationalTests" name="MoveCopiesPermissionSubtreeRebindsFacilitiesAndPreservesSourcePermissions" />
+    </UnitTest>
+    <UnitTest name="Facilities.Integration.Tests.FacilitiesRelationalTests.CancellationRestoresAvailabilityAndAuditAndRejectsStaleTokens" storage="/workspace/.build/bin/facilities.integration.tests/release/facilities.integration.tests.dll" id="c68f074e-9b9e-fa2e-f993-c63e82ffa20d">
+      <Execution id="01f83c28-bd4e-4eb4-9ad1-26f02781da29" />
+      <TestMethod codeBase="/workspace/.build/bin/Facilities.Integration.Tests/release/Facilities.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Facilities.Integration.Tests.FacilitiesRelationalTests" name="CancellationRestoresAvailabilityAndAuditAndRejectsStaleTokens" />
+    </UnitTest>
+    <UnitTest name="Facilities.Integration.Tests.FacilityPermissionTreeHelperTests.FailedMoveCallbackRollsBackCopiedGroupsRolesMembershipsAndDenies" storage="/workspace/.build/bin/facilities.integration.tests/release/facilities.integration.tests.dll" id="04a6ac4f-2f43-0880-7e50-36a0acafebe7">
+      <Execution id="e054b74c-599d-45d4-b894-beb2c1ddd566" />
+      <TestMethod codeBase="/workspace/.build/bin/Facilities.Integration.Tests/release/Facilities.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Facilities.Integration.Tests.FacilityPermissionTreeHelperTests" name="FailedMoveCallbackRollsBackCopiedGroupsRolesMembershipsAndDenies" />
+    </UnitTest>
+    <UnitTest name="Facilities.Integration.Tests.FacilitiesRelationalTests.ReservationTransitionsRequireUpdateOnFacilityEventAndReservation" storage="/workspace/.build/bin/facilities.integration.tests/release/facilities.integration.tests.dll" id="95508b72-829c-705d-a3a9-fc54e62a7f34">
+      <Execution id="961c0dc1-ec67-45f1-b4c3-4c71fc84b72a" />
+      <TestMethod codeBase="/workspace/.build/bin/Facilities.Integration.Tests/release/Facilities.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Facilities.Integration.Tests.FacilitiesRelationalTests" name="ReservationTransitionsRequireUpdateOnFacilityEventAndReservation" />
+    </UnitTest>
+    <UnitTest name="Facilities.Integration.Tests.FacilityPermissionTreeHelperTests.PermissionTreeLockRequiresAnExistingSharedTransaction" storage="/workspace/.build/bin/facilities.integration.tests/release/facilities.integration.tests.dll" id="e12afbbc-d1a9-9753-7c81-b24071437018">
+      <Execution id="1cf6d499-d515-4156-ae94-ade0a8815beb" />
+      <TestMethod codeBase="/workspace/.build/bin/Facilities.Integration.Tests/release/Facilities.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Facilities.Integration.Tests.FacilityPermissionTreeHelperTests" name="PermissionTreeLockRequiresAnExistingSharedTransaction" />
+    </UnitTest>
+    <UnitTest name="Facilities.Integration.Tests.FacilitiesRelationalTests.ReservationReadRequiresReadOnReservationFacilityAndEvent" storage="/workspace/.build/bin/facilities.integration.tests/release/facilities.integration.tests.dll" id="153778e4-0f21-39f7-43c1-100b6e85ba69">
+      <Execution id="ee65b0ef-b6e0-4365-bdcf-7579985c34a6" />
+      <TestMethod codeBase="/workspace/.build/bin/Facilities.Integration.Tests/release/Facilities.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Facilities.Integration.Tests.FacilitiesRelationalTests" name="ReservationReadRequiresReadOnReservationFacilityAndEvent" />
+    </UnitTest>
+    <UnitTest name="Facilities.Integration.Tests.FacilitiesRelationalTests.TypedAndGenericFacilityUpdatesRejectStaleClientTokensWithoutChangingPersistedData" storage="/workspace/.build/bin/facilities.integration.tests/release/facilities.integration.tests.dll" id="a703a15a-e10c-4bbd-e53b-af1cc7063e46">
+      <Execution id="8c96617b-f529-4438-8365-f7f6ea61cb83" />
+      <TestMethod codeBase="/workspace/.build/bin/Facilities.Integration.Tests/release/Facilities.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Facilities.Integration.Tests.FacilitiesRelationalTests" name="TypedAndGenericFacilityUpdatesRejectStaleClientTokensWithoutChangingPersistedData" />
+    </UnitTest>
+    <UnitTest name="Facilities.Integration.Tests.FacilityPermissionTreeHelperTests.SourceLocksBlockOtherDatabaseWritersUntilTransactionEnds" storage="/workspace/.build/bin/facilities.integration.tests/release/facilities.integration.tests.dll" id="aa8691e0-f66c-93e2-156e-43bc21a42932">
+      <Execution id="7f143e10-fc08-447f-82e7-720e37483944" />
+      <TestMethod codeBase="/workspace/.build/bin/Facilities.Integration.Tests/release/Facilities.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Facilities.Integration.Tests.FacilityPermissionTreeHelperTests" name="SourceLocksBlockOtherDatabaseWritersUntilTransactionEnds" />
+    </UnitTest>
+    <UnitTest name="Facilities.Integration.Tests.FacilitiesRelationalTests.AvailabilityRequiresReservationReadScopeAndReturnsNoReservationDetails" storage="/workspace/.build/bin/facilities.integration.tests/release/facilities.integration.tests.dll" id="db790fa6-d81d-d7e0-ea1a-96fb72701d24">
+      <Execution id="145c9db4-531b-4070-b50d-0f8c2624013f" />
+      <TestMethod codeBase="/workspace/.build/bin/Facilities.Integration.Tests/release/Facilities.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Facilities.Integration.Tests.FacilitiesRelationalTests" name="AvailabilityRequiresReservationReadScopeAndReturnsNoReservationDetails" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="aa8691e0-f66c-93e2-156e-43bc21a42932" executionId="7f143e10-fc08-447f-82e7-720e37483944" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3d8dc11b-7f82-4398-dbb1-bcefbc07b0a7" executionId="1ce0199d-fdbe-42e6-bd9d-28587c3b31af" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="95508b72-829c-705d-a3a9-fc54e62a7f34" executionId="961c0dc1-ec67-45f1-b4c3-4c71fc84b72a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1375a2a2-5f2a-bd44-dc4d-867a4b907e9f" executionId="0b77feb3-44b6-4402-8800-38c4fd10f15a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="19ffeb35-b47c-e06a-76a5-5e73e07a2a49" executionId="d1b5642b-85fb-4b8b-94e7-a0b41d44d04c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c73beba3-f4b2-320f-1184-19844f827418" executionId="0e38a70d-d816-40ce-aad0-8a4324b0e609" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="87c57c3a-b0d4-f95a-39b5-680a1a86db66" executionId="3be3b116-2eff-49a6-95e5-bc0dcaf34541" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="153778e4-0f21-39f7-43c1-100b6e85ba69" executionId="ee65b0ef-b6e0-4365-bdcf-7579985c34a6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f737d0b7-e5d3-dd27-59a1-d2ebab8cad15" executionId="6b563b2f-97d0-4792-9348-6a70e152d82c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3fee638f-72fb-c286-a31a-09850b159eb9" executionId="74acc59f-f7f1-4e54-b261-92cbc4f1f547" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c68f074e-9b9e-fa2e-f993-c63e82ffa20d" executionId="01f83c28-bd4e-4eb4-9ad1-26f02781da29" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="410ec822-92e8-c817-ff45-f81019c37ade" executionId="5f70689e-7442-4394-97c0-a24a18decf05" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f8e840e1-0349-a5b0-5eda-929f933c9906" executionId="68f55914-b32c-47db-a4d4-fbb58c0857ba" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="833223bc-938d-af31-a7cf-1d35096fb0d4" executionId="8b4df8b9-a168-47f0-9e89-d6b90335ca69" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="00d4d40d-40dd-2d99-b34f-6f724b6d5b19" executionId="824465a9-8cdb-47a3-a94f-9db5e8d6f08d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="db790fa6-d81d-d7e0-ea1a-96fb72701d24" executionId="145c9db4-531b-4070-b50d-0f8c2624013f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2ff1f2d5-c3d4-ecd6-74a9-a382d7a7d4a7" executionId="281f80aa-db61-4c4e-9073-158cc6eaa1d3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="04a6ac4f-2f43-0880-7e50-36a0acafebe7" executionId="e054b74c-599d-45d4-b894-beb2c1ddd566" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a703a15a-e10c-4bbd-e53b-af1cc7063e46" executionId="8c96617b-f529-4438-8365-f7f6ea61cb83" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e12afbbc-d1a9-9753-7c81-b24071437018" executionId="1cf6d499-d515-4156-ae94-ade0a8815beb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d566b31a-c08f-433f-87e3-f5fc33d48796" executionId="4494a178-2709-4a34-9f0e-dcb43db7b00b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="21" executed="21" passed="20" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 10.0.12)
+[xUnit.net 00:00:00.40]   Discovering: Facilities.Integration.Tests
+[xUnit.net 00:00:00.53]   Discovered:  Facilities.Integration.Tests
+[xUnit.net 00:00:00.53]   Starting:    Facilities.Integration.Tests
+[xUnit.net 00:00:13.60]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:13.60]       Expected: typeof(System.UnauthorizedAccessException)
+[xUnit.net 00:00:13.60]       Stack Trace:
+[xUnit.net 00:00:13.61]         /workspace/tests/Apps/Facilities.Integration.Tests/FacilitiesRelationalTests.cs(669,0): at Facilities.Integration.Tests.FacilitiesRelationalTests.AvailabilityRequiresReservationReadScopeAndReturnsNoReservationDetails()
+[xUnit.net 00:00:13.61]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:20.05]   Finished:    Facilities.Integration.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="672e2b22df40" outcome="Error" timestamp="2026-10-18T16:52:41.0364391+00:00">
+        <Text>[xUnit.net 00:00:13.60]     Facilities.Integration.Tests.FacilitiesRelationalTests.AvailabilityRequiresReservationReadScopeAndReturnsNoReservationDetails [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

@@ -11,6 +11,8 @@ decision conflicts with the source or a verified contract, report the
 discrepancy and update the decision/contract deliberately; do not resolve it
 silently.
 
-There are no accepted decision records in this directory yet. Existing project
-contracts and current source/tests remain the evidence until decisions are
-recorded here.
+## Decisions
+
+- [Facilities reservations and authorization](facilities-reservations.md):
+  accepted initial RBAC policy; automatic Event lifecycle integration remains
+  proposed and requires separate approval.

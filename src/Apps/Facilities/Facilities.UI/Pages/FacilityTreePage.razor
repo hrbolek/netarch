@@ -1,0 +1,33 @@
+@namespace WebAppArchitecture.Facilities
+
+<Page Title="Facility tree">
+    <div class="container py-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 class="h3 mb-0">Facility tree</h1>
+            <a class="btn btn-primary" href="/facilities/FacilityResponse/new">Create facility</a>
+        </div>
+        @if (Roots.Count == 0)
+        {
+            <p class="text-muted">No facilities are available.</p>
+        }
+        else
+        {
+            <ul class="facility-tree">
+                @foreach (var facility in Roots)
+                {
+                    <FacilityTreeNode Facility="@facility" AllFacilities="@Model" />
+                }
+            </ul>
+        }
+    </div>
+</Page>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyCollection<FacilityResponse> Model { get; set; } = Array.Empty<FacilityResponse>();
+    [Parameter] public bool IsFragment { get; set; }
+
+    private List<FacilityResponse> Roots => Model
+        .Where(item => item.ParentId is null || !Model.Any(candidate => candidate.id == item.ParentId))
+        .OrderBy(item => item.Name, StringComparer.OrdinalIgnoreCase)
+        .ToList();
+}

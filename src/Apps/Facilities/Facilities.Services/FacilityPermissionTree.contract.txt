@@ -1,0 +1,61 @@
+FacilityPermissionTree integration contract
+
+Constructor dependencies: IAuthorizationLayer, IDBLayer, CoreDbContext,
+ISecurityProjectionService. All must share the current scoped DbContext.
+Register FacilityPermissionTree as scoped in the domain's DI registration.
+
+LockAsync(CancellationToken ct = default)
+  Call immediately inside FacilitiesWriteBoundary.ExecuteAsync, before domain
+  reads. Requires ReadCommitted PostgreSQL and the caller's Facilities advisory
+  transaction lock. Locks security source/projection tables against Core writes.
+
+CreateOwnedGroupAsync(string name, Guid parentGroupId, CancellationToken ct = default)
+  Returns Task<GroupModel>. Requires Create on the existing parent group.
+  Root creation passes request.RbacObjectId as parentGroupId. Child creation
+  passes the physical parent's owned Group ID. New group owns its ID as scope.
+  Caller stages Facility with returned group.id; do not StageCreate Facility
+  through IAuthorizationLayer (that would require Create on the new scope).
+  Use private command's IDBLayer.StageAuditedCreateAsync with trusted actor.
+
+CopyForMoveAsync<T>(Guid sourceGroupId, Guid destinationGroupId,
+  Func<IReadOnlyDictionary<Guid, Guid>, CancellationToken, Task<T>> rebindCallback,
+  CancellationToken ct = default)
+  Returns Task<T>. Requires literal "move" on source and Create on destination.
+  Copies all source Group descendants, Roles, Memberships and deny rules.
+  The copied root's inherit_roles is deliberately true so destination ancestor
+  policy applies; descendant inherit_roles and all Groups' valid flags stay.
+  Rejects any binding touching the subtree and external deputy dependencies,
+  including expired bindings/deputies. Source objects/grants remain untouched.
+  Callback receives every old/new Group ID; query/rebind ALL Facilities whose
+  rbacobject_id is a map key, not only physical descendants. Preserve reservations'
+  independent explicit scopes. Use audited token-checked updates for Facility
+  reassociations and physical path changes. Return a response from staged rows.
+  The helper saves and synchronizes the copied Group subtree after callback.
+  Caller must propagate every exception so the outer transaction rolls back.
+  No projection of old groups is required because they remain unchanged.
+
+Initializer owner: provision OperationModel for name "move", stable domain-owned
+ID, idempotently respecting existing name/ID; do not grant it automatically.
+Never Query<T>("move"): Core's query operation-ID switch does not support it.
+
+Limitations: PostgreSQL-only commands; coarse table locks reduce concurrency.
+The helper does not itself acquire the Facilities advisory lock, validate a
+physical move, verify client tokens, or rebind Facilities; caller owns those.
+No new schema is necessary. No source binding/deny/deputy policy is silently
+dropped, and no source objects or shared role-type policies are mutated.
+
+Retention/proliferation: copying uses the entire stored Group path subtree,
+including retained historical or valid=false Groups, even if no Facility is
+currently associated with them. Repeated moves can therefore copy historical
+branches and multiply Groups, Roles, Memberships and deny rules. This command
+has no authority to delete, retire, expire or prune the old tree or its grants.
+Any cleanup or active-subtree filtering needs a separately reviewed policy.
+Facility.rbacobject_id uniqueness and its restrictive Group FK enforce distinct
+Facility scopes; they do not establish cleanup ownership of unreferenced Groups.
+
+Bindings are rejected when either source_group_id or target_rbacobject_id
+touches a copied Group (also when the binding scope/manager touches it).
+No binding remapping is performed without a separately reviewed policy.
+RbacDenyRuleModel has no valid_from/valid_to or valid property: copies preserve
+role_type_id and include_descendants, remap group_id/rbacobject_id, and receive
+new audit metadata. Role/Membership validity intervals are copied unchanged.

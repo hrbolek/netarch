@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><TargetFramework>net10.0</TargetFramework><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><RootNamespace>WebAppArchitecture.Facilities</RootNamespace></PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../Facilities.Models/Facilities.Models.csproj" />
+    <ProjectReference Include="../../Events/Events.Services/Events.Services.csproj" />
+    <ProjectReference Include="../../../Core/AuthorizationLayer/AuthorizationLayer.csproj" />
+  </ItemGroup>
+</Project>

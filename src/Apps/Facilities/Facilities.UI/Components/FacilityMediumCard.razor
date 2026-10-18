@@ -1,0 +1,21 @@
+@namespace WebAppArchitecture.Facilities
+
+<MediumCard TModel="FacilityResponse" Model="@Model" HeaderText="Facility">
+    <ChildContent Context="item">
+        <Attribute TModel="FacilityResponse" Item="@item" Label="Code" AttributeName="Code" />
+        <Attribute TModel="FacilityResponse" Item="@item" Label="Name" AttributeName="Name" />
+        <Attribute TModel="FacilityResponse" Item="@item" Label="Type" AttributeName="FacilityTypeId" />
+        <Attribute TModel="FacilityResponse" Item="@item" Label="Capacity" AttributeName="Capacity" />
+        <Attribute TModel="FacilityResponse" Item="@item" Label="Status" AttributeName="IsActive" />
+        <div class="mt-2 d-flex gap-3">
+            <a href="@($"/facilities/FacilityResponse/detail/{item.id}")">Details</a>
+            <a href="@($"/facilities/FacilityResponse/edit/{item.id}")">Edit</a>
+            <a href="@($"/facilities/FacilityResponse/edit/{item.id}#facility-move")">Move</a>
+            <a href="@($"/facilities/FacilityReservationResponse/by-facility/{item.id}")">Reservations</a>
+        </div>
+    </ChildContent>
+</MediumCard>
+
+@code {
+    [Parameter, EditorRequired] public FacilityResponse Model { get; set; } = default!;
+}

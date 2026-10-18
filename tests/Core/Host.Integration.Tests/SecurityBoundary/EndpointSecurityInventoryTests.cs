@@ -76,6 +76,13 @@ public sealed class EndpointSecurityInventoryTests
         Assert.Contains(report, entry => entry.Route.StartsWith("/architecture/UserResponse/", StringComparison.Ordinal));
         Assert.Contains(report, entry => entry.Route.StartsWith("/digital-processes/", StringComparison.Ordinal));
         Assert.Contains(report, entry => entry.Route.StartsWith("/events/", StringComparison.Ordinal));
+        Assert.Contains(report, entry => entry.Route.StartsWith("/facilities/", StringComparison.Ordinal));
+        Assert.All(report.Where(entry => entry.Route.StartsWith("/facilities/", StringComparison.Ordinal)), entry =>
+        {
+            Assert.NotEmpty(entry.DeclaredContractTests);
+            Assert.False(entry.ExpectedRbacOperation.StartsWith("UNKNOWN", StringComparison.Ordinal),
+                $"Facilities operation policy is undocumented: {entry.Method} {entry.Route}");
+        });
 
         var directory = Path.Combine(ResolverDependencyTests.RepositoryRoot(), "artifacts", "security-boundaries");
         Directory.CreateDirectory(directory);
@@ -144,11 +151,101 @@ public sealed class EndpointSecurityInventoryTests
             };
         if (handler?.DeclaringType == typeof(WebAppArchitecture.User.Resolvers.UserResolvers) && handler.Name == "Memberships")
             return "Read parent and Read memberships (fixed relation predicate)";
+        if (handler?.DeclaringType == typeof(WebAppArchitecture.Facilities.FacilitiesResolvers))
+            return handler.Name switch
+            {
+                "FacilityList" or "FacilityListPage" or "FacilityTree" or "FacilityTreePage" or
+                "FacilityRead" or "FacilityChildren" or "FacilityAncestors" or "FacilityDescendants" or
+                "FacilityTypeList" or "FacilityTypeListPage" or "FacilityTypeRead" => "Read through secured Facilities service",
+                "FacilityDetailPage" => "Read Facility, readable children and three-way Read-filtered reservations",
+                "FacilityEditPage" => "Read Facility and type options; Update enforced on submission",
+                "FacilityTypeEditPage" => "Read FacilityType and type options; Update enforced on submission",
+                "FacilityTypeCreatePage" => "Read type options; Create enforced on submission",
+                "FacilityCreatePage" or "ReservationRequestPage" => "Trusted actor; presentation only, command authorization on submission",
+                "FacilityCreate" => "Create permission parent; new owned RBAC object",
+                "FacilityUpdate" or "FacilityUpdateById" or "FacilityTypeUpdate" or "FacilityTypeUpdateById" => "Update",
+                "FacilityDelete" or "FacilityTypeDelete" => "Delete",
+                "FacilityTypeCreate" => "Create explicit type scope",
+                "FacilityMove" => "move source root + Create destination; clone RBAC tree and refresh projection",
+                "ReservationRequest" => "Read Facility + Update Event + Create reservation scope",
+                "ReservationConfirm" or "ReservationReject" or "ReservationCancel" => "Update Facility + Event + Reservation",
+                "ReservationsByFacility" or "ReservationsByEvent" or "FacilitiesByEvent" or "ReservationOverviewPage" or
+                "FacilityOccupancy" => "Read Reservation + Facility + Event",
+                "FacilityAvailability" => "Read Facility; aggregate availability only, no reservation identities",
+                _ => "UNKNOWN: Facilities presentation handler; inspect service calls"
+            };
         return "UNKNOWN: service-owned/custom handler; no operation inferred from route or method name";
     }
 
     private static IEnumerable<Coverage> DeclaredCoverage()
     {
+        var facilities = typeof(FacilitiesResolverBoundaryTests);
+        foreach (var route in new[] { "/list", "/tree" })
+        {
+            yield return new("GET", "/facilities/FacilityResponse" + route, facilities,
+                nameof(FacilitiesResolverBoundaryTests.ListsUseOnlyTheirDesignatedServiceAndTrustedActor));
+        }
+        foreach (var route in new[] { "/facilities/FacilityResponse/list", "/facilities/FacilityResponse/tree",
+            "/facilities/FacilityTypeResponse/list" })
+        {
+            yield return new("GET", route, facilities,
+                nameof(FacilitiesResolverBoundaryTests.CallerSelectedOperationIsRejectedWithoutServiceCalls));
+            yield return new("GET", route, facilities,
+                nameof(FacilitiesResolverBoundaryTests.AnonymousListsNeverInvokeDomainServices));
+        }
+        foreach (var route in new[] { "children", "ancestors", "descendants" })
+            yield return new("GET", "/facilities/FacilityResponse/" + route + "/{id:guid}", facilities,
+                nameof(FacilitiesResolverBoundaryTests.TreeNavigationDelegatesTheBoundParent));
+        yield return new("POST", "/facilities/FacilityResponse/create", facilities,
+            nameof(FacilitiesResolverBoundaryTests.CreatePreservesTypedInputAndNeverTurnsDenialIntoSuccess));
+        yield return new("PUT", "/facilities/FacilityResponse/update", facilities,
+            nameof(FacilitiesResolverBoundaryTests.UpdateForwardsConcurrencyTokenAndServiceConflict));
+        yield return new("PUT", "/facilities/FacilityResponse/update/{id:guid}", facilities,
+            nameof(FacilitiesResolverBoundaryTests.RouteBodyMismatchStopsUpdateBeforeService));
+        yield return new("DELETE", "/facilities/FacilityResponse/delete/{id:guid}", facilities,
+            nameof(FacilitiesResolverBoundaryTests.DeleteCallsOnlyTheTokenBearingServiceMethod));
+        yield return new("POST", "/facilities/FacilityResponse/move/{id:guid}", facilities,
+            nameof(FacilitiesResolverBoundaryTests.MoveDelegatesDestinationAndTokenWithoutChoosingRbacOperations));
+        yield return new("GET", "/facilities/FacilityResponse/view/{id:guid}", facilities,
+            nameof(FacilitiesResolverBoundaryTests.UnexpectedServiceFailureCannotBecomeSuccessfulResponse));
+        yield return new("POST", "/facilities/FacilityTypeResponse/create", facilities,
+            nameof(FacilitiesResolverBoundaryTests.TypeCreateUsesOnlyTypeService));
+        yield return new("PUT", "/facilities/FacilityTypeResponse/update", facilities,
+            nameof(FacilitiesResolverBoundaryTests.TypeUpdateAndDeleteUseConstrainedTokenBearingMethods));
+        yield return new("DELETE", "/facilities/FacilityTypeResponse/delete/{id:guid}", facilities,
+            nameof(FacilitiesResolverBoundaryTests.TypeUpdateAndDeleteUseConstrainedTokenBearingMethods));
+        yield return new("GET", "/facilities/FacilityTypeResponse/view/{id:guid}", facilities,
+            nameof(FacilitiesResolverBoundaryTests.TypeReadUsesSecuredProjectionAndHidesMissingObjects));
+        yield return new("PUT", "/facilities/FacilityTypeResponse/update/{id:guid}", facilities,
+            nameof(FacilitiesResolverBoundaryTests.TypeRouteBodyMismatchStopsUpdateBeforeService));
+        yield return new("GET", "/facilities/FacilityTypeResponse/new", facilities,
+            nameof(FacilitiesResolverBoundaryTests.TypeAdministrationFormsRenderOnlySecuredModels));
+        yield return new("GET", "/facilities/FacilityTypeResponse/edit/{id:guid}", facilities,
+            nameof(FacilitiesResolverBoundaryTests.TypeAdministrationFormsRenderOnlySecuredModels));
+        yield return new("GET", "/facilities/FacilityResponse/view/{id:guid}", facilities,
+            nameof(FacilitiesResolverBoundaryTests.FacilityReadUsesOnlySecuredProjectionAndHidesMissingObjects));
+        yield return new("POST", "/facilities/FacilityReservationResponse/request", facilities,
+            nameof(FacilitiesResolverBoundaryTests.ReservationRequestDoesNotAcceptCallerSelectedStatusOrActor));
+        foreach (var route in new[] { "confirm", "reject", "cancel" })
+            yield return new("POST", "/facilities/FacilityReservationResponse/" + route + "/{id:guid}", facilities,
+                nameof(FacilitiesResolverBoundaryTests.ReservationTransitionsUseOnlyDesignatedService));
+        foreach (var route in new[] { ("by-facility", "facilityId"), ("by-event", "eventId") })
+            yield return new("GET", "/facilities/FacilityReservationResponse/" + route.Item1 + "/{" + route.Item2 + ":guid}", facilities,
+                nameof(FacilitiesResolverBoundaryTests.ReservationRelationsUseBoundIdentifiers));
+        yield return new("GET", "/facilities/FacilityReservationResponse/facilities-by-event/{eventId:guid}", facilities,
+            nameof(FacilitiesResolverBoundaryTests.EventFacilitiesAssociationUsesOnlyReservationService));
+        yield return new("GET", "/facilities/FacilityReservationResponse/availability/{facilityId:guid}", facilities,
+            nameof(FacilitiesResolverBoundaryTests.AvailabilityForwardsHalfOpenIntervalToService));
+        yield return new("GET", "/facilities/FacilityReservationResponse/occupancy/{facilityId:guid}", facilities,
+            nameof(FacilitiesResolverBoundaryTests.OccupancyDelegatesIntervalAndPagingWithoutDirectPersistence));
+        yield return new("GET", "/facilities/FacilityResponse/list", facilities,
+            nameof(FacilitiesResolverBoundaryTests.EmptyListRendersThroughRazorWithoutPersistence));
+        foreach (var route in new[] { "/facilities/FacilityResponse/new", "/facilities/FacilityReservationResponse/new" })
+            yield return new("GET", route, facilities,
+                nameof(FacilitiesResolverBoundaryTests.CreateFormsRenderThroughRazorWithoutPersistence));
+        foreach (var page in new[] { "detail", "edit" })
+            yield return new("GET", "/facilities/FacilityResponse/" + page + "/{id:guid}", facilities,
+                nameof(FacilitiesResolverBoundaryTests.FacilityDetailAndEditRenderOnlySecuredServiceModels));
         var core = typeof(CoreResolverBoundaryTests);
         foreach (var entity in new[] { "User", "Group", "Role", "Membership" })
         {

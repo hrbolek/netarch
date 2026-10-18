@@ -1,0 +1,16 @@
+@namespace WebAppArchitecture.Facilities
+
+<PageViewList TModel="FacilityResponse" Items="@Model" Title="Facilities" ShowFilter="false">
+    <ChildContent Context="item">
+        <FacilityMediumCard Model="@item" />
+    </ChildContent>
+</PageViewList>
+<div class="container pb-3 d-flex gap-2">
+    <a class="btn btn-primary" href="/facilities/FacilityResponse/new">Create facility</a>
+    <a class="btn btn-outline-secondary" href="/facilities/FacilityResponse/tree">View facility tree</a>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyCollection<FacilityResponse> Model { get; set; } = Array.Empty<FacilityResponse>();
+    [Parameter] public bool IsFragment { get; set; }
+}

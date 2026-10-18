@@ -1,0 +1,68 @@
+@namespace WebAppArchitecture.Facilities
+
+<Page Title="Request reservation">
+    <div class="container py-3">
+        <h1 class="h3">Request a reservation</h1>
+        <form id="reservation-request" class="card card-body">
+            <div class="mb-3"><EntityLookupSelect Name="facilityId" Label="Facility" ListUrl="/facilities/FacilityResponse/list" SearchFields="@FacilitySearchFields" MinChars="2" Take="30" /></div>
+            <div class="mb-3"><EntityLookupSelect Name="eventId" Label="Event" ListUrl="/events/EventResponse/list" SearchFields="@EventSearchFields" MinChars="2" Take="30" HelpText="Reservation requests require an event that you can update." /></div>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6"><label class="form-label" for="reservation-start">Starts</label><input id="reservation-start" type="datetime-local" class="form-control" required /></div>
+                <div class="col-md-6"><label class="form-label" for="reservation-end">Ends</label><input id="reservation-end" type="datetime-local" class="form-control" required /></div>
+            </div>
+            <div class="mb-3"><EntityLookupSelect Name="rbacObjectId" Label="Reservation security scope" ListUrl="/architecture/GroupResponse/create-targets" SearchFields="@GroupSearchFields" MinChars="2" Take="30" /></div>
+            <div class="mb-3"><label class="form-label" for="reservation-note">Note (optional)</label><textarea id="reservation-note" class="form-control" rows="3"></textarea></div>
+            <div id="reservation-request-error" class="alert alert-danger d-none" role="alert"></div>
+            <div class="d-flex gap-2"><button class="btn btn-primary" type="submit">Submit request</button><a class="btn btn-outline-secondary" href="/facilities/FacilityResponse/list">Cancel</a></div>
+        </form>
+    </div>
+    <script>
+        (() => {
+            const form = document.getElementById('reservation-request');
+            if (!form || form.dataset.bound) return;
+            form.dataset.bound = '1';
+            form.addEventListener('submit', async event => {
+                event.preventDefault();
+                const error = document.getElementById('reservation-request-error');
+                error.classList.add('d-none');
+                const start = new Date(document.getElementById('reservation-start').value);
+                const end = new Date(document.getElementById('reservation-end').value);
+                if (!(start < end)) {
+                    error.textContent = 'The end time must be later than the start time.';
+                    error.classList.remove('d-none');
+                    return;
+                }
+                const value = name => document.querySelector(`[name="${name}"]`)?.value || '';
+                const payload = {
+                    facilityId: value('facilityId'),
+                    eventId: value('eventId'),
+                    startsAt: start.toISOString(),
+                    endsAt: end.toISOString(),
+                    rbacObjectId: value('rbacObjectId'),
+                    note: document.getElementById('reservation-note').value || null
+                };
+                try {
+                    const response = await fetch('/facilities/FacilityReservationResponse/request', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        credentials: 'same-origin',
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) throw new Error(`Reservation request failed (HTTP ${response.status}).`);
+                    window.location.assign('/facilities/FacilityResponse/list');
+                } catch (exception) {
+                    error.textContent = exception.message;
+                    error.classList.remove('d-none');
+                }
+            });
+        })();
+    </script>
+</Page>
+
+@code {
+    [Parameter] public bool IsFragment { get; set; }
+
+    private static readonly string[] FacilitySearchFields = ["name"];
+    private static readonly string[] EventSearchFields = ["name"];
+    private static readonly string[] GroupSearchFields = ["name"];
+}

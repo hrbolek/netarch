@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WebAppArchitecture.Facilities</RootNamespace>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="Facilities.Models/Facilities.Models.csproj" />
+    <ProjectReference Include="Facilities.Services/Facilities.Services.csproj" />
+    <ProjectReference Include="Facilities.Resolvers/Facilities.Resolvers.csproj" />
+    <ProjectReference Include="../../Core/Hosting/Core.Hosting.csproj" />
+    <ProjectReference Include="../../Core/DBLayer/DBLayer.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="FacilitiesModule.cs" />
+  </ItemGroup>
+</Project>

@@ -41,6 +41,16 @@
     <Project Path="src/Core/User/User.UI/User.UI.csproj" />
   </Folder>
   <Folder Name="/src/Apps/" />
+  <Folder Name="/src/Apps/Events/">
+    <Project Path="src/Apps/Events/Events.Models/Events.Models.csproj" />
+  </Folder>
+  <Folder Name="/src/Apps/Facilities/">
+    <Project Path="src/Apps/Facilities/Facilities.csproj" />
+    <Project Path="src/Apps/Facilities/Facilities.Models/Facilities.Models.csproj" />
+    <Project Path="src/Apps/Facilities/Facilities.Resolvers/Facilities.Resolvers.csproj" />
+    <Project Path="src/Apps/Facilities/Facilities.Services/Facilities.Services.csproj" />
+    <Project Path="src/Apps/Facilities/Facilities.UI/Facilities.UI.csproj" />
+  </Folder>
   <Folder Name="/src/Core/" />
   <Folder Name="/src/Core/Contracts/" />
   <Folder Name="/src/Core/GroupType/">
@@ -48,8 +58,12 @@
     <Project Path="src/Core/GroupType/GroupType.Resolvers/GroupType.Resolvers.csproj" />
     <Project Path="src/Core/GroupType/GroupType.Services/GroupType.Services.csproj" />
   </Folder>
+  <Folder Name="/src/Core/Hosting/" />
   <Folder Name="/tests/">
     <Project Path="tests/Core/Core.Contracts.Tests/Core.Contracts.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Apps/">
+    <Project Path="tests/Apps/Facilities.Integration.Tests/Facilities.Integration.Tests.csproj" />
   </Folder>
   <Project Path="src/Apps/AppComposition/AppComposition.csproj" />
   <Project Path="src/Apps/HostManagement/HostManagement.csproj" />

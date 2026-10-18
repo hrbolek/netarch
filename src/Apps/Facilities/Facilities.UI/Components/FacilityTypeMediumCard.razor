@@ -1,0 +1,19 @@
+@namespace WebAppArchitecture.Facilities
+
+<MediumCard TModel="FacilityTypeResponse" Model="@Model" HeaderText="Facility type">
+    <ChildContent Context="item">
+        <Attribute TModel="FacilityTypeResponse" Item="@item" Label="Name" AttributeName="Name" />
+        <Attribute TModel="FacilityTypeResponse" Item="@item" Label="Code" AttributeName="Code" />
+        <Attribute TModel="FacilityTypeResponse" Item="@item" Label="Reservable" AttributeName="Reservable" />
+        <Attribute TModel="FacilityTypeResponse" Item="@item" Label="Can contain children" AttributeName="CanContainChildren" />
+        <div class="mt-2 d-flex align-items-center gap-3">
+            <a href="@($"/facilities/FacilityTypeResponse/edit/{item.id}")">Edit type</a>
+            <button type="button" class="btn btn-sm btn-outline-danger" data-delete-facility-type
+                    data-id="@item.id" data-updated-at="@item.updated_at">Delete type</button>
+        </div>
+    </ChildContent>
+</MediumCard>
+
+@code {
+    [Parameter, EditorRequired] public FacilityTypeResponse Model { get; set; } = default!;
+}

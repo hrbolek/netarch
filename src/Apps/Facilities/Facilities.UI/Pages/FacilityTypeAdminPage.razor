@@ -1,0 +1,38 @@
+@namespace WebAppArchitecture.Facilities
+
+<PageViewList TModel="FacilityTypeResponse" Items="@Model" Title="Facility types" ShowFilter="false">
+    <ChildContent Context="item">
+        <FacilityTypeMediumCard Model="@item" />
+    </ChildContent>
+</PageViewList>
+<div class="container pb-3">
+    <a class="btn btn-primary" href="/facilities/FacilityTypeResponse/new">Create facility type</a>
+</div>
+<script>
+    (() => {
+        document.querySelectorAll('[data-delete-facility-type]').forEach(button => {
+            if (button.dataset.bound) return;
+            button.dataset.bound = '1';
+            button.addEventListener('click', async () => {
+                if (!window.confirm('Delete this facility type?')) return;
+                try {
+                    const response = await fetch(`/facilities/FacilityTypeResponse/delete/${button.dataset.id}`, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        credentials: 'same-origin',
+                        body: JSON.stringify({ updated_at: button.dataset.updatedAt })
+                    });
+                    if (!response.ok) throw new Error(`Deleting facility type failed (HTTP ${response.status}).`);
+                    window.location.reload();
+                } catch (error) {
+                    window.alert(error.message);
+                }
+            });
+        });
+    })();
+</script>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyCollection<FacilityTypeResponse> Model { get; set; } = Array.Empty<FacilityTypeResponse>();
+    [Parameter] public bool IsFragment { get; set; }
+}

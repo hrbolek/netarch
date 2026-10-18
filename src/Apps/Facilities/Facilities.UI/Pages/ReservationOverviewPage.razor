@@ -1,0 +1,52 @@
+@namespace WebAppArchitecture.Facilities
+
+<Page Title="Reservations">
+    <div class="container py-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 class="h3 mb-0">Reservations</h1>
+            <a class="btn btn-primary" href="/facilities/FacilityReservationResponse/new">Request a reservation</a>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Heading))
+        {
+            <p class="text-muted">@Heading</p>
+        }
+        <ViewVector TModel="ReservationResponse" TComponent="ReservationMediumCard" Items="@Model" EmptyText="No reservations are available." />
+    </div>
+</Page>
+<script>
+    (() => {
+        document.querySelectorAll('[data-reservation-actions]').forEach(container => {
+            if (container.dataset.bound) return;
+            container.dataset.bound = '1';
+            container.querySelectorAll('button[data-action]').forEach(button => {
+                button.addEventListener('click', async () => {
+                    const action = button.dataset.action;
+                    const reason = action === 'reject' || action === 'cancel'
+                        ? window.prompt('Reason (optional):')
+                        : null;
+                    if (reason === null && (action === 'reject' || action === 'cancel')) return;
+                    const id = container.dataset.id;
+                    const endpoint = `/facilities/FacilityReservationResponse/${action}/${id}`;
+                    try {
+                        const response = await fetch(endpoint, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                            credentials: 'same-origin',
+                            body: JSON.stringify({ updated_at: container.dataset.updatedAt, reason })
+                        });
+                        if (!response.ok) throw new Error(`Reservation ${action} failed (HTTP ${response.status}).`);
+                        window.location.reload();
+                    } catch (error) {
+                        window.alert(error.message);
+                    }
+                });
+            });
+        });
+    })();
+</script>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyCollection<ReservationResponse> Model { get; set; } = Array.Empty<ReservationResponse>();
+    [Parameter] public string? Heading { get; set; }
+    [Parameter] public bool IsFragment { get; set; }
+}

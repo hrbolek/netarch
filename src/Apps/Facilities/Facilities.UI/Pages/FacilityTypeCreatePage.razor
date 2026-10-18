@@ -1,0 +1,69 @@
+@namespace WebAppArchitecture.Facilities
+
+<Page Title="Create facility type">
+    <div class="container py-3">
+        <h1 class="h3">Create facility type</h1>
+        <form id="facility-type-create" class="card card-body">
+            <div class="row g-3 mb-3">
+                <div class="col-md-4"><label class="form-label" for="facility-type-code">Code</label><input id="facility-type-code" class="form-control" maxlength="100" required /></div>
+                <div class="col-md-8"><label class="form-label" for="facility-type-name">Name</label><input id="facility-type-name" class="form-control" maxlength="200" required /></div>
+            </div>
+            <div class="mb-3"><label class="form-label" for="facility-type-description">Description</label><textarea id="facility-type-description" class="form-control" rows="3"></textarea></div>
+            <div class="form-check mb-2"><input id="facility-type-reservable" class="form-check-input" type="checkbox" /><label class="form-check-label" for="facility-type-reservable">Reservable</label></div>
+            <div class="form-check mb-3"><input id="facility-type-containment" class="form-check-input" type="checkbox" checked /><label class="form-check-label" for="facility-type-containment">Can contain child facilities</label></div>
+            <div class="mb-3">
+                <label class="form-label" for="facility-type-children">Allowed child facility types</label>
+                <select id="facility-type-children" class="form-select" multiple size="6">
+                    @foreach (var type in Types)
+                    {
+                        <option value="@type.id">@type.Name (@type.Code)</option>
+                    }
+                </select>
+            </div>
+            <div class="mb-3"><EntityLookupSelect Name="rbacObjectId" Label="Security scope" ListUrl="/architecture/GroupResponse/create-targets" SearchFields="@GroupSearchFields" MinChars="2" Take="30" /></div>
+            <div id="facility-type-create-error" class="alert alert-danger d-none" role="alert"></div>
+            <div class="d-flex gap-2"><button class="btn btn-primary" type="submit">Create type</button><a class="btn btn-outline-secondary" href="/facilities/FacilityTypeResponse/list">Cancel</a></div>
+        </form>
+    </div>
+    <script>
+        (() => {
+            const form = document.getElementById('facility-type-create');
+            if (!form || form.dataset.bound) return;
+            form.dataset.bound = '1';
+            form.addEventListener('submit', async event => {
+                event.preventDefault();
+                const error = document.getElementById('facility-type-create-error');
+                error.classList.add('d-none');
+                const payload = {
+                    code: document.getElementById('facility-type-code').value,
+                    name: document.getElementById('facility-type-name').value,
+                    description: document.getElementById('facility-type-description').value || null,
+                    reservable: document.getElementById('facility-type-reservable').checked,
+                    canContainChildren: document.getElementById('facility-type-containment').checked,
+                    allowedChildTypeIds: [...document.getElementById('facility-type-children').selectedOptions].map(option => option.value),
+                    rbacObjectId: document.querySelector('[name="rbacObjectId"]')?.value
+                };
+                try {
+                    const response = await fetch('/facilities/FacilityTypeResponse/create', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        credentials: 'same-origin',
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) throw new Error(`Facility type creation failed (HTTP ${response.status}).`);
+                    window.location.assign('/facilities/FacilityTypeResponse/list');
+                } catch (exception) {
+                    error.textContent = exception.message;
+                    error.classList.remove('d-none');
+                }
+            });
+        })();
+    </script>
+</Page>
+
+@code {
+    [Parameter] public IReadOnlyCollection<FacilityTypeResponse> Types { get; set; } = Array.Empty<FacilityTypeResponse>();
+    [Parameter] public bool IsFragment { get; set; }
+
+    private static readonly string[] GroupSearchFields = ["name"];
+}

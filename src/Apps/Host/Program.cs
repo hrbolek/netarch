@@ -4,6 +4,7 @@ using WebAppArchitecture.Host;
 using WebAppArchitecture.Hosting;
 using WebAppArchitecture.HostManagement;
 using WebAppArchitecture.Events;
+using WebAppArchitecture.Facilities;
 #if !ARCHITECTURE_API_ONLY
 using WebAppArchitecture.Base.Endpoints;
 using WebAppArchitecture.Base.UI.Pages;
@@ -20,6 +21,7 @@ builder.Services
     .AddCore()
     .AddDigitalProcesses()
     .AddEvents()
+    .AddFacilities()
     .AddArchitectureModule<HostManagementModule>();
 
 #if !ARCHITECTURE_API_ONLY
@@ -69,6 +71,7 @@ public partial class Program
         [typeof(CoreModule)] = "architecture",
         [typeof(DigitalProcessesModule)] = "digital-processes",
         [typeof(EventsModule)] = "events",
+        [typeof(FacilitiesModule)] = "facilities",
         [typeof(HostManagementModule)] = "management"
     };
 }

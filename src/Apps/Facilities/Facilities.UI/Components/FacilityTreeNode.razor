@@ -1,0 +1,25 @@
+@namespace WebAppArchitecture.Facilities
+
+<li>
+    <a href="@($"/facilities/FacilityResponse/detail/{Facility.id}")">@Facility.Name</a>
+    <span class="text-muted">(@Facility.Code; @Facility.FacilityTypeId; capacity: @(Facility.Capacity?.ToString() ?? "not set"))</span>
+    @if (Children.Count > 0)
+    {
+        <ul>
+            @foreach (var child in Children)
+            {
+                <FacilityTreeNode Facility="@child" AllFacilities="@AllFacilities" />
+            }
+        </ul>
+    }
+</li>
+
+@code {
+    [Parameter, EditorRequired] public FacilityResponse Facility { get; set; } = default!;
+    [Parameter, EditorRequired] public IReadOnlyCollection<FacilityResponse> AllFacilities { get; set; } = Array.Empty<FacilityResponse>();
+
+    private List<FacilityResponse> Children => AllFacilities
+        .Where(item => item.ParentId == Facility.id)
+        .OrderBy(item => item.Name, StringComparer.OrdinalIgnoreCase)
+        .ToList();
+}

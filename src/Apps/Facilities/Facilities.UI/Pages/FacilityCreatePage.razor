@@ -1,0 +1,112 @@
+@namespace WebAppArchitecture.Facilities
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+<Page Title="Create facility">
+    <div class="container py-3">
+        <h1 class="h3">Create facility</h1>
+        <form id="facility-create" class="card card-body">
+            <div class="mb-3">
+                <label class="form-label" for="facility-code">Code</label>
+                <input id="facility-code" class="form-control" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="facility-name">Name</label>
+                <input id="facility-name" class="form-control" maxlength="200" required />
+            </div>
+            <div class="mb-3">
+                <EntityLookupSelect Name="facilityTypeId" Label="Facility type" ListUrl="/facilities/FacilityTypeResponse/list" SearchFields="@TypeSearchFields" MinChars="2" Take="30" />
+            </div>
+            <div class="mb-3" id="facility-parent-lookup">
+                <EntityLookupSelect Name="parentId" Label="Parent facility (optional)" ListUrl="/facilities/FacilityResponse/list" SearchFields="@FacilitySearchFields" Required="false" MinChars="2" Take="30" InitialId="@ParentId" />
+            </div>
+            <div class="mb-3" id="facility-permission-source" hidden="@ParentId.HasValue">
+                <EntityLookupSelect Name="rbacObjectId" Label="Permission source scope (root facility)" ListUrl="/architecture/GroupResponse/create-targets" SearchFields="@GroupSearchFields" MinChars="2" Take="30" HelpText="Roles and memberships are copied to the new facility-owned group. A child facility uses its parent's owned group." />
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="facility-description">Description</label>
+                <textarea id="facility-description" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="facility-capacity">Capacity (optional)</label>
+                <input id="facility-capacity" class="form-control" type="number" min="0" step="1" />
+            </div>
+            <div class="form-check mb-3">
+                <input id="facility-active" class="form-check-input" type="checkbox" checked />
+                <label class="form-check-label" for="facility-active">Active</label>
+            </div>
+            <div id="facility-create-error" class="alert alert-danger d-none" role="alert"></div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary" type="submit">Create facility</button>
+                <a class="btn btn-outline-secondary" href="/facilities/FacilityResponse/list">Cancel</a>
+            </div>
+        </form>
+    </div>
+    <script>
+        (() => {
+            const form = document.getElementById('facility-create');
+            if (!form || form.dataset.bound) return;
+            form.dataset.bound = '1';
+            const parentSelect = form.querySelector('[name="parentId"]');
+            const permissionSource = document.getElementById('facility-permission-source');
+            const permissionSourceSelect = permissionSource?.querySelector('select');
+            const updatePermissionSource = () => {
+                const isChild = Boolean(parentSelect?.value);
+                permissionSource.hidden = isChild;
+                if (permissionSourceSelect) {
+                    permissionSourceSelect.required = !isChild;
+                    permissionSourceSelect.disabled = isChild;
+                }
+            };
+            parentSelect?.addEventListener('change', updatePermissionSource);
+            updatePermissionSource();
+            form.addEventListener('submit', async event => {
+                event.preventDefault();
+                const value = name => document.querySelector(`[name="${name}"]`)?.value || '';
+                const error = document.getElementById('facility-create-error');
+                error.classList.add('d-none');
+                const parentId = value('parentId');
+                const capacityValue = document.getElementById('facility-capacity').value;
+                const payload = {
+                    code: document.getElementById('facility-code').value,
+                    name: document.getElementById('facility-name').value,
+                    description: document.getElementById('facility-description').value || null,
+                    facilityTypeId: value('facilityTypeId'),
+                    parentId: parentId || null,
+                    isActive: document.getElementById('facility-active').checked,
+                    capacity: capacityValue === '' ? null : Number(capacityValue),
+                    ...(!parentId ? { rbacObjectId: value('rbacObjectId') } : {})
+                };
+                try {
+                    const response = await fetch('/facilities/FacilityResponse/create', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        credentials: 'same-origin',
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) throw new Error(`Facility creation failed (HTTP ${response.status}).`);
+                    window.location.assign('/facilities/FacilityResponse/list');
+                } catch (exception) {
+                    error.textContent = exception.message;
+                    error.classList.remove('d-none');
+                }
+            });
+        })();
+    </script>
+</Page>
+
+@code {
+    [Parameter] public bool IsFragment { get; set; }
+
+    private static readonly string[] TypeSearchFields = ["name", "code"];
+    private static readonly string[] FacilitySearchFields = ["name"];
+    private static readonly string[] GroupSearchFields = ["name"];
+    private Guid? ParentId
+    {
+        get
+        {
+            var value = HttpContextAccessor.HttpContext?.Request.Query["parentId"].ToString();
+            return Guid.TryParse(value, out var id) ? id : null;
+        }
+    }
+}

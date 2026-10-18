@@ -148,6 +148,27 @@
     },
     {
       "path": "/workspace/src/Core/GroupType/GroupType.Resolvers/GroupType.Resolvers.csproj"
+    },
+    {
+      "path": "/workspace/src/Apps/Facilities/Facilities.csproj"
+    },
+    {
+      "path": "/workspace/src/Apps/Facilities/Facilities.Models/Facilities.Models.csproj"
+    },
+    {
+      "path": "/workspace/src/Apps/Events/Events.Models/Events.Models.csproj"
+    },
+    {
+      "path": "/workspace/src/Apps/Facilities/Facilities.Services/Facilities.Services.csproj"
+    },
+    {
+      "path": "/workspace/src/Apps/Facilities/Facilities.Resolvers/Facilities.Resolvers.csproj"
+    },
+    {
+      "path": "/workspace/src/Apps/Facilities/Facilities.UI/Facilities.UI.csproj"
+    },
+    {
+      "path": "/workspace/tests/Apps/Facilities.Integration.Tests/Facilities.Integration.Tests.csproj"
     }
   ]
 }

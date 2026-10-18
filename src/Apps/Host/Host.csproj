@@ -30,6 +30,7 @@
     <ProjectReference Include="../HostManagement/HostManagement.csproj" />
     <ProjectReference Include="../DigitalProcesses/DigitalProcesses.Module/DigitalProcesses.Module.csproj" />
     <ProjectReference Include="../Events/Events.csproj" />
+    <ProjectReference Include="../Facilities/Facilities.csproj" />
   </ItemGroup>
   <ItemGroup Condition="'$(EnableJsonataPlayground)' == 'true'">
     <ProjectReference Include="../JsonataPlayground/JsonataPlayground.csproj" />

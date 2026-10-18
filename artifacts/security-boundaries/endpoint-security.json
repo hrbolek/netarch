@@ -3,8 +3,8 @@
   "scope": "Actual Program routes for this build; middleware-only paths and static files are not RouteEndpoints.",
   "limitation": "Declared tests are scenario coverage, not proof of complete authorization. UNKNOWN policies require manual review. See TRX for executed checks.",
   "totals": {
-    "endpoints": 295,
-    "withDeclaredContractTests": 59,
+    "endpoints": 327,
+    "withDeclaredContractTests": 91,
     "withoutDeclaredContractTests": 236,
     "unknownRbacOperation": 242
   },
@@ -4253,6 +4253,523 @@
       "ExistingSecurityTestEvidence": [],
       "DeclaredContractTests": [],
       "CoverageStatus": "UNCOVERED by strict HTTP contract suite"
+    },
+    {
+      "Method": "GET",
+      "Route": "/facilities/FacilityReservationResponse/availability/{facilityId:guid}",
+      "Name": "FacilityAvailability",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.FacilityAvailability",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IReservationService"
+      ],
+      "ExpectedRbacOperation": "Read Facility; aggregate availability only, no reservation identities",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.AvailabilityForwardsHalfOpenIntervalToService"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "GET",
+      "Route": "/facilities/FacilityReservationResponse/by-event/{eventId:guid}",
+      "Name": "FacilityReservationsByEvent",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.ReservationsByEvent",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IReservationService"
+      ],
+      "ExpectedRbacOperation": "Read Reservation \u002B Facility \u002B Event",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.ReservationRelationsUseBoundIdentifiers"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "GET",
+      "Route": "/facilities/FacilityReservationResponse/by-facility/{facilityId:guid}",
+      "Name": "FacilityReservationsByFacilityPage",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.ReservationOverviewPage",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IReservationService"
+      ],
+      "ExpectedRbacOperation": "Read Reservation \u002B Facility \u002B Event",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.ReservationRelationsUseBoundIdentifiers"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "POST",
+      "Route": "/facilities/FacilityReservationResponse/cancel/{id:guid}",
+      "Name": "FacilityReservationCancel",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.ReservationCancel",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IReservationService"
+      ],
+      "ExpectedRbacOperation": "Update Facility \u002B Event \u002B Reservation",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.ReservationTransitionsUseOnlyDesignatedService"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "POST",
+      "Route": "/facilities/FacilityReservationResponse/confirm/{id:guid}",
+      "Name": "FacilityReservationConfirm",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.ReservationConfirm",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IReservationService"
+      ],
+      "ExpectedRbacOperation": "Update Facility \u002B Event \u002B Reservation",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.ReservationTransitionsUseOnlyDesignatedService"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "GET",
+      "Route": "/facilities/FacilityReservationResponse/facilities-by-event/{eventId:guid}",
+      "Name": "FacilitiesByEvent",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.FacilitiesByEvent",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IReservationService"
+      ],
+      "ExpectedRbacOperation": "Read Reservation \u002B Facility \u002B Event",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.EventFacilitiesAssociationUsesOnlyReservationService"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "GET",
+      "Route": "/facilities/FacilityReservationResponse/new",
+      "Name": "FacilityReservationRequestPage",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.ReservationRequestPage",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [],
+      "ExpectedRbacOperation": "Trusted actor; presentation only, command authorization on submission",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.CreateFormsRenderThroughRazorWithoutPersistence"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "GET",
+      "Route": "/facilities/FacilityReservationResponse/occupancy/{facilityId:guid}",
+      "Name": "FacilityOccupancy",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.FacilityOccupancy",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IReservationService"
+      ],
+      "ExpectedRbacOperation": "Read Reservation \u002B Facility \u002B Event",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.OccupancyDelegatesIntervalAndPagingWithoutDirectPersistence"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "POST",
+      "Route": "/facilities/FacilityReservationResponse/reject/{id:guid}",
+      "Name": "FacilityReservationReject",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.ReservationReject",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IReservationService"
+      ],
+      "ExpectedRbacOperation": "Update Facility \u002B Event \u002B Reservation",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.ReservationTransitionsUseOnlyDesignatedService"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "POST",
+      "Route": "/facilities/FacilityReservationResponse/request",
+      "Name": "FacilityReservationRequest",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.ReservationRequest",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IReservationService"
+      ],
+      "ExpectedRbacOperation": "Read Facility \u002B Update Event \u002B Create reservation scope",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.ReservationRequestDoesNotAcceptCallerSelectedStatusOrActor"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "GET",
+      "Route": "/facilities/FacilityResponse/ancestors/{id:guid}",
+      "Name": "FacilityAncestors",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.FacilityAncestors",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IFacilityService"
+      ],
+      "ExpectedRbacOperation": "Read through secured Facilities service",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.TreeNavigationDelegatesTheBoundParent"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "GET",
+      "Route": "/facilities/FacilityResponse/children/{id:guid}",
+      "Name": "FacilityChildren",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.FacilityChildren",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IFacilityService"
+      ],
+      "ExpectedRbacOperation": "Read through secured Facilities service",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.TreeNavigationDelegatesTheBoundParent"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "POST",
+      "Route": "/facilities/FacilityResponse/create",
+      "Name": "FacilityCreate",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.FacilityCreate",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IFacilityService"
+      ],
+      "ExpectedRbacOperation": "Create permission parent; new owned RBAC object",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.CreatePreservesTypedInputAndNeverTurnsDenialIntoSuccess"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "DELETE",
+      "Route": "/facilities/FacilityResponse/delete/{id:guid}",
+      "Name": "FacilityDelete",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.FacilityDelete",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IFacilityService"
+      ],
+      "ExpectedRbacOperation": "Delete",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.DeleteCallsOnlyTheTokenBearingServiceMethod"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "GET",
+      "Route": "/facilities/FacilityResponse/descendants/{id:guid}",
+      "Name": "FacilityDescendants",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.FacilityDescendants",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IFacilityService"
+      ],
+      "ExpectedRbacOperation": "Read through secured Facilities service",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.TreeNavigationDelegatesTheBoundParent"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "GET",
+      "Route": "/facilities/FacilityResponse/detail/{id:guid}",
+      "Name": "FacilityDetailPage",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.FacilityDetailPage",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IFacilityService",
+        "WebAppArchitecture.Facilities.IReservationService"
+      ],
+      "ExpectedRbacOperation": "Read Facility, readable children and three-way Read-filtered reservations",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.FacilityDetailAndEditRenderOnlySecuredServiceModels"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "GET",
+      "Route": "/facilities/FacilityResponse/edit/{id:guid}",
+      "Name": "FacilityEditPage",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.FacilityEditPage",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IFacilityService",
+        "WebAppArchitecture.Facilities.IFacilityTypeService"
+      ],
+      "ExpectedRbacOperation": "Read Facility and type options; Update enforced on submission",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.FacilityDetailAndEditRenderOnlySecuredServiceModels"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "GET",
+      "Route": "/facilities/FacilityResponse/list",
+      "Name": "FacilityListPage",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.FacilityListPage",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IFacilityService"
+      ],
+      "ExpectedRbacOperation": "Read through secured Facilities service",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.AnonymousListsNeverInvokeDomainServices",
+        "FacilitiesResolverBoundaryTests.CallerSelectedOperationIsRejectedWithoutServiceCalls",
+        "FacilitiesResolverBoundaryTests.EmptyListRendersThroughRazorWithoutPersistence",
+        "FacilitiesResolverBoundaryTests.ListsUseOnlyTheirDesignatedServiceAndTrustedActor"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "POST",
+      "Route": "/facilities/FacilityResponse/move/{id:guid}",
+      "Name": "FacilityMove",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.FacilityMove",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IFacilityService"
+      ],
+      "ExpectedRbacOperation": "move source root \u002B Create destination; clone RBAC tree and refresh projection",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.MoveDelegatesDestinationAndTokenWithoutChoosingRbacOperations"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "GET",
+      "Route": "/facilities/FacilityResponse/new",
+      "Name": "FacilityCreatePage",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.FacilityCreatePage",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [],
+      "ExpectedRbacOperation": "Trusted actor; presentation only, command authorization on submission",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.CreateFormsRenderThroughRazorWithoutPersistence"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "GET",
+      "Route": "/facilities/FacilityResponse/tree",
+      "Name": "FacilityTreePage",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.FacilityTreePage",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IFacilityService"
+      ],
+      "ExpectedRbacOperation": "Read through secured Facilities service",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.AnonymousListsNeverInvokeDomainServices",
+        "FacilitiesResolverBoundaryTests.CallerSelectedOperationIsRejectedWithoutServiceCalls",
+        "FacilitiesResolverBoundaryTests.ListsUseOnlyTheirDesignatedServiceAndTrustedActor"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "PUT",
+      "Route": "/facilities/FacilityResponse/update",
+      "Name": "FacilityUpdate",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.FacilityUpdate",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IFacilityService"
+      ],
+      "ExpectedRbacOperation": "Update",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.UpdateForwardsConcurrencyTokenAndServiceConflict"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "PUT",
+      "Route": "/facilities/FacilityResponse/update/{id:guid}",
+      "Name": "FacilityUpdateById",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.FacilityUpdateById",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IFacilityService"
+      ],
+      "ExpectedRbacOperation": "Update",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.RouteBodyMismatchStopsUpdateBeforeService"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "GET",
+      "Route": "/facilities/FacilityResponse/view/{id:guid}",
+      "Name": "FacilityRead",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.FacilityRead",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IFacilityService"
+      ],
+      "ExpectedRbacOperation": "Read through secured Facilities service",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.FacilityReadUsesOnlySecuredProjectionAndHidesMissingObjects",
+        "FacilitiesResolverBoundaryTests.UnexpectedServiceFailureCannotBecomeSuccessfulResponse"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "POST",
+      "Route": "/facilities/FacilityTypeResponse/create",
+      "Name": "FacilityTypeCreate",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.FacilityTypeCreate",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IFacilityTypeService"
+      ],
+      "ExpectedRbacOperation": "Create explicit type scope",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.TypeCreateUsesOnlyTypeService"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "DELETE",
+      "Route": "/facilities/FacilityTypeResponse/delete/{id:guid}",
+      "Name": "FacilityTypeDelete",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.FacilityTypeDelete",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IFacilityTypeService"
+      ],
+      "ExpectedRbacOperation": "Delete",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.TypeUpdateAndDeleteUseConstrainedTokenBearingMethods"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "GET",
+      "Route": "/facilities/FacilityTypeResponse/edit/{id:guid}",
+      "Name": "FacilityTypeEditPage",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.FacilityTypeEditPage",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IFacilityTypeService"
+      ],
+      "ExpectedRbacOperation": "Read FacilityType and type options; Update enforced on submission",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.TypeAdministrationFormsRenderOnlySecuredModels"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "GET",
+      "Route": "/facilities/FacilityTypeResponse/list",
+      "Name": "FacilityTypeListPage",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.FacilityTypeListPage",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IFacilityTypeService"
+      ],
+      "ExpectedRbacOperation": "Read through secured Facilities service",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.AnonymousListsNeverInvokeDomainServices",
+        "FacilitiesResolverBoundaryTests.CallerSelectedOperationIsRejectedWithoutServiceCalls"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "GET",
+      "Route": "/facilities/FacilityTypeResponse/new",
+      "Name": "FacilityTypeCreatePage",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.FacilityTypeCreatePage",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IFacilityTypeService"
+      ],
+      "ExpectedRbacOperation": "Read type options; Create enforced on submission",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.TypeAdministrationFormsRenderOnlySecuredModels"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "PUT",
+      "Route": "/facilities/FacilityTypeResponse/update",
+      "Name": "FacilityTypeUpdate",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.FacilityTypeUpdate",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IFacilityTypeService"
+      ],
+      "ExpectedRbacOperation": "Update",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.TypeUpdateAndDeleteUseConstrainedTokenBearingMethods"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "PUT",
+      "Route": "/facilities/FacilityTypeResponse/update/{id:guid}",
+      "Name": "FacilityTypeUpdateById",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.FacilityTypeUpdateById",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IFacilityTypeService"
+      ],
+      "ExpectedRbacOperation": "Update",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.TypeRouteBodyMismatchStopsUpdateBeforeService"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
+    },
+    {
+      "Method": "GET",
+      "Route": "/facilities/FacilityTypeResponse/view/{id:guid}",
+      "Name": "FacilityTypeRead",
+      "Handler": "WebAppArchitecture.Facilities.FacilitiesResolvers.FacilityTypeRead",
+      "Authorization": "No ASP.NET authorization policy metadata; handler/service owns authorization (not proven by metadata)",
+      "ServiceDependencies": [
+        "WebAppArchitecture.Facilities.IFacilityTypeService"
+      ],
+      "ExpectedRbacOperation": "Read through secured Facilities service",
+      "ExistingSecurityTestEvidence": [],
+      "DeclaredContractTests": [
+        "FacilitiesResolverBoundaryTests.TypeReadUsesSecuredProjectionAndHidesMissingObjects"
+      ],
+      "CoverageStatus": "Declared contract cases; consult TRX for pass/fail and scenario scope"
     },
     {
       "Method": "GET",
