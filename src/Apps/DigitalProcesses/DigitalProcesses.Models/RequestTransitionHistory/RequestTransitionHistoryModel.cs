@@ -10,6 +10,7 @@ namespace WebAppArchitecture.DigitalProcesses.Models.RequestTransitionHistory;
 /// <summary>
 /// Vstupní kontrakt Request Transition History. Přijímá pouze údaje od klienta; identita konajícího uživatele a bezpečnostní kontext se ověřují na serveru.
 /// </summary>
+
 public sealed record RequestTransitionHistoryModel(
     Guid id,
     Guid request_id,

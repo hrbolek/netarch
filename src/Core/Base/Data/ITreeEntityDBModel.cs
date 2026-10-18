@@ -8,6 +8,7 @@ namespace WebAppArchitecture.Base.Data;
 /// The path has the form <c>/{rootId}/.../{id}/</c> (see <see cref="TreePath"/>). <see cref="WithPath"/> returns the node
 /// carrying the new path; immutable records return a copy, mutable classes may return themselves.
 /// </remarks>
+
 public interface ITreeEntityDBModel<TSelf> : ISecuredEntityDBModel, IEntityWithTree
     where TSelf : ITreeEntityDBModel<TSelf>
 {

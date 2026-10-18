@@ -35,4 +35,4 @@ Testy aplikace zůstávají v `tests/Apps/DigitalProcesses.Integration.Tests`. Z
 5. Ověřit přípravu přes EF Core v izolované DB; operace testovat HTTP klienty s různou identitou, nikoli přímým voláním služby.
 6. U pozitivních testů ověřovat také surový stav databáze, aby neviditelný řádek nebyl mylně považován za neexistující.
 
-Samostatně testovat validaci dat, oprávnění a integritu snapshotů. Každá aplikace drží vlastní fixture a testovací projekty. Nezavádět ručně psané SQL do DBLayer/SecurityLayer.
+Samostatně testovat validaci dat, oprávnění a integritu snapshotů. Každá aplikace drží vlastní fixture a testovací projekty. Nezavádět ručně psané SQL do DBLayer/AuthorizationLayer.

@@ -1,19 +1,22 @@
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
+using WebAppArchitecture.Base.Security;
 
 namespace WebAppArchitecture.Events;
 
 /// <summary>
 /// Secured orchestration for form choices and scope-authorized bulk imports.
-/// The existing import helpers retain their transaction, batching and deduplication behavior.
+/// Import helpers retain their transaction, batching and deduplication behavior and independently
+/// check Create against the supplied scope before any import data is read or written.
 /// </summary>
+
 public sealed class EventAdministrationService(
-    ISecurityLayer securityLayer,
+    IAuthorizationLayer securityLayer,
     IDBLayer unsecuredDb,
     CoreDbContext catalogDb,
-    SecurityService authorization,
+    IRbacAuthorizationService authorization,
     EventService events,
-    EventTypeService types) : SecuredBaseService<EventModel>(securityLayer, unsecuredDb)
+    EventTypeService types) : SecuredEntityService<EventModel>(securityLayer, unsecuredDb)
 {
     public Task<EventFormsModel> LoadFormAsync(Guid? currentId, CancellationToken ct) =>
         EventForms.LoadAsync(Security.CurrentUserId, catalogDb, events, types, authorization, currentId, ct);

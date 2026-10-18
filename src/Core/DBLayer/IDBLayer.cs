@@ -5,7 +5,7 @@ namespace WebAppArchitecture.DBLayer;
 
 /// <summary>
 /// Central raw persistence gateway and scoped Unit of Work.
-/// Domain Services must never inject this interface directly; application access goes through SecurityLayer.
+/// Domain Services must never inject this interface directly; application access goes through AuthorizationLayer.
 /// Mutation methods stage changes in the current DbContext. SaveChanges and transaction boundaries are explicit.
 /// </summary>
 /// <summary>
@@ -18,6 +18,10 @@ public interface IDBLayer
 
     Task<TEntity> StageCreateAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default) where TEntity : class, IEntityDBModel;
     Task<TEntity> StageUpdateAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default) where TEntity : class, IEntityDBModel;
+    Task<TEntity> StageAuditedCreateAsync<TEntity>(TEntity entity, Guid actor, CancellationToken cancellationToken = default)
+        where TEntity : class, ISecuredEntityDBModel;
+    Task<TEntity> StageAuditedUpdateAsync<TEntity>(TEntity entity, TEntity original, DateTimeOffset expectedUpdatedAt, Guid actor, CancellationToken cancellationToken = default)
+        where TEntity : class, ISecuredEntityDBModel;
     Task StageDeleteAsync<TEntity>(Guid id, CancellationToken cancellationToken = default) where TEntity : class, IEntityDBModel;
     Task StageCreateRangeAsync<TEntity>(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default) where TEntity : class, IEntityDBModel;
     Task StageDeleteWhereAsync<TEntity>(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default) where TEntity : class, IEntityDBModel;

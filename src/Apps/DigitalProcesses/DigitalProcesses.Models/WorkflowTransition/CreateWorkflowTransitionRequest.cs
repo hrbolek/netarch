@@ -2,6 +2,7 @@ namespace WebAppArchitecture.DigitalProcesses.Models.WorkflowTransition;
 /// <summary>
 /// Vstupní kontrakt Create Workflow Transition Request. Přijímá pouze údaje od klienta; identita konajícího uživatele a bezpečnostní kontext se ověřují na serveru.
 /// </summary>
+
 public sealed record CreateWorkflowTransitionRequest(
     Guid workflow_version_id,
     Guid source_state_id,

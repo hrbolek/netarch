@@ -19,3 +19,8 @@ Composition map: **list** = `PageViewList` + domain `MediumCard`; **detail** = `
 ## Editable field composition
 
 `Create` and `Update` UI also follow [`INPUT_COMPONENTS_CONTRACT.md`](INPUT_COMPONENTS_CONTRACT.md). Use the existing `EntityLookupSelect` for editable FK relationships and `EntityLink` for readonly navigation. No new ad hoc FK widgets; do not imply missing Core scalar Input controls already exist.
+
+Razor pages and entity-specific UI components no longer use architecture
+annotations, including generated page and card templates. Preserve their typed
+component parameters; service models and transport contracts do not become UI
+types merely because a page consumes them.

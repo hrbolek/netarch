@@ -1,7 +1,7 @@
 # Endpoint and OpenAPI contract (normative)
 
 ## Source of truth
-This document and `EntityResolversTemplate/Resolvers/EntityNameEndpointExtensions.cs` are the **self-contained normative example**, usable with Core distributed as DLL/NuGet. Historical User and Group sources are optional provenance, not required input. Verify Core extension signatures in the installed public assemblies.
+This document and `EntityResolversTemplate/EntityNameEndpointExtensions.cs` are the **self-contained normative example**, usable with Core distributed as DLL/NuGet. Historical User and Group sources are optional provenance, not required input. Verify Core extension signatures in the installed public assemblies.
 
 ## Canonical route group
 
@@ -40,6 +40,11 @@ The matrix describes the **target** entity contract. Only register endpoints for
 ## Resolver constraints
 
 Resolver code MUST NOT directly query or mutate `DbContext`, construct HTML strings, or implement a separate RBAC policy. Delegate business logic, authorization and transactions to the service layer. For relation/vector endpoints, reuse standard filter/paging and authorization infrastructure.
+
+HTTP resolver classes no longer use architecture annotations.
+Public endpoint return types must be response/transport contracts, never
+database entities (including entities nested in generic return types). Do not
+change established resolver names just to satisfy a suffix check.
 
 ## Verification (required)
 

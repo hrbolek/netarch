@@ -32,6 +32,7 @@ public static class FormComponentCatalog
     public static string GetDescription(string rendererKey) => Examples[rendererKey].Description;
     public static object GetExample(string rendererKey) => Examples[rendererKey].ConfigurationExample;
 }
+
 public sealed class FormComponentCatalogService(IFormNodeTypeService nodeTypes) : IFormComponentCatalogService
 {
     public AuxiliaryOperationResult GetCatalog()

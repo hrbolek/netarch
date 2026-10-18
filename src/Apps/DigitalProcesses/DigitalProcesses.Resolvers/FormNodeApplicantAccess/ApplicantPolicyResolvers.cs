@@ -4,6 +4,7 @@ using WebAppArchitecture.DigitalProcesses.Services.FormNodeApplicantAccess;
 using Microsoft.AspNetCore.Http;
 
 namespace WebAppArchitecture.DigitalProcesses.Resolvers.FormNodeApplicantAccess;
+
 public static class ApplicantPolicyResolvers
 {
     public static IResult List(Guid processVersionId, Guid? stateId, IApplicantPolicyService policies)

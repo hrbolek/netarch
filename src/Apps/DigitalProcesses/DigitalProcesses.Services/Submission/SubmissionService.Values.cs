@@ -3,7 +3,7 @@ using WebAppArchitecture.DigitalProcesses.Models.FormNodeType;
 using WebAppArchitecture.DigitalProcesses.Models.Submission;
 using WebAppArchitecture.DigitalProcesses.Models.SubmissionNode;
 using System.Text.Json;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.Submission;
 

@@ -8,10 +8,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebAppArchitecture.Hosting;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 using WebAppArchitecture.Base.Security;
 using Microsoft.AspNetCore.Mvc;
 namespace WebAppArchitecture.Events;
+
 public sealed class EventsModule : IModule
 {
  public void ConfigureServices(IServiceCollection services,IConfiguration configuration)

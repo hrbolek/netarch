@@ -2,6 +2,7 @@ namespace WebAppArchitecture.DigitalProcesses.Models.ProcessDefinitionVersion;
 /// <summary>
 /// Vstupní kontrakt Create Process Definition Version Request. Přijímá pouze údaje od klienta; identita konajícího uživatele a bezpečnostní kontext se ověřují na serveru.
 /// </summary>
+
 public sealed record CreateProcessDefinitionVersionRequest(
     Guid process_definition_id,
     Guid form_version_id,

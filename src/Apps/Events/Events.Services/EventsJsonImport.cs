@@ -3,12 +3,13 @@ using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using WebAppArchitecture.Base.Data;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.Base.Security;
 
 namespace WebAppArchitecture.Events;
 
 public sealed record EventsJsonImportResult(int Found, int Inserted, int Existing, int TypesInserted, int MissingType,
     int MissingParent, int Invalid, string[] Issues);
+
 
 public static class EventsJsonImport
 {
@@ -55,7 +56,7 @@ public static class EventsJsonImport
     }
 
     public static async Task<EventsJsonImportResult?> RunAsync(Stream json, Guid actor, Guid scope,
-        CoreDbContext db, SecurityService security, CancellationToken ct)
+        CoreDbContext db, IRbacAuthorizationService security, CancellationToken ct)
     {
         if (scope == Guid.Empty || !await security.IsAllowedAsync(actor, scope, "create", ct)) return null;
         using var document = await JsonDocument.ParseAsync(json,

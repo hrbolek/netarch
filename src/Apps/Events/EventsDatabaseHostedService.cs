@@ -11,6 +11,7 @@ namespace WebAppArchitecture.Events;
 /// EnsureCreated does not add tables when a previous version of the database exists.
 /// This bootstrap only creates missing Events tables; it never drops or rewrites core tables.
 /// </summary>
+
 public sealed class EventsDatabaseHostedService(
     IServiceScopeFactory scopeFactory,
     ILogger<EventsDatabaseHostedService> logger) : IHostedService

@@ -11,17 +11,18 @@ using WebAppArchitecture.DigitalProcesses.Services.Shared;
 using System.Text.Json;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.SubmissionNode;
 /// <summary>
 /// Služba Submission Node Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
+
 public sealed class SubmissionNodeService(
-    ISecurityLayer security,
+    IAuthorizationLayer security,
     IRbacAccessBindingManager bindingManager,
     ISecurityProjectionService securityProjection, IDBLayer unsecuredDb)
-    : SecuredBaseService<SubmissionNodeModel>(security, unsecuredDb), ISubmissionNodeService
+    : SecuredEntityService<SubmissionNodeModel>(security, unsecuredDb), ISubmissionNodeService
 {
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách.

@@ -9,7 +9,7 @@ using WebAppArchitecture.DigitalProcesses.Models.TemplateFieldBinding;
 using WebAppArchitecture.DigitalProcesses.Services.DocumentTemplateRevision;
 using WebAppArchitecture.DigitalProcesses.Services.Submission;
 using System.Text;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.FormVersion;
 

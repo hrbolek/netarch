@@ -3,14 +3,15 @@ using WebAppArchitecture.DigitalProcesses.Models.WorkflowTransition;
 using WebAppArchitecture.DigitalProcesses.Models.WorkflowVersion;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.WorkflowTransition;
 /// <summary>
 /// Služba Workflow Transition Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public sealed class WorkflowTransitionService(ISecurityLayer security, IDBLayer unsecuredDb)
-    : SecuredBaseService<WorkflowTransitionModel>(security, unsecuredDb), IWorkflowTransitionService
+
+public sealed class WorkflowTransitionService(IAuthorizationLayer security, IDBLayer unsecuredDb)
+    : SecuredEntityService<WorkflowTransitionModel>(security, unsecuredDb), IWorkflowTransitionService
 {
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách. Volání: GetByIdAsync, CurrentUserId; pořadí a parametry viz implementace.

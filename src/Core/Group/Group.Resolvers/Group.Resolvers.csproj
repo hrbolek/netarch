@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <!-- ASP.NET Core RouteHandlerAnalyzer throws AD0001 on generic minimal API resolver mappings; suppress only this analyzer exception. -->
@@ -18,5 +18,9 @@
     <ProjectReference Include="../../Role/Role.Services/Role.Services.csproj" />
     <ProjectReference Include="../../Membership/Membership.Models/Membership.Models.csproj" />
     <ProjectReference Include="../../Membership/Membership.Services/Membership.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Contracts\Core.Contracts.csproj" />
   </ItemGroup>
 </Project>

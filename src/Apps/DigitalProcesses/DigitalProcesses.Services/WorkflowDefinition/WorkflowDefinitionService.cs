@@ -5,14 +5,15 @@ using WebAppArchitecture.DigitalProcesses.Services.Shared;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.WorkflowDefinition;
 /// <summary>
 /// Služba Workflow Definition Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public sealed class WorkflowDefinitionService(ISecurityLayer security, ISecurityProjectionService securityProjection, IDBLayer unsecuredDb)
-    : SecuredBaseService<WorkflowDefinitionModel>(security, unsecuredDb), IWorkflowDefinitionService
+
+public sealed class WorkflowDefinitionService(IAuthorizationLayer security, ISecurityProjectionService securityProjection, IDBLayer unsecuredDb)
+    : SecuredEntityService<WorkflowDefinitionModel>(security, unsecuredDb), IWorkflowDefinitionService
 {
     public async Task<WorkflowDefinitionDetailResponse> GetDetailAsync(Guid id, CancellationToken ct = default)
     {

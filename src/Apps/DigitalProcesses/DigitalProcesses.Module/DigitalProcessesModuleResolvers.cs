@@ -11,6 +11,8 @@ using WebAppArchitecture.Hosting;
 
 namespace WebAppArchitecture.DigitalProcesses;
 
+
+
 public static class DigitalProcessesModuleResolvers
 {
     public static ApplicationDefinition Home(IApplicationNavigationRegistry navigation)

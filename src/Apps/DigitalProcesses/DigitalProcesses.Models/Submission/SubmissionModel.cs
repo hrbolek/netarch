@@ -10,6 +10,7 @@ namespace WebAppArchitecture.DigitalProcesses.Models.Submission;
 /// <summary>
 /// Podání dat formuláře přiřazené k žádosti; zachovává vazbu na formulářovou verzi a umožňuje audit vstupních hodnot.
 /// </summary>
+
 public sealed record SubmissionModel(
     Guid id,
     Guid request_id,

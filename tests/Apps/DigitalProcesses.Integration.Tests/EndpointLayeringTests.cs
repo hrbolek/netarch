@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using WebAppArchitecture.DigitalProcesses.DBLayer;
 using WebAppArchitecture.Events;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
+using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.Tests.Shared;
 using Xunit;
 
@@ -37,7 +38,7 @@ public sealed class EndpointLayeringTests
     }
 
     [Fact]
-    public void DomainResolvers_InjectSecuredOrComposedServices_NotPersistenceOrSecurityLayer()
+    public void DomainResolvers_InjectSecuredOrComposedServices_NotPersistenceOrAuthorizationLayer()
     {
         using var host = new IsolatedHost();
         using var scope = host.Services.CreateScope();
@@ -47,6 +48,7 @@ public sealed class EndpointLayeringTests
             typeof(EventsResolvers).Assembly,
             typeof(WebAppArchitecture.User.Resolvers.UserResolvers).Assembly,
             typeof(WebAppArchitecture.Group.Resolvers.GroupResolvers).Assembly,
+            typeof(WebAppArchitecture.GroupType.Resolvers.GroupTypeEndpointExtensions).Assembly,
             typeof(WebAppArchitecture.Membership.Resolvers.MembershipResolvers).Assembly,
             typeof(WebAppArchitecture.Role.Resolvers.RoleResolvers).Assembly,
             typeof(WebAppArchitecture.RoleType.Resolvers.RoleTypeResolvers).Assembly,
@@ -59,14 +61,14 @@ public sealed class EndpointLayeringTests
         {
             var dependency = parameter.ParameterType;
             var context = $"{type.Name}.{method.Name}({parameter.Name})";
-            Assert.False(dependency == typeof(ISecurityLayer) ||
+            Assert.False(dependency == typeof(IAuthorizationLayer) ||
                 typeof(WebAppArchitecture.DBLayer.IDBLayer).IsAssignableFrom(dependency) ||
                 typeof(Microsoft.EntityFrameworkCore.DbContext).IsAssignableFrom(dependency),
                 $"{context} directly depends on persistence/security-layer type {dependency.Name}.");
             if (!dependency.Name.EndsWith("Service", StringComparison.Ordinal) ||
                 dependency.ContainsGenericParameters ||
                 dependency.Namespace == "WebAppArchitecture.Base.Security" ||
-                dependency == typeof(ISecurityService) ||
+                dependency == typeof(IRbacAuthorizationService) ||
                 dependency == typeof(WebAppArchitecture.Security.Services.ISecurityPermissionService))
                 continue;
             var instance = scope.ServiceProvider.GetRequiredService(dependency);
@@ -82,12 +84,12 @@ public sealed class EndpointLayeringTests
         if (IsSecured(type)) return;
         Assert.Equal(typeof(IDigitalProcessActionService<>).Assembly, type.Assembly);
         var dependencies = type.GetConstructors().Single().GetParameters().Select(parameter => parameter.ParameterType).ToArray();
-        Assert.DoesNotContain(dependencies, dependency => dependency == typeof(ISecurityLayer) ||
+        Assert.DoesNotContain(dependencies, dependency => dependency == typeof(IAuthorizationLayer) ||
             typeof(WebAppArchitecture.DBLayer.IDBLayer).IsAssignableFrom(dependency) ||
             typeof(Microsoft.EntityFrameworkCore.DbContext).IsAssignableFrom(dependency));
         var entityContracts = dependencies.Where(dependency => dependency.GetInterfaces().Append(dependency)
             .Any(contract => contract.IsGenericType &&
-                contract.GetGenericTypeDefinition() == typeof(WebAppArchitecture.Base.Services.IBaseService<>))).ToArray();
+                contract.GetGenericTypeDefinition() == typeof(WebAppArchitecture.Base.Services.ISecuredEntityService<>))).ToArray();
         Assert.True(entityContracts.Length > 0, $"{context} uses {type.Name} without a secured entity-service dependency.");
         foreach (var dependency in entityContracts)
             Assert.True(IsSecured(services.GetRequiredService(dependency).GetType()),
@@ -98,7 +100,7 @@ public sealed class EndpointLayeringTests
     {
         while (type is not null)
         {
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(SecuredBaseService<>))
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(SecuredEntityService<>))
                 return true;
             type = type.BaseType;
         }

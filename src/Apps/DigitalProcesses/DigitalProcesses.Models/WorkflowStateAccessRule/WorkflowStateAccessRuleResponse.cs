@@ -6,6 +6,7 @@ namespace WebAppArchitecture.DigitalProcesses.Models.WorkflowStateAccessRule;
 /// <summary>
 /// Výstupní DTO entity Workflow State Access Rule response. Odděluje datový model od kontraktu API a Razor pohledů; vytváří se mapováním doménového/databázového modelu.
 /// </summary>
+
 public sealed record WorkflowStateAccessRuleResponse(
     Guid id,
     Guid workflow_state_id,

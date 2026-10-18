@@ -3,13 +3,14 @@ using System.Text.Json;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.ProcessDefinitionVersion;
 /// <summary>
 /// Služba I Process Definition Version Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public interface IProcessDefinitionVersionService : IBaseService<ProcessDefinitionVersionModel>
+
+public interface IProcessDefinitionVersionService : ISecuredEntityService<ProcessDefinitionVersionModel>
 {
     Task<ApplicantMatrixPageData?> ApplicantMatrixAsync(Guid id, CancellationToken ct = default);
     Task<ProcessDefinitionVersionResponse> CreateContainedAsync(CreateProcessDefinitionVersionRequest request, CancellationToken ct = default);

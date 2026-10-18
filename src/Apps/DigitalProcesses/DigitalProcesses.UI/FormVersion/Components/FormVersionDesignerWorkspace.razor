@@ -9,7 +9,6 @@
         <FormNodeStructureCard Editor="@Editor" />
         @if (Editor.Model.root_node_id is null)
         {
-            @* <FormNodeLibraryCard Editor="@Editor" /> *@
             <FormNodeAddCard Editor="@Editor" />
             <FormVersionTemplateCard FormVersionId="@Editor.Model.designer.form.id" />
             <FormVersionAiDesignerCard FormVersionId="@Editor.Model.designer.form.id" />

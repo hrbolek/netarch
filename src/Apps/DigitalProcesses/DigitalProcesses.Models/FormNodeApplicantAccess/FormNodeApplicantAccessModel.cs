@@ -4,6 +4,7 @@ using WebAppArchitecture.DBLayer;
 namespace WebAppArchitecture.DigitalProcesses.Models.FormNodeApplicantAccess;
 
 /// <summary>Explicit Applicant visibility in one workflow state, scoped to one immutable process definition version.</summary>
+
 public sealed record FormNodeApplicantAccessModel(
     Guid id,
     Guid process_definition_version_id,

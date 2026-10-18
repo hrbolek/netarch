@@ -36,7 +36,11 @@ are shared, rather than implementing another renderer/property editor.
 
 The page only selects design/preview/published mode and composes the editor.
 FormVersion components own its header, workspace, preview, AI and template cards.
-FormNode components own the structure, library, add card and edit/move/add dialogs.
+FormNode components own the structure, add card and edit/move/add dialogs.
+The obsolete standalone Library card is removed; library browsing and copying
+remain available through the insertion wizard in both whole-form and subtree editors.
+Entity permissions are displayed once by the version's LargeCard, not repeated
+inside the form or workflow designer workspace.
 `FormNodeEditorView` centralizes tree order, container/type choices, subtree URLs
 and qualified paths including readable ancestors. The response DTO remains
 `FormDesignerPageResponse` for HTTP compatibility; all form and subtree routes
@@ -89,8 +93,10 @@ source audit data and `own_security_scope` are not copied. After successful inse
 the wizard returns to the whole target form's designer, even when opened from a
 subtree editor. Its return URL is supplied by the rendered wizard, and the editor
 script URL includes the UI assembly build identifier to invalidate cached scripts
-after deployment. The subtree editor omits the legacy Library, Add node and
-document-template cards; inserting nodes remains available through the wizard.
+after deployment. The subtree editor omits the Add node and document-template
+cards; inserting nodes remains available through the wizard.
+The AI designer also belongs only to the whole-form draft editor: its proposal
+and approval operate on a form version, not on the displayed subtree.
 GraphQL search options use dropdown stacking order above subsequent form controls.
 Concurrent conflicting insertions may need retry after reload;
 there is no new draft/version concurrency token or multi-user merge protocol.

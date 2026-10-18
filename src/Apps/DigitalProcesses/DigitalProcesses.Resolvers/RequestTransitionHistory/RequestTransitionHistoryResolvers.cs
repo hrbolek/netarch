@@ -15,6 +15,7 @@ namespace WebAppArchitecture.DigitalProcesses.Resolvers.RequestTransitionHistory
 /// <summary>
 /// Vstupní kontrakt Request Transition History Resolvers. Přijímá pouze údaje od klienta; identita konajícího uživatele a bezpečnostní kontext se ověřují na serveru.
 /// </summary>
+
 public static class RequestTransitionHistoryResolvers
 {
     private const string Prefix = "/digital-processes";

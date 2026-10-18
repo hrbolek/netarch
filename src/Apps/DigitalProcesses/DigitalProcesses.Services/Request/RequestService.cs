@@ -17,20 +17,21 @@ using WebAppArchitecture.DigitalProcesses.Services.Submission;
 using System.Text.Json;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.Request;
 /// <summary>
 /// Vstupní kontrakt Request Service. Přijímá pouze údaje od klienta; identita konajícího uživatele a bezpečnostní kontext se ověřují na serveru.
 /// </summary>
+
 public sealed partial class RequestService(
-    ISecurityLayer security,
+    IAuthorizationLayer security,
     IDigitalProcessIntegration integration,
     IRbacAccessBindingManager bindingManager,
     ISecurityProjectionService securityProjection,
     ITrustedSubmissionSnapshotReader snapshots,
     IProcessRequestProvisioner provisioner, IDBLayer unsecuredDb)
-    : SecuredBaseService<RequestModel>(security, unsecuredDb), IRequestService
+    : SecuredEntityService<RequestModel>(security, unsecuredDb), IRequestService
 {
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: GetByIdAsync; pořadí a parametry viz implementace.

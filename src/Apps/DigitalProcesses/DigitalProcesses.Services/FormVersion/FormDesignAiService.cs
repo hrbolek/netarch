@@ -10,10 +10,11 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.FormVersion;
 /// <summary>Creates unpersisted AI proposals and applies only explicitly approved form trees.</summary>
+
 public sealed class FormDesignAiService(IFormVersionService versions, IFormNodeService formNodes, IFormNodeTypeService nodeTypes, IHttpClientFactory clients, IConfiguration configuration, ILoggerFactory loggerFactory) : IFormDesignAiService
 {
     public async Task<AuxiliaryOperationResult> DesignAsync(FormDesignRequest request, CancellationToken ct)

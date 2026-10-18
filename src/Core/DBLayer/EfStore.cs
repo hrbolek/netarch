@@ -53,7 +53,11 @@ public abstract class EfStore<TModel> : IBaseStore<TModel> where TModel : class,
     /// </summary>
     public virtual Task<TModel> UpdateAsync(TModel model, CancellationToken cancellationToken = default)
     {
-        Set.Update(model);
+        var local = Set.Local.SingleOrDefault(item => item.id == model.id);
+        if (local is not null)
+            Db.Entry(local).CurrentValues.SetValues(model);
+        else
+            Set.Update(model);
         return Task.FromResult(model);
     }
 

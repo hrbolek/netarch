@@ -19,6 +19,7 @@ namespace WebAppArchitecture.DigitalProcesses.Resolvers.FormVersion;
 /// <summary>
 /// HTTP resolver pro Form Version Resolvers. Překládá požadavky Minimal API na volání služeb a návratové modely; obchodní pravidla a perzistence patří do Services/DBLayer.
 /// </summary>
+
 public static class FormVersionResolvers
 {
     private const string Prefix = "/digital-processes";

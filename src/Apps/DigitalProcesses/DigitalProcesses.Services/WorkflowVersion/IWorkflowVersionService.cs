@@ -1,13 +1,14 @@
 using WebAppArchitecture.DigitalProcesses.Models.WorkflowVersion;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.WorkflowVersion;
 /// <summary>
 /// Služba I Workflow Version Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public interface IWorkflowVersionService : IBaseService<WorkflowVersionModel>
+
+public interface IWorkflowVersionService : ISecuredEntityService<WorkflowVersionModel>
 {
     Task<WorkflowVersionResponse> CreateContainedAsync(CreateWorkflowVersionRequest request, CancellationToken ct = default);
     Task<WorkflowVersionResponse> PublishAsync(Guid id, CancellationToken ct = default);

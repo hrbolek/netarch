@@ -6,7 +6,7 @@ using WebAppArchitecture.DigitalProcesses.Services.WorkflowDefinition;
 using WebAppArchitecture.DigitalProcesses.Services.WorkflowVersion;
 using WebAppArchitecture.DigitalProcesses.UI.WorkflowDefinition.Pages;
 using WebAppArchitecture.DigitalProcesses.UI.Shared.Components;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 using WebAppArchitecture.Base.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -21,6 +21,7 @@ namespace WebAppArchitecture.DigitalProcesses.Resolvers.WorkflowDefinition;
 /// <summary>
 /// HTTP resolver pro Workflow Definition Resolvers. Překládá požadavky Minimal API na volání služeb a návratové modely; obchodní pravidla a perzistence patří do Services/DBLayer.
 /// </summary>
+
 public static class WorkflowDefinitionResolvers
 {
     private const string Prefix = "/digital-processes";

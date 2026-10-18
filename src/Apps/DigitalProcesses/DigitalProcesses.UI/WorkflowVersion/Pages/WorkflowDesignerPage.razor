@@ -17,11 +17,6 @@
             <a href="/digital-processes/WorkflowDefinitionResponse/list" class="btn btn-outline-secondary">Workflow definitions</a>
         </div>
     </div>
-    <details class="mb-3">
-        <summary class="fw-semibold">Oprávnění verze workflow</summary>
-        <p class="small text-muted mb-0">Zde lze kontrolovat role a podle oprávnění přidat další přiřazení.</p>
-        <EntityPermissions RbacId="@Model.version.rbacobject_id" App="architecture" />
-    </details>
     <div class="card mb-3" id="workflow-preview-@Model.version.id">
         <div class="card-header d-flex justify-content-between align-items-center"><strong>Workflow visualization and test</strong><button class="btn btn-sm btn-outline-secondary" type="button" onclick="workflowPreviewReset(this)">Reset</button></div>
         <div class="card-body">

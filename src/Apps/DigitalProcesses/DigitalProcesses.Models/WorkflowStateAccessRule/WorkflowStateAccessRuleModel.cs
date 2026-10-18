@@ -10,6 +10,7 @@ namespace WebAppArchitecture.DigitalProcesses.Models.WorkflowStateAccessRule;
 /// <summary>
 /// Typ Workflow State Access Rule ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
 /// </summary>
+
 public sealed record WorkflowStateAccessRuleModel(
     Guid id,
     Guid workflow_state_id,

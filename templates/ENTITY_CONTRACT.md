@@ -1,5 +1,12 @@
 # Contract: add an entity to an existing domain
 
+Apply the boundary requirements in [`DOMAIN_CONTRACT.md`](DOMAIN_CONTRACT.md)
+to every generated or added type. Preserve existing persistence, DTO and service
+generic interfaces and use the existing DI registration. Architecture annotations
+are no longer used. Distinguish projections, associations, helper services and UI
+view models by their actual contracts rather than assuming every `*Model` is an
+entity.
+
 All mandatory patterns are defined below and in `REFERENCE_CATALOG.md`; historical `User`, `Group`, `Membership` classes are optional provenance, **not required source dependencies**.
 
 ## Full vertical slice (unless expressly scoped narrower)
@@ -31,4 +38,4 @@ Each editable scalar/FK requires a Create/Update field map and the appropriate i
 
 ## Endpoint metadata requirements (v140)
 
-For resolver generation, first read [`ENDPOINT_CONTRACT.md`](ENDPOINT_CONTRACT.md) and the self-contained `EntityResolversTemplate/Resolvers/EntityNameEndpointExtensions.cs`. Use canonical routes, `WithName`, `WithDescription`, `WithTags`, `ApplyViewModel` and `ApplyJsonModel`; verify Swagger metadata. Core/User and Core/Group source code is **not required**.
+For resolver generation, first read [`ENDPOINT_CONTRACT.md`](ENDPOINT_CONTRACT.md) and the self-contained `EntityResolversTemplate/EntityNameEndpointExtensions.cs`. Use canonical routes, `WithName`, `WithDescription`, `WithTags`, `ApplyViewModel` and `ApplyJsonModel`; verify Swagger metadata. Core/User and Core/Group source code is **not required**.

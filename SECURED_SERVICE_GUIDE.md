@@ -3,15 +3,16 @@
 ## New entity example
 
 ```csharp
-public sealed class DepartmentService : SecuredBaseService<DepartmentModel>
+public sealed class DepartmentService : SecuredEntityService<DepartmentModel>
 {
-    public DepartmentService(ISecurityLayer security, IDBLayer db)
+    public DepartmentService(IAuthorizationLayer security, IDBLayer db)
         : base(security, db) { }
 }
 ```
 
-A response DTO implements `IEntityDTOModel<DepartmentModel, DepartmentResponse>`
-and provides both `static FromModel` and a SQL-compatible `static Projection`.
+A read DTO implements `IEntityProjection<DepartmentModel, DepartmentResponse>`
+with a SQL-compatible `static Projection`; update output additionally implements
+`IEntityMapper<DepartmentModel, DepartmentResponse>` with `static FromModel`.
 
 ```csharp
 var summaries = service.Query<DepartmentSummaryResponse>();
@@ -47,6 +48,24 @@ HTTP resolvers. `ISecuredEntityService<T>` never exposes raw DB entities.
 
 ## Migration
 
-Existing concrete services continue to derive from the deprecated two-parameter
-adapter until their resolver and service interfaces are migrated. New services
-can immediately use the one-parameter implementation.
+All entity-service contracts inherit `ISecuredEntityService<TModel>` and
+implementations derive from `SecuredEntityService<TModel>`. The former
+`IBaseService` is removed. `RbacAuthorizationService` implements the independent
+`IRbacAuthorizationService` permission-decision contract; it must not inherit
+the entity service, which would cause recursive authorization.
+
+Updates implement `IUpdateDTOModel<TModel>` and supply the original `updated_at`.
+Do not replace that token with the current time or a freshly reread timestamp.
+`ApplyTo` changes business fields only. The authorized staging pipeline owns
+audit identity/timestamps and EF uses the original token in its UPDATE
+predicate. HTTP callers receive 400 for missing/invalid tokens and 409 for a
+stale token or a concurrent write. HTML forms include the original timestamp
+as a hidden field in round-trip (`O`) format.
+
+`VectorAsync` without an explicit limit remains unbounded;
+`VectorPageAsync` defaults to 25 items and reports continuation metadata.
+Do not substitute one for the other without explicitly deciding paging behavior.
+
+Static resolver classes cannot inherit. Map standard closed generic
+`BaseResolvers` methods directly, as the Core entity endpoints do; retain specialized
+handlers for domain orchestration, forms and relations.

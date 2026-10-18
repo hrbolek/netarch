@@ -4,6 +4,25 @@
 
 Read `PORTABLE_CORE_CONTRACT.md` and `REFERENCE_CATALOG.md` first. Domain architecture has **four independent projects**: `Domain.Models`, `Domain.Services`, `Domain.Resolvers`, `Domain.UI`, plus composition/module adapter as required. This is specified here, **not delegated to Core domain sources**. The existing `ApplicationTemplate` is legacy and requires completion. Check exact APIs using referenced binary assembly metadata/XML docs.
 
+## Source layout
+
+Directory names express ownership; project names identify assemblies. For a
+small single-entity project, place its C# sources beside `Entity.Models.csproj`,
+`Entity.Services.csproj` or `Entity.Resolvers.csproj`, not inside an additional
+`Models`, `Services` or `Resolvers` directory. Keep UI `Pages` and `Components`
+subdirectories, and entity-specific folders in larger multi-entity projects.
+An independently exposed entity owns its contracts/services/resolvers; do not
+hide another entity's types in an unrelated owner's project just because the
+entities are related. Do not create empty projects or invent missing UI.
+
+In a source checkout, the shared contract project is
+`src/Core/Contracts/Core.Contracts.csproj`, with assembly name `Core.Contracts`.
+Its dependency-free public contracts retain their existing namespaces.
+The reference Core DBLayer groups each entity's model/store types under
+`Entities/{Entity}` and RBAC projection types under `Authorization`, without
+splitting its DbContext or changing persistence namespaces. New application
+domains still own their model/mappings through the existing contributor pattern.
+
 ## Mandatory deliverables
 
 1. Domain-specific `.Models` project: database models and DTO requests/responses/projections; model contributor / EF mappings connected through existing module/database composition.
@@ -20,7 +39,23 @@ Read `PORTABLE_CORE_CONTRACT.md` and `REFERENCE_CATALOG.md` first. Domain archit
 
 Identify ownership/security scope for Create; nullable and required relationships; delete behavior; hierarchical or interval constraints; API representations; specialized visualizations; required standard data and imports. Do not invent an unrestricted security scope, silent cascade behavior, or empty UI by omission.
 
+## Architecture boundaries and validation
+
+Architecture annotations and the attribute-driven auditor have been removed.
+Do not add attribute-library references to generated projects. Preserve existing
+database model, request/response DTO and service generic interfaces, and wire
+their existing implementations through DI. Determine responsibilities from
+actual interfaces, base classes and generic arguments; suffixes and directories
+are conventions, not proof of a role. Do not invent paired DTOs or services
+solely to satisfy naming patterns, and do not rename existing types.
+
+After an entity or architecture change run `./tools/audit-architecture.sh`.
+This compatibility entry point runs the application build, tests and direct/
+transitive NuGet vulnerability audit; it no longer produces an architecture
+classification report. Validate boundaries with the existing contracts and
+integration tests, and report any unverified boundaries explicitly.
+
 
 ## Endpoint metadata requirements (v140)
 
-For resolver generation, first read [`ENDPOINT_CONTRACT.md`](ENDPOINT_CONTRACT.md) and the self-contained `EntityResolversTemplate/Resolvers/EntityNameEndpointExtensions.cs`. Use canonical routes, `WithName`, `WithDescription`, `WithTags`, `ApplyViewModel` and `ApplyJsonModel`; verify Swagger metadata. Core/User and Core/Group source code is **not required**.
+For resolver generation, first read [`ENDPOINT_CONTRACT.md`](ENDPOINT_CONTRACT.md) and the self-contained `EntityResolversTemplate/EntityNameEndpointExtensions.cs`. Use canonical routes, `WithName`, `WithDescription`, `WithTags`, `ApplyViewModel` and `ApplyJsonModel`; verify Swagger metadata. Core/User and Core/Group source code is **not required**.

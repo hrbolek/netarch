@@ -41,8 +41,8 @@ public sealed class DigitalProcessesFullLifecycleTests
         using var host = new IsolatedHost();
         var f = await SeedPublishedProcessAsync(host);
 
-        // Same DI services and SecurityLayer as HTTP, without serialization/routing.
-        // SecurityLayer.CurrentUserId still needs a current actor: supply a scoped
+        // Same DI services and AuthorizationLayer as HTTP, without serialization/routing.
+        // AuthorizationLayer.CurrentUserId still needs a current actor: supply a scoped
         // HttpContext with the same EasyAuth header as the old HTTP test.
         using var serviceScope = host.Services.CreateScope();
         var accessor = serviceScope.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
@@ -172,7 +172,7 @@ public sealed class DigitalProcessesFullLifecycleTests
             formVersion, wfVersion, 1, true, now, root.id, now, now, actor, actor)
             { target_group_type_id = root.group_type_id });
         await db.SaveChangesAsync();
-        var projection = scope.ServiceProvider.GetRequiredService<WebAppArchitecture.SecurityLayer.ISecurityProjectionService>();
+        var projection = scope.ServiceProvider.GetRequiredService<WebAppArchitecture.AuthorizationLayer.ISecurityProjectionService>();
         await projection.SynchronizeGroupSubtreeAsync(targetId);
         return new(actor, targetId, processVersion, initial, final, transition, node);
     }

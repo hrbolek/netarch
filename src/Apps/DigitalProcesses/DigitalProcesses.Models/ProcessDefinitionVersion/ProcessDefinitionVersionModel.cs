@@ -10,6 +10,7 @@ namespace WebAppArchitecture.DigitalProcesses.Models.ProcessDefinitionVersion;
 /// <summary>
 /// Neměnná identita konkrétní verze procesu. Spojuje verzi formuláře a workflow, uchovává pořadové číslo a příznak publikování; žádosti jsou navázány na konkrétní verzi.
 /// </summary>
+
 public sealed record ProcessDefinitionVersionModel(
     Guid id,
     Guid process_definition_id,

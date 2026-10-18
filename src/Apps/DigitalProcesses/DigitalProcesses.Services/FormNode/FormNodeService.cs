@@ -6,13 +6,14 @@ using System.Text.Json;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.FormNode;
 /// <summary>
 /// Služba Form Node Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public sealed partial class FormNodeService(ISecurityLayer security, IDBLayer unsecuredDb) : SecuredBaseService<FormNodeModel>(security, unsecuredDb), IFormNodeService
+
+public sealed partial class FormNodeService(IAuthorizationLayer security, IDBLayer unsecuredDb) : SecuredEntityService<FormNodeModel>(security, unsecuredDb), IFormNodeService
 {
     /// <summary>
     /// Zpracovává vytvoření entity nebo jejího vstupního formuláře; validační, autorizační a transakční pravidla ponechává ve volaných službách.

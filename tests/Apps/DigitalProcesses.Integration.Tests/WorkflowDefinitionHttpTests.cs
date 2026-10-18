@@ -31,6 +31,30 @@ public sealed class WorkflowDefinitionHttpTests
          new("return", "third", "first", "Return", true, "true", "null")]);
 
     [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task DesignerShowsPermissionsOnlyInVersionLargeCard(bool published)
+    {
+        using var host = new IsolatedHost();
+        var definition = await SeedDefinition(host);
+        using var client = host.CreateClient();
+        using var create = await Send(client, HttpMethod.Post, Prefix + "/create-contained",
+            new CreateWorkflowVersionRequest(definition, 1, published, Graph.states, Graph.transitions));
+        Assert.Equal(HttpStatusCode.OK, create.StatusCode);
+        var version = (await create.Content.ReadFromJsonAsync<WorkflowVersionResponse>())!;
+        using var request = ActingRequest.Get(Prefix + "/designer/" + version.id, RbacWellKnown.BootstrapAdminUserId);
+        request.Headers.Accept.Clear();
+        request.Headers.Accept.ParseAdd("text/html");
+        request.Headers.Add("X-Response-Type", "html");
+        using var response = await client.SendAsync(request);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var html = await response.Content.ReadAsStringAsync();
+        Assert.Contains("<title>Workflow designer</title>", html);
+        Assert.DoesNotContain("Oprávnění verze workflow", WebUtility.HtmlDecode(html));
+        Assert.Single(html.Split($"hx-get=\"/architecture/RbacPermissionResponse/permissions/{version.rbacobject_id}\"").Skip(1));
+    }
+
+    [Theory]
     [InlineData("Material", 18, 17)]
     [InlineData("ZSC", 9, 7)]
     public async Task ExampleFiles_AreAcceptedDirectlyForReplacementAndCreation(string name, int states, int transitions)

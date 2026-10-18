@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 namespace WebAppArchitecture.DigitalProcesses.Resolvers.DocumentTemplate;
+
 public static class TemplateManagementResolvers
 {
     public static void Map(IEndpointRouteBuilder endpoints)

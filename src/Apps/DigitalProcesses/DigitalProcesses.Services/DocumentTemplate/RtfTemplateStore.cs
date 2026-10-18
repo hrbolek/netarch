@@ -8,6 +8,7 @@ namespace WebAppArchitecture.DigitalProcesses.Services.DocumentTemplate;
 /// Persistence helper for templates. Production access is authorized by FormVersionService;
 /// the temporary designer preview also uses its read-only compatibility surface.
 /// </summary>
+
 public sealed class RtfTemplateStore(IDBLayer db)
 {
     public IReadOnlyList<RtfTemplateInfo> List(Guid version) => db.Query<DocumentTemplateModel>()

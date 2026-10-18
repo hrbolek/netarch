@@ -1,18 +1,20 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using WebAppArchitecture.Base.Data;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 namespace WebAppArchitecture.Events;
 
 /// <summary>
 /// RBAC-safe access to event types. Reads are filtered in SQL and paged; writes go through the security layer,
 /// which re-checks the operation on the original and the target RBAC context.
 /// </summary>
-public sealed class EventTypeService(ISecurityLayer securityLayer, IDBLayer unsecuredDb)
- : SecuredBaseService<EventTypeModel>(securityLayer, unsecuredDb)
+
+public sealed class EventTypeService(IAuthorizationLayer securityLayer, IDBLayer unsecuredDb)
+ : TreeSecuredService<EventTypeModel>(securityLayer, unsecuredDb)
 {
- public const int DefaultPageSize=50;
- public const int MaxPageSize=200;
+ public new const int DefaultPageSize=50;
+ public new const int MaxPageSize=200;
  private static int PageSize(int? take)=>Math.Clamp(take??DefaultPageSize,1,MaxPageSize);
  private static int Offset(int? skip)=>Math.Max(0,skip??0);
 
@@ -43,7 +45,7 @@ public sealed class EventTypeService(ISecurityLayer securityLayer, IDBLayer unse
   var item=new EventTypeModel{Code=req.Code,Name=req.Name,Description=req.Description,Abbreviation=req.Abbreviation,Color=req.Color,RegistrationMode=req.RegistrationMode,ParentId=req.ParentId,rbacobject_id=scope,created_at=now,updated_at=now,created_by=actor,updated_by=actor};
   return await Security.ExecuteInTransactionAsync(async c=>
   {
-   var entity=await Security.StageCreateAsync(item,c);
+   var entity=await StageCreateNodeAsync(item,c);
    await Security.SaveChangesAsync(c);
    return entity;
   },ct);
@@ -54,6 +56,11 @@ public sealed class EventTypeService(ISecurityLayer securityLayer, IDBLayer unse
   if(string.IsNullOrWhiteSpace(req.Code)||string.IsNullOrWhiteSpace(req.Name)||req.ParentId==id)return false;
   var item=await FindAsync(id,ct,SecurityOperations.Update);
   if(item is null)return false;
+  if(req.ParentId is Guid parentId && parentId != item.ParentId)
+  {
+   var parent=await SecuredModels(SecurityOperations.Update).Where(x=>x.id==parentId).FirstOrDefaultAsync(ct);
+   if(parent is null||parent.rbacobject_id!=item.rbacobject_id)return false;
+  }
   var visited=new HashSet<Guid>{id};var ancestor=req.ParentId;
   while(ancestor is Guid pid)
   {
@@ -64,7 +71,7 @@ public sealed class EventTypeService(ISecurityLayer securityLayer, IDBLayer unse
   }
   if(await Unsecured_Query().AnyAsync(x=>x.Code==req.Code&&x.id!=id,ct))return false;
   item.Code=req.Code;item.Name=req.Name;item.Description=req.Description;item.Abbreviation=req.Abbreviation;item.Color=req.Color;item.RegistrationMode=req.RegistrationMode;item.ParentId=req.ParentId;item.updated_by=Security.CurrentUserId;item.updated_at=DateTimeOffset.UtcNow;
-  await Security.ExecuteInTransactionAsync(async c=>{await Security.StageUpdateAsync(item,c);await Security.SaveChangesAsync(c);},ct);
+  await Security.ExecuteInTransactionAsync(async c=>{await StageUpdateNodeAsync(item,c);await Security.SaveChangesAsync(c);},ct);
   return true;
  }
 
@@ -91,5 +98,8 @@ public sealed class EventTypeService(ISecurityLayer securityLayer, IDBLayer unse
  }
 }
 
+
+
 public sealed record EventTypeCreateRequest(string Code,string Name,string? Description,string? Abbreviation,string? Color,string RegistrationMode,Guid? ParentId,Guid RbacObjectId);
+
 public sealed record EventTypeUpdateRequest(string Code,string Name,string? Description,string? Abbreviation,string? Color,string RegistrationMode,Guid? ParentId);

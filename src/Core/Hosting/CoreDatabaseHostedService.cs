@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.Hosting;
 
@@ -13,6 +13,7 @@ namespace WebAppArchitecture.Hosting;
 /// Owns Core database lifecycle: schema/bootstrap/security projection on startup
 /// and JSON database dump on graceful shutdown.
 /// </summary>
+
 public sealed class CoreDatabaseHostedService(
     IServiceScopeFactory scopeFactory,
     IConfiguration configuration,

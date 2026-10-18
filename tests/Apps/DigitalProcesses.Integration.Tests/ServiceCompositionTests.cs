@@ -10,7 +10,7 @@ using WebAppArchitecture.DigitalProcesses.Services.FormNodeType;
 using WebAppArchitecture.DigitalProcesses.Services.FormVersion;
 using WebAppArchitecture.DigitalProcesses.Services.Shared;
 using WebAppArchitecture.DigitalProcesses.Services.Submission;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 using WebAppArchitecture.Tests.Shared;
 using Xunit;
 
@@ -32,12 +32,12 @@ public sealed class ServiceCompositionTests
     {
         Assert.Null(SecuredModel(type));
         var dependencies = type.GetConstructors().Single().GetParameters().Select(parameter => parameter.ParameterType).ToArray();
-        Assert.DoesNotContain(dependencies, dependency => dependency == typeof(ISecurityLayer) ||
+        Assert.DoesNotContain(dependencies, dependency => dependency == typeof(IAuthorizationLayer) ||
             typeof(IDBLayer).IsAssignableFrom(dependency) ||
             typeof(Microsoft.EntityFrameworkCore.DbContext).IsAssignableFrom(dependency) ||
             dependency == typeof(RtfTemplateStore));
         Assert.Contains(dependencies, dependency => dependency.GetInterfaces().Append(dependency)
-            .Any(contract => contract.IsGenericType && contract.GetGenericTypeDefinition() == typeof(IBaseService<>)));
+            .Any(contract => contract.IsGenericType && contract.GetGenericTypeDefinition() == typeof(ISecuredEntityService<>)));
     }
 
     [Fact]
@@ -66,7 +66,7 @@ public sealed class ServiceCompositionTests
             .Where(type => !type.IsAbstract && typeof(ISecuredEntityDBModel).IsAssignableFrom(type));
         foreach (var model in models)
         {
-            var contract = typeof(IBaseService<>).MakeGenericType(model);
+            var contract = typeof(ISecuredEntityService<>).MakeGenericType(model);
             var instance = scope.ServiceProvider.GetRequiredService(contract);
             Assert.Equal(model, SecuredModel(instance.GetType()));
             var named = instance.GetType().GetInterfaces().Single(type => type.Name == "I" + instance.GetType().Name);
@@ -87,7 +87,7 @@ public sealed class ServiceCompositionTests
     private static Type? SecuredModel(Type? type)
     {
         for (; type is not null; type = type.BaseType)
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(SecuredBaseService<>))
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(SecuredEntityService<>))
                 return type.GenericTypeArguments[0];
         return null;
     }

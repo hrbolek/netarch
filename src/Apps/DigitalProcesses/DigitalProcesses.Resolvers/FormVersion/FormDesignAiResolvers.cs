@@ -4,6 +4,7 @@ using WebAppArchitecture.DigitalProcesses.Services.FormVersion;
 using Microsoft.AspNetCore.Http;
 
 namespace WebAppArchitecture.DigitalProcesses.Resolvers.FormVersion;
+
 public static class FormDesignAiResolvers
 {
     public static async Task<IResult> Design(FormDesignRequest request, IFormDesignAiService designer, CancellationToken ct)

@@ -1,0 +1,61 @@
+<Solution>
+  <Folder Name="/Events/">
+    <Project Path="src/Apps/Events/Events.csproj" />
+    <Project Path="src/Apps/Events/Events.Resolvers/Events.Resolvers.csproj" />
+    <Project Path="src/Apps/Events/Events.Services/Events.Services.csproj" />
+    <Project Path="src/Apps/Events/Events.UI/Events.UI.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Apps/DigitalProcesses/DigitalProcesses.Models/DigitalProcesses.Models.csproj" />
+    <Project Path="src/Apps/DigitalProcesses/DigitalProcesses.Module/DigitalProcesses.Module.csproj" />
+    <Project Path="src/Apps/DigitalProcesses/DigitalProcesses.Resolvers/DigitalProcesses.Resolvers.csproj" />
+    <Project Path="src/Apps/DigitalProcesses/DigitalProcesses.Services/DigitalProcesses.Services.csproj" />
+    <Project Path="src/Apps/DigitalProcesses/DigitalProcesses.UI/DigitalProcesses.UI.csproj" />
+    <Project Path="src/Apps/Host/Host.csproj" />
+    <Project Path="src/Core/Contracts/Core.Contracts.csproj" />
+    <Project Path="src/Core/DBLayer/DBLayer.csproj" />
+    <Project Path="src/Core/Group/Group.Models/Group.Models.csproj" />
+    <Project Path="src/Core/Group/Group.Resolvers/Group.Resolvers.csproj" />
+    <Project Path="src/Core/Group/Group.Services/Group.Services.csproj" />
+    <Project Path="src/Core/Group/Group.UI/Group.UI.csproj" />
+    <Project Path="src/Core/Hosting/Core.Hosting.csproj" />
+    <Project Path="src/Core/Membership/Membership.Models/Membership.Models.csproj" />
+    <Project Path="src/Core/Membership/Membership.Resolvers/Membership.Resolvers.csproj" />
+    <Project Path="src/Core/Membership/Membership.Services/Membership.Services.csproj" />
+    <Project Path="src/Core/Membership/Membership.UI/Membership.UI.csproj" />
+    <Project Path="src/Core/Role/Role.Models/Role.Models.csproj" />
+    <Project Path="src/Core/Role/Role.Resolvers/Role.Resolvers.csproj" />
+    <Project Path="src/Core/Role/Role.Services/Role.Services.csproj" />
+    <Project Path="src/Core/Role/Role.UI/Role.UI.csproj" />
+    <Project Path="src/Core/RoleType/RoleType.Models/RoleType.Models.csproj" />
+    <Project Path="src/Core/RoleType/RoleType.Resolvers/RoleType.Resolvers.csproj" />
+    <Project Path="src/Core/RoleType/RoleType.Services/RoleType.Services.csproj" />
+    <Project Path="src/Core/RoleType/RoleType.UI/RoleType.UI.csproj" />
+    <Project Path="src/Core/Security/Security.Models/Security.Models.csproj" />
+    <Project Path="src/Core/Security/Security.Resolvers/Security.Resolvers.csproj" />
+    <Project Path="src/Core/Security/Security.Services/Security.Services.csproj" />
+    <Project Path="src/Core/Security/Security.UI/Security.UI.csproj" />
+    <Project Path="src/Core/User/User.Models/User.Models.csproj" />
+    <Project Path="src/Core/User/User.Resolvers/User.Resolvers.csproj" />
+    <Project Path="src/Core/User/User.Services/User.Services.csproj" />
+    <Project Path="src/Core/User/User.UI/User.UI.csproj" />
+  </Folder>
+  <Folder Name="/src/Apps/" />
+  <Folder Name="/src/Core/" />
+  <Folder Name="/src/Core/Contracts/" />
+  <Folder Name="/src/Core/GroupType/">
+    <Project Path="src/Core/GroupType/GroupType.Models/GroupType.Models.csproj" />
+    <Project Path="src/Core/GroupType/GroupType.Resolvers/GroupType.Resolvers.csproj" />
+    <Project Path="src/Core/GroupType/GroupType.Services/GroupType.Services.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Core/Core.Contracts.Tests/Core.Contracts.Tests.csproj" />
+  </Folder>
+  <Project Path="src/Apps/AppComposition/AppComposition.csproj" />
+  <Project Path="src/Apps/HostManagement/HostManagement.csproj" />
+  <Project Path="src/Core/Base/Base.csproj" />
+  <Project Path="src/Core/AuthorizationLayer/AuthorizationLayer.csproj" />
+  <Project Path="tests/Apps/DigitalProcesses.Integration.Tests/DigitalProcesses.Integration.Tests.csproj" />
+  <Project Path="tests/Core.AuthorizationLayer.Tests/Core.AuthorizationLayer.Tests.csproj" />
+  <Project Path="tests/Core/Host.Integration.Tests/Host.Integration.Tests.csproj" />
+</Solution>

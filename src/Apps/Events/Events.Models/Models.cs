@@ -15,6 +15,7 @@ public abstract class EventTreeEntity : EventEntity
  /// <summary>Materialized path of all ancestors: /{rootId}/.../{id}/ (maintained by TreeSecuredService).</summary>
  public string path {get;set;} = "";
 }
+
 public sealed class EventTypeModel : EventTreeEntity, ITreeEntityDBModel<EventTypeModel>
 {
  Guid? ITreeEntityDBModel<EventTypeModel>.parent_id => ParentId;
@@ -26,6 +27,7 @@ public sealed class EventTypeModel : EventTreeEntity, ITreeEntityDBModel<EventTy
  public string? Color {get;set;}
  public string RegistrationMode {get;set;} = "inherit";
 }
+
 public sealed class EventModel : EventTreeEntity, ITreeEntityDBModel<EventModel>
 {
  Guid? ITreeEntityDBModel<EventModel>.parent_id => ParentId;
@@ -37,6 +39,7 @@ public sealed class EventModel : EventTreeEntity, ITreeEntityDBModel<EventModel>
  public DateTimeOffset StartsAt {get;set;}
  public DateTimeOffset EndsAt {get;set;}
 }
+
 public sealed class EventRegistrationPolicyModel : EventEntity
 {
  public Guid EventId {get;set;}
@@ -44,12 +47,14 @@ public sealed class EventRegistrationPolicyModel : EventEntity
  public DateTimeOffset? OpensAt {get;set;}
  public DateTimeOffset? ClosesAt {get;set;}
 }
+
 public sealed class EventParticipationSourceModel
 {
  public Guid id {get;set;}
  public string Code {get;set;} = "";
  public string Name {get;set;} = "";
 }
+
 public sealed class EventParticipantStatusModel
 {
  public Guid id {get;set;}
@@ -59,12 +64,14 @@ public sealed class EventParticipantStatusModel
  public bool IsInitial {get;set;}
  public bool IsTerminal {get;set;}
 }
+
 public sealed class EventParticipantRoleModel
 {
  public Guid id {get;set;}
  public string Code {get;set;} = "";
  public string Name {get;set;} = "";
 }
+
 public sealed class EventParticipantModel : EventEntity
 {
  public Guid EventId {get;set;}

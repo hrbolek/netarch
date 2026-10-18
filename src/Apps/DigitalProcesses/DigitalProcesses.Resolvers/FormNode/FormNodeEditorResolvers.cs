@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Routing;
 using WebAppArchitecture.Base.Endpoints;
 
 namespace WebAppArchitecture.DigitalProcesses.Resolvers.FormNode;
+
 public static class FormNodeEditorResolvers
 {
     public static async Task<object> Editor(Guid id, bool? test, IFormNodeService service, CancellationToken ct)

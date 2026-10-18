@@ -6,6 +6,7 @@ namespace WebAppArchitecture.DigitalProcesses.Models.ProcessDefinitionVersion;
 /// <summary>
 /// Výstupní DTO entity Process Definition Version response. Odděluje datový model od kontraktu API a Razor pohledů; vytváří se mapováním doménového/databázového modelu.
 /// </summary>
+
 public sealed record ProcessDefinitionVersionResponse(
     Guid id,
     Guid process_definition_id,

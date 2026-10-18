@@ -20,7 +20,7 @@
             }
             else
             {
-                <div class="mb-3"><EntityLookupSelect Name="master_group_id" Label="Parent group (optional)" ListUrl="/architecture/GroupResponse/list?operation=create" SearchFields="@GroupFields" Required="false" MinChars="2" Take="20" HelpText="Leave empty for a typed root Group." /></div>
+                <div class="mb-3"><EntityLookupSelect Name="master_group_id" Label="Parent group (optional)" ListUrl="/architecture/GroupResponse/create-targets" SearchFields="@GroupFields" Required="false" MinChars="2" Take="20" HelpText="Leave empty for a typed root Group." /></div>
             }
             <div class="d-flex gap-2"><button type="submit" class="btn btn-primary">Create</button>@if (!string.IsNullOrWhiteSpace(ReturnUrl)) { <a class="btn btn-outline-secondary" href="@ReturnUrl">Cancel</a> }</div>
         </form>

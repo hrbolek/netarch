@@ -31,7 +31,7 @@ using WebAppArchitecture.DigitalProcesses.Models.Submission;
 using WebAppArchitecture.DigitalProcesses.Services.Shared;
 using WebAppArchitecture.DigitalProcesses.Services.Submission;
 using WebAppArchitecture.Tests.Shared;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 using Xunit;
 
 namespace DigitalProcesses.Integration.Tests;
@@ -376,7 +376,7 @@ public sealed class ComposedServiceBehaviorTests
         db.Entry(type).CurrentValues.SetValues(type with { rbacobject_id = scopeId });
         await db.SaveChangesAsync();
         await scope.ServiceProvider.GetRequiredService<ISecurityProjectionService>().SynchronizeRbacObjectAsync(scopeId);
-        var security = scope.ServiceProvider.GetRequiredService<ISecurityLayer>();
+        var security = scope.ServiceProvider.GetRequiredService<IAuthorizationLayer>();
         Assert.True(await security.IsAllowedAsync(scopeId, SecurityOperations.Read));
         Assert.False(await security.IsAllowedAsync(scopeId, SecurityOperations.List));
         Assert.False(await security.IsAllowedAsync(scopeId, SecurityOperations.Update));

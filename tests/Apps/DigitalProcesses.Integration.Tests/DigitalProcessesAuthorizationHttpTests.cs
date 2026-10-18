@@ -39,7 +39,7 @@ public sealed class DigitalProcessesAuthorizationHttpTests
         using var client = host.CreateClient();
         using var response = await client.SendAsync(ActingRequest.Get(path + "?operation=nonexistent_permission", Guid.NewGuid()));
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-        Assert.Contains("Unknown RBAC operation", await response.Content.ReadAsStringAsync());
+        Assert.Contains("operation is fixed", await response.Content.ReadAsStringAsync());
     }
 
     [Fact]

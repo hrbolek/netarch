@@ -17,3 +17,12 @@
 
 ### v140 resolver scope
 `EntityResolversTemplate` now maps real read/list/edit/link/update/delete routes with metadata and Core representation extensions. Secure create, forms, actions, vector and integration tests remain incomplete; `ApplicationTemplate` is a legacy skeleton and must not be presented as the full canonical implementation.
+
+### Core source-layout alignment
+
+Model, service and resolver sources now generate beside their project files,
+without redundant inner layer folders. Their source-checkout references include
+`Core/Contracts/Core.Contracts.csproj`. Generation of all three scaffolds was
+verified in a session-only `dotnet new` hive, including exact generated paths
+and replacement type/project names. This verifies generation/layout, not
+compilation or functional completeness of a new domain; the gaps above remain.

@@ -17,6 +17,7 @@ namespace WebAppArchitecture.DigitalProcesses.Resolvers.FormNode;
 /// <summary>
 /// HTTP resolver pro Form Node Resolvers. Překládá požadavky Minimal API na volání služeb a návratové modely; obchodní pravidla a perzistence patří do Services/DBLayer.
 /// </summary>
+
 public static class FormNodeResolvers
 {
     private const string Prefix = "/digital-processes";

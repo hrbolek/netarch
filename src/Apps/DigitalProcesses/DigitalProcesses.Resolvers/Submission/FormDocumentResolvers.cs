@@ -3,6 +3,7 @@ using WebAppArchitecture.DigitalProcesses.Services.Submission;
 using Microsoft.AspNetCore.Http;
 
 namespace WebAppArchitecture.DigitalProcesses.Resolvers.Submission;
+
 public static class FormDocumentResolvers
 {
     public static async Task<IResult> Schema(Guid id, IFormDocumentService documents, CancellationToken ct)

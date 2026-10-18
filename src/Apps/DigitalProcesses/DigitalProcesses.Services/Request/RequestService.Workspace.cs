@@ -9,7 +9,7 @@ using WebAppArchitecture.DigitalProcesses.Models.WorkflowState;
 using WebAppArchitecture.DigitalProcesses.Models.WorkflowTransition;
 using WebAppArchitecture.DigitalProcesses.Models.WorkflowVersion;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.Request;
 

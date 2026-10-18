@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net10.0</TargetFramework><IsTestProject>true</IsTestProject><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings></PropertyGroup><ItemGroup><PackageReference Include="Microsoft.NET.Test.Sdk" /><PackageReference Include="xunit" /><PackageReference Include="xunit.runner.visualstudio" /><PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+<Compile Include="../Shared/PostgresTestDatabase.cs" Link="Shared/PostgresTestDatabase.cs" /><ProjectReference Include="../../src/Core/AuthorizationLayer/AuthorizationLayer.csproj" /></ItemGroup><ItemGroup>
+  <ProjectReference Include="..\..\src\Core\Hosting\Core.Hosting.csproj" />
+</ItemGroup></Project>

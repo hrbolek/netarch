@@ -25,6 +25,7 @@ public static class DigitalProcessActionEndpoints
     }
 
 }
+
 public static class DigitalProcessActionResolvers
 {
     public static async Task<object> Read<TEntity>(

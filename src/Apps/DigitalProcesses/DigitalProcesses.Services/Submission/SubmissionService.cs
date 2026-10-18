@@ -4,13 +4,14 @@ using System.Text.Json;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.Submission;
 /// <summary>
 /// Služba Submission Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public sealed partial class SubmissionService(ISecurityLayer security, IDBLayer unsecuredDb) : SecuredBaseService<SubmissionModel>(security, unsecuredDb),ISubmissionService
+
+public sealed partial class SubmissionService(IAuthorizationLayer security, IDBLayer unsecuredDb) : SecuredEntityService<SubmissionModel>(security, unsecuredDb),ISubmissionService
 {
     /// <summary>
     /// Načítá nebo prezentuje entity pro aktuálního uživatele; výsledek předává kontraktu HTTP nebo Razor stránce. Volání: GetByIdAsync, Query; pořadí a parametry viz implementace.

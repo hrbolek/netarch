@@ -1,7 +1,15 @@
 
 ## Current persistence and RBAC architecture
 
-The default runtime uses a single EF Core `ApplicationDbContext` backed by SQLite (`data/application.db`). Stores receive the DbContext by dependency injection and keep `IQueryable` inside the persistence layer. Group and GroupType hierarchies use materialized paths. Authorization is exposed through `SecurityService`, with persistence-specific authorization queries isolated in `ISecurityStore`. See `ARCHITECTURE_UPDATE_09.md`.
+The runtime uses PostgreSQL with a shared CoreDbContext (or an application-derived
+context). Entity services implement `ISecuredEntityService<TModel>` through
+`SecuredEntityService<TModel>` in AuthorizationLayer. `IRbacAuthorizationService`
+and `RbacAuthorizationService` decide actor/object/operation permissions;
+`IAuthorizationLayer` applies those permissions to data access.
+The redundant `IBaseService`, `ISecurityService` and HTTP `IRbacService` adapters
+are removed. `SecurityPermissionService` remains the administration projection.
+See [the secured service guide](SECURED_SERVICE_GUIDE.md) and
+[the contract documentation](src/Core/Contracts/README.md#secured-entity-services-and-write-contracts).
 
 # SignFakeArchitecture / WebAppArchitecture
 
@@ -19,17 +27,29 @@ Aktuální entita `User` slouží jako referenční implementace.
 SignFakeArchitecture.sln
 │
 ├── src/
-│   ├── Base/
-│   │   └── Base.csproj
-│   │
-│   ├── Host/
-│   │   ├── Host.csproj
-│   │   └── Program.cs
-│   │
-│   ├── User.Models/
-│   ├── User.Services/
-│   ├── User.UI/
-│   └── User.Resolvers/
+│   ├── Apps/
+│   │   ├── Host/
+│   │   ├── AppComposition/
+│   │   └── DigitalProcesses/
+│   └── Core/
+│       ├── Base/
+│       │   ├── Base.csproj
+│       │   └── UI/
+│       ├── Contracts/
+│       │   └── Core.Contracts.csproj
+│       ├── AuthorizationLayer/
+│       ├── DBLayer/
+│       │   ├── Entities/
+│       │   ├── Authorization/
+│       │   └── Seeding/
+│       ├── Hosting/
+│       ├── Group/
+│       ├── GroupType/
+│       ├── Role/
+│       ├── RoleType/
+│       ├── Membership/
+│       ├── Security/
+│       └── User/
 │
 ├── templates/
 │   ├── EntityModelTemplate/
@@ -53,6 +73,270 @@ Build artefakty nejsou ukládány do jednotlivých projektů. `Directory.Build.p
 ```
 
 Adresář se zdrojovými kódy tak zůstává bez lokálních `bin/` a `obj/` adresářů.
+
+### Source ownership and naming
+
+Folders describe ownership and responsibility; project names identify assemblies.
+For example, `Core/Contracts/Core.Contracts.csproj` keeps the assembly name
+`Core.Contracts` without repeating `Core` in the folder name.
+Generic UI lives in `Core/Base/UI`; there is no second `Base.UI` source root.
+
+Each Core entity owns its Models, Services and Resolvers projects. GroupType is
+now a peer of Group, matching RoleType/Role: its DTOs, service and resolvers live
+under `Core/GroupType`, not inside Group. No empty GroupType UI project or new
+pages were introduced. Its existing five routes and JSON property names remain
+unchanged; CoreModule now maps its endpoints explicitly.
+
+Small single-entity Models/Services/Resolvers projects put their source files
+next to the project file, rather than repeating the layer as an inner directory.
+UI keeps meaningful `Pages`, `Components` and `Vectors` folders; large
+multi-entity application projects keep entity-specific folders.
+The `Entity*Template` scaffolds follow the same flat non-UI layout.
+
+DBLayer remains one assembly and one shared Core context. Each built-in entity's
+model, store interface and EF store are together in `DBLayer/Entities/{Entity}`.
+RBAC projection/mapping models live in `DBLayer/Authorization`; initialization,
+import and seed data live in `DBLayer/Seeding`. Shared database infrastructure
+stays at the project root. These physical moves do not change database type
+namespaces, EF mappings, tables or schema.
+
+GroupType's moved public types now use `WebAppArchitecture.GroupType.Models`,
+`.Services` and `.Resolvers` and their corresponding assemblies. External
+consumers must update references/usings and rebuild; callers of
+`MapGroupEndpoints` must also register `MapGroupTypeEndpoints`. Other physical
+moves preserve namespaces and assembly names. No parallel definitions or
+compatibility facade coupling Group back to GroupType were added.
+
+`CoreLayoutTests` checks these source conventions and project-cycle freedom;
+runtime ownership tests verify Group assemblies no longer define GroupType.
+The GroupType HTTP regression checks exact route methods/paths, handlers,
+list/read/link/update/delete and authorization denial. This uses existing xUnit
+tooling, not a new architecture auditor.
+
+Validation after the layout refactoring:
+
+- Both root solution formats build in Release without errors; the full workflow
+  build reports 9 existing compiler/analyzer warnings, the subsequent slnx build 4.
+- All 317 tests pass: Core.Contracts 4, AuthorizationLayer 105, Host 18,
+  DigitalProcesses 190. The new focused layout/ownership/GroupType checks pass 7/7.
+- All 52 project graphs have valid reference targets and no cycles. The
+  standalone inspector solution builds without errors or warnings.
+- The direct/transitive NuGet audit covers 48 solution projects and reports no
+  known vulnerabilities or audit problems. The validation workflow returns 0.
+- Model/service/resolver scaffolds generate the expected flat layout in an
+  isolated template hive. This is not a claim of full scaffold implementation
+  or generated-domain compilation.
+
+## Shared public contracts
+
+[Core.Contracts](src/Core/Contracts/README.md) contains the existing public
+entity, DTO and service interfaces under their original namespaces, plus minimal
+vector value types. It has no project or NuGet dependencies. Base forwards its
+old exported contract types to this assembly for compatibility.
+
+The new `IAuthorizedQuery<TDBModel>` and `IAuthorizedQueries` are contracts only;
+implementation and DI registration in AuthorizationLayer are a separate next step.
+Existing services, RBAC, endpoint behavior and DTO mapping are unchanged.
+
+## Authorization responsibilities
+
+Security infrastructure is split by responsibility, not by similarly named
+folders:
+
+| Location | Responsibility |
+| --- | --- |
+| `src/Core/Contracts/Security` | Pure RBAC decision contract, operation names/IDs and well-known scopes; .NET BCL only |
+| `src/Core/AuthorizationLayer` | Existing RBAC enforcement, authorized queries, controlled writes and effective-access projection |
+| `src/Core/Security` | Application permission DTOs, administration services, resolvers and UI |
+| `src/Core/Hosting/Identity` | HTTP actor implementation, trusted-header middleware and Entra endpoint integration |
+| `src/Core/Base/Identity` | Only the existing HTTP-facing actor/authorization abstractions used by generic resolvers and UI |
+| `src/Core/DBLayer/Seeding` | Existing fake-identity seed data consumed by DatabaseInitializer |
+
+The former SecurityLayer project/namespace and ISecurityLayer/SecurityLayer
+types have been renamed to AuthorizationLayer and
+IAuthorizationLayer/AuthorizationLayer. Solutions, DI, consumers, tests and
+templates use the new names. Existing authorization rules, identity-source
+precedence, operations, database identifiers and active routes are unchanged.
+The unused legacy Base RBAC endpoint branch and its exclusive request/record
+types were removed; the active Security module remains.
+
+`RbacOperations` is the canonical operation vocabulary; `SecurityOperations`
+remains a set of compatibility aliases. Pure relocated RBAC types retain
+their namespaces and are forwarded from Base. The renamed layer and relocated
+HTTP implementations/seed types require external consumers to update project
+references and rebuild; no binary facade creating reverse dependencies is added.
+See [Core.Contracts](src/Core/Contracts/README.md#authorization-boundary-consolidation).
+Authorized query implementations remain a separate step.
+
+Validation of this consolidation: main Release build passed with 0 errors
+and 26 existing warnings. The full validation workflow returned 0 with contracts
+4/4, Host 14/14, DigitalProcesses 190/190 and authorization 104/104. After adding
+the operation-alias regression, the complete authorization suite was rerun and
+passed 105/105, giving 313 passing tests across the four suites. The retained
+standalone inspector solution builds with 0 warnings/errors. All 49 project
+graphs are acyclic with valid reference targets; the direct/transitive NuGet
+audit reports no known vulnerabilities or audit problems across 45 solution
+projects.
+
+## Home and designer UI regression expectations
+
+The Host root `/` renders application cards from the navigation registry (and
+returns that registry's applications when JSON is requested); it no longer
+redirects to `/architecture`.
+
+The form designer uses the insertion wizard's Library in both whole-form and
+subtree editors. The obsolete standalone Library card has been removed.
+The AI designer operates on a whole form version and is shown only in its
+whole-form draft editor, not in subtree, preview or published views.
+Form and workflow permission panels are rendered once by the corresponding
+version LargeCard, not duplicated inside the designer workspace.
+
+Regression tests now check these intended behaviors rather than restoring the
+old redirect, duplicate permission panel or standalone Library card. The
+retirement/extraction validation results below describe their historical state
+before this correction.
+
+Validation after this correction (`./tools/audit-architecture.sh`): Release
+build passed with 0 errors and 4 existing analyzer warnings; all 311 tests
+passed (Core.Contracts 4, AuthorizationLayer 104, Host 13, DigitalProcesses 190).
+The direct/transitive NuGet audit covered 45 projects with no known
+vulnerabilities or audit problems. The validation script returned 0.
+
+## Architecture annotations retired
+
+Architecture annotations have been removed from application code and templates.
+Other attributes, DTO names, existing generic model/DTO/service interfaces,
+application logic and DI registrations are unchanged. Projects no longer inherit
+an `Architecture.Attributes` reference or global using from
+[Directory.Build.props](Directory.Build.props).
+
+The attribute-driven auditor and its test project were removed at the user's
+request, including their integrated contract/project-reference checks. No
+replacement architecture auditor or equivalent static coverage is claimed.
+Existing application tests and NuGet security checks remain active in
+[CI](.github/workflows/architecture-audit.yml).
+
+```bash
+./tools/audit-architecture.sh
+```
+
+This compatibility entry point now builds/tests the application and audits
+direct/transitive NuGet vulnerabilities into `artifacts/nuget-audit.json`.
+It still runs the NuGet audit if tests fail, and reports a nonzero exit code for
+build/test/audit-command failures. It no longer creates architecture findings;
+old architecture reports are historical.
+
+The unused `Architecture.Attributes` library is retained only for review in its
+standalone solution, outside the application build and CI. Removing that library
+and its standalone solution is the proposed next cleanup, subject to approval
+for deleting their public types. See the
+[retirement notes](tools/ArchitectureInspector/README.md).
+
+Annotation retirement did not introduce authorized-query implementations or
+change authorization behavior. The subsequent Core.Contracts extraction adds
+only their public interfaces, as described above.
+
+Validation after retirement:
+
+- Removed 307 annotation declarations from 286 application/template files.
+  A syntax-aware transformation checked that other C# tokens, attributes and
+  generic contracts were preserved, including combined, multiline and
+  fully-qualified attribute syntax. A second pass found no remaining annotations.
+- The application Release build and the retained standalone library build pass.
+  The application still reports existing compiler/analyzer warnings.
+- Existing application suites: AuthorizationLayer 104/104 passed, Host 10/11 passed,
+  DigitalProcesses 181/188 passed. The same 8 known failures concern root
+  redirection and rendered UI text.
+- The new `ArchitectureDependencyTests` regression passes separately and checks
+  that the application runtime dependency graph contains neither retired tooling
+  assembly. Evaluated production references/global imports are also clean.
+- NuGet auditing remains enabled in `all` mode, with central transitive pinning
+  enabled. The generated direct/transitive vulnerability report contains no
+  known vulnerabilities. The validation script remains failing when tests fail;
+  annotation removal does not hide those failures.
+
+## NuGet Central Package Management
+
+All projects under `src/`, `tests/`, and `tools/` inherit package versions from
+the root [Directory.Packages.props](Directory.Packages.props). Keep
+`PackageReference` items and their asset metadata in the project, but declare
+versions only as central `PackageVersion` items. The standalone
+[remaining attribute-library solution](tools/ArchitectureInspector/ArchitectureInspector.slnx)
+uses the same file without depending on the application solution, but is not
+part of the active workflow.
+
+Central transitive pinning remains enabled. The cryptography pins apply even
+when these packages are only transitive dependencies. NuGet security auditing
+is not disabled or suppressed.
+
+| Package | Central version |
+| --- | --- |
+| Microsoft.AspNetCore.Authentication.JwtBearer | 9.0.0 |
+| Microsoft.AspNetCore.Mvc.Testing | 10.0.13 |
+| Microsoft.EntityFrameworkCore | 10.0.13 |
+| Microsoft.EntityFrameworkCore.Relational (transitive pin) | 10.0.13 |
+| Microsoft.Identity.Web | 3.14.1 |
+| Microsoft.NET.Test.Sdk | 17.11.1 |
+| Npgsql | 10.0.3 |
+| Npgsql.EntityFrameworkCore.PostgreSQL | 10.0.3 |
+| Swashbuckle.AspNetCore | 6.6.2 |
+| System.Security.Cryptography.Pkcs | 9.0.21 |
+| System.Security.Cryptography.Xml (transitive pin) | 9.0.21 |
+| xunit | 2.9.2 |
+| xunit.runner.visualstudio | 2.8.2 |
+
+No conflicting direct package versions or project-specific version exceptions
+were needed. The follow-up .NET 10 compatibility repair upgrades EF Core from
+8.0.10 to 10.0.13 and Npgsql/provider to 10.0.3. The Relational pin keeps EF Core
+runtime packages on the same patch level. This fixes LINQ parameter evaluation
+involving `ReadOnlySpan<Guid>` on .NET 10. ASP.NET Core's test host is upgraded
+with `Microsoft.AspNetCore.Mvc.Testing` to avoid the old response pipe writer's
+missing `UnflushedBytes` implementation.
+
+The retired auditor's Roslyn and MSBuild locator package versions have been
+removed from CPM because no remaining project consumes them. Unrelated transitive
+dependencies may resolve differently between the standalone tools and the
+application; CPM does not force every transitive dependency to one version.
+
+Reproduce validation from the repository root with .NET 10:
+
+```bash
+dotnet restore SignFakeArchitecture.sln
+dotnet build SignFakeArchitecture.sln -c Release --no-restore
+dotnet build tools/SqliteDumpToPostgres/SqliteDumpToPostgres.csproj -c Release
+dotnet test SignFakeArchitecture.sln -c Release --no-build --no-restore
+
+# Full direct/transitive graph; repeat with --vulnerable for the security audit.
+dotnet list SignFakeArchitecture.sln package --include-transitive --no-restore
+dotnet list tools/SqliteDumpToPostgres/SqliteDumpToPostgres.csproj package --include-transitive --no-restore
+```
+
+Historical migration/compatibility validation before annotation retirement
+(.NET SDK 10.0.401; auditor results below no longer describe active checks):
+
+- All 49 scoped projects restored with CPM; all 26 project package references
+  are versionless and retain their other metadata.
+- Both solutions and the standalone PostgreSQL utility built successfully.
+  The application build reported compiler/analyzer warnings; the inspector
+  and utility builds had no warnings.
+- NuGet audits with `--vulnerable --include-transitive` reported no known
+  vulnerabilities for either solution or the utility. Current project assets
+  resolve Xml/Pkcs exclusively to 9.0.21.
+- Application tests: AuthorizationLayer 104 passed / 0 failed, Host 10 passed /
+  1 failed, DigitalProcesses 181 passed / 7 failed. The remaining failures
+  concern expected root redirection and rendered UI text, not compilation,
+  LINQ evaluation or response pipe writers. No application behavior or test
+  expectations were changed to hide these failures.
+- Inspector tests: 27 passed / 0 failed, including a standalone Razor workspace
+  regression and accepted/rejected layer/role pairs. `ARCH003` now validates
+  the actual supported `Model`, `Resolver` and `Service` enum names rather than
+  nonexistent `API`/`Services` layers.
+- The architecture audit analyzes all 40 selected production projects with
+  no compilation failures or workspace diagnostics (3 test projects skipped).
+  It still exits 1 for 65 architecture violations: 58 `ARCH002`, 1 `ARCH003`,
+  and 6 `ARCH004`. These are not compiler errors. The report is written to
+  `artifacts/architecture-audit.json`; existing application classifications and
+  generic contracts were not changed in the compilation repair.
 
 ---
 
@@ -108,7 +392,7 @@ Services  UI
 
 - základní datové kontrakty (`IEntityDBModel`, DTO kontrakty),
 - `IBaseStore<T>` a základní/in-memory store,
-- `IBaseService<TDBModel>` a `BaseService`,
+- servisní kontrakt `ISecuredEntityService<TDBModel>` v Core.Contracts,
 - generické CRUD resolver metody v `BaseResolvers`,
 - Hasura-like filtrování přes `HasuraFilterExpression`,
 - endpoint helpers `ApplyJsonModel` a `ApplyViewModel`,
@@ -165,29 +449,32 @@ Service vrstva reprezentuje aplikační/business logiku.
 Konkrétní služba typicky pouze fixuje obecné typy:
 
 ```csharp
-public interface IUserService : IBaseService<UserModel>
+public interface IUserService : ISecuredEntityService<UserModel>
 {
 }
 
 public sealed class UserService
-    : BaseService<UserModel, UserResponse, IUserStore>, IUserService
+    : SecuredEntityService<UserModel>, IUserService
 {
-    public UserService(IUserStore store) : base(store)
+    public UserService(IAuthorizationLayer authorization, IDBLayer db) : base(authorization, db)
     {
     }
 }
 ```
 
-Standardní CRUD operace poskytuje `BaseService`. Konkrétní service může kdykoliv přidat další entity-specific business metody.
+Standardní zabezpečené operace poskytuje `SecuredEntityService`. Konkrétní service
+přidává doménové invarianty a synchronizaci projekcí; ukázka vynechává jejich
+závislosti. Vytváření zůstává specializovanou doménovou operací, ne obecným CRUD.
 
-Create a Update mohou používat různé payload typy. `BaseService` proto obsahuje generické metody ve stylu:
+Aktualizace používá samostatný request a výstupní DTO:
 
 ```csharp
-CreateAsync<TCreateRequest>(...)
-UpdateAsync<TUpdateRequest>(...)
+UpdateAsync<TUpdateRequest, TDTO>(...)
 ```
 
-Payload implementuje příslušný kontrakt a service jej převede na standardní store model.
+Request implementuje `IUpdateDTOModel<TModel>` a obsahuje povinný původní
+`updated_at` jako concurrency token. Auditní hodnoty vytváří server; request je
+nesmí přepisovat. Chybějící/neplatný token vrací 400, souběžná změna 409.
 
 ## UI
 
@@ -847,7 +1134,7 @@ Například:
 
 ```csharp
 public interface IDocumentService
-    : IBaseService<DocumentModel>
+    : ISecuredEntityService<DocumentModel>
 {
     Task<DocumentResponse> SignAsync(
         Guid id,
@@ -998,7 +1285,7 @@ Projekt obsahuje v `Base` společnou podporu pro zabezpečení Minimal API endpo
 Implementace je soustředěna v:
 
 ```text
-src/Base/Security/EntraEndpointSecurity.cs
+src/Core/Hosting/Identity/EntraEndpointSecurity.cs
 ```
 
 a poskytuje čtyři základní extension body:
@@ -1490,9 +1777,9 @@ See `ARCHITECTURE_UPDATE_10.md` for the centralized DBLayer, secured IQueryable 
 
 The current dependency direction is intentionally strict:
 
-`Resolvers / UI / OData -> Domain Services -> SecurityLayer -> DBLayer -> ApplicationDbContext -> SQLite`
+`Resolvers / UI / OData -> Domain Services -> AuthorizationLayer -> DBLayer -> ApplicationDbContext -> SQLite`
 
-Domain Services do not inject stores, DbContext, or DBLayer. They receive `ISecurityLayer`. DBLayer is the raw persistence library and SecurityLayer is the authorization boundary that exposes secured `IQueryable<TEntity>` plus secured mutations. Services project DB entities to DTOs before returning data.
+Domain Services do not inject stores, DbContext, or DBLayer. They receive `IAuthorizationLayer`. DBLayer is the raw persistence library and AuthorizationLayer is the authorization boundary that exposes secured `IQueryable<TEntity>` plus secured mutations. Services project DB entities to DTOs before returning data.
 
 ## Update 12: normalized RBAC operations
 
@@ -1501,7 +1788,7 @@ RBAC operations are normalized through `operations` and `role_type_operations`. 
 
 ## Update 13 – persistence ownership and operations enrichment
 
-Persistence DB models now live in `src/DBLayer`. Domain `*.Models` projects contain DTO/request contracts only. `SecurityLayer` includes bulk operations lookup and post-materialization enrichment extensions; see `ARCHITECTURE_UPDATE_13.md`.
+Persistence DB models now live in `src/DBLayer`. Domain `*.Models` projects contain DTO/request contracts only. `AuthorizationLayer` includes bulk operations lookup and post-materialization enrichment extensions; see `ARCHITECTURE_UPDATE_13.md`.
 
 ## HK2026 system data seed
 
@@ -1673,7 +1960,7 @@ curl -o result.rtf \
   'http://localhost:8080/digital-processes/RtfTemplate/TEMPLATE_UUID/submission/SUBMISSION_UUID'
 ```
 
-**Persistence:** `DigitalProcesses:RtfTemplates:Directory` specifies a writable *persistent volume* for stored RTFs and their JSON metadata. Default: `app_data/rtf-templates` under the Host content root. This storage is deliberately separate from the EF database; its backup and container volume mount must be configured for production. Each operation checks `FormVersion` Read/Update rights through `ISecurityLayer`. Rendering additionally checks the Submission Read permission (`rbacobject_id`) and requires matching form-version ID.
+**Persistence:** `DigitalProcesses:RtfTemplates:Directory` specifies a writable *persistent volume* for stored RTFs and their JSON metadata. Default: `app_data/rtf-templates` under the Host content root. This storage is deliberately separate from the EF database; its backup and container volume mount must be configured for production. Each operation checks `FormVersion` Read/Update rights through `IAuthorizationLayer`. Rendering additionally checks the Submission Read permission (`rbacobject_id`) and requires matching form-version ID.
 
 RTF templates in older formats that use other marker conventions, split placeholders across RTF runs, or embed non-text objects may require further compatibility work. Rendering uses the saved SubmissionNode JSON reconstruction and does not call an external service.
 
@@ -1697,7 +1984,7 @@ Do this before publishing. A new Request / state transition creates a new
 Submission RBAC subtree. The Applicant receives explicit bindings to visible
 scopes; denied branches get a persistent `RbacDenyRule` on their own Group,
 which propagates to all nested Groups. `EffectiveAccess` is reconciled in the
-same transactional workflow; normal `SecurityLayer.Query(Read)` remains an
+same transactional workflow; normal `AuthorizationLayer.Query(Read)` remains an
 indexed SQL filter with no per-node DB round-trips. Existing archived
 Submissions retain their original nodes, Groups and Deny records.
 
@@ -1737,4 +2024,4 @@ The ZIP was statically inspected; no .NET SDK is installed in the packaging envi
 
 ## Core security test suites (verze 78)
 
-Testovací plán, bezpečnostní invarianty, implementované scénáře a backlog jsou v [`tests/README.md`](tests/README.md). První implementovaná sada je v `tests/Core.SecurityLayer.Tests` a spouští se `dotnet test tests/Core.SecurityLayer.Tests/Core.SecurityLayer.Tests.csproj -c Debug`.
+Testovací plán, bezpečnostní invarianty, implementované scénáře a backlog jsou v [`tests/README.md`](tests/README.md). První implementovaná sada je v `tests/Core.AuthorizationLayer.Tests` a spouští se `dotnet test tests/Core.AuthorizationLayer.Tests/Core.AuthorizationLayer.Tests.csproj -c Debug`.

@@ -1,0 +1,2204 @@
+{
+  "status": "failed",
+  "projectsDiscovered": 43,
+  "projectsSkipped": 3,
+  "projectsSelected": 40,
+  "projectsAnalyzed": 40,
+  "skippedProjects": [
+    "/workspace/tests/Apps/DigitalProcesses.Integration.Tests/DigitalProcesses.Integration.Tests.csproj",
+    "/workspace/tests/Core.SecurityLayer.Tests/Core.SecurityLayer.Tests.csproj",
+    "/workspace/tests/Core/Host.Integration.Tests/Host.Integration.Tests.csproj"
+  ],
+  "failedProjects": [],
+  "workspaceDiagnostics": [],
+  "architectureErrors": 146,
+  "ruleSet": [
+    {
+      "Id": "ARCH001",
+      "Description": "Unclassified conventional public type (advisory only)",
+      "Scope": "declarations"
+    },
+    {
+      "Id": "ARCH002",
+      "Description": "Explicit annotation conflicts with inferred Core contract",
+      "Scope": "declarations"
+    },
+    {
+      "Id": "ARCH003",
+      "Description": "Invalid explicitly declared layer/role pair",
+      "Scope": "declarations"
+    },
+    {
+      "Id": "ARCH004",
+      "Description": "Conflicting Core interfaces or invalid self-referential DTO generic",
+      "Scope": "declarations"
+    },
+    {
+      "Id": "ARCH005",
+      "Description": "Legacy Model/Shared layer used",
+      "Scope": "declarations"
+    },
+    {
+      "Id": "ARCH101",
+      "Description": "Resolver/endpoint public return exposes DB entity",
+      "Scope": "public signatures"
+    },
+    {
+      "Id": "ARCH102",
+      "Description": "Resolver/endpoint public parameter exposes DB entity",
+      "Scope": "public signatures"
+    },
+    {
+      "Id": "ARCH103",
+      "Description": "Request/Response public DTO member exposes DB entity",
+      "Scope": "public signatures"
+    },
+    {
+      "Id": "ARCH104",
+      "Description": "Public API/Resolver method parameter or return type uses unexpected layer",
+      "Scope": "public signatures"
+    },
+    {
+      "Id": "ARCH201",
+      "Description": "Forbidden direct project reference between classified layers",
+      "Scope": "project references"
+    }
+  ],
+  "projectReferenceChecks": 147,
+  "uncheckedProjectReferences": [
+    "AppComposition -\u003E DBLayer: layer classification unavailable",
+    "AppComposition -\u003E Architecture.Attributes: layer classification unavailable",
+    "AppComposition -\u003E Base: layer classification unavailable",
+    "DigitalProcesses.Models -\u003E Architecture.Attributes: layer classification unavailable",
+    "DigitalProcesses.Models -\u003E Base: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E Architecture.Attributes: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E Core.Hosting: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E DBLayer: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E DigitalProcesses.Models: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E DigitalProcesses.Services: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E DigitalProcesses.UI: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E DigitalProcesses.Resolvers: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E Base: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E Group.Models: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E Group.Resolvers: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E Group.Services: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E Group.UI: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E Membership.Models: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E Membership.Resolvers: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E Membership.Services: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E Membership.UI: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E Role.Models: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E Role.Resolvers: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E Role.Services: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E Role.UI: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E RoleType.Models: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E RoleType.Resolvers: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E RoleType.Services: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E RoleType.UI: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E Security.Models: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E Security.Resolvers: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E Security.Services: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E Security.UI: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E SecurityLayer: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E User.Models: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E User.Resolvers: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E User.Services: layer classification unavailable",
+    "DigitalProcesses.Module -\u003E User.UI: layer classification unavailable",
+    "DigitalProcesses.Resolvers -\u003E Architecture.Attributes: layer classification unavailable",
+    "DigitalProcesses.Resolvers -\u003E Base: layer classification unavailable",
+    "DigitalProcesses.Services -\u003E Architecture.Attributes: layer classification unavailable",
+    "DigitalProcesses.Services -\u003E Base: layer classification unavailable",
+    "DigitalProcesses.UI -\u003E Architecture.Attributes: layer classification unavailable",
+    "DigitalProcesses.UI -\u003E Base: layer classification unavailable",
+    "Events -\u003E Architecture.Attributes: layer classification unavailable",
+    "Events -\u003E Events.Models: layer classification unavailable",
+    "Events -\u003E Events.Services: layer classification unavailable",
+    "Events -\u003E Events.UI: layer classification unavailable",
+    "Events -\u003E Events.Resolvers: layer classification unavailable",
+    "Events -\u003E Core.Hosting: layer classification unavailable",
+    "Events -\u003E DBLayer: layer classification unavailable",
+    "Events -\u003E Base: layer classification unavailable",
+    "Events -\u003E Group.Models: layer classification unavailable",
+    "Events -\u003E Group.Resolvers: layer classification unavailable",
+    "Events -\u003E Group.Services: layer classification unavailable",
+    "Events -\u003E Group.UI: layer classification unavailable",
+    "Events -\u003E Membership.Models: layer classification unavailable",
+    "Events -\u003E Membership.Resolvers: layer classification unavailable",
+    "Events -\u003E Membership.Services: layer classification unavailable",
+    "Events -\u003E Membership.UI: layer classification unavailable",
+    "Events -\u003E Role.Models: layer classification unavailable",
+    "Events -\u003E Role.Resolvers: layer classification unavailable",
+    "Events -\u003E Role.Services: layer classification unavailable",
+    "Events -\u003E Role.UI: layer classification unavailable",
+    "Events -\u003E RoleType.Models: layer classification unavailable",
+    "Events -\u003E RoleType.Resolvers: layer classification unavailable",
+    "Events -\u003E RoleType.Services: layer classification unavailable",
+    "Events -\u003E RoleType.UI: layer classification unavailable",
+    "Events -\u003E Security.Models: layer classification unavailable",
+    "Events -\u003E Security.Resolvers: layer classification unavailable",
+    "Events -\u003E Security.Services: layer classification unavailable",
+    "Events -\u003E Security.UI: layer classification unavailable",
+    "Events -\u003E SecurityLayer: layer classification unavailable",
+    "Events -\u003E User.Models: layer classification unavailable",
+    "Events -\u003E User.Resolvers: layer classification unavailable",
+    "Events -\u003E User.Services: layer classification unavailable",
+    "Events -\u003E User.UI: layer classification unavailable",
+    "Events.Resolvers -\u003E Architecture.Attributes: layer classification unavailable",
+    "Events.Resolvers -\u003E Core.Hosting: layer classification unavailable",
+    "Events.Resolvers -\u003E Base: layer classification unavailable",
+    "Events.Services -\u003E Architecture.Attributes: layer classification unavailable",
+    "Events.Services -\u003E Base: layer classification unavailable",
+    "Events.UI -\u003E Architecture.Attributes: layer classification unavailable",
+    "Events.UI -\u003E Base: layer classification unavailable",
+    "Host -\u003E Core.Hosting: layer classification unavailable",
+    "Host -\u003E AppComposition: layer classification unavailable",
+    "Host -\u003E HostManagement: layer classification unavailable",
+    "Host -\u003E DigitalProcesses.Module: layer classification unavailable",
+    "Host -\u003E Events: layer classification unavailable",
+    "Host -\u003E JsonataPlayground: layer classification unavailable",
+    "Host -\u003E Architecture.Attributes: layer classification unavailable",
+    "Host -\u003E Base: layer classification unavailable",
+    "Host -\u003E DBLayer: layer classification unavailable",
+    "Host -\u003E DigitalProcesses.Models: layer classification unavailable",
+    "Host -\u003E DigitalProcesses.Resolvers: layer classification unavailable",
+    "Host -\u003E DigitalProcesses.Services: layer classification unavailable",
+    "Host -\u003E DigitalProcesses.UI: layer classification unavailable",
+    "Host -\u003E Events.Models: layer classification unavailable",
+    "Host -\u003E Events.Resolvers: layer classification unavailable",
+    "Host -\u003E Events.Services: layer classification unavailable",
+    "Host -\u003E Events.UI: layer classification unavailable",
+    "Host -\u003E Group.Models: layer classification unavailable",
+    "Host -\u003E Group.Resolvers: layer classification unavailable",
+    "Host -\u003E Group.Services: layer classification unavailable",
+    "Host -\u003E Group.UI: layer classification unavailable",
+    "Host -\u003E Membership.Models: layer classification unavailable",
+    "Host -\u003E Membership.Resolvers: layer classification unavailable",
+    "Host -\u003E Membership.Services: layer classification unavailable",
+    "Host -\u003E Membership.UI: layer classification unavailable",
+    "Host -\u003E Role.Models: layer classification unavailable",
+    "Host -\u003E Role.Resolvers: layer classification unavailable",
+    "Host -\u003E Role.Services: layer classification unavailable",
+    "Host -\u003E Role.UI: layer classification unavailable",
+    "Host -\u003E RoleType.Models: layer classification unavailable",
+    "Host -\u003E RoleType.Resolvers: layer classification unavailable",
+    "Host -\u003E RoleType.Services: layer classification unavailable",
+    "Host -\u003E RoleType.UI: layer classification unavailable",
+    "Host -\u003E Security.Models: layer classification unavailable",
+    "Host -\u003E Security.Resolvers: layer classification unavailable",
+    "Host -\u003E Security.Services: layer classification unavailable",
+    "Host -\u003E Security.UI: layer classification unavailable",
+    "Host -\u003E SecurityLayer: layer classification unavailable",
+    "Host -\u003E User.Models: layer classification unavailable",
+    "Host -\u003E User.Resolvers: layer classification unavailable",
+    "Host -\u003E User.Services: layer classification unavailable",
+    "Host -\u003E User.UI: layer classification unavailable",
+    "HostManagement -\u003E Core.Hosting: layer classification unavailable",
+    "HostManagement -\u003E Architecture.Attributes: layer classification unavailable",
+    "HostManagement -\u003E Base: layer classification unavailable",
+    "HostManagement -\u003E DBLayer: layer classification unavailable",
+    "HostManagement -\u003E Group.Models: layer classification unavailable",
+    "HostManagement -\u003E Group.Resolvers: layer classification unavailable",
+    "HostManagement -\u003E Group.Services: layer classification unavailable",
+    "HostManagement -\u003E Group.UI: layer classification unavailable",
+    "HostManagement -\u003E Membership.Models: layer classification unavailable",
+    "HostManagement -\u003E Membership.Resolvers: layer classification unavailable",
+    "HostManagement -\u003E Membership.Services: layer classification unavailable",
+    "HostManagement -\u003E Membership.UI: layer classification unavailable",
+    "HostManagement -\u003E Role.Models: layer classification unavailable",
+    "HostManagement -\u003E Role.Resolvers: layer classification unavailable",
+    "HostManagement -\u003E Role.Services: layer classification unavailable",
+    "HostManagement -\u003E Role.UI: layer classification unavailable",
+    "HostManagement -\u003E RoleType.Models: layer classification unavailable",
+    "HostManagement -\u003E RoleType.Resolvers: layer classification unavailable",
+    "HostManagement -\u003E RoleType.Services: layer classification unavailable",
+    "HostManagement -\u003E RoleType.UI: layer classification unavailable",
+    "HostManagement -\u003E Security.Models: layer classification unavailable",
+    "HostManagement -\u003E Security.Resolvers: layer classification unavailable",
+    "HostManagement -\u003E Security.Services: layer classification unavailable",
+    "HostManagement -\u003E Security.UI: layer classification unavailable",
+    "HostManagement -\u003E SecurityLayer: layer classification unavailable",
+    "HostManagement -\u003E User.Models: layer classification unavailable",
+    "HostManagement -\u003E User.Resolvers: layer classification unavailable",
+    "HostManagement -\u003E User.Services: layer classification unavailable",
+    "HostManagement -\u003E User.UI: layer classification unavailable",
+    "Base -\u003E Architecture.Attributes: layer classification unavailable",
+    "DBLayer -\u003E Architecture.Attributes: layer classification unavailable",
+    "DBLayer -\u003E Base: layer classification unavailable",
+    "Group.Models -\u003E Architecture.Attributes: layer classification unavailable",
+    "Group.Models -\u003E Base: layer classification unavailable",
+    "Group.Resolvers -\u003E Architecture.Attributes: layer classification unavailable",
+    "Group.Resolvers -\u003E Base: layer classification unavailable",
+    "Group.Services -\u003E Architecture.Attributes: layer classification unavailable",
+    "Group.Services -\u003E Base: layer classification unavailable",
+    "Group.UI -\u003E Architecture.Attributes: layer classification unavailable",
+    "Group.UI -\u003E Base: layer classification unavailable",
+    "Core.Hosting -\u003E Architecture.Attributes: layer classification unavailable",
+    "Core.Hosting -\u003E Base: layer classification unavailable",
+    "Core.Hosting -\u003E DBLayer: layer classification unavailable",
+    "Core.Hosting -\u003E SecurityLayer: layer classification unavailable",
+    "Core.Hosting -\u003E User.Models: layer classification unavailable",
+    "Core.Hosting -\u003E User.Services: layer classification unavailable",
+    "Core.Hosting -\u003E User.Resolvers: layer classification unavailable",
+    "Core.Hosting -\u003E Group.Models: layer classification unavailable",
+    "Core.Hosting -\u003E Group.Services: layer classification unavailable",
+    "Core.Hosting -\u003E Group.Resolvers: layer classification unavailable",
+    "Core.Hosting -\u003E Membership.Models: layer classification unavailable",
+    "Core.Hosting -\u003E Membership.Services: layer classification unavailable",
+    "Core.Hosting -\u003E Membership.Resolvers: layer classification unavailable",
+    "Core.Hosting -\u003E Role.Models: layer classification unavailable",
+    "Core.Hosting -\u003E Role.Services: layer classification unavailable",
+    "Core.Hosting -\u003E Role.Resolvers: layer classification unavailable",
+    "Core.Hosting -\u003E RoleType.Models: layer classification unavailable",
+    "Core.Hosting -\u003E RoleType.Services: layer classification unavailable",
+    "Core.Hosting -\u003E RoleType.Resolvers: layer classification unavailable",
+    "Core.Hosting -\u003E Security.Services: layer classification unavailable",
+    "Core.Hosting -\u003E Security.Resolvers: layer classification unavailable",
+    "Core.Hosting -\u003E Group.UI: layer classification unavailable",
+    "Core.Hosting -\u003E Membership.UI: layer classification unavailable",
+    "Core.Hosting -\u003E Role.UI: layer classification unavailable",
+    "Core.Hosting -\u003E RoleType.UI: layer classification unavailable",
+    "Core.Hosting -\u003E Security.Models: layer classification unavailable",
+    "Core.Hosting -\u003E Security.UI: layer classification unavailable",
+    "Core.Hosting -\u003E User.UI: layer classification unavailable",
+    "Membership.Models -\u003E Architecture.Attributes: layer classification unavailable",
+    "Membership.Models -\u003E Base: layer classification unavailable",
+    "Membership.Resolvers -\u003E Architecture.Attributes: layer classification unavailable",
+    "Membership.Resolvers -\u003E Base: layer classification unavailable",
+    "Membership.Services -\u003E Architecture.Attributes: layer classification unavailable",
+    "Membership.Services -\u003E Base: layer classification unavailable",
+    "Membership.UI -\u003E Architecture.Attributes: layer classification unavailable",
+    "Membership.UI -\u003E Base: layer classification unavailable",
+    "Role.Models -\u003E Architecture.Attributes: layer classification unavailable",
+    "Role.Models -\u003E Base: layer classification unavailable",
+    "Role.Resolvers -\u003E Architecture.Attributes: layer classification unavailable",
+    "Role.Resolvers -\u003E Base: layer classification unavailable",
+    "Role.Services -\u003E Architecture.Attributes: layer classification unavailable",
+    "Role.Services -\u003E Base: layer classification unavailable",
+    "Role.UI -\u003E Architecture.Attributes: layer classification unavailable",
+    "Role.UI -\u003E Base: layer classification unavailable",
+    "RoleType.Models -\u003E Architecture.Attributes: layer classification unavailable",
+    "RoleType.Models -\u003E Base: layer classification unavailable",
+    "RoleType.Resolvers -\u003E Architecture.Attributes: layer classification unavailable",
+    "RoleType.Resolvers -\u003E Base: layer classification unavailable",
+    "RoleType.Services -\u003E Architecture.Attributes: layer classification unavailable",
+    "RoleType.Services -\u003E Base: layer classification unavailable",
+    "RoleType.UI -\u003E Architecture.Attributes: layer classification unavailable",
+    "RoleType.UI -\u003E Base: layer classification unavailable",
+    "Security.Models -\u003E Architecture.Attributes: layer classification unavailable",
+    "Security.Resolvers -\u003E Architecture.Attributes: layer classification unavailable",
+    "Security.Resolvers -\u003E Base: layer classification unavailable",
+    "Security.Services -\u003E Architecture.Attributes: layer classification unavailable",
+    "Security.Services -\u003E Base: layer classification unavailable",
+    "Security.UI -\u003E Architecture.Attributes: layer classification unavailable",
+    "Security.UI -\u003E Base: layer classification unavailable",
+    "SecurityLayer -\u003E Architecture.Attributes: layer classification unavailable",
+    "SecurityLayer -\u003E Base: layer classification unavailable",
+    "User.Models -\u003E Architecture.Attributes: layer classification unavailable",
+    "User.Models -\u003E Base: layer classification unavailable",
+    "User.Resolvers -\u003E Architecture.Attributes: layer classification unavailable",
+    "User.Resolvers -\u003E Base: layer classification unavailable",
+    "User.Services -\u003E Architecture.Attributes: layer classification unavailable",
+    "User.Services -\u003E Base: layer classification unavailable",
+    "User.UI -\u003E Architecture.Attributes: layer classification unavailable",
+    "User.UI -\u003E Base: layer classification unavailable"
+  ],
+  "auditScope": "Declarations and classified direct project references; method bodies, RBAC enforcement and runtime behavior are NOT evaluated.",
+  "findings": [
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.DocumentTemplateRevision.NewRtfRevisionRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/DocumentTemplateRevision/NewRtfRevisionRequest.cs",
+      "Line": 4
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormDefinition.CreateFormDefinitionRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormDefinition/CreateFormDefinitionRequest.cs",
+      "Line": 7
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormDefinition.FormDefinitionDetailResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormDefinition/FormDefinitionDetailResponse.cs",
+      "Line": 7
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormDefinition.FormDefinitionResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormDefinition/FormDefinitionResponse.cs",
+      "Line": 10
+    },
+    {
+      "Rule": "ARCH102",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormDefinition.FormDefinitionResponse",
+      "Message": "FromModel accepts Database.Entity parameter model.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormDefinition/FormDefinitionResponse.cs",
+      "Line": 25
+    },
+    {
+      "Rule": "ARCH101",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormDefinition.FormDefinitionResponse",
+      "Message": "ToModel directly returns a Database.Entity (including within Task/collection).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormDefinition/FormDefinitionResponse.cs",
+      "Line": 30
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormNode.CreateFormNodeRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormNode/CreateFormNodeRequest.cs",
+      "Line": 6
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormNode.FormBackendOperationRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormNode/FormBackendOperationRequest.cs",
+      "Line": 7
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormNode.FormLibraryItemResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormNode/FormLibraryItemResponse.cs",
+      "Line": 6
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormNode.FormNodeDraftSearchRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormNode/FormNodeDraftSearchRequest.cs",
+      "Line": 3
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormNode.FormNodeDraftWorkspaceRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormNode/FormNodeDraftWorkspaceRequest.cs",
+      "Line": 3
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormNode.FormNodeDraftWorkspaceResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormNode/FormNodeDraftWorkspaceResponse.cs",
+      "Line": 4
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormNode.FormNodeResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormNode/FormNodeResponse.cs",
+      "Line": 10
+    },
+    {
+      "Rule": "ARCH102",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormNode.FormNodeResponse",
+      "Message": "FromModel accepts Database.Entity parameter model.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormNode/FormNodeResponse.cs",
+      "Line": 35
+    },
+    {
+      "Rule": "ARCH101",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormNode.FormNodeResponse",
+      "Message": "ToModel directly returns a Database.Entity (including within Task/collection).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormNode/FormNodeResponse.cs",
+      "Line": 40
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormNode.FormSearchRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormNode/FormSearchRequest.cs",
+      "Line": 5
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormNode.ImportFormSubtreeRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormNode/ImportFormSubtreeRequest.cs",
+      "Line": 6
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormNode.InsertFormNodeDraftRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormNode/InsertFormNodeDraftRequest.cs",
+      "Line": 3
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormNode.MoveFormNodeRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormNode/MoveFormNodeRequest.cs",
+      "Line": 6
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormNode.PrepareFormNodeDraftRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormNode/PrepareFormNodeDraftRequest.cs",
+      "Line": 3
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormNode.UpdateFormNodeRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormNode/UpdateFormNodeRequest.cs",
+      "Line": 6
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormNodeApplicantAccess.SetApplicantVisibilityRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormNodeApplicantAccess/SetApplicantVisibilityRequest.cs",
+      "Line": 5
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormNodeType.CreateFormNodeTypeRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormNodeType/CreateFormNodeTypeRequest.cs",
+      "Line": 6
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormNodeType.FormNodeTypeResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormNodeType/FormNodeTypeResponse.cs",
+      "Line": 10
+    },
+    {
+      "Rule": "ARCH102",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormNodeType.FormNodeTypeResponse",
+      "Message": "FromModel accepts Database.Entity parameter model.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormNodeType/FormNodeTypeResponse.cs",
+      "Line": 30
+    },
+    {
+      "Rule": "ARCH101",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormNodeType.FormNodeTypeResponse",
+      "Message": "ToModel directly returns a Database.Entity (including within Task/collection).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormNodeType/FormNodeTypeResponse.cs",
+      "Line": 35
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormVersion.ApproveFormDesignRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormVersion/ApproveFormDesignRequest.cs",
+      "Line": 5
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormVersion.BulkFormTreeRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormVersion/BulkFormTreeRequest.cs",
+      "Line": 8
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormVersion.CreateFormVersionRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormVersion/CreateFormVersionRequest.cs",
+      "Line": 6
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormVersion.FormDesignerPageResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormVersion/FormDesignerPageResponse.cs",
+      "Line": 7
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormVersion.FormDesignerResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormVersion/FormDesignerResponse.cs",
+      "Line": 8
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormVersion.FormDesignRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormVersion/FormDesignRequest.cs",
+      "Line": 5
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormVersion.FormTreeResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormVersion/FormTreeResponse.cs",
+      "Line": 7
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormVersion.FormVersionResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormVersion/FormVersionResponse.cs",
+      "Line": 12
+    },
+    {
+      "Rule": "ARCH102",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormVersion.FormVersionResponse",
+      "Message": "FromModel accepts Database.Entity parameter model.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormVersion/FormVersionResponse.cs",
+      "Line": 32
+    },
+    {
+      "Rule": "ARCH101",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.FormVersion.FormVersionResponse",
+      "Message": "ToModel directly returns a Database.Entity (including within Task/collection).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/FormVersion/FormVersionResponse.cs",
+      "Line": 37
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.ProcessDefinition.CreateProcessDefinitionRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/ProcessDefinition/CreateProcessDefinitionRequest.cs",
+      "Line": 6
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.ProcessDefinition.ProcessDefinitionDetailResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/ProcessDefinition/ProcessDefinitionDetailResponse.cs",
+      "Line": 4
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.ProcessDefinition.ProcessDefinitionResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/ProcessDefinition/ProcessDefinitionResponse.cs",
+      "Line": 10
+    },
+    {
+      "Rule": "ARCH102",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.ProcessDefinition.ProcessDefinitionResponse",
+      "Message": "FromModel accepts Database.Entity parameter model.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/ProcessDefinition/ProcessDefinitionResponse.cs",
+      "Line": 28
+    },
+    {
+      "Rule": "ARCH101",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.ProcessDefinition.ProcessDefinitionResponse",
+      "Message": "ToModel directly returns a Database.Entity (including within Task/collection).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/ProcessDefinition/ProcessDefinitionResponse.cs",
+      "Line": 33
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.ProcessDefinitionVersion.CreateProcessDefinitionVersionRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/ProcessDefinitionVersion/CreateProcessDefinitionVersionRequest.cs",
+      "Line": 6
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.ProcessDefinitionVersion.ProcessDefinitionVersionResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/ProcessDefinitionVersion/ProcessDefinitionVersionResponse.cs",
+      "Line": 10
+    },
+    {
+      "Rule": "ARCH102",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.ProcessDefinitionVersion.ProcessDefinitionVersionResponse",
+      "Message": "FromModel accepts Database.Entity parameter model.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/ProcessDefinitionVersion/ProcessDefinitionVersionResponse.cs",
+      "Line": 30
+    },
+    {
+      "Rule": "ARCH101",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.ProcessDefinitionVersion.ProcessDefinitionVersionResponse",
+      "Message": "ToModel directly returns a Database.Entity (including within Task/collection).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/ProcessDefinitionVersion/ProcessDefinitionVersionResponse.cs",
+      "Line": 35
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.Request.RequestDetailResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/Request/RequestDetailResponse.cs",
+      "Line": 9
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.Request.RequestResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/Request/RequestResponse.cs",
+      "Line": 11
+    },
+    {
+      "Rule": "ARCH102",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.Request.RequestResponse",
+      "Message": "FromModel accepts Database.Entity parameter model.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/Request/RequestResponse.cs",
+      "Line": 32
+    },
+    {
+      "Rule": "ARCH101",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.Request.RequestResponse",
+      "Message": "ToModel directly returns a Database.Entity (including within Task/collection).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/Request/RequestResponse.cs",
+      "Line": 37
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.Request.RequestWorkspaceResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/Request/RequestWorkspaceResponse.cs",
+      "Line": 8
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.Request.StartRequestRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/Request/StartRequestRequest.cs",
+      "Line": 6
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.Request.TransitionRequestRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/Request/TransitionRequestRequest.cs",
+      "Line": 6
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.RequestTransitionHistory.RequestTransitionHistoryResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/RequestTransitionHistory/RequestTransitionHistoryResponse.cs",
+      "Line": 10
+    },
+    {
+      "Rule": "ARCH102",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.RequestTransitionHistory.RequestTransitionHistoryResponse",
+      "Message": "FromModel accepts Database.Entity parameter model.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/RequestTransitionHistory/RequestTransitionHistoryResponse.cs",
+      "Line": 31
+    },
+    {
+      "Rule": "ARCH101",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.RequestTransitionHistory.RequestTransitionHistoryResponse",
+      "Message": "ToModel directly returns a Database.Entity (including within Task/collection).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/RequestTransitionHistory/RequestTransitionHistoryResponse.cs",
+      "Line": 36
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.Submission.BulkSubmissionValuesRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/Submission/BulkSubmissionValuesRequest.cs",
+      "Line": 7
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.Submission.SubmissionResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/Submission/SubmissionResponse.cs",
+      "Line": 10
+    },
+    {
+      "Rule": "ARCH102",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.Submission.SubmissionResponse",
+      "Message": "FromModel accepts Database.Entity parameter model.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/Submission/SubmissionResponse.cs",
+      "Line": 28
+    },
+    {
+      "Rule": "ARCH101",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.Submission.SubmissionResponse",
+      "Message": "ToModel directly returns a Database.Entity (including within Task/collection).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/Submission/SubmissionResponse.cs",
+      "Line": 33
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.Submission.SubmissionTreeResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/Submission/SubmissionTreeResponse.cs",
+      "Line": 7
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.SubmissionNode.CreateSubmissionNodeRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/SubmissionNode/CreateSubmissionNodeRequest.cs",
+      "Line": 6
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.SubmissionNode.SetSubmissionNodeValueRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/SubmissionNode/SetSubmissionNodeValueRequest.cs",
+      "Line": 6
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.SubmissionNode.SubmissionNodeResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/SubmissionNode/SubmissionNodeResponse.cs",
+      "Line": 10
+    },
+    {
+      "Rule": "ARCH102",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.SubmissionNode.SubmissionNodeResponse",
+      "Message": "FromModel accepts Database.Entity parameter model.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/SubmissionNode/SubmissionNodeResponse.cs",
+      "Line": 30
+    },
+    {
+      "Rule": "ARCH101",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.SubmissionNode.SubmissionNodeResponse",
+      "Message": "ToModel directly returns a Database.Entity (including within Task/collection).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/SubmissionNode/SubmissionNodeResponse.cs",
+      "Line": 35
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.TemplateFieldBinding.RtfFieldBindingRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/TemplateFieldBinding/RtfFieldBindingRequest.cs",
+      "Line": 3
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.WorkflowDefinition.CreateWorkflowDefinitionRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/WorkflowDefinition/CreateWorkflowDefinitionRequest.cs",
+      "Line": 6
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.WorkflowDefinition.WorkflowDefinitionDetailResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/WorkflowDefinition/WorkflowDefinitionDetailResponse.cs",
+      "Line": 4
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.WorkflowDefinition.WorkflowDefinitionResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/WorkflowDefinition/WorkflowDefinitionResponse.cs",
+      "Line": 10
+    },
+    {
+      "Rule": "ARCH102",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.WorkflowDefinition.WorkflowDefinitionResponse",
+      "Message": "FromModel accepts Database.Entity parameter model.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/WorkflowDefinition/WorkflowDefinitionResponse.cs",
+      "Line": 25
+    },
+    {
+      "Rule": "ARCH101",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.WorkflowDefinition.WorkflowDefinitionResponse",
+      "Message": "ToModel directly returns a Database.Entity (including within Task/collection).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/WorkflowDefinition/WorkflowDefinitionResponse.cs",
+      "Line": 30
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.WorkflowState.CreateWorkflowStateRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/WorkflowState/CreateWorkflowStateRequest.cs",
+      "Line": 6
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.WorkflowState.WorkflowStateResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/WorkflowState/WorkflowStateResponse.cs",
+      "Line": 10
+    },
+    {
+      "Rule": "ARCH102",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.WorkflowState.WorkflowStateResponse",
+      "Message": "FromModel accepts Database.Entity parameter model.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/WorkflowState/WorkflowStateResponse.cs",
+      "Line": 30
+    },
+    {
+      "Rule": "ARCH101",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.WorkflowState.WorkflowStateResponse",
+      "Message": "ToModel directly returns a Database.Entity (including within Task/collection).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/WorkflowState/WorkflowStateResponse.cs",
+      "Line": 35
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.WorkflowStateAccessRule.CreateWorkflowStateAccessRuleRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/WorkflowStateAccessRule/CreateWorkflowStateAccessRuleRequest.cs",
+      "Line": 6
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.WorkflowStateAccessRule.WorkflowStateAccessRuleResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/WorkflowStateAccessRule/WorkflowStateAccessRuleResponse.cs",
+      "Line": 10
+    },
+    {
+      "Rule": "ARCH102",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.WorkflowStateAccessRule.WorkflowStateAccessRuleResponse",
+      "Message": "FromModel accepts Database.Entity parameter model.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/WorkflowStateAccessRule/WorkflowStateAccessRuleResponse.cs",
+      "Line": 28
+    },
+    {
+      "Rule": "ARCH101",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.WorkflowStateAccessRule.WorkflowStateAccessRuleResponse",
+      "Message": "ToModel directly returns a Database.Entity (including within Task/collection).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/WorkflowStateAccessRule/WorkflowStateAccessRuleResponse.cs",
+      "Line": 33
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.WorkflowTransition.CreateWorkflowTransitionRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/WorkflowTransition/CreateWorkflowTransitionRequest.cs",
+      "Line": 6
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.WorkflowTransition.WorkflowTransitionResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/WorkflowTransition/WorkflowTransitionResponse.cs",
+      "Line": 10
+    },
+    {
+      "Rule": "ARCH102",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.WorkflowTransition.WorkflowTransitionResponse",
+      "Message": "FromModel accepts Database.Entity parameter model.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/WorkflowTransition/WorkflowTransitionResponse.cs",
+      "Line": 31
+    },
+    {
+      "Rule": "ARCH101",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.WorkflowTransition.WorkflowTransitionResponse",
+      "Message": "ToModel directly returns a Database.Entity (including within Task/collection).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/WorkflowTransition/WorkflowTransitionResponse.cs",
+      "Line": 36
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.WorkflowVersion.CreateWorkflowVersionRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/WorkflowVersion/CreateWorkflowVersionRequest.cs",
+      "Line": 8
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.WorkflowVersion.WorkflowDesignerResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/WorkflowVersion/WorkflowDesignerResponse.cs",
+      "Line": 8
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.WorkflowVersion.WorkflowVersionResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/WorkflowVersion/WorkflowVersionResponse.cs",
+      "Line": 10
+    },
+    {
+      "Rule": "ARCH102",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.WorkflowVersion.WorkflowVersionResponse",
+      "Message": "FromModel accepts Database.Entity parameter model.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/WorkflowVersion/WorkflowVersionResponse.cs",
+      "Line": 27
+    },
+    {
+      "Rule": "ARCH101",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Models.WorkflowVersion.WorkflowVersionResponse",
+      "Message": "ToModel directly returns a Database.Entity (including within Task/collection).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/WorkflowVersion/WorkflowVersionResponse.cs",
+      "Line": 32
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.DigitalProcesses.DigitalProcessesModule",
+      "Message": "Legacy declared layer Shared. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Module/DigitalProcessesModule.cs",
+      "Line": 60
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "DigitalProcesses.Resolvers",
+      "Message": "Forbidden direct project reference DigitalProcesses.Resolvers (Resolver) -\u003E DBLayer (Database).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Resolvers/DigitalProcesses.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "DigitalProcesses.Resolvers",
+      "Message": "Forbidden direct project reference DigitalProcesses.Resolvers (Resolver) -\u003E DigitalProcesses.Models (Database).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Resolvers/DigitalProcesses.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "DigitalProcesses.Resolvers",
+      "Message": "Forbidden direct project reference DigitalProcesses.Resolvers (Resolver) -\u003E DigitalProcesses.UI (UI).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Resolvers/DigitalProcesses.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "DigitalProcesses.Resolvers",
+      "Message": "Forbidden direct project reference DigitalProcesses.Resolvers (Resolver) -\u003E SecurityLayer (Security).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Resolvers/DigitalProcesses.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "DigitalProcesses.Resolvers",
+      "Message": "Forbidden direct project reference DigitalProcesses.Resolvers (Resolver) -\u003E User.Models (Database).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Resolvers/DigitalProcesses.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH003",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Services.DocumentTemplate.RtfTemplateStore",
+      "Message": "Invalid declared pair Service/Infrastructure.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Services/DocumentTemplate/RtfTemplateStore.cs",
+      "Line": 12
+    },
+    {
+      "Rule": "ARCH003",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DigitalProcesses.Services.Infrastructure.FormBackendRawResponse",
+      "Message": "Invalid declared pair Service/Response.",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Services/Infrastructure/FormBackendRawResponse.cs",
+      "Line": 10
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "DigitalProcesses.Services",
+      "Message": "Forbidden direct project reference DigitalProcesses.Services (Service) -\u003E DBLayer (Database).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Services/DigitalProcesses.Services.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "DigitalProcesses.Services",
+      "Message": "Forbidden direct project reference DigitalProcesses.Services (Service) -\u003E DigitalProcesses.Models (Database).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Services/DigitalProcesses.Services.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "DigitalProcesses.Services",
+      "Message": "Forbidden direct project reference DigitalProcesses.Services (Service) -\u003E User.Models (Database).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Services/DigitalProcesses.Services.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "DigitalProcesses.UI",
+      "Message": "Forbidden direct project reference DigitalProcesses.UI (UI) -\u003E DigitalProcesses.Models (Database).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.UI/DigitalProcesses.UI.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "DigitalProcesses.UI",
+      "Message": "Forbidden direct project reference DigitalProcesses.UI (UI) -\u003E DigitalProcesses.Services (Service).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.UI/DigitalProcesses.UI.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "DigitalProcesses.UI",
+      "Message": "Forbidden direct project reference DigitalProcesses.UI (UI) -\u003E DBLayer (Database).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.UI/DigitalProcesses.UI.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "DigitalProcesses.UI",
+      "Message": "Forbidden direct project reference DigitalProcesses.UI (UI) -\u003E SecurityLayer (Security).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.UI/DigitalProcesses.UI.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "DigitalProcesses.UI",
+      "Message": "Forbidden direct project reference DigitalProcesses.UI (UI) -\u003E User.Models (Database).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.UI/DigitalProcesses.UI.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "DigitalProcesses.UI",
+      "Message": "Forbidden direct project reference DigitalProcesses.UI (UI) -\u003E User.Services (Service).",
+      "File": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.UI/DigitalProcesses.UI.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Events.EventsModule",
+      "Message": "Legacy declared layer Shared. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Apps/Events/EventsModule.cs",
+      "Line": 16
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Events.Resolvers",
+      "Message": "Forbidden direct project reference Events.Resolvers (Resolver) -\u003E Events.UI (UI).",
+      "File": "/workspace/src/Apps/Events/Events.Resolvers/Events.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Events.Resolvers",
+      "Message": "Forbidden direct project reference Events.Resolvers (Resolver) -\u003E DBLayer (Database).",
+      "File": "/workspace/src/Apps/Events/Events.Resolvers/Events.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Events.Resolvers",
+      "Message": "Forbidden direct project reference Events.Resolvers (Resolver) -\u003E SecurityLayer (Security).",
+      "File": "/workspace/src/Apps/Events/Events.Resolvers/Events.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Events.Resolvers",
+      "Message": "Forbidden direct project reference Events.Resolvers (Resolver) -\u003E Events.Models (Database).",
+      "File": "/workspace/src/Apps/Events/Events.Resolvers/Events.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Events.Resolvers",
+      "Message": "Forbidden direct project reference Events.Resolvers (Resolver) -\u003E Group.Models (Database).",
+      "File": "/workspace/src/Apps/Events/Events.Resolvers/Events.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Events.Resolvers",
+      "Message": "Forbidden direct project reference Events.Resolvers (Resolver) -\u003E Group.UI (UI).",
+      "File": "/workspace/src/Apps/Events/Events.Resolvers/Events.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Events.Resolvers",
+      "Message": "Forbidden direct project reference Events.Resolvers (Resolver) -\u003E Membership.Models (Database).",
+      "File": "/workspace/src/Apps/Events/Events.Resolvers/Events.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Events.Resolvers",
+      "Message": "Forbidden direct project reference Events.Resolvers (Resolver) -\u003E Membership.UI (UI).",
+      "File": "/workspace/src/Apps/Events/Events.Resolvers/Events.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Events.Resolvers",
+      "Message": "Forbidden direct project reference Events.Resolvers (Resolver) -\u003E Role.Models (Database).",
+      "File": "/workspace/src/Apps/Events/Events.Resolvers/Events.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Events.Resolvers",
+      "Message": "Forbidden direct project reference Events.Resolvers (Resolver) -\u003E Role.UI (UI).",
+      "File": "/workspace/src/Apps/Events/Events.Resolvers/Events.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Events.Resolvers",
+      "Message": "Forbidden direct project reference Events.Resolvers (Resolver) -\u003E RoleType.Models (Database).",
+      "File": "/workspace/src/Apps/Events/Events.Resolvers/Events.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Events.Resolvers",
+      "Message": "Forbidden direct project reference Events.Resolvers (Resolver) -\u003E RoleType.UI (UI).",
+      "File": "/workspace/src/Apps/Events/Events.Resolvers/Events.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Events.Resolvers",
+      "Message": "Forbidden direct project reference Events.Resolvers (Resolver) -\u003E Security.Models (Database).",
+      "File": "/workspace/src/Apps/Events/Events.Resolvers/Events.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Events.Resolvers",
+      "Message": "Forbidden direct project reference Events.Resolvers (Resolver) -\u003E Security.Resolvers (Security).",
+      "File": "/workspace/src/Apps/Events/Events.Resolvers/Events.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Events.Resolvers",
+      "Message": "Forbidden direct project reference Events.Resolvers (Resolver) -\u003E Security.Services (Security).",
+      "File": "/workspace/src/Apps/Events/Events.Resolvers/Events.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Events.Resolvers",
+      "Message": "Forbidden direct project reference Events.Resolvers (Resolver) -\u003E Security.UI (Security).",
+      "File": "/workspace/src/Apps/Events/Events.Resolvers/Events.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Events.Resolvers",
+      "Message": "Forbidden direct project reference Events.Resolvers (Resolver) -\u003E User.Models (Database).",
+      "File": "/workspace/src/Apps/Events/Events.Resolvers/Events.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Events.Resolvers",
+      "Message": "Forbidden direct project reference Events.Resolvers (Resolver) -\u003E User.UI (UI).",
+      "File": "/workspace/src/Apps/Events/Events.Resolvers/Events.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH003",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.Events.EventFormsModel",
+      "Message": "Invalid declared pair Service/Infrastructure.",
+      "File": "/workspace/src/Apps/Events/Events.Services/EventForms.cs",
+      "Line": 9
+    },
+    {
+      "Rule": "ARCH003",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.Events.EventsJsonImport",
+      "Message": "Invalid declared pair Service/Infrastructure.",
+      "File": "/workspace/src/Apps/Events/Events.Services/EventsJsonImport.cs",
+      "Line": 14
+    },
+    {
+      "Rule": "ARCH003",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.Events.EventTypeImport",
+      "Message": "Invalid declared pair Service/Infrastructure.",
+      "File": "/workspace/src/Apps/Events/Events.Services/EventTypeImport.cs",
+      "Line": 10
+    },
+    {
+      "Rule": "ARCH003",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.Events.EventDetailModel",
+      "Message": "Invalid declared pair Service/Infrastructure.",
+      "File": "/workspace/src/Apps/Events/Events.Services/EventUiModels.cs",
+      "Line": 3
+    },
+    {
+      "Rule": "ARCH003",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.Events.EventTypeEditModel",
+      "Message": "Invalid declared pair Service/Infrastructure.",
+      "File": "/workspace/src/Apps/Events/Events.Services/EventUiModels.cs",
+      "Line": 5
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Events.Services",
+      "Message": "Forbidden direct project reference Events.Services (Service) -\u003E Events.Models (Database).",
+      "File": "/workspace/src/Apps/Events/Events.Services/Events.Services.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Events.Services",
+      "Message": "Forbidden direct project reference Events.Services (Service) -\u003E DBLayer (Database).",
+      "File": "/workspace/src/Apps/Events/Events.Services/Events.Services.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Events.UI",
+      "Message": "Forbidden direct project reference Events.UI (UI) -\u003E Events.Services (Service).",
+      "File": "/workspace/src/Apps/Events/Events.UI/Events.UI.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Events.UI",
+      "Message": "Forbidden direct project reference Events.UI (UI) -\u003E DBLayer (Database).",
+      "File": "/workspace/src/Apps/Events/Events.UI/Events.UI.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Events.UI",
+      "Message": "Forbidden direct project reference Events.UI (UI) -\u003E Events.Models (Database).",
+      "File": "/workspace/src/Apps/Events/Events.UI/Events.UI.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Events.UI",
+      "Message": "Forbidden direct project reference Events.UI (UI) -\u003E SecurityLayer (Security).",
+      "File": "/workspace/src/Apps/Events/Events.UI/Events.UI.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Base.Data.EntityLinkResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/Base/Data/EntityLinkResponse.cs",
+      "Line": 9
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Base.Data.ICreateDTOModel\u003CTEntity\u003E",
+      "Message": "Legacy declared layer Shared. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/Base/Data/ICreateDTOModel.cs",
+      "Line": 10
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Base.Data.IEntityDBModel",
+      "Message": "Legacy declared layer Shared. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/Base/Data/IEntityDBModel.cs",
+      "Line": 10
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Base.Data.IEntityDTOModel",
+      "Message": "Legacy declared layer Shared. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/Base/Data/IEntityDTOModel.cs",
+      "Line": 10
+    },
+    {
+      "Rule": "ARCH002",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.Base.Data.ISecuredEntityDBModel",
+      "Message": "Declared Shared/Infrastructure, Core interface implies Database/Entity.",
+      "File": "/workspace/src/Core/Base/Data/ISecuredEntityDBModel.cs",
+      "Line": 10
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Base.Data.ISecuredEntityDBModel",
+      "Message": "Legacy declared layer Shared. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/Base/Data/ISecuredEntityDBModel.cs",
+      "Line": 10
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Base.Data.ISecuredEntityDTOModel",
+      "Message": "Legacy declared layer Shared. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/Base/Data/ISecuredEntityDTOModel.cs",
+      "Line": 10
+    },
+    {
+      "Rule": "ARCH002",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.Base.Data.ITreeEntityDBModel\u003CTSelf\u003E",
+      "Message": "Declared Shared/Infrastructure, Core interface implies Database/Entity.",
+      "File": "/workspace/src/Core/Base/Data/ITreeEntityDBModel.cs",
+      "Line": 12
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Base.Data.ITreeEntityDBModel\u003CTSelf\u003E",
+      "Message": "Legacy declared layer Shared. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/Base/Data/ITreeEntityDBModel.cs",
+      "Line": 12
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Base.Data.IUpdateDTOModel\u003CTEntity\u003E",
+      "Message": "Legacy declared layer Shared. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/Base/Data/IUpdateDTOModel.cs",
+      "Line": 10
+    },
+    {
+      "Rule": "ARCH001",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Base.Endpoints.ViewModelEndpointExtensions",
+      "Message": "No decisive Core interface or [Architecture] annotation; type remains unclassified.",
+      "File": "/workspace/src/Core/Base/Resolvers/ViewModelEndpointExtensions.cs",
+      "Line": 17
+    },
+    {
+      "Rule": "ARCH001",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Base.Security.RbacEndpointExtensions",
+      "Message": "No decisive Core interface or [Architecture] annotation; type remains unclassified.",
+      "File": "/workspace/src/Core/Base/Security/RbacEndpointExtensions.cs",
+      "Line": 13
+    },
+    {
+      "Rule": "ARCH002",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.DBLayer.EffectiveAccessModel",
+      "Message": "Declared Database/Infrastructure, Core interface implies Database/Entity.",
+      "File": "/workspace/src/Core/DBLayer/EffectiveAccessModel.cs",
+      "Line": 15
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Group.Models.GroupCreateContainedRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/Group/Group.Models/Models/GroupCreateContainedRequest.cs",
+      "Line": 12
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Group.Models.GroupCreateTypedRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/Group/Group.Models/Models/GroupCreateTypedRequest.cs",
+      "Line": 12
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Group.Models.GroupResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/Group/Group.Models/Models/GroupResponse.cs",
+      "Line": 12
+    },
+    {
+      "Rule": "ARCH102",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.Group.Models.GroupResponse",
+      "Message": "FromModel accepts Database.Entity parameter model.",
+      "File": "/workspace/src/Core/Group/Group.Models/Models/GroupResponse.cs",
+      "Line": 32
+    },
+    {
+      "Rule": "ARCH101",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.Group.Models.GroupResponse",
+      "Message": "ToModel directly returns a Database.Entity (including within Task/collection).",
+      "File": "/workspace/src/Core/Group/Group.Models/Models/GroupResponse.cs",
+      "Line": 45
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Group.Models.GroupTypeResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/Group/Group.Models/Models/GroupTypeResponse.cs",
+      "Line": 12
+    },
+    {
+      "Rule": "ARCH102",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.Group.Models.GroupTypeResponse",
+      "Message": "FromModel accepts Database.Entity parameter model.",
+      "File": "/workspace/src/Core/Group/Group.Models/Models/GroupTypeResponse.cs",
+      "Line": 29
+    },
+    {
+      "Rule": "ARCH101",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.Group.Models.GroupTypeResponse",
+      "Message": "ToModel directly returns a Database.Entity (including within Task/collection).",
+      "File": "/workspace/src/Core/Group/Group.Models/Models/GroupTypeResponse.cs",
+      "Line": 40
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Group.Models.GroupTypeUpdateRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/Group/Group.Models/Models/GroupTypeUpdateRequest.cs",
+      "Line": 12
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Group.Models.GroupUpdateRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/Group/Group.Models/Models/GroupUpdateRequest.cs",
+      "Line": 12
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Group.Resolvers",
+      "Message": "Forbidden direct project reference Group.Resolvers (Resolver) -\u003E Group.Models (Database).",
+      "File": "/workspace/src/Core/Group/Group.Resolvers/Group.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Group.Resolvers",
+      "Message": "Forbidden direct project reference Group.Resolvers (Resolver) -\u003E Group.UI (UI).",
+      "File": "/workspace/src/Core/Group/Group.Resolvers/Group.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Group.Resolvers",
+      "Message": "Forbidden direct project reference Group.Resolvers (Resolver) -\u003E Role.Models (Database).",
+      "File": "/workspace/src/Core/Group/Group.Resolvers/Group.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Group.Resolvers",
+      "Message": "Forbidden direct project reference Group.Resolvers (Resolver) -\u003E Membership.Models (Database).",
+      "File": "/workspace/src/Core/Group/Group.Resolvers/Group.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Group.Resolvers",
+      "Message": "Forbidden direct project reference Group.Resolvers (Resolver) -\u003E DBLayer (Database).",
+      "File": "/workspace/src/Core/Group/Group.Resolvers/Group.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Group.Resolvers",
+      "Message": "Forbidden direct project reference Group.Resolvers (Resolver) -\u003E Membership.UI (UI).",
+      "File": "/workspace/src/Core/Group/Group.Resolvers/Group.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Group.Resolvers",
+      "Message": "Forbidden direct project reference Group.Resolvers (Resolver) -\u003E Role.UI (UI).",
+      "File": "/workspace/src/Core/Group/Group.Resolvers/Group.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Group.Resolvers",
+      "Message": "Forbidden direct project reference Group.Resolvers (Resolver) -\u003E SecurityLayer (Security).",
+      "File": "/workspace/src/Core/Group/Group.Resolvers/Group.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Group.Services",
+      "Message": "Forbidden direct project reference Group.Services (Service) -\u003E Group.Models (Database).",
+      "File": "/workspace/src/Core/Group/Group.Services/Group.Services.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Group.Services",
+      "Message": "Forbidden direct project reference Group.Services (Service) -\u003E DBLayer (Database).",
+      "File": "/workspace/src/Core/Group/Group.Services/Group.Services.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Group.UI",
+      "Message": "Forbidden direct project reference Group.UI (UI) -\u003E Group.Models (Database).",
+      "File": "/workspace/src/Core/Group/Group.UI/Group.UI.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Group.UI",
+      "Message": "Forbidden direct project reference Group.UI (UI) -\u003E Role.Models (Database).",
+      "File": "/workspace/src/Core/Group/Group.UI/Group.UI.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Group.UI",
+      "Message": "Forbidden direct project reference Group.UI (UI) -\u003E Membership.Models (Database).",
+      "File": "/workspace/src/Core/Group/Group.UI/Group.UI.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Group.UI",
+      "Message": "Forbidden direct project reference Group.UI (UI) -\u003E DBLayer (Database).",
+      "File": "/workspace/src/Core/Group/Group.UI/Group.UI.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Membership.Models.MembershipCreateContainedRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/Membership/Membership.Models/Models/MembershipCreateContainedRequest.cs",
+      "Line": 12
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Membership.Models.MembershipResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/Membership/Membership.Models/Models/MembershipResponse.cs",
+      "Line": 12
+    },
+    {
+      "Rule": "ARCH102",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.Membership.Models.MembershipResponse",
+      "Message": "FromModel accepts Database.Entity parameter model.",
+      "File": "/workspace/src/Core/Membership/Membership.Models/Models/MembershipResponse.cs",
+      "Line": 31
+    },
+    {
+      "Rule": "ARCH101",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.Membership.Models.MembershipResponse",
+      "Message": "ToModel directly returns a Database.Entity (including within Task/collection).",
+      "File": "/workspace/src/Core/Membership/Membership.Models/Models/MembershipResponse.cs",
+      "Line": 44
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Membership.Models.MembershipUpdateRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/Membership/Membership.Models/Models/MembershipUpdateRequest.cs",
+      "Line": 12
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Membership.Resolvers",
+      "Message": "Forbidden direct project reference Membership.Resolvers (Resolver) -\u003E Membership.Models (Database).",
+      "File": "/workspace/src/Core/Membership/Membership.Resolvers/Membership.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Membership.Resolvers",
+      "Message": "Forbidden direct project reference Membership.Resolvers (Resolver) -\u003E Membership.UI (UI).",
+      "File": "/workspace/src/Core/Membership/Membership.Resolvers/Membership.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Membership.Resolvers",
+      "Message": "Forbidden direct project reference Membership.Resolvers (Resolver) -\u003E DBLayer (Database).",
+      "File": "/workspace/src/Core/Membership/Membership.Resolvers/Membership.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Membership.Resolvers",
+      "Message": "Forbidden direct project reference Membership.Resolvers (Resolver) -\u003E SecurityLayer (Security).",
+      "File": "/workspace/src/Core/Membership/Membership.Resolvers/Membership.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Membership.Services",
+      "Message": "Forbidden direct project reference Membership.Services (Service) -\u003E Membership.Models (Database).",
+      "File": "/workspace/src/Core/Membership/Membership.Services/Membership.Services.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Membership.Services",
+      "Message": "Forbidden direct project reference Membership.Services (Service) -\u003E DBLayer (Database).",
+      "File": "/workspace/src/Core/Membership/Membership.Services/Membership.Services.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Membership.UI",
+      "Message": "Forbidden direct project reference Membership.UI (UI) -\u003E Membership.Models (Database).",
+      "File": "/workspace/src/Core/Membership/Membership.UI/Membership.UI.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Membership.UI",
+      "Message": "Forbidden direct project reference Membership.UI (UI) -\u003E DBLayer (Database).",
+      "File": "/workspace/src/Core/Membership/Membership.UI/Membership.UI.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Role.Models.RoleCreateContainedRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/Role/Role.Models/Models/RoleCreateContainedRequest.cs",
+      "Line": 12
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Role.Models.RoleResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/Role/Role.Models/Models/RoleResponse.cs",
+      "Line": 12
+    },
+    {
+      "Rule": "ARCH102",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.Role.Models.RoleResponse",
+      "Message": "FromModel accepts Database.Entity parameter model.",
+      "File": "/workspace/src/Core/Role/Role.Models/Models/RoleResponse.cs",
+      "Line": 36
+    },
+    {
+      "Rule": "ARCH101",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.Role.Models.RoleResponse",
+      "Message": "ToModel directly returns a Database.Entity (including within Task/collection).",
+      "File": "/workspace/src/Core/Role/Role.Models/Models/RoleResponse.cs",
+      "Line": 53
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Role.Models.RoleUpdateRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/Role/Role.Models/Models/RoleUpdateRequest.cs",
+      "Line": 12
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Role.Resolvers",
+      "Message": "Forbidden direct project reference Role.Resolvers (Resolver) -\u003E Role.Models (Database).",
+      "File": "/workspace/src/Core/Role/Role.Resolvers/Role.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Role.Resolvers",
+      "Message": "Forbidden direct project reference Role.Resolvers (Resolver) -\u003E Role.UI (UI).",
+      "File": "/workspace/src/Core/Role/Role.Resolvers/Role.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Role.Resolvers",
+      "Message": "Forbidden direct project reference Role.Resolvers (Resolver) -\u003E DBLayer (Database).",
+      "File": "/workspace/src/Core/Role/Role.Resolvers/Role.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Role.Resolvers",
+      "Message": "Forbidden direct project reference Role.Resolvers (Resolver) -\u003E SecurityLayer (Security).",
+      "File": "/workspace/src/Core/Role/Role.Resolvers/Role.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Role.Services",
+      "Message": "Forbidden direct project reference Role.Services (Service) -\u003E Role.Models (Database).",
+      "File": "/workspace/src/Core/Role/Role.Services/Role.Services.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Role.Services",
+      "Message": "Forbidden direct project reference Role.Services (Service) -\u003E DBLayer (Database).",
+      "File": "/workspace/src/Core/Role/Role.Services/Role.Services.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Role.UI",
+      "Message": "Forbidden direct project reference Role.UI (UI) -\u003E Role.Models (Database).",
+      "File": "/workspace/src/Core/Role/Role.UI/Role.UI.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Role.UI",
+      "Message": "Forbidden direct project reference Role.UI (UI) -\u003E DBLayer (Database).",
+      "File": "/workspace/src/Core/Role/Role.UI/Role.UI.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.RoleType.Models.RoleTypeResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/RoleType/RoleType.Models/Models/RoleTypeResponse.cs",
+      "Line": 12
+    },
+    {
+      "Rule": "ARCH102",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.RoleType.Models.RoleTypeResponse",
+      "Message": "FromModel accepts Database.Entity parameter model.",
+      "File": "/workspace/src/Core/RoleType/RoleType.Models/Models/RoleTypeResponse.cs",
+      "Line": 27
+    },
+    {
+      "Rule": "ARCH101",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.RoleType.Models.RoleTypeResponse",
+      "Message": "ToModel directly returns a Database.Entity (including within Task/collection).",
+      "File": "/workspace/src/Core/RoleType/RoleType.Models/Models/RoleTypeResponse.cs",
+      "Line": 40
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.RoleType.Models.RoleTypeUpdateRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/RoleType/RoleType.Models/Models/RoleTypeUpdateRequest.cs",
+      "Line": 12
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "RoleType.Resolvers",
+      "Message": "Forbidden direct project reference RoleType.Resolvers (Resolver) -\u003E RoleType.Models (Database).",
+      "File": "/workspace/src/Core/RoleType/RoleType.Resolvers/RoleType.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "RoleType.Resolvers",
+      "Message": "Forbidden direct project reference RoleType.Resolvers (Resolver) -\u003E RoleType.UI (UI).",
+      "File": "/workspace/src/Core/RoleType/RoleType.Resolvers/RoleType.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "RoleType.Resolvers",
+      "Message": "Forbidden direct project reference RoleType.Resolvers (Resolver) -\u003E DBLayer (Database).",
+      "File": "/workspace/src/Core/RoleType/RoleType.Resolvers/RoleType.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "RoleType.Resolvers",
+      "Message": "Forbidden direct project reference RoleType.Resolvers (Resolver) -\u003E SecurityLayer (Security).",
+      "File": "/workspace/src/Core/RoleType/RoleType.Resolvers/RoleType.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "RoleType.Services",
+      "Message": "Forbidden direct project reference RoleType.Services (Service) -\u003E RoleType.Models (Database).",
+      "File": "/workspace/src/Core/RoleType/RoleType.Services/RoleType.Services.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "RoleType.Services",
+      "Message": "Forbidden direct project reference RoleType.Services (Service) -\u003E DBLayer (Database).",
+      "File": "/workspace/src/Core/RoleType/RoleType.Services/RoleType.Services.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "RoleType.UI",
+      "Message": "Forbidden direct project reference RoleType.UI (UI) -\u003E RoleType.Models (Database).",
+      "File": "/workspace/src/Core/RoleType/RoleType.UI/RoleType.UI.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "RoleType.UI",
+      "Message": "Forbidden direct project reference RoleType.UI (UI) -\u003E DBLayer (Database).",
+      "File": "/workspace/src/Core/RoleType/RoleType.UI/RoleType.UI.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Security.Models.RbacPermissionItemResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/Security/Security.Models/Models/RbacPermissionItemResponse.cs",
+      "Line": 7
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Security.Models.RbacPermissionResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/Security/Security.Models/Models/RbacPermissionResponse.cs",
+      "Line": 7
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Security.Models.RoleAssignmentActionResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/Security/Security.Models/Models/RoleAssignmentActionResponse.cs",
+      "Line": 7
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.Security.Models.RoleAssignmentDialogResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/Security/Security.Models/Models/RoleAssignmentDialogResponse.cs",
+      "Line": 7
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Security.Resolvers",
+      "Message": "Forbidden direct project reference Security.Resolvers (Security) -\u003E User.Services (Service).",
+      "File": "/workspace/src/Core/Security/Security.Resolvers/Security.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Security.Resolvers",
+      "Message": "Forbidden direct project reference Security.Resolvers (Security) -\u003E Role.Services (Service).",
+      "File": "/workspace/src/Core/Security/Security.Resolvers/Security.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "Security.Resolvers",
+      "Message": "Forbidden direct project reference Security.Resolvers (Security) -\u003E RoleType.Services (Service).",
+      "File": "/workspace/src/Core/Security/Security.Resolvers/Security.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.User.Models.UserCreateContainedRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/User/User.Models/Models/UserCreateContainedRequest.cs",
+      "Line": 11
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.User.Models.UserResponse",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/User/User.Models/Models/UserResponse.cs",
+      "Line": 11
+    },
+    {
+      "Rule": "ARCH102",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.User.Models.UserResponse",
+      "Message": "FromModel accepts Database.Entity parameter model.",
+      "File": "/workspace/src/Core/User/User.Models/Models/UserResponse.cs",
+      "Line": 27
+    },
+    {
+      "Rule": "ARCH101",
+      "Severity": "error",
+      "Type": "WebAppArchitecture.User.Models.UserResponse",
+      "Message": "ToModel directly returns a Database.Entity (including within Task/collection).",
+      "File": "/workspace/src/Core/User/User.Models/Models/UserResponse.cs",
+      "Line": 44
+    },
+    {
+      "Rule": "ARCH005",
+      "Severity": "warning",
+      "Type": "WebAppArchitecture.User.Models.UserUpdateRequest",
+      "Message": "Legacy declared layer Model. Migrate when the project contracts are ready.",
+      "File": "/workspace/src/Core/User/User.Models/Models/UserUpdateRequest.cs",
+      "Line": 11
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "User.Resolvers",
+      "Message": "Forbidden direct project reference User.Resolvers (Resolver) -\u003E Group.Models (Database).",
+      "File": "/workspace/src/Core/User/User.Resolvers/User.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "User.Resolvers",
+      "Message": "Forbidden direct project reference User.Resolvers (Resolver) -\u003E Membership.Models (Database).",
+      "File": "/workspace/src/Core/User/User.Resolvers/User.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "User.Resolvers",
+      "Message": "Forbidden direct project reference User.Resolvers (Resolver) -\u003E Role.Models (Database).",
+      "File": "/workspace/src/Core/User/User.Resolvers/User.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "User.Resolvers",
+      "Message": "Forbidden direct project reference User.Resolvers (Resolver) -\u003E User.Models (Database).",
+      "File": "/workspace/src/Core/User/User.Resolvers/User.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "User.Resolvers",
+      "Message": "Forbidden direct project reference User.Resolvers (Resolver) -\u003E User.UI (UI).",
+      "File": "/workspace/src/Core/User/User.Resolvers/User.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "User.Resolvers",
+      "Message": "Forbidden direct project reference User.Resolvers (Resolver) -\u003E DBLayer (Database).",
+      "File": "/workspace/src/Core/User/User.Resolvers/User.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "User.Resolvers",
+      "Message": "Forbidden direct project reference User.Resolvers (Resolver) -\u003E Membership.UI (UI).",
+      "File": "/workspace/src/Core/User/User.Resolvers/User.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "User.Resolvers",
+      "Message": "Forbidden direct project reference User.Resolvers (Resolver) -\u003E Role.UI (UI).",
+      "File": "/workspace/src/Core/User/User.Resolvers/User.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "User.Resolvers",
+      "Message": "Forbidden direct project reference User.Resolvers (Resolver) -\u003E SecurityLayer (Security).",
+      "File": "/workspace/src/Core/User/User.Resolvers/User.Resolvers.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "User.Services",
+      "Message": "Forbidden direct project reference User.Services (Service) -\u003E User.Models (Database).",
+      "File": "/workspace/src/Core/User/User.Services/User.Services.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "User.Services",
+      "Message": "Forbidden direct project reference User.Services (Service) -\u003E DBLayer (Database).",
+      "File": "/workspace/src/Core/User/User.Services/User.Services.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "User.UI",
+      "Message": "Forbidden direct project reference User.UI (UI) -\u003E User.Models (Database).",
+      "File": "/workspace/src/Core/User/User.UI/User.UI.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "User.UI",
+      "Message": "Forbidden direct project reference User.UI (UI) -\u003E Role.Models (Database).",
+      "File": "/workspace/src/Core/User/User.UI/User.UI.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "User.UI",
+      "Message": "Forbidden direct project reference User.UI (UI) -\u003E Membership.Models (Database).",
+      "File": "/workspace/src/Core/User/User.UI/User.UI.csproj",
+      "Line": null
+    },
+    {
+      "Rule": "ARCH201",
+      "Severity": "error",
+      "Type": "User.UI",
+      "Message": "Forbidden direct project reference User.UI (UI) -\u003E DBLayer (Database).",
+      "File": "/workspace/src/Core/User/User.UI/User.UI.csproj",
+      "Line": null
+    }
+  ]
+}

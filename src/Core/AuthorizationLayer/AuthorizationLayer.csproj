@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WebAppArchitecture.AuthorizationLayer</RootNamespace>
+  </PropertyGroup>
+  <!-- Legacy two-type service source is intentionally excluded during in-place ZIP upgrades.
+       Delete SecuredBaseService.cs from older worktrees; the supported implementation
+       now lives in SecuredEntityService.cs and accepts only TDBModel. -->
+  <ItemGroup>
+    <Compile Remove="SecuredBaseService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../Base/Base.csproj" />
+    <ProjectReference Include="../DBLayer/DBLayer.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Contracts\Core.Contracts.csproj" />
+  </ItemGroup>
+</Project>

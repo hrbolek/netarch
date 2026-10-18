@@ -6,4 +6,5 @@ namespace WebAppArchitecture.DigitalProcesses.Services.Infrastructure;
 /// <summary>
 /// Vstupní kontrakt Form Backend Prepared Request. Přijímá pouze údaje od klienta; identita konajícího uživatele a bezpečnostní kontext se ověřují na serveru.
 /// </summary>
+
 public sealed record FormBackendPreparedRequest(string query, JsonObject variables);

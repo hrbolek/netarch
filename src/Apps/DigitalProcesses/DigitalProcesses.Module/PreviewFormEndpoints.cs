@@ -25,7 +25,7 @@ namespace WebAppArchitecture.DigitalProcesses;
 /// <summary>Temporary designer live-preview endpoints. Values, queries and output are processed server-side.</summary>
 /// <remarks>
 /// Architecture exception: these handlers orchestrate an ephemeral designer session rather than
-/// a persisted entity, so their preview store, calculations and transport need no SecuredBaseService.
+/// a persisted entity, so their preview store, calculations and transport need no SecuredEntityService.
 /// They are mapped in all environments to keep designer actions available, not only in Development.
 /// Each handler first loads the source form through IFormNodeService.GetDesignerAsync for RBAC read
 /// checks. The in-memory preview is not a Submission and this exception permits no definition or

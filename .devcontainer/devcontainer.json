@@ -3,5 +3,13 @@
   "dockerComposeFile": "docker-compose.yml",
   "service": "app",
   "workspaceFolder": "/workspace",
-  "forwardPorts": [8000]
+  "forwardPorts": [8000],
+
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.13",
+      "installTools": true,
+      "toolsToInstall": "uv,ruff,pytest"
+    }
+  }
 }

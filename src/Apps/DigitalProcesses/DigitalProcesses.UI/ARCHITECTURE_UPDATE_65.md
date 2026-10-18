@@ -63,9 +63,12 @@ used by ApplyViewModel for both full HTML and fragment responses.
 The page composes `FormVersionDesignerHeader`, `FormVersionDesignerWorkspace`
 and `FormVersionDesignerPreview`; the workspace uses version-owned AI/template
 cards and entity-owned node components. `FormNodeStructureCard`,
-`FormNodeLibraryCard`, `FormNodeAddCard` and `FormNodeEditorDialogs` reside in
+`FormNodeAddCard` and `FormNodeEditorDialogs` reside in
 FormNode/Components. Shared tree/path/container calculations belong to
 `FormNodeEditorView`, not the page.
+The legacy library card has been replaced by the insertion wizard's library.
+Permission panels belong only to the corresponding LargeCard, including in
+the form and workflow designers.
 
 The 543-line monolith is reduced to a page of about 50 lines. AI interaction,
 node-action menu handling and preview/repeated-value interaction scripts are
@@ -164,7 +167,7 @@ WorkflowVersionDefaultContent, retaining the explicit trusted bootstrap path.
 
 ## Auxiliary-service composition
 
-Only canonical entity services derive from SecuredBaseService: one per secured
+Only canonical entity services derive from SecuredEntityService: one per secured
 model, named EntityService. All eight formerly inheriting auxiliary services now
 use composition:
 
@@ -177,9 +180,9 @@ use composition:
 | FormDocumentService | ISubmissionService; authorized schema/document projection |
 | ApplicantPolicyService | IFormNodeApplicantAccessService; policy reads and atomic writes |
 | RtfTemplateService | IFormVersionService; template and revision operations authorized against their owning form version |
-| DigitalProcessActionService&lt;TEntity&gt; | IBaseService&lt;TEntity&gt;; minimal identity DTO read |
+| DigitalProcessActionService&lt;TEntity&gt; | ISecuredEntityService&lt;TEntity&gt;; minimal identity DTO read |
 
-Helpers do not receive ISecurityLayer, IDBLayer, DbContext or RtfTemplateStore.
+Helpers do not receive IAuthorizationLayer, IDBLayer, DbContext or RtfTemplateStore.
 They never obtain raw database models from entity-service APIs. Read-only
 orchestration explicitly preserves Read (not List) permission filtering; AI
 approval still requires Update on the version.
@@ -193,7 +196,7 @@ is authorized through the owning FormVersion, without inventing RBAC columns or
 changing tables. FormNodeApplicantAccessService now provides that secured
 entity's canonical service.
 
-DI registers IBaseService&lt;EntityModel&gt; as an alias to the existing named,
+DI registers ISecuredEntityService&lt;EntityModel&gt; as an alias to the existing named,
 scoped entity service, not a second instance. All participating services retain
 the shared request-scoped security layer, EF context and transaction.
 

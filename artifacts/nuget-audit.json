@@ -1,0 +1,153 @@
+{
+  "version": 1,
+  "parameters": "--vulnerable --include-transitive",
+  "sources": [
+    "https://api.nuget.org/v3/index.json"
+  ],
+  "projects": [
+    {
+      "path": "/workspace/src/Core/Base/Base.csproj"
+    },
+    {
+      "path": "/workspace/src/Apps/Host/Host.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/User/User.Resolvers/User.Resolvers.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/User/User.UI/User.UI.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/User/User.Models/User.Models.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/User/User.Services/User.Services.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/Role/Role.Services/Role.Services.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/Role/Role.UI/Role.UI.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/Role/Role.Resolvers/Role.Resolvers.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/Membership/Membership.Models/Membership.Models.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/Membership/Membership.Services/Membership.Services.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/Membership/Membership.UI/Membership.UI.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/Membership/Membership.Resolvers/Membership.Resolvers.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/RoleType/RoleType.Services/RoleType.Services.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/RoleType/RoleType.UI/RoleType.UI.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/RoleType/RoleType.Resolvers/RoleType.Resolvers.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/Group/Group.Models/Group.Models.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/Group/Group.Services/Group.Services.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/Group/Group.UI/Group.UI.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/Group/Group.Resolvers/Group.Resolvers.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/Role/Role.Models/Role.Models.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/RoleType/RoleType.Models/RoleType.Models.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/DBLayer/DBLayer.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/AuthorizationLayer/AuthorizationLayer.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/Security/Security.Models/Security.Models.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/Security/Security.Services/Security.Services.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/Security/Security.UI/Security.UI.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/Security/Security.Resolvers/Security.Resolvers.csproj"
+    },
+    {
+      "path": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Models/DigitalProcesses.Models.csproj"
+    },
+    {
+      "path": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Services/DigitalProcesses.Services.csproj"
+    },
+    {
+      "path": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.UI/DigitalProcesses.UI.csproj"
+    },
+    {
+      "path": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Resolvers/DigitalProcesses.Resolvers.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/Hosting/Core.Hosting.csproj"
+    },
+    {
+      "path": "/workspace/src/Apps/DigitalProcesses/DigitalProcesses.Module/DigitalProcesses.Module.csproj"
+    },
+    {
+      "path": "/workspace/tests/Core.AuthorizationLayer.Tests/Core.AuthorizationLayer.Tests.csproj"
+    },
+    {
+      "path": "/workspace/tests/Core/Host.Integration.Tests/Host.Integration.Tests.csproj"
+    },
+    {
+      "path": "/workspace/tests/Apps/DigitalProcesses.Integration.Tests/DigitalProcesses.Integration.Tests.csproj"
+    },
+    {
+      "path": "/workspace/src/Apps/AppComposition/AppComposition.csproj"
+    },
+    {
+      "path": "/workspace/src/Apps/HostManagement/HostManagement.csproj"
+    },
+    {
+      "path": "/workspace/src/Apps/Events/Events.csproj"
+    },
+    {
+      "path": "/workspace/src/Apps/Events/Events.UI/Events.UI.csproj"
+    },
+    {
+      "path": "/workspace/src/Apps/Events/Events.Resolvers/Events.Resolvers.csproj"
+    },
+    {
+      "path": "/workspace/src/Apps/Events/Events.Services/Events.Services.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/Contracts/Core.Contracts.csproj"
+    },
+    {
+      "path": "/workspace/tests/Core/Core.Contracts.Tests/Core.Contracts.Tests.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/GroupType/GroupType.Models/GroupType.Models.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/GroupType/GroupType.Services/GroupType.Services.csproj"
+    },
+    {
+      "path": "/workspace/src/Core/GroupType/GroupType.Resolvers/GroupType.Resolvers.csproj"
+    }
+  ]
+}

@@ -5,6 +5,8 @@ using WebAppArchitecture.DigitalProcesses.UI.FormVersion.Pages;
 
 namespace WebAppArchitecture.DigitalProcesses.Resolvers.FormVersion;
 
+
+
 public static class FormVersionTemplatesResolvers
 {
     public static IResult LegacyTemplatePage(Guid id)

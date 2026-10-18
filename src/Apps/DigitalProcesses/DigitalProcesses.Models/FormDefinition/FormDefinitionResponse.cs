@@ -6,6 +6,7 @@ namespace WebAppArchitecture.DigitalProcesses.Models.FormDefinition;
 /// <summary>
 /// Výstupní DTO entity Form Definition response. Odděluje datový model od kontraktu API a Razor pohledů; vytváří se mapováním doménového/databázového modelu.
 /// </summary>
+
 public sealed record FormDefinitionResponse(
     Guid id,
     string name,

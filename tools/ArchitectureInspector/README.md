@@ -1,19 +1,32 @@
-# ArchitectureInspector
+# Retired ArchitectureInspector
 
-Compact standalone .NET 8 solution: declarative type attributes + Roslyn-based source audit.
+The attribute-driven `Architecture.Auditor` and its test project have been
+removed at the user's request. Production and template architecture annotations,
+Razor attribute directives and injected attribute-library references have also
+been removed. Existing DTO names, generic interfaces and DI behavior are
+unchanged.
 
-```bash
-dotnet restore ArchitectureInspector.slnx
-dotnet test ArchitectureInspector.slnx
-dotnet run --project src/Architecture.Auditor -- ../../ZArchitecture.sln report.json
-```
+The auditor read architecture annotations to classify declarations and public
+signatures; it was therefore not a reliable application gate after annotation
+removal. Its latest implementation also contained inferred-contract checks and
+the `ARCH201` project-reference policy. Those checks were part of the same
+auditor and are no longer run after the explicit decision to remove the entire
+auditor; no replacement architecture audit or equivalent coverage is claimed.
+Application tests and NuGet dependency/security checks remain active.
 
-The CLI accepts an `.sln`, `.slnx`, or `.csproj` and writes a JSON array of findings (or stdout). Exit code 1 means at least one error, 0 means no errors, 2 means invalid arguments. The tool uses MSBuildWorkspace, so a compatible .NET SDK and restored project dependencies are required.
+The [compatibility validation script](../audit-architecture.sh) now builds and
+tests the application and writes a direct/transitive NuGet vulnerability report
+to `artifacts/nuget-audit.json`. It does not generate architecture findings.
+Historical architecture reports are not evidence of current validation.
 
-Rules in the compact starter:
-- `ARCH001` warning: conventional `*Model`, `*Response`, `*Service`, `*Resolvers` class without an annotation.
-- `ARCH002` error: annotated role conflicts with conventional class suffix.
-- `ARCH101` error: annotated Resolver method exposes an annotated Entity in return type (including generics such as `Task<UserModel>`).
-- `ARCH102` error: annotated Resolver method receives an annotated Entity parameter.
+## Remaining library
 
-Known limitations: these initial rules are deliberately shallow. They do not validate assembly boundaries, DI, method bodies, OpenAPI, indirect calls, or unannotated model exposure; `*Model` suffix is only a naming heuristic. Audit only assemblies/projects under review; warnings are expected until the existing codebase is annotated. No production code depends on the auditor.
+[Architecture.Attributes](src/Architecture.Attributes/Architecture.Attributes.csproj)
+and its enum/attribute types are retained for review, but no application,
+template or tool project references them anymore. The remaining
+[standalone solution](ArchitectureInspector.slnx) contains only this unused
+library; it is not part of CI or the application build.
+
+**Proposed follow-up:** remove this standalone solution and the unused library
+together, once removal of their externally consumed public types is approved.
+No other application contracts or used types need to be deleted.

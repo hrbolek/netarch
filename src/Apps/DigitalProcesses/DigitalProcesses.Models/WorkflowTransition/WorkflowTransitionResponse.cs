@@ -6,6 +6,7 @@ namespace WebAppArchitecture.DigitalProcesses.Models.WorkflowTransition;
 /// <summary>
 /// Výstupní DTO entity Workflow Transition response. Odděluje datový model od kontraktu API a Razor pohledů; vytváří se mapováním doménového/databázového modelu.
 /// </summary>
+
 public sealed record WorkflowTransitionResponse(
     Guid id,
     Guid workflow_version_id,

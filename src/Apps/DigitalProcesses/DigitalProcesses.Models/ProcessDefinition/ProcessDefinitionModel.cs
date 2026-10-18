@@ -10,6 +10,7 @@ namespace WebAppArchitecture.DigitalProcesses.Models.ProcessDefinition;
 /// <summary>
 /// Kořenový agregát digitálního procesu. Udržuje stabilní identitu procesu a odkazy na jedinou vlastněnou definici formuláře a workflow; jednotlivé verze volí jen jejich verze. Nullable odkazy jsou určeny pro migraci starších záznamů.
 /// </summary>
+
 public sealed record ProcessDefinitionModel(
     Guid id,
     string name,

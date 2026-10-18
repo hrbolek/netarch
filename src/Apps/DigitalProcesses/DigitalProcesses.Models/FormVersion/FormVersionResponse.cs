@@ -8,6 +8,7 @@ namespace WebAppArchitecture.DigitalProcesses.Models.FormVersion;
 /// <summary>
 /// Výstupní DTO entity Form Version response. Odděluje datový model od kontraktu API a Razor pohledů; vytváří se mapováním doménového/databázového modelu.
 /// </summary>
+
 public sealed record FormVersionResponse(
     Guid id,
     Guid form_definition_id,

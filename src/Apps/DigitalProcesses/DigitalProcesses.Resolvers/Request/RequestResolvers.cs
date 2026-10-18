@@ -6,7 +6,7 @@ using WebAppArchitecture.DigitalProcesses.Resolvers.Shared;
 using WebAppArchitecture.DigitalProcesses.Services.Request;
 using WebAppArchitecture.DigitalProcesses.UI.Request.Pages;
 using WebAppArchitecture.DigitalProcesses.UI.Shared.Components;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 using WebAppArchitecture.Base.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -21,6 +21,7 @@ namespace WebAppArchitecture.DigitalProcesses.Resolvers.Request;
 /// <summary>
 /// Vstupní kontrakt Request Resolvers. Přijímá pouze údaje od klienta; identita konajícího uživatele a bezpečnostní kontext se ověřují na serveru.
 /// </summary>
+
 public static class RequestResolvers
 {
     private const string Prefix = "/digital-processes";

@@ -2,6 +2,7 @@ using WebAppArchitecture.Base.Data;
 using WebAppArchitecture.DBLayer;
 namespace WebAppArchitecture.DigitalProcesses.Models.DocumentTemplateRevision;
 /// <summary>An immutable source revision. Rendered documents can reference the exact revision used.</summary>
+
 public sealed class DocumentTemplateRevisionModel : IEntityDBModel
 {
     public Guid id { get; set; }

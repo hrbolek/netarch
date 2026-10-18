@@ -38,8 +38,8 @@ Kompilace nebyla v prostředí autora spuštěna (chybí SDK .NET); XML projektu
 - `src/Core/DBLayer/DigitalProcessesDBModels.cs`
 - `src/Core/DBLayer/EfStores.cs`
 - `src/Core/DBLayer/StoreContracts.cs`
-- `src/Core/Group/Group.Models/Models/GroupModel.cs`
-- `src/Core/Membership/Membership.Models/Models/MembershipModel.cs`
-- `src/Core/Role/Role.Models/Models/RoleModel.cs`
-- `src/Core/RoleType/RoleType.Models/Models/RoleTypeModel.cs`
-- `src/Core/User/User.Models/Models/UserModel.cs`
+- `src/Core/Group/Group.Models/GroupModel.cs`
+- `src/Core/Membership/Membership.Models/MembershipModel.cs`
+- `src/Core/Role/Role.Models/RoleModel.cs`
+- `src/Core/RoleType/RoleType.Models/RoleTypeModel.cs`
+- `src/Core/User/User.Models/UserModel.cs`

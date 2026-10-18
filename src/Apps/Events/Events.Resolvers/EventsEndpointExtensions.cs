@@ -5,13 +5,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 using WebAppArchitecture.Base.Security;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAppArchitecture.Events;
 
 /// <summary>HTTP endpoint registration only; retains legacy route contracts and adds OpenAPI operation metadata.</summary>
+
 public static class EventsEndpointExtensions
 {
     /// <summary>JSON-only endpoints (no Razor pages or UI assets).</summary>
@@ -31,7 +32,7 @@ public static class EventsEndpointExtensions
 
     private static void MapUiRoutes(RouteGroupBuilder r)
     {
-        r.MapGet("/events-assets/{file}", EventsResolvers.Asset).ExcludeFromDescription();
+        r.MapGet("/events-assets/{file}", EventsUiAssets.Get).ExcludeFromDescription();
         r.MapGet("/EventTypeResponse/list", EventsResolvers.TypeListPage).ApplyViewModel<EventTypeListPage, List<EventTypeModel>>().WithTags("Events").WithName("EventTypeListPage").WithDescription("Lists event types available for read to the acting user; supports JSON and HTML representations for lookup and administration.");
         r.MapGet("/EventResponse/detail/{id:guid}", EventsResolvers.EventDetailPage).ApplyViewModel<EventDetailPage, EventDetailModel>().WithTags("Events").WithName("EventDetail").WithDescription("Returns Event resource via /EventResponse/detail/{id:guid}. Requires a signed-in actor; secured operations enforce RBAC. Uses the canonical Events domain contract.");
         r.MapGet("/EventResponse/edit/{id:guid}", EventsResolvers.EventEditPage).ApplyViewModel<EventEditPage, EventFormsModel>().WithTags("Events").WithName("EventEdit").WithDescription("Returns Event resource via /EventResponse/edit/{id:guid}. Requires a signed-in actor; secured operations enforce RBAC. Uses the canonical Events domain contract.");

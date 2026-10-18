@@ -15,6 +15,7 @@ namespace WebAppArchitecture.DigitalProcesses.Resolvers.Submission;
 /// <summary>
 /// HTTP resolver pro Submission Resolvers. Překládá požadavky Minimal API na volání služeb a návratové modely; obchodní pravidla a perzistence patří do Services/DBLayer.
 /// </summary>
+
 public static class SubmissionResolvers
 {
     private const string Prefix = "/digital-processes";

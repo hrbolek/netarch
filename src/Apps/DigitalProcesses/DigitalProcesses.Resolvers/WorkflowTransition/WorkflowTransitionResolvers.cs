@@ -17,6 +17,7 @@ namespace WebAppArchitecture.DigitalProcesses.Resolvers.WorkflowTransition;
 /// <summary>
 /// HTTP resolver pro Workflow Transition Resolvers. Překládá požadavky Minimal API na volání služeb a návratové modely; obchodní pravidla a perzistence patří do Services/DBLayer.
 /// </summary>
+
 public static class WorkflowTransitionResolvers
 {
     private const string Prefix = "/digital-processes";

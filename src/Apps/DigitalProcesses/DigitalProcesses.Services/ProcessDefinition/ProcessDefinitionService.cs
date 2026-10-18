@@ -11,14 +11,15 @@ using WebAppArchitecture.DigitalProcesses.Services.Shared;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.ProcessDefinition;
 /// <summary>
 /// Služba Process Definition Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
+
 public sealed class ProcessDefinitionService
-    : SecuredBaseService<ProcessDefinitionModel>, IProcessDefinitionService
+    : SecuredEntityService<ProcessDefinitionModel>, IProcessDefinitionService
 {
     private readonly IDBLayer _db;
     private readonly ISecurityProjectionService _securityProjection;
@@ -33,7 +34,7 @@ public sealed class ProcessDefinitionService
         return new(ProcessDefinitionResponse.FromModel(definition), versions);
     }
 
-    public ProcessDefinitionService(ISecurityLayer security, ISecurityProjectionService securityProjection, IDBLayer db)
+    public ProcessDefinitionService(IAuthorizationLayer security, ISecurityProjectionService securityProjection, IDBLayer db)
         : base(security, db)
     {
         _db = db;

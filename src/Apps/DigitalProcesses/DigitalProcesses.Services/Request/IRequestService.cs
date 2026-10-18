@@ -2,13 +2,14 @@ using WebAppArchitecture.DigitalProcesses.Models.Request;
 using System.Text.Json;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.Request;
 /// <summary>
 /// Vstupní kontrakt I Request Service. Přijímá pouze údaje od klienta; identita konajícího uživatele a bezpečnostní kontext se ověřují na serveru.
 /// </summary>
-public interface IRequestService : IBaseService<RequestModel>
+
+public interface IRequestService : ISecuredEntityService<RequestModel>
 {
     Task<RequestResponse> StartAsync(StartRequestRequest request, CancellationToken ct = default);
 

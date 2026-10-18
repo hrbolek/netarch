@@ -12,7 +12,7 @@ using WebAppArchitecture.DigitalProcesses.Services.Request;
 using WebAppArchitecture.DigitalProcesses.Services.WorkflowVersion;
 using WebAppArchitecture.DigitalProcesses.UI.ProcessDefinitionVersion.Pages;
 using WebAppArchitecture.DigitalProcesses.UI.Shared.Components;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 using WebAppArchitecture.Base.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -27,6 +27,7 @@ namespace WebAppArchitecture.DigitalProcesses.Resolvers.ProcessDefinitionVersion
 /// <summary>
 /// HTTP resolver pro Process Definition Version Resolvers. Překládá požadavky Minimal API na volání služeb a návratové modely; obchodní pravidla a perzistence patří do Services/DBLayer.
 /// </summary>
+
 public static class ProcessDefinitionVersionResolvers
 {
     private const string Prefix = "/digital-processes";

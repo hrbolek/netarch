@@ -30,19 +30,21 @@ public sealed class FormVersionDesignerPageTests
         var html = await Render(model);
         var decoded = WebUtility.HtmlDecode(html);
         Assert.Contains("<title>Form designer</title>", html);
-        Assert.Contains("Oprávnění verze formuláře", decoded);
+        Assert.DoesNotContain("Oprávnění verze formuláře", decoded);
+        Assert.Single(html.Split($"hx-get=\"/architecture/RbacPermissionResponse/permissions/{model.designer.form.rbacobject_id}\"").Skip(1));
         var editor = new FormNodeEditorView(model);
         Assert.Contains($"href=\"{editor.DesignerUrl}\"", html);
         Assert.Contains($"href=\"{editor.TestUrl}\"", html);
         var editing = !published && !preview;
         Assert.Equal(editing, html.Contains("<strong>Structure</strong>", StringComparison.Ordinal));
         Assert.Equal(editing, html.Contains("id=\"edit-node-", StringComparison.Ordinal));
-        Assert.Equal(editing, html.Contains("data-ai-form-version=", StringComparison.Ordinal));
-        Assert.Equal(editing && !subtree, html.Contains("<strong>Library</strong>", StringComparison.Ordinal));
+        Assert.Equal(editing && !subtree, html.Contains("data-ai-form-version=", StringComparison.Ordinal));
+        Assert.DoesNotContain("<strong>Library</strong>", html);
         Assert.Equal(editing && !subtree, html.Contains("<strong>Add node</strong>", StringComparison.Ordinal));
         Assert.Equal(editing && !subtree, html.Contains("data-template-management-form-version=", StringComparison.Ordinal));
         Assert.Equal(preview, html.Contains("id=\"dp-preview-form\"", StringComparison.Ordinal));
         Assert.Equal(!published, html.Contains("data-node-wizard", StringComparison.Ordinal));
+        Assert.Equal(!published, html.Contains("data-wizard-library", StringComparison.Ordinal));
         if (editing)
         {
             Assert.Contains("action=\"/digital-processes/FormVersionResponse/designer/update-form\"", html);

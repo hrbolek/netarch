@@ -17,7 +17,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.DBLayer;
 using WebAppArchitecture.DigitalProcesses.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 using WebAppArchitecture.Tests.Shared;
 using Xunit;
 
@@ -75,10 +75,12 @@ public sealed class FormNodeEditorTests
             var html = await htmlResponse.Content.ReadAsStringAsync();
             Assert.Contains("data-node-properties", html);
             Assert.Contains("data-node-wizard", html);
+            Assert.Contains("data-wizard-library", html);
+            Assert.DoesNotContain("<strong>Library</strong>", html);
             Assert.Contains("Open subtree editor", html);
             Assert.Contains($"data-insertion-return-url=\"/digital-processes/FormVersionResponse/designer/{seed.version}\"", html);
             Assert.Contains("digital-processes-node-editor.js?v=", html);
-            foreach (var card in new[] { "<strong>Library</strong>", "<strong>Add node</strong>", "data-template-management-form-version" })
+            foreach (var card in new[] { "<strong>Add node</strong>", "data-template-management-form-version" })
             {
                 if (root is null) Assert.Contains(card, html);
                 else Assert.DoesNotContain(card, html);
@@ -221,7 +223,7 @@ public sealed class FormNodeEditorTests
             await arrange.ServiceProvider.GetRequiredService<ISecurityProjectionService>().SynchronizeRbacObjectAsync(scopeId);
         }
         using var scope = ActorScope(host);
-        var security = scope.ServiceProvider.GetRequiredService<ISecurityLayer>();
+        var security = scope.ServiceProvider.GetRequiredService<IAuthorizationLayer>();
         Assert.True(await security.IsAllowedAsync(scopeId, SecurityOperations.Read));
         Assert.False(await security.IsAllowedAsync(scopeId, SecurityOperations.Create));
         var service = scope.ServiceProvider.GetRequiredService<IFormNodeInsertionService>();

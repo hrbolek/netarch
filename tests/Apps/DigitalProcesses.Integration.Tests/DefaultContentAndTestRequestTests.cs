@@ -10,7 +10,7 @@ using WebAppArchitecture.DigitalProcesses.Models.WorkflowTransition;
 using WebAppArchitecture.DigitalProcesses.Services.ProcessDefinition;
 using WebAppArchitecture.DigitalProcesses.Services.Request;
 using WebAppArchitecture.DigitalProcesses.Services.SubmissionNode;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -79,7 +79,7 @@ public sealed class DefaultContentAndTestRequestTests
             .Select(x => x.id)
             .SingleAsync();
         var inputNode = await db.Set<SubmissionNodeModel>().AsNoTracking().SingleAsync(x => x.id == inputNodeId);
-        var security = verify.ServiceProvider.GetRequiredService<WebAppArchitecture.SecurityLayer.ISecurityLayer>();
+        var security = verify.ServiceProvider.GetRequiredService<WebAppArchitecture.AuthorizationLayer.IAuthorizationLayer>();
         Assert.True(await security.IsAllowedAsync(inputNode.rbacobject_id, SecurityOperations.Update));
         var updatedNode = await submissionNodes.SetValueAsync(
             inputNodeId, new SetSubmissionNodeValueRequest("\"test value\""));

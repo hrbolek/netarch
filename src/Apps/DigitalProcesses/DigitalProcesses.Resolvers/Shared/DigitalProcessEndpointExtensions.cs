@@ -19,6 +19,7 @@ namespace WebAppArchitecture.DigitalProcesses.Resolvers.Shared;
 /// <summary>
 /// Typ Digital Process Endpoint Extensions ve vrstvě Apps; dokumentuje kontrakt a roli typu v architektuře.
 /// </summary>
+
 public static class DigitalProcessEndpointExtensions
 {
     /// <summary>

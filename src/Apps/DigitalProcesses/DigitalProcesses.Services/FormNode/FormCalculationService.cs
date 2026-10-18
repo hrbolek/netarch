@@ -11,6 +11,7 @@ namespace WebAppArchitecture.DigitalProcesses.Services.FormNode;
 /// <summary>
 /// Služba I Form Calculation Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
+
 public interface IFormCalculationService
 {
     Task<JsonNode?> EvaluateAsync(JsonObject configuration,
@@ -28,6 +29,7 @@ public interface IFormCalculationService
 /// Direct use is allowed in temporary designer previews; production resolvers should obtain
 /// authorized domain results from entity services or auxiliary services composing them.
 /// </remarks>
+
 public sealed class FormCalculationService(IFormDataBackend backend) : IFormCalculationService
 {
     public async Task<JsonNode?> EvaluateAsync(JsonObject configuration,

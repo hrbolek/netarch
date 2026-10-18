@@ -6,7 +6,7 @@ namespace WebAppArchitecture.DigitalProcesses.Services.FormVersion;
 /// <summary>Temporary, server-owned preview state. Never used as a durable Submission.</summary>
 /// <remarks>
 /// Architecture exception: this expiring in-memory session cache has no persisted entity or
-/// RBAC scope to implement SecuredBaseService against. Callers must authorize access to the
+/// RBAC scope to implement SecuredEntityService against. Callers must authorize access to the
 /// source form before entering WithInstance; the version check here only prevents mixing forms,
 /// it is not a user-ownership check. Do not use this store for Request or Submission persistence.
 /// </remarks>

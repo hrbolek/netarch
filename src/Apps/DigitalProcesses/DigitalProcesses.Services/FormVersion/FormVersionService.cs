@@ -8,14 +8,15 @@ using WebAppArchitecture.DigitalProcesses.Models.Submission;
 using WebAppArchitecture.DigitalProcesses.Models.WorkflowStateAccessRule;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.FormVersion;
 /// <summary>
 /// Služba Form Version Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public sealed partial class FormVersionService(ISecurityLayer security, IDBLayer unsecuredDb, RtfTemplateStore store, IFormDocumentService formDocuments)
-    : SecuredBaseService<FormVersionModel>(security, unsecuredDb), IFormVersionService
+
+public sealed partial class FormVersionService(IAuthorizationLayer security, IDBLayer unsecuredDb, RtfTemplateStore store, IFormDocumentService formDocuments)
+    : SecuredEntityService<FormVersionModel>(security, unsecuredDb), IFormVersionService
 {
     public async Task<FormTemplatesPageData?> TemplatePageAsync(Guid id, CancellationToken ct = default)
     {

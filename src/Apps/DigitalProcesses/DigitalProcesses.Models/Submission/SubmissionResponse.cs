@@ -6,6 +6,7 @@ namespace WebAppArchitecture.DigitalProcesses.Models.Submission;
 /// <summary>
 /// Výstupní DTO entity Submission response. Odděluje datový model od kontraktu API a Razor pohledů; vytváří se mapováním doménového/databázového modelu.
 /// </summary>
+
 public sealed record SubmissionResponse(
     Guid id,
     Guid request_id,

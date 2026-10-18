@@ -52,9 +52,10 @@ using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.Base.UI.Pages;
 using WebAppArchitecture.Base.UI.Routing;
 using WebAppArchitecture.Hosting;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.DigitalProcesses;
+
 
 public sealed class DigitalProcessesModule : IModule
 {
@@ -122,11 +123,11 @@ public sealed class DigitalProcessesModule : IModule
 
     private static void AddEntityService<TModel, TService, TImplementation>(IServiceCollection services)
         where TModel : class, ISecuredEntityDBModel
-        where TService : class, IBaseService<TModel>
-        where TImplementation : SecuredBaseService<TModel>, TService
+        where TService : class, ISecuredEntityService<TModel>
+        where TImplementation : SecuredEntityService<TModel>, TService
     {
         services.AddScoped<TService, TImplementation>();
-        services.AddScoped<IBaseService<TModel>>(provider => provider.GetRequiredService<TService>());
+        services.AddScoped<ISecuredEntityService<TModel>>(provider => provider.GetRequiredService<TService>());
     }
 
     public void ConfigureDatabase(ModelBuilder modelBuilder)

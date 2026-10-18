@@ -10,14 +10,15 @@ using System.Text.Json;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.FormDefinition;
 /// <summary>
 /// Služba Form Definition Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public sealed class FormDefinitionService(ISecurityLayer security, ISecurityProjectionService securityProjection, IDBLayer unsecuredDb)
-    : SecuredBaseService<FormDefinitionModel>(security, unsecuredDb), IFormDefinitionService
+
+public sealed class FormDefinitionService(IAuthorizationLayer security, ISecurityProjectionService securityProjection, IDBLayer unsecuredDb)
+    : SecuredEntityService<FormDefinitionModel>(security, unsecuredDb), IFormDefinitionService
 {
     public Task<bool> CanCreateAsync(CancellationToken ct = default)
         => Security.IsAllowedAsync(RbacWellKnown.FormDefinitionCreationScopeId, SecurityOperations.Create, ct);

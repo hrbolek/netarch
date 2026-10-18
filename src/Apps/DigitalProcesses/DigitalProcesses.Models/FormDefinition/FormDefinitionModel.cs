@@ -10,6 +10,7 @@ namespace WebAppArchitecture.DigitalProcesses.Models.FormDefinition;
 /// <summary>
 /// Stabilní identita formuláře napříč jeho verzemi; nese společné pojmenování, metadata a RBAC objekt. Nová verze formuláře nevytváří novou definici.
 /// </summary>
+
 public sealed record FormDefinitionModel(
     Guid id,
     string name,

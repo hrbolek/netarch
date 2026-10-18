@@ -1,4 +1,5 @@
 using WebAppArchitecture.DigitalProcesses.Models.ProcessDefinitionVersion;
 namespace WebAppArchitecture.DigitalProcesses.Models.ProcessDefinition;
+
 public sealed record ProcessDefinitionDetailResponse(
     ProcessDefinitionResponse definition, IReadOnlyCollection<ProcessDefinitionVersionResponse> versions);

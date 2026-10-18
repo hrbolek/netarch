@@ -12,6 +12,12 @@
 
 ## Priority and availability
 
+Small entity scaffolds put model, service and resolver C# files directly beside
+their project files; UI retains `Pages` and `Components`. See the source-layout
+rules in [DOMAIN_CONTRACT.md](DOMAIN_CONTRACT.md). Their source-checkout project
+references use `Core/Contracts/Core.Contracts.csproj`; binary-only consumers
+continue to resolve the same `Core.Contracts` assembly.
+
 The above normative files take precedence over older per-template readmes. The package's public APIs are the authority for exact signatures. Historical implementations in `Core/User`, `Core/Group`, `Core/Membership` are **optional design provenance** only. If the public API does not match an example, report the version mismatch instead of fabricating wrappers.
 
 **Known limits:** `ApplicationTemplate` is an older single-project scaffold; it does not yet generate a conforming four-project domain. Scalar field controls such as `TextInput` are not guaranteed to exist in Core. No untested scaffold may be described as complete or compiled. See `TEMPLATE_STATUS.md`.
@@ -19,4 +25,4 @@ The above normative files take precedence over older per-template readmes. The p
 
 ## Endpoint metadata requirements (v140)
 
-For resolver generation, first read [`ENDPOINT_CONTRACT.md`](ENDPOINT_CONTRACT.md) and the self-contained `EntityResolversTemplate/Resolvers/EntityNameEndpointExtensions.cs`. Use canonical routes, `WithName`, `WithDescription`, `WithTags`, `ApplyViewModel` and `ApplyJsonModel`; verify Swagger metadata. Core/User and Core/Group source code is **not required**.
+For resolver generation, first read [`ENDPOINT_CONTRACT.md`](ENDPOINT_CONTRACT.md) and the self-contained `EntityResolversTemplate/EntityNameEndpointExtensions.cs`. Use canonical routes, `WithName`, `WithDescription`, `WithTags`, `ApplyViewModel` and `ApplyJsonModel`; verify Swagger metadata. Core/User and Core/Group source code is **not required**.

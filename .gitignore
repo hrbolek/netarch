@@ -3,6 +3,7 @@ obj/
 .vs/
 .vscode/
 WebAppArchitecture/data/
+artifacts/architecture-audit.json
 *.user
 **.zip
 vzor*.html

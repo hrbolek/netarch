@@ -6,6 +6,7 @@
     <form hx-post="@($"/architecture/UserResponse/update/{Model.id}")"
           hx-target="@($"#user-edit-root-{Model.id}")"
           hx-swap="outerHTML">
+        <input type="hidden" name="updated_at" value="@Model.updated_at.ToString("O")" />
         <div class="mb-3">
             <label class="form-label">Name</label>
             <input class="form-control"

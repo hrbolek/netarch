@@ -7,14 +7,25 @@
 3. Select the closest **included** recipe from `REFERENCE_CATALOG.md`: actor-scoped Create, hierarchical relations, or link entities with validity intervals; these patterns originated in Core domains but must be completely described by `/templates/`.
 4. List the required changes across Models, Services, Resolvers, UI, module registration, schema, security, tests and documentation *before* coding.
 
+## Architecture boundaries
+
+Use existing persistence, request/response and service generic contracts and
+DI registrations; do not add architecture annotations or attribute-library
+references. Determine each responsibility from implemented interfaces, base
+types and generic contracts, not its name or folder. Follow
+[`DOMAIN_CONTRACT.md`](DOMAIN_CONTRACT.md). Run `./tools/audit-architecture.sh`
+after adding an entity or changing architecture; it now runs application
+build/tests and NuGet security checks, not an attribute-driven auditor.
+
 ## Binary-only delivery constraint
 
 No generation, validation or documentation step may depend on viewing Core domain source code. Compiled public contracts and the included examples are sufficient; if missing, explicitly flag the template/SDK gap.
 
 ## Hard constraints
 
+- Follow the source-layout rules in `DOMAIN_CONTRACT.md`: flat C# source layout in small single-entity layer projects; meaningful Pages/Components or entity folders elsewhere. Keep entity ownership explicit. The source-checkout contract path is `Core/Contracts/Core.Contracts.csproj`, not a second Core-prefixed folder.
 - One domain follows the reference **four independently named projects**: `Domain.Models`, `Domain.Services`, `Domain.Resolvers`, `Domain.UI` (and a module/composition adapter as needed). Each layer remains unidirectional, with no service depending on UI or HTTP.
-- Reuse `SecuredBaseService`, `ISecurityLayer`, `CreationScopeGuard`, secured query helpers, transactional stage/save APIs and `BaseResolvers` when applicable. Creation's scope is a permitted container; **never trust an arbitrary client-supplied rbacobject_id** as authority.
+- Reuse `SecuredEntityService`, `IAuthorizationLayer`, `CreationScopeGuard`, secured query helpers, transactional stage/save APIs and `BaseResolvers` when applicable. Creation's scope is a permitted container; **never trust an arbitrary client-supplied rbacobject_id** as authority.
 - Use `Map...Endpoints`, canonical `/{prefix}/{ResponseType}/...`, `ApplyViewModel` / `ApplyJsonModel`, and explicit OpenAPI descriptions. HTTP handlers call services, not `DbContext`.
 - Render with `PageViewList`, `PageView`, `PageEdit`, `MediumCard`, `LargeCard`, `EntityLink`/`LazyEntityLink`, `EntityPermissions`, `EntityLinks`, `ViewVector`, and existing Core primitives when they fit. For Create/Update fields, follow `INPUT_COMPONENTS_CONTRACT.md`: use the real `EntityLookupSelect` for foreign keys and never invent Core scalar controls. Do not introduce independent HTML/string-rendering or page systems.
 - `Membership` is NOT a role grant. Membership validity must not implicitly change role validity, authorizations, or EffectiveAccess.
@@ -31,4 +42,4 @@ No generation, validation or documentation step may depend on viewing Core domai
 
 ## Endpoint metadata requirements (v140)
 
-For resolver generation, first read [`ENDPOINT_CONTRACT.md`](ENDPOINT_CONTRACT.md) and the self-contained `EntityResolversTemplate/Resolvers/EntityNameEndpointExtensions.cs`. Use canonical routes, `WithName`, `WithDescription`, `WithTags`, `ApplyViewModel` and `ApplyJsonModel`; verify Swagger metadata. Core/User and Core/Group source code is **not required**.
+For resolver generation, first read [`ENDPOINT_CONTRACT.md`](ENDPOINT_CONTRACT.md) and the self-contained `EntityResolversTemplate/EntityNameEndpointExtensions.cs`. Use canonical routes, `WithName`, `WithDescription`, `WithTags`, `ApplyViewModel` and `ApplyJsonModel`; verify Swagger metadata. Core/User and Core/Group source code is **not required**.

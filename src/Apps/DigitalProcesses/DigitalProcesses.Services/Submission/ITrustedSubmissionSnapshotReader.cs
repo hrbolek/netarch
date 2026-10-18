@@ -5,7 +5,7 @@ namespace WebAppArchitecture.DigitalProcesses.Services.Submission;
 /// <summary>
 /// Privileged system operation for cloning an authorized Request across workflow states.
 /// NEVER map this interface directly to a user-facing HTTP endpoint.
-/// Ordinary reads must continue to use ISecurityLayer.Query(Read).
+/// Ordinary reads must continue to use IAuthorizationLayer.Query(Read).
 /// </summary>
 /// <summary>
 /// Typ I Trusted Submission Snapshot Reader ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.

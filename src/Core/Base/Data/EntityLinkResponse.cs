@@ -5,6 +5,7 @@ namespace WebAppArchitecture.Base.Data;
 /// The target entity name is carried separately because the response itself
 /// is a generic UI DTO rather than the linked domain DTO type.
 /// </summary>
+
 public sealed record EntityLinkResponse(
     Guid id,
     string visual_label,

@@ -3,6 +3,8 @@ using WebAppArchitecture.DigitalProcesses.Models.Shared;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.FormNodeApplicantAccess;
 
+
+
 public sealed class ApplicantPolicyService(IFormNodeApplicantAccessService rules) : IApplicantPolicyService
 {
     public AuxiliaryOperationResult List(Guid processVersionId, Guid? stateId) => rules.List(processVersionId, stateId);

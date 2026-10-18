@@ -10,6 +10,7 @@ namespace WebAppArchitecture.DigitalProcesses.Models.WorkflowTransition;
 /// <summary>
 /// Povolený přechod mezi dvěma stavy workflow; obchodní validace a kontrola oprávnění probíhají ve vrstvě Services.
 /// </summary>
+
 public sealed record WorkflowTransitionModel(
     Guid id,
     Guid workflow_version_id,

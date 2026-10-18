@@ -7,6 +7,7 @@ namespace WebAppArchitecture.Events;
 /// Request handlers of the Events endpoints. Reads go through <see cref="EventService"/>, which is RBAC-filtered
 /// and paged by construction; handlers only resolve the actor and shape the HTTP response.
 /// </summary>
+
 public static class EventsResolvers
 {
     private const int LookupMax = 100;
@@ -19,20 +20,6 @@ public static class EventsResolvers
     private static int? LookupTake(int? take) => take.HasValue ? Math.Clamp(take.Value, 1, LookupMax) : null;
 
     // ---------- UI ----------
-
-    public static IResult Asset(string file)
-    {
-        if (file != "academic-planner.css" && file != "academic-planner.js") return Results.NotFound();
-        var asm = typeof(EventsResolvers).Assembly;
-        var name = asm.GetManifestResourceNames().FirstOrDefault(x => x.EndsWith("events_assets_" + file.Replace('.', '_'), StringComparison.OrdinalIgnoreCase)
-            || x.EndsWith("events_assets." + file, StringComparison.OrdinalIgnoreCase)
-            || x.EndsWith("events-assets." + file, StringComparison.OrdinalIgnoreCase));
-        if (name is null) return Results.NotFound();
-        using var stream = asm.GetManifestResourceStream(name);
-        if (stream is null) return Results.NotFound();
-        using var reader = new StreamReader(stream);
-        return Results.Content(reader.ReadToEnd(), file.EndsWith(".css") ? "text/css" : "text/javascript");
-    }
 
     public static async Task<object> TypeListPage(HttpContext http, ICurrentActorProvider actors, EventService svc, EventTypeService typeSvc, string? where, int? skip, int? take, CancellationToken ct)
     {
@@ -146,10 +133,10 @@ public static class EventsResolvers
         if (actors.TryGetActorUserId(http) is null) return Unauthorized;
         var root = await svc.FindAsync(id, ct);
         if (root is null) return Results.NotFound();
-        if (ui && WantsHtml(http)) return EventsTimetableUI.Render();
+        if (ui && WantsHtml(http)) return EventsTimetableHtmlPage.Render();
         // The requested calendar window is bounded so a timetable does not become
         // an unbounded search API. Dates are interpreted as Prague local dates.
-        var zone = EventsTimetableUI.PragueZone();
+        var zone = PragueTimeZone();
         var first = from ?? DateOnly.FromDateTime(TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, zone).DateTime);
         var last = to ?? first.AddDays(6);
         if (last < first || last.DayNumber - first.DayNumber > 30) return Results.BadRequest(new { error = "Date range must cover 1 to 31 days." });
@@ -163,6 +150,18 @@ public static class EventsResolvers
         if (!root.IsPlannerSegment && root.EndsAt - root.StartsAt < week && root.StartsAt < end && root.EndsAt > start) descendants.Insert(0, root);
         var types = await typeSvc.ListAsync(null, 0, EventTypeService.MaxPageSize, ct);
         return Results.Ok(new { root = new { root.id, root.Name }, from = first, to = last, timeZone = "Europe/Prague", events = descendants, types });
+    }
+
+    private static TimeZoneInfo PragueTimeZone()
+    {
+        try
+        {
+            return TimeZoneInfo.FindSystemTimeZoneById("Europe/Prague");
+        }
+        catch (TimeZoneNotFoundException)
+        {
+            return TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time");
+        }
     }
 
     public static Task<IResult> EventAcademicPlanApi(Guid id, HttpContext http, ICurrentActorProvider actors, EventService svc, EventTypeService typeSvc, CancellationToken ct) =>

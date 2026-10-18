@@ -8,11 +8,6 @@
         <ChildContent Context="version">
             <div class="container-fluid py-3">
                 <FormVersionDesignerHeader Editor="@Editor" />
-                @* <details class="mb-3">
-                    <summary class="fw-semibold">Oprávnění verze formuláře</summary>
-                    <p class="small text-muted mb-0">Role se vyhodnocují vůči RBAC objektu této verze. Nastavení vyžaduje odpovídající oprávnění.</p>
-                    <EntityPermissions RbacId="@Model.designer.form.rbacobject_id" App="architecture" />
-                </details> *@
                 @if (Model.test_mode)
                 {
                     <FormVersionDesignerPreview Model="@Model" />

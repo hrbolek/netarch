@@ -4,7 +4,7 @@ Only DigitalProcesses HTTP behavior belongs here. Uses shared test Host with a f
 
 ### Stage 3 – HTTP authorization boundary (additional 6 cases)
 
-`DigitalProcessesAuthorizationHttpTests` exercises actual Host/Resolvers/Services/SecurityLayer/SQLite calls:
+`DigitalProcessesAuthorizationHttpTests` exercises actual Host/Resolvers/Services/AuthorizationLayer/SQLite calls:
 - an actor sees no Request, Submission or SubmissionNode in an empty isolated database (three cases);
 - an unknown RBAC operation cannot be used to expand a Request/SubmissionNode list (two cases);
 - OpenAPI declares the actual HTTP verbs for starting a request, transitioning, updating a node value and reading its subtree (one case).

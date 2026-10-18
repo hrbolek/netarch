@@ -28,6 +28,7 @@ namespace WebAppArchitecture.DigitalProcesses.DBLayer;
 /// <summary>
 /// Konfigurace tabulek modulu DigitalProcesses; není součástí Core modelu.
 /// </summary>
+
 internal static class DigitalProcessesModelBuilderExtensions
 {
     /// <summary>

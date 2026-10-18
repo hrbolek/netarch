@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 namespace WebAppArchitecture.Events;
 
+
 public static class EventsModelBuilder
 {
     public static void ConfigureEvents(this ModelBuilder b)

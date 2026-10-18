@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.Base.Security;
 
 namespace WebAppArchitecture.Events;
 
 public sealed record EventScopeChoice(Guid Id, string Name);
+
 public sealed record EventFormsModel(
     List<EventTypeModel> Types,
     List<EventScopeChoice> Scopes,
@@ -13,7 +14,7 @@ public sealed record EventFormsModel(
 
 public static class EventForms
 {
-    public static async Task<EventFormsModel> LoadAsync(Guid actor, CoreDbContext db, EventService service, EventTypeService typeService, SecurityService security, Guid? currentId, CancellationToken ct)
+    public static async Task<EventFormsModel> LoadAsync(Guid actor, CoreDbContext db, EventService service, EventTypeService typeService, IRbacAuthorizationService security, Guid? currentId, CancellationToken ct)
     {
         var scopes = new List<EventScopeChoice>();
         foreach (var group in await db.Groups.AsNoTracking().ToListAsync(ct))

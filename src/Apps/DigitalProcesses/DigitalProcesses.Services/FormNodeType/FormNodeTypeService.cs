@@ -2,14 +2,15 @@ using WebAppArchitecture.DigitalProcesses.Models.FormNodeType;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.FormNodeType;
 /// <summary>
 /// Služba Form Node Type Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public sealed class FormNodeTypeService(ISecurityLayer security, ISecurityProjectionService securityProjection, IDBLayer unsecuredDb)
-    : SecuredBaseService<FormNodeTypeModel>(security, unsecuredDb), IFormNodeTypeService
+
+public sealed class FormNodeTypeService(IAuthorizationLayer security, ISecurityProjectionService securityProjection, IDBLayer unsecuredDb)
+    : SecuredEntityService<FormNodeTypeModel>(security, unsecuredDb), IFormNodeTypeService
 {
     public IReadOnlyList<FormNodeTypeResponse> GetRendererTypes() =>
         SecuredModels(SecurityOperations.Read).OrderBy(type => type.renderer_key)

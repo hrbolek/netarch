@@ -9,6 +9,8 @@ using WebAppArchitecture.DBLayer;
 
 namespace WebAppArchitecture.DigitalProcesses;
 
+
+
 public sealed class DigitalProcessesBootstrapHostedService(IServiceScopeFactory scopeFactory) : IHostedService
 {
     public async Task StartAsync(CancellationToken cancellationToken)

@@ -6,7 +6,7 @@ using WebAppArchitecture.DigitalProcesses.Models.WorkflowStateAccessRule;
 using WebAppArchitecture.DigitalProcesses.Models.WorkflowTransition;
 using WebAppArchitecture.DigitalProcesses.Models.WorkflowVersion;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.WorkflowVersion;
 public sealed partial class WorkflowVersionService

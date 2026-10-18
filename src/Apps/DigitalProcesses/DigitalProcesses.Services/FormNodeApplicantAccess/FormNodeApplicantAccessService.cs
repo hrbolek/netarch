@@ -4,11 +4,12 @@ using WebAppArchitecture.DigitalProcesses.Models.ProcessDefinitionVersion;
 using WebAppArchitecture.DigitalProcesses.Models.Shared;
 using WebAppArchitecture.DigitalProcesses.Models.WorkflowState;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.FormNodeApplicantAccess;
-public sealed class FormNodeApplicantAccessService(ISecurityLayer security, IDBLayer db)
-    : SecuredBaseService<FormNodeApplicantAccessModel>(security, db), IFormNodeApplicantAccessService
+
+public sealed class FormNodeApplicantAccessService(IAuthorizationLayer security, IDBLayer db)
+    : SecuredEntityService<FormNodeApplicantAccessModel>(security, db), IFormNodeApplicantAccessService
 {
     public AuxiliaryOperationResult List(Guid processVersionId, Guid? stateId)
     {

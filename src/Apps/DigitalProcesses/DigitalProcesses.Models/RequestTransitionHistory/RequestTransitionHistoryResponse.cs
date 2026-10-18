@@ -6,6 +6,7 @@ namespace WebAppArchitecture.DigitalProcesses.Models.RequestTransitionHistory;
 /// <summary>
 /// Výstupní DTO entity Request Transition History response. Odděluje datový model od kontraktu API a Razor pohledů; vytváří se mapováním doménového/databázového modelu.
 /// </summary>
+
 public sealed record RequestTransitionHistoryResponse(
     Guid id,
     Guid request_id,

@@ -5,19 +5,19 @@ using WebAppArchitecture.DigitalProcesses.Models.SubmissionNode;
 using WebAppArchitecture.Base.Data;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.Request;
 /// <summary>
 /// Performs system-owned child creation only after the actor was authorized on
 /// an existing target (Start) or Request (Transition). The capability is limited
 /// to the Request subtree and only lives within an active transaction.
-/// Generic SecurityLayer.StageCreateAsync is unchanged.
+/// Generic AuthorizationLayer.StageCreateAsync is unchanged.
 /// </summary>
 /// <summary>
 /// Vstupní kontrakt Process Request Provisioner. Přijímá pouze údaje od klienta; identita konajícího uživatele a bezpečnostní kontext se ověřují na serveru.
 /// </summary>
-public sealed class ProcessRequestProvisioner(IDBLayer db, ISecurityLayer security) : IProcessRequestProvisioner
+public sealed class ProcessRequestProvisioner(IDBLayer db, IAuthorizationLayer security) : IProcessRequestProvisioner
 {
     /// <summary>
     /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu. Volání: IsAllowedAsync, CurrentUserId, GetByIdAsync; pořadí a parametry viz implementace.

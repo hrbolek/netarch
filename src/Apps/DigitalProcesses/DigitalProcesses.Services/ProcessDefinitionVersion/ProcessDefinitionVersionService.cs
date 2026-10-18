@@ -11,13 +11,14 @@ using System.Text.Json;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.ProcessDefinitionVersion;
 /// <summary>
 /// Služba Process Definition Version Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public sealed class ProcessDefinitionVersionService(ISecurityLayer security, IDBLayer unsecuredDb) : SecuredBaseService<ProcessDefinitionVersionModel>(security, unsecuredDb),IProcessDefinitionVersionService
+
+public sealed class ProcessDefinitionVersionService(IAuthorizationLayer security, IDBLayer unsecuredDb) : SecuredEntityService<ProcessDefinitionVersionModel>(security, unsecuredDb),IProcessDefinitionVersionService
 {
     public async Task<ApplicantMatrixPageData?> ApplicantMatrixAsync(Guid id, CancellationToken ct = default)
     {

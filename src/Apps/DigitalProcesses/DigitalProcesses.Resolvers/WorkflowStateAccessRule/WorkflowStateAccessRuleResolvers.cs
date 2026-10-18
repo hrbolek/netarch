@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
 using WebAppArchitecture.Base.Endpoints;
 using WebAppArchitecture.Base.Security;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 using WebAppArchitecture.Base.Resolvers;
 using WebAppArchitecture.Base.UI.Components;
 using WebAppArchitecture.DBLayer;
@@ -21,6 +21,7 @@ namespace WebAppArchitecture.DigitalProcesses.Resolvers.WorkflowStateAccessRule;
 /// <summary>
 /// HTTP resolver pro Workflow State Access Rule Resolvers. Překládá požadavky Minimal API na volání služeb a návratové modely; obchodní pravidla a perzistence patří do Services/DBLayer.
 /// </summary>
+
 public static class WorkflowStateAccessRuleResolvers
 {
     private const string Prefix = "/digital-processes";

@@ -8,14 +8,15 @@ using WebAppArchitecture.DigitalProcesses.Models.WorkflowTransition;
 using WebAppArchitecture.DigitalProcesses.Models.WorkflowVersion;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.WorkflowVersion;
 /// <summary>
 /// Služba Workflow Version Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public sealed partial class WorkflowVersionService(ISecurityLayer security, IDBLayer unsecuredDb)
-    : SecuredBaseService<WorkflowVersionModel>(security, unsecuredDb), IWorkflowVersionService
+
+public sealed partial class WorkflowVersionService(IAuthorizationLayer security, IDBLayer unsecuredDb)
+    : SecuredEntityService<WorkflowVersionModel>(security, unsecuredDb), IWorkflowVersionService
 {
     private readonly IDBLayer _definitionDb = unsecuredDb;
 

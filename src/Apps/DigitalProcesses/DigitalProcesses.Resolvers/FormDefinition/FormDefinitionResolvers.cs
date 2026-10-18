@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Logging;
 using System.Net;
 using WebAppArchitecture.Base.Security;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
@@ -23,6 +23,7 @@ namespace WebAppArchitecture.DigitalProcesses.Resolvers.FormDefinition;
 /// <summary>
 /// HTTP resolver pro Form Definition Resolvers. Překládá požadavky Minimal API na volání služeb a návratové modely; obchodní pravidla a perzistence patří do Services/DBLayer.
 /// </summary>
+
 public static class FormDefinitionResolvers
 {
     private const string Prefix = "/digital-processes";

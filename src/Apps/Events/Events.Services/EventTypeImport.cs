@@ -1,15 +1,16 @@
 using System.Data;
 using Microsoft.EntityFrameworkCore;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.Base.Security;
 
 namespace WebAppArchitecture.Events;
 
 public sealed record StandardTypeImportResult(int Inserted, int Existing, int Total);
+
 public static class EventTypeImport
 {
     public static async Task<StandardTypeImportResult?> RunAsync(
-        Guid actor, Guid scopeId, CoreDbContext db, SecurityService security, CancellationToken ct)
+        Guid actor, Guid scopeId, CoreDbContext db, IRbacAuthorizationService security, CancellationToken ct)
     {
         if (scopeId == Guid.Empty || !await security.IsAllowedAsync(actor, scopeId, "create", ct))
             return null;
@@ -51,5 +52,7 @@ public static class EventTypeImport
         return new StandardTypeImportResult(inserted, StandardEventTypes.All.Count - inserted, StandardEventTypes.All.Count);
     }
 }
+
+
 
 public sealed record StandardTypeImportRequest(Guid RbacObjectId);

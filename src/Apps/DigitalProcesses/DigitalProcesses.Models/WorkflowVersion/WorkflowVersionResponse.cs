@@ -6,6 +6,7 @@ namespace WebAppArchitecture.DigitalProcesses.Models.WorkflowVersion;
 /// <summary>
 /// Výstupní DTO entity Workflow Version response. Odděluje datový model od kontraktu API a Razor pohledů; vytváří se mapováním doménového/databázového modelu.
 /// </summary>
+
 public sealed record WorkflowVersionResponse(
     Guid id,
     Guid workflow_definition_id,

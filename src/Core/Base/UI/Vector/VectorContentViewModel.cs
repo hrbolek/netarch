@@ -4,6 +4,7 @@ using WebAppArchitecture.Base.Services;
 
 namespace WebAppArchitecture.Base.UI.Vector;
 
+
 public sealed record VectorContentViewModel(
     string Title,
     string EntityType,

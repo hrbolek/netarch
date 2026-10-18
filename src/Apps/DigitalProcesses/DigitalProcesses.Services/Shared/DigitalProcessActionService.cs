@@ -3,11 +3,13 @@ using WebAppArchitecture.Base.Data;
 using WebAppArchitecture.Base.Services;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.Shared;
+
 public interface IDigitalProcessActionService<TEntity> where TEntity : class, ISecuredEntityDBModel
 {
     Task<bool> CanReadAsync(Guid id, CancellationToken ct = default);
 }
-public sealed class DigitalProcessActionService<TEntity>(IBaseService<TEntity> entities)
+
+public sealed class DigitalProcessActionService<TEntity>(ISecuredEntityService<TEntity> entities)
     : IDigitalProcessActionService<TEntity>
     where TEntity : class, ISecuredEntityDBModel
 {

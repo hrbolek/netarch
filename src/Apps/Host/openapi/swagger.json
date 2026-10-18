@@ -6158,8 +6158,7 @@
             "in": "query",
             "schema": {
               "type": "integer",
-              "format": "int32",
-              "default": 0
+              "format": "int32"
             }
           },
           {
@@ -6167,8 +6166,7 @@
             "in": "query",
             "schema": {
               "type": "integer",
-              "format": "int32",
-              "default": 20
+              "format": "int32"
             }
           }
         ],
@@ -6788,8 +6786,40 @@
         "tags": [
           "Group"
         ],
-        "description": "Lists entities through the secured IQueryable. Optional `where` is a Hasura-like JSON filter, `take` limits the result to 1..200 rows, and `operation` selects the RBAC operation used to build the secured query (default: list). This supports incremental entity selectors without introducing a separate lookup API.",
+        "description": "Lists entities with the List RBAC operation. Optional `where` is a Hasura-like JSON filter, and `take` limits the result to 1..200 rows.",
         "operationId": "GroupList",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GroupResponse"
+                  }
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GroupResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/architecture/GroupResponse/create-targets": {
+      "get": {
+        "tags": [
+          "Group"
+        ],
+        "description": "Lists groups on which the current actor has Create permission, for selecting a target when creating a related entity.\nOptional `where` is a Hasura-like JSON filter and `take` limits the result to 1..200 rows.",
+        "operationId": "GroupCreateTargets",
         "responses": {
           "200": {
             "description": "OK",
@@ -6940,8 +6970,7 @@
                 "$ref": "#/components/schemas/GroupUpdateRequest"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
@@ -7103,7 +7132,7 @@
         "tags": [
           "GroupType"
         ],
-        "description": "Lists entities through the secured IQueryable. Optional `where` is a Hasura-like JSON filter, `take` limits the result to 1..200 rows, and `operation` selects the RBAC operation used to build the secured query (default: list). This supports incremental entity selectors without introducing a separate lookup API.",
+        "description": "Lists entities with the List RBAC operation. Optional `where` is a Hasura-like JSON filter, and `take` limits the result to 1..200 rows.",
         "operationId": "GroupTypeList",
         "responses": {
           "200": {
@@ -7144,8 +7173,7 @@
                 "$ref": "#/components/schemas/GroupTypeUpdateRequest"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
@@ -7573,7 +7601,7 @@
         "tags": [
           "Membership"
         ],
-        "description": "Lists entities through the secured IQueryable. Optional `where` is a Hasura-like JSON filter, `take` limits the result to 1..200 rows, and `operation` selects the RBAC operation used to build the secured query (default: list). This supports incremental entity selectors without introducing a separate lookup API.",
+        "description": "Lists entities with the List RBAC operation. Optional `where` is a Hasura-like JSON filter, and `take` limits the result to 1..200 rows.",
         "operationId": "MembershipList",
         "responses": {
           "200": {
@@ -7614,8 +7642,7 @@
                 "$ref": "#/components/schemas/MembershipUpdateRequest"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
@@ -7976,7 +8003,7 @@
         "tags": [
           "Role"
         ],
-        "description": "Lists entities through the secured IQueryable. Optional `where` is a Hasura-like JSON filter, `take` limits the result to 1..200 rows, and `operation` selects the RBAC operation used to build the secured query (default: list). This supports incremental entity selectors without introducing a separate lookup API.",
+        "description": "Lists entities with the List RBAC operation. Optional `where` is a Hasura-like JSON filter, and `take` limits the result to 1..200 rows.",
         "operationId": "RoleList",
         "responses": {
           "200": {
@@ -8017,8 +8044,7 @@
                 "$ref": "#/components/schemas/RoleUpdateRequest"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
@@ -8295,8 +8321,7 @@
                 "$ref": "#/components/schemas/RoleTypeUpdateRequest"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
@@ -9078,8 +9103,7 @@
                 "$ref": "#/components/schemas/UserUpdateRequest"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
@@ -11223,21 +11247,15 @@
             "type": "string",
             "format": "uuid"
           },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
           "name": {
             "type": "string",
             "nullable": true
           },
           "parent_group_type_id": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "updated_by": {
             "type": "string",
             "format": "uuid",
             "nullable": true
@@ -11251,6 +11269,10 @@
           "id": {
             "type": "string",
             "format": "uuid"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
           },
           "name": {
             "type": "string",
@@ -11267,16 +11289,6 @@
           },
           "inherit_roles": {
             "type": "boolean",
-            "nullable": true
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "updated_by": {
-            "type": "string",
-            "format": "uuid",
             "nullable": true
           }
         },
@@ -11430,6 +11442,10 @@
             "type": "string",
             "format": "uuid"
           },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
           "valid_from": {
             "type": "string",
             "format": "date-time"
@@ -11437,16 +11453,6 @@
           "valid_to": {
             "type": "string",
             "format": "date-time",
-            "nullable": true
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "updated_by": {
-            "type": "string",
-            "format": "uuid",
             "nullable": true
           }
         },
@@ -12175,6 +12181,10 @@
             "type": "string",
             "format": "uuid"
           },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
           "name": {
             "type": "string",
             "nullable": true
@@ -12184,16 +12194,6 @@
             "items": {
               "type": "string"
             },
-            "nullable": true
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "updated_by": {
-            "type": "string",
-            "format": "uuid",
             "nullable": true
           }
         },
@@ -12205,6 +12205,10 @@
           "id": {
             "type": "string",
             "format": "uuid"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
           },
           "role_type_id": {
             "type": "string",
@@ -12220,16 +12224,6 @@
           "valid_to": {
             "type": "string",
             "format": "date-time",
-            "nullable": true
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "updated_by": {
-            "type": "string",
-            "format": "uuid",
             "nullable": true
           }
         },
@@ -12618,18 +12612,12 @@
             "type": "string",
             "format": "uuid"
           },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
           "updated_at": {
             "type": "string",
-            "format": "date-time",
-            "nullable": true
+            "format": "date-time"
           },
-          "updated_by": {
+          "name": {
             "type": "string",
-            "format": "uuid",
             "nullable": true
           },
           "email": {

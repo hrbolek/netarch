@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>WebAppArchitecture.Membership.Models</RootNamespace>
@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="../../Base/Base.csproj" />
     <ProjectReference Include="../../DBLayer/DBLayer.csproj" />
+    <ProjectReference Include="..\..\Contracts\Core.Contracts.csproj" />
   </ItemGroup>
 
   <!-- Refactoring compatibility: exclude source files superseded by per-type files.

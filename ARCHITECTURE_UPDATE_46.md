@@ -14,7 +14,7 @@ join group in groups ...
 
 Affected files:
 
-- `src/Core/Role/Role.Services/Services/RoleService.cs`
-- `src/Core/Membership/Membership.Services/Services/MembershipService.cs`
+- `src/Core/Role/Role.Services/RoleService.cs`
+- `src/Core/Membership/Membership.Services/MembershipService.cs`
 
 No authorization semantics or vector/paging behavior were changed.

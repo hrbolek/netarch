@@ -6,6 +6,7 @@ namespace WebAppArchitecture.DigitalProcesses.Models.FormNode;
 /// <summary>
 /// Výstupní DTO entity Form Node response. Odděluje datový model od kontraktu API a Razor pohledů; vytváří se mapováním doménového/databázového modelu.
 /// </summary>
+
 public sealed record FormNodeResponse(
     Guid id,
     Guid form_version_id,

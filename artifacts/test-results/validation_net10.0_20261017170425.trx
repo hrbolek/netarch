@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="7463e200-9db7-4883-841c-e2b1dcd92983" name="@672e2b22df40 2026-10-17 17:04:25" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-17T17:04:25.4332862+00:00" queuing="2026-10-17T17:04:25.4332865+00:00" start="2026-10-17T17:04:15.5073013+00:00" finish="2026-10-17T17:04:25.4766881+00:00" />
+  <TestSettings name="default" id="4897283b-9479-4944-9bcd-83ff355ecfd6">
+    <Deployment runDeploymentRoot="_672e2b22df40_2026-10-17_17_04_25" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="d37b2184-bbdc-4eef-9fa6-b434d21264ae" testId="9f11213e-eea8-9d48-45a7-03422c55a3fc" testName="Core.Contracts.Tests.ContractTests.ExistingStaticAndDefaultContractsRemainUsable" computerName="672e2b22df40" duration="00:00:00.0341993" startTime="2026-10-17T17:04:24.8814451+00:00" endTime="2026-10-17T17:04:24.8814454+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d37b2184-bbdc-4eef-9fa6-b434d21264ae" />
+    <UnitTestResult executionId="4a45588b-eddb-4bf6-81c9-c0f3a3903785" testId="a2d17d22-824b-3098-9f72-2902bcc9a519" testName="Core.Contracts.Tests.ContractTests.ContractsHaveNoImplementationOrFrameworkDependencies" computerName="672e2b22df40" duration="00:00:00.0138760" startTime="2026-10-17T17:04:24.8469165+00:00" endTime="2026-10-17T17:04:24.8469168+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4a45588b-eddb-4bf6-81c9-c0f3a3903785" />
+    <UnitTestResult executionId="160b4b0a-1989-4c0d-a35f-ccd1d54b2e24" testId="91f9602d-5cc5-78fc-e430-5648651b0e88" testName="Core.Contracts.Tests.ContractTests.AuthorizedSourcesRequireSecuredModelsWithoutAnActorOverride" computerName="672e2b22df40" duration="00:00:00.1135915" startTime="2026-10-17T17:04:24.7833650+00:00" endTime="2026-10-17T17:04:24.7834692+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="160b4b0a-1989-4c0d-a35f-ccd1d54b2e24" />
+    <UnitTestResult executionId="cc0bb4f4-559c-44b3-bf60-b5065bfb3f4e" testId="418137c1-5c65-3736-cb0c-18ff385746ad" testName="Core.Contracts.Tests.ContractTests.AuthorizedQueryExposesOnlyTheSpecifiedSafeSurface" computerName="672e2b22df40" duration="00:00:00.0642563" startTime="2026-10-17T17:04:24.8326301+00:00" endTime="2026-10-17T17:04:24.8326304+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cc0bb4f4-559c-44b3-bf60-b5065bfb3f4e" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Core.Contracts.Tests.ContractTests.ExistingStaticAndDefaultContractsRemainUsable" storage="/workspace/.build/bin/core.contracts.tests/release/core.contracts.tests.dll" id="9f11213e-eea8-9d48-45a7-03422c55a3fc">
+      <Execution id="d37b2184-bbdc-4eef-9fa6-b434d21264ae" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.Contracts.Tests/release/Core.Contracts.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Contracts.Tests.ContractTests" name="ExistingStaticAndDefaultContractsRemainUsable" />
+    </UnitTest>
+    <UnitTest name="Core.Contracts.Tests.ContractTests.ContractsHaveNoImplementationOrFrameworkDependencies" storage="/workspace/.build/bin/core.contracts.tests/release/core.contracts.tests.dll" id="a2d17d22-824b-3098-9f72-2902bcc9a519">
+      <Execution id="4a45588b-eddb-4bf6-81c9-c0f3a3903785" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.Contracts.Tests/release/Core.Contracts.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Contracts.Tests.ContractTests" name="ContractsHaveNoImplementationOrFrameworkDependencies" />
+    </UnitTest>
+    <UnitTest name="Core.Contracts.Tests.ContractTests.AuthorizedSourcesRequireSecuredModelsWithoutAnActorOverride" storage="/workspace/.build/bin/core.contracts.tests/release/core.contracts.tests.dll" id="91f9602d-5cc5-78fc-e430-5648651b0e88">
+      <Execution id="160b4b0a-1989-4c0d-a35f-ccd1d54b2e24" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.Contracts.Tests/release/Core.Contracts.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Contracts.Tests.ContractTests" name="AuthorizedSourcesRequireSecuredModelsWithoutAnActorOverride" />
+    </UnitTest>
+    <UnitTest name="Core.Contracts.Tests.ContractTests.AuthorizedQueryExposesOnlyTheSpecifiedSafeSurface" storage="/workspace/.build/bin/core.contracts.tests/release/core.contracts.tests.dll" id="418137c1-5c65-3736-cb0c-18ff385746ad">
+      <Execution id="cc0bb4f4-559c-44b3-bf60-b5065bfb3f4e" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.Contracts.Tests/release/Core.Contracts.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Contracts.Tests.ContractTests" name="AuthorizedQueryExposesOnlyTheSpecifiedSafeSurface" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="9f11213e-eea8-9d48-45a7-03422c55a3fc" executionId="d37b2184-bbdc-4eef-9fa6-b434d21264ae" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a2d17d22-824b-3098-9f72-2902bcc9a519" executionId="4a45588b-eddb-4bf6-81c9-c0f3a3903785" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="91f9602d-5cc5-78fc-e430-5648651b0e88" executionId="160b4b0a-1989-4c0d-a35f-ccd1d54b2e24" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="418137c1-5c65-3736-cb0c-18ff385746ad" executionId="cc0bb4f4-559c-44b3-bf60-b5065bfb3f4e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="4" executed="4" passed="4" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.01] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 10.0.12)
+[xUnit.net 00:00:00.95]   Discovering: Core.Contracts.Tests
+[xUnit.net 00:00:01.18]   Discovered:  Core.Contracts.Tests
+[xUnit.net 00:00:01.19]   Starting:    Core.Contracts.Tests
+[xUnit.net 00:00:01.83]   Finished:    Core.Contracts.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.DBLayer;
 using WebAppArchitecture.Events;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 using Xunit;
 
 namespace Core.Host.Integration.Tests;
@@ -23,15 +23,15 @@ public sealed class EventsArchitectureTests
         {
             Assert.False(typeof(DbContext).IsAssignableFrom(parameter.ParameterType));
             Assert.False(typeof(IDBLayer).IsAssignableFrom(parameter.ParameterType));
-            Assert.False(typeof(ISecurityLayer).IsAssignableFrom(parameter.ParameterType));
-            Assert.False(typeof(ISecurityService).IsAssignableFrom(parameter.ParameterType));
+            Assert.False(typeof(IAuthorizationLayer).IsAssignableFrom(parameter.ParameterType));
+            Assert.False(typeof(IRbacAuthorizationService).IsAssignableFrom(parameter.ParameterType));
         });
     }
 
     [Fact]
     public void AdministrationIsScopedSecuredAndIndependentOfUi()
     {
-        Assert.True(typeof(SecuredBaseService<EventModel>).IsAssignableFrom(typeof(EventAdministrationService)));
+        Assert.True(typeof(SecuredEntityService<EventModel>).IsAssignableFrom(typeof(EventAdministrationService)));
         Assert.DoesNotContain(typeof(EventAdministrationService).Assembly.GetReferencedAssemblies(),
             assembly => assembly.Name?.EndsWith(".UI", StringComparison.Ordinal) == true);
         var services = new ServiceCollection();

@@ -23,6 +23,7 @@ namespace WebAppArchitecture.DigitalProcesses.Resolvers.WorkflowVersion;
 /// <summary>
 /// HTTP resolver pro Workflow Version Resolvers. Překládá požadavky Minimal API na volání služeb a návratové modely; obchodní pravidla a perzistence patří do Services/DBLayer.
 /// </summary>
+
 public static class WorkflowVersionResolvers
 {
     private const string Prefix = "/digital-processes";

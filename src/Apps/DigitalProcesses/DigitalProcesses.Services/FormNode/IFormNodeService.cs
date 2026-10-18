@@ -4,13 +4,14 @@ using System.Text.Json;
 using WebAppArchitecture.Base.Security;
 using WebAppArchitecture.Base.Services;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.FormNode;
 /// <summary>
 /// Služba I Form Node Service. Zapouzdřuje doménové operace a koordinuje kontrolu přístupu, validaci a transakční práci s uložištěm.
 /// </summary>
-public interface IFormNodeService : IBaseService<FormNodeModel>, IFormNodeInsertionService
+
+public interface IFormNodeService : ISecuredEntityService<FormNodeModel>, IFormNodeInsertionService
 {
     Task<FormNodeResponse> CreateContainedInVersionAsync(CreateFormNodeRequest request, CancellationToken ct = default);
     Task<FormNodeResponse> CreateContainedInNodeAsync(CreateFormNodeRequest request, CancellationToken ct = default);

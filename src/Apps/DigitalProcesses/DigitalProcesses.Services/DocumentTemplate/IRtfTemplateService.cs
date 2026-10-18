@@ -3,6 +3,7 @@ using WebAppArchitecture.DigitalProcesses.Models.DocumentTemplateRevision;
 using WebAppArchitecture.DigitalProcesses.Services.DocumentTemplateRevision;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.DocumentTemplate;
+
 public interface IRtfTemplateService
 {
     Task<IReadOnlyList<RtfTemplateInfo>?> ListAsync(Guid formVersionId, CancellationToken ct = default);

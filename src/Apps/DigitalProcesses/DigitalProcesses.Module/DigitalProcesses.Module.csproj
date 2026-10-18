@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>WebAppArchitecture.DigitalProcesses</RootNamespace>
@@ -13,5 +13,8 @@
     <ProjectReference Include="../DigitalProcesses.Services/DigitalProcesses.Services.csproj" />
     <ProjectReference Include="../DigitalProcesses.UI/DigitalProcesses.UI.csproj" />
     <ProjectReference Include="../DigitalProcesses.Resolvers/DigitalProcesses.Resolvers.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\Contracts\Core.Contracts.csproj" />
   </ItemGroup>
 </Project>

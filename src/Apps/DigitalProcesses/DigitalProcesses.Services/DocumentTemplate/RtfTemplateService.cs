@@ -5,6 +5,8 @@ using WebAppArchitecture.DigitalProcesses.Services.FormVersion;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.DocumentTemplate;
 
+
+
 public sealed class RtfTemplateService(IFormVersionService versions) : IRtfTemplateService
 {
     public Task<IReadOnlyList<RtfTemplateInfo>?> ListAsync(Guid formVersionId, CancellationToken ct = default) => versions.ListAsync(formVersionId, ct);

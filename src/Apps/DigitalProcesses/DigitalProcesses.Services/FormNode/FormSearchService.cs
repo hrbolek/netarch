@@ -4,9 +4,10 @@ using WebAppArchitecture.DigitalProcesses.Models.FormNodeType;
 using WebAppArchitecture.DigitalProcesses.Models.Shared;
 using System.Text.Json.Nodes;
 using System.Text.Json;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.FormNode;
+
 public sealed class FormSearchService(IFormNodeService nodes, IFormNodeTypeService types, IFormCalculationService calculations, IFormNodeInsertionService insertion) : IFormSearchService
 {
     public async Task<AuxiliaryOperationResult> SearchAsync(FormSearchRequest request, CancellationToken ct)

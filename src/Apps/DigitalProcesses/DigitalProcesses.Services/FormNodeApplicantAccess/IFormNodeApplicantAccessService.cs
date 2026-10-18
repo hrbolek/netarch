@@ -3,4 +3,6 @@ using WebAppArchitecture.DigitalProcesses.Models.FormNodeApplicantAccess;
 
 namespace WebAppArchitecture.DigitalProcesses.Services.FormNodeApplicantAccess;
 
-public interface IFormNodeApplicantAccessService : IBaseService<FormNodeApplicantAccessModel>, IApplicantPolicyService { }
+
+
+public interface IFormNodeApplicantAccessService : ISecuredEntityService<FormNodeApplicantAccessModel>, IApplicantPolicyService { }

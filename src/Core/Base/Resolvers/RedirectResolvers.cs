@@ -11,6 +11,7 @@ namespace WebAppArchitecture.Base.Resolvers;
 /// <summary>
 /// HTTP resolver pro Redirect Resolvers. Překládá požadavky Minimal API na volání služeb a návratové modely; obchodní pravidla a perzistence patří do Services/DBLayer.
 /// </summary>
+
 public static class RedirectResolvers
 {
     /// <summary>

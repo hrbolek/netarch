@@ -10,6 +10,7 @@ namespace WebAppArchitecture.DigitalProcesses.Models.FormNodeType;
 /// <summary>
 /// Typ Form Node Type ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
 /// </summary>
+
 public sealed record FormNodeTypeModel(
     Guid id,
     Guid? parent_type_id,

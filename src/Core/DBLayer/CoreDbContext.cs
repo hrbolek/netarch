@@ -11,6 +11,12 @@ public class CoreDbContext : DbContext
 {
     public CoreDbContext(DbContextOptions options) : base(options) { }
 
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        base.ConfigureConventions(configurationBuilder);
+        configurationBuilder.Conventions.Add(_ => new SecuredConcurrencyConvention());
+    }
+
     public DbSet<UserModel> Users => Set<UserModel>();
     public DbSet<GroupModel> Groups => Set<GroupModel>();
     public DbSet<GroupTypeModel> GroupTypes => Set<GroupTypeModel>();

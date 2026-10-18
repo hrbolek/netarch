@@ -1,0 +1,23 @@
+using System.Runtime.CompilerServices;
+using WebAppArchitecture.Base.Data;
+using WebAppArchitecture.Base.Services;
+using WebAppArchitecture.Base.Security;
+
+[assembly: TypeForwardedTo(typeof(IEntityDBModel))]
+[assembly: TypeForwardedTo(typeof(ISecuredEntityDBModel))]
+[assembly: TypeForwardedTo(typeof(IEntityWithTree))]
+[assembly: TypeForwardedTo(typeof(IEntityDTOModel))]
+[assembly: TypeForwardedTo(typeof(ISecuredEntityDTOModel))]
+[assembly: TypeForwardedTo(typeof(ICreateDTOModel<>))]
+[assembly: TypeForwardedTo(typeof(IUpdateDTOModel<>))]
+[assembly: TypeForwardedTo(typeof(IEntityProjection<,>))]
+[assembly: TypeForwardedTo(typeof(IEntityMapper<,>))]
+[assembly: TypeForwardedTo(typeof(ISecuredEntityService<>))]
+[assembly: TypeForwardedTo(typeof(VectorOrderBy))]
+[assembly: TypeForwardedTo(typeof(VectorPageInfo))]
+[assembly: TypeForwardedTo(typeof(VectorPageResult<>))]
+[assembly: TypeForwardedTo(typeof(VectorQueryOptions))]
+[assembly: TypeForwardedTo(typeof(IRbacAuthorizationService))]
+[assembly: TypeForwardedTo(typeof(RbacOperations))]
+[assembly: TypeForwardedTo(typeof(RbacOperationIds))]
+[assembly: TypeForwardedTo(typeof(RbacWellKnown))]

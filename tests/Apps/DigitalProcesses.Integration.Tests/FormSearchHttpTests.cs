@@ -55,6 +55,11 @@ public sealed class FormSearchHttpTests
             })
                 db.Set<UserModel>().Add(new UserModel(id, "Filter test", email, null,
                     RbacWellKnown.RootSecurityObjectId, now, now, actor, actor));
+            var administrator = await db.RoleTypes.SingleAsync(roleType => roleType.name == "Administrator");
+            if (!await db.RoleTypeOperations.AnyAsync(link =>
+                    link.role_type_id == administrator.id && link.operation_id == RbacOperationIds.List))
+                db.RoleTypeOperations.Add(new RoleTypeOperationModel(
+                    Guid.NewGuid(), administrator.id, RbacOperationIds.List));
             await db.SaveChangesAsync();
         }
         using var client = host.CreateClient();

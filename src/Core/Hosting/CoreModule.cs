@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using WebAppArchitecture.Base.Data;
 using WebAppArchitecture.Base.Endpoints;
 using WebAppArchitecture.Base.Security;
@@ -14,6 +15,9 @@ using DBLayerImplementation = WebAppArchitecture.DBLayer.DBLayer;
 using WebAppArchitecture.Group.Models;
 using WebAppArchitecture.Group.Resolvers;
 using WebAppArchitecture.Group.Services;
+using WebAppArchitecture.GroupType.Models;
+using WebAppArchitecture.GroupType.Resolvers;
+using WebAppArchitecture.GroupType.Services;
 using WebAppArchitecture.Membership.Models;
 using WebAppArchitecture.Membership.Resolvers;
 using WebAppArchitecture.Membership.Services;
@@ -25,8 +29,8 @@ using WebAppArchitecture.RoleType.Resolvers;
 using WebAppArchitecture.RoleType.Services;
 using WebAppArchitecture.Security.Resolvers;
 using WebAppArchitecture.Security.Services;
-using WebAppArchitecture.SecurityLayer;
-using SecurityLayerImplementation = WebAppArchitecture.SecurityLayer.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
+using AuthorizationLayerImplementation = WebAppArchitecture.AuthorizationLayer.AuthorizationLayer;
 using WebAppArchitecture.User.Models;
 using WebAppArchitecture.User.Resolvers;
 using WebAppArchitecture.User.Services;
@@ -49,7 +53,7 @@ public sealed class CoreModule : IModule
         services.AddHostedService<EffectiveAccessCleanupHostedService>();
         services.AddScoped<ISecurityProjectionService, SecurityProjectionService>();
         services.AddScoped<IRbacAccessBindingManager, RbacAccessBindingManager>();
-        services.AddScoped<ISecurityLayer, SecurityLayerImplementation>();
+        services.AddScoped<IAuthorizationLayer, AuthorizationLayerImplementation>();
 
         services.AddScoped<IUserStore, EfUserStore>();
         services.AddScoped<IUserService, UserService>();
@@ -72,15 +76,25 @@ public sealed class CoreModule : IModule
         services.AddScoped<IBaseStore<RoleTypeModel>>(sp => sp.GetRequiredService<IRoleTypeStore>());
 
         services.AddSingleton<ICurrentActorProvider, HeaderOrClaimActorProvider>();
-        services.AddScoped<SecurityService>();
-        services.AddScoped<ISecurityService>(sp => sp.GetRequiredService<SecurityService>());
+        services.AddScoped<IRbacAuthorizationService, RbacAuthorizationService>();
         services.AddScoped<ISecurityPermissionService, SecurityPermissionService>();
-        services.AddScoped<IRbacService>(sp => sp.GetRequiredService<SecurityService>());
-        services.AddScoped<IRbacAuthorizationService>(sp => sp.GetRequiredService<SecurityService>());
     }
 
     public void ConfigureApplication(WebApplication app)
     {
+        app.Use(async (context, next) =>
+        {
+            try
+            {
+                await next(context);
+            }
+            catch (DbUpdateConcurrencyException exception) when (!context.Response.HasStarted)
+            {
+                app.Logger.LogWarning(exception, "Concurrent update rejected for {Path}", context.Request.Path);
+                await Results.Conflict(new { error = "The entity has changed. Reload it before updating." })
+                    .ExecuteAsync(context);
+            }
+        });
         app.UseEasyEntraHeaderPrincipal();
         app.UseSwagger();
         app.UseSwaggerUI();
@@ -109,6 +123,7 @@ public sealed class CoreModule : IModule
         var root = "/" + prefix.Trim('/');
         endpoints.MapUserEndpoints(root);
         endpoints.MapGroupEndpoints(root);
+        endpoints.MapGroupTypeEndpoints(root);
         endpoints.MapRoleEndpoints(root);
         endpoints.MapMembershipEndpoints(root);
         endpoints.MapRoleTypeEndpoints(root);

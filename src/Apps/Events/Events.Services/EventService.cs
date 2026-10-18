@@ -1,7 +1,7 @@
 using WebAppArchitecture.Base.Data;
 using Microsoft.EntityFrameworkCore;
 using WebAppArchitecture.DBLayer;
-using WebAppArchitecture.SecurityLayer;
+using WebAppArchitecture.AuthorizationLayer;
 namespace WebAppArchitecture.Events;
 
 /// <summary>
@@ -9,7 +9,8 @@ namespace WebAppArchitecture.Events;
 /// (Stage* + SaveChanges in a transaction), which authorizes every change. The acting user is the current security identity.
 /// Only <see cref="RegisterAsync"/> and <see cref="RespondAsync"/> are self-service and use the unsecured layer on purpose.
 /// </summary>
-public sealed class EventService(ISecurityLayer securityLayer, IDBLayer unsecuredDb, CoreDbContext catalogDb, EventTypeService types)
+
+public sealed class EventService(IAuthorizationLayer securityLayer, IDBLayer unsecuredDb, CoreDbContext catalogDb, EventTypeService types)
  : TreeSecuredService<EventModel>(securityLayer, unsecuredDb)
 {
     protected override IQueryable<EventModel> Order(IQueryable<EventModel> q)=>q.OrderBy(x=>x.StartsAt).ThenBy(x=>x.id);
@@ -45,7 +46,7 @@ public sealed class EventService(ISecurityLayer securityLayer, IDBLayer unsecure
         var item = new EventModel { Name = request.Name, Description = request.Description, EventTypeId = request.EventTypeId, ParentId = request.ParentId, StartsAt = request.StartsAt.ToUniversalTime(), EndsAt = request.EndsAt.ToUniversalTime(), rbacobject_id = scope, created_by = actor, updated_by = actor, created_at = now, updated_at = now };
         return await Security.ExecuteInTransactionAsync(async c =>
         {
-            var entity = await Security.StageCreateAsync(item, c);
+            var entity = await StageCreateNodeAsync(item, c);
             await Security.SaveChangesAsync(c);
             return entity;
         }, ct);
@@ -59,10 +60,11 @@ public sealed class EventService(ISecurityLayer securityLayer, IDBLayer unsecure
         if (request.ParentId is Guid newPid && newPid != item.ParentId)
         {
             // Moving under another parent requires Update on that parent (it must also be visible to the actor).
-            if (await FindAsync(newPid, ct, SecurityOperations.Update) is null) return false;
+            var newParent = await FindAsync(newPid, ct, SecurityOperations.Update);
+            if (newParent is null || newParent.rbacobject_id != item.rbacobject_id) return false;
         }
         item.Name = request.Name; item.Description = request.Description; item.EventTypeId = request.EventTypeId; item.ParentId = request.ParentId; item.StartsAt = request.StartsAt.ToUniversalTime(); item.EndsAt = request.EndsAt.ToUniversalTime(); item.updated_by = Security.CurrentUserId; item.updated_at = DateTimeOffset.UtcNow;
-        await Security.ExecuteInTransactionAsync(async c => { await Security.StageUpdateAsync(item, c); await Security.SaveChangesAsync(c); }, ct);
+        await Security.ExecuteInTransactionAsync(async c => { await StageUpdateNodeAsync(item, c); await Security.SaveChangesAsync(c); }, ct);
         return true;
     }
 
@@ -108,7 +110,7 @@ public sealed class EventService(ISecurityLayer securityLayer, IDBLayer unsecure
                     var entity = existing[id]; entity.Name = segment.Name; entity.EventTypeId = segment.EventTypeId; entity.StartsAt = segment.StartsAt.ToUniversalTime(); entity.EndsAt = segment.EndsAt.ToUniversalTime(); entity.updated_at = now; entity.updated_by = actor;
                     await Security.StageUpdateAsync(entity, c);
                 }
-                else await Security.StageCreateAsync(new EventModel { Name = segment.Name, ParentId = academicYearId, EventTypeId = segment.EventTypeId, StartsAt = segment.StartsAt.ToUniversalTime(), EndsAt = segment.EndsAt.ToUniversalTime(), IsPlannerSegment = true, rbacobject_id = fresh.rbacobject_id, created_by = actor, updated_by = actor, created_at = now, updated_at = now }, c);
+                else await StageCreateNodeAsync(new EventModel { Name = segment.Name, ParentId = academicYearId, EventTypeId = segment.EventTypeId, StartsAt = segment.StartsAt.ToUniversalTime(), EndsAt = segment.EndsAt.ToUniversalTime(), IsPlannerSegment = true, rbacobject_id = fresh.rbacobject_id, created_by = actor, updated_by = actor, created_at = now, updated_at = now }, c);
             }
             fresh.updated_at = now; fresh.updated_by = actor;
             await Security.StageUpdateAsync(fresh, c);
@@ -194,11 +196,18 @@ public sealed class EventService(ISecurityLayer securityLayer, IDBLayer unsecure
     }
 }
 
+
+
 public sealed record EventCreateRequest(string Name, string? Description, Guid EventTypeId, Guid? ParentId, DateTimeOffset StartsAt, DateTimeOffset EndsAt, Guid? RbacObjectId);
+
 public sealed record EventUpdateRequest(string Name, string? Description, Guid EventTypeId, Guid? ParentId, DateTimeOffset StartsAt, DateTimeOffset EndsAt);
 
 public sealed record AcademicPlanSegment(Guid? Id, Guid EventTypeId, string Name, DateTimeOffset StartsAt, DateTimeOffset EndsAt);
+
 public sealed record AcademicPlanSaveRequest(DateTimeOffset ExpectedUpdatedAt, List<AcademicPlanSegment> Segments);
 
+
+
 public sealed record RegistrationPolicyRequest(int? Capacity, DateTimeOffset? OpensAt, DateTimeOffset? ClosesAt);
+
 public sealed record ParticipantAssignmentRequest(Guid? UserId, Guid? GroupId, string Source, Guid? RoleId);

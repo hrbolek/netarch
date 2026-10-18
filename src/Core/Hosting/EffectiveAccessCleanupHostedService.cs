@@ -10,6 +10,7 @@ namespace WebAppArchitecture.Hosting;
 /// Physically removes expired EffectiveAccess projection rows outside request hot paths.
 /// Runtime authorization ignores them immediately via valid_to_unix_ms.
 /// </summary>
+
 public sealed class EffectiveAccessCleanupHostedService(
     IServiceScopeFactory scopeFactory,
     IConfiguration configuration,

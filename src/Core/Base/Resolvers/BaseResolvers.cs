@@ -12,8 +12,13 @@ namespace WebAppArchitecture.Base.Resolvers;
 /// <summary>
 /// HTTP resolver pro Base Resolvers. Překládá požadavky Minimal API na volání služeb a návratové modely; obchodní pravidla a perzistence patří do Services/DBLayer.
 /// </summary>
+
 public static class BaseResolvers
 {
+    public static bool TryReadUpdateToken(IFormCollection form, out DateTimeOffset token)
+        => DateTimeOffset.TryParseExact(form["updated_at"], "O",
+            System.Globalization.CultureInfo.InvariantCulture,
+            System.Globalization.DateTimeStyles.None, out token) && token != default;
     public static async Task<IResult?> AuthorizeModelAsync<TDTOModel>(
         HttpContext httpContext,
         TDTOModel model,
@@ -37,7 +42,7 @@ public static class BaseResolvers
         CancellationToken cancellationToken)
         where TDBModel : class, ISecuredEntityDBModel
         where TDTOModel : IEntityProjection<TDBModel, TDTOModel>
-        where TService : IBaseService<TDBModel>
+        where TService : ISecuredEntityService<TDBModel>
     {
         var result = await service.GetByIdAsync<TDTOModel>(
             id,
@@ -58,21 +63,48 @@ public static class BaseResolvers
         CancellationToken cancellationToken)
         where TDBModel : class, ISecuredEntityDBModel
         where TDTOModel : IEntityProjection<TDBModel, TDTOModel>
-        where TService : IBaseService<TDBModel>
+        where TService : ISecuredEntityService<TDBModel>
     {
-        var operation = httpContext.Request.Query["operation"].ToString();
-        if (string.IsNullOrWhiteSpace(operation))
-            operation = RbacOperations.List;
+        if (httpContext.Request.Query.ContainsKey("operation"))
+            return Results.BadRequest(new
+            {
+                error = "The RBAC operation is fixed for this endpoint. Use the dedicated endpoint for create targets."
+            });
 
-        try
-        {
-            _ = RbacOperationIds.FromName(operation);
-        }
-        catch (ArgumentOutOfRangeException)
-        {
-            return Results.BadRequest(new { error = "Unknown RBAC operation requested for the list." });
-        }
+        return await ListCore<TDBModel, TDTOModel, TService>(
+            RbacOperations.List, httpContext, service, cancellationToken);
+    }
 
+    public static async Task<IResult> ListForCreate<
+        TDBModel,
+        TDTOModel,
+        TService>(
+        HttpContext httpContext,
+        TService service,
+        CancellationToken cancellationToken)
+        where TDBModel : class, ISecuredEntityDBModel
+        where TDTOModel : IEntityProjection<TDBModel, TDTOModel>
+        where TService : ISecuredEntityService<TDBModel>
+    {
+        if (httpContext.Request.Query.ContainsKey("operation"))
+            return Results.BadRequest(new { error = "The RBAC operation is fixed for this endpoint." });
+
+        return await ListCore<TDBModel, TDTOModel, TService>(
+            RbacOperations.Create, httpContext, service, cancellationToken);
+    }
+
+    private static async Task<IResult> ListCore<
+        TDBModel,
+        TDTOModel,
+        TService>(
+        string operation,
+        HttpContext httpContext,
+        TService service,
+        CancellationToken cancellationToken)
+        where TDBModel : class, ISecuredEntityDBModel
+        where TDTOModel : IEntityProjection<TDBModel, TDTOModel>
+        where TService : ISecuredEntityService<TDBModel>
+    {
         if (!VectorQueryParser.TryParse<TDBModel>(
             httpContext,
             _ => true,
@@ -101,8 +133,12 @@ public static class BaseResolvers
         where TDBModel : class, ISecuredEntityDBModel
         where TDTOModel : IEntityProjection<TDBModel, TDTOModel>, IEntityMapper<TDBModel, TDTOModel>
         where TUpdateRequest : IUpdateDTOModel<TDBModel>
-        where TService : IBaseService<TDBModel>
+        where TService : ISecuredEntityService<TDBModel>
     {
+        if (request.updated_at == default)
+            return Results.BadRequest(new { error = "A valid updated_at token is required." });
+        if (httpContext.RequestServices.GetRequiredService<ICurrentActorProvider>().TryGetActorUserId(httpContext) is null)
+            return Results.Unauthorized();
         var current = await service.GetByIdAsync<TDTOModel>(
             request.id,
             cancellationToken);
@@ -136,7 +172,7 @@ public static class BaseResolvers
         CancellationToken cancellationToken)
         where TDBModel : class, ISecuredEntityDBModel
         where TDTOModel : IEntityProjection<TDBModel, TDTOModel>
-        where TService : IBaseService<TDBModel>
+        where TService : ISecuredEntityService<TDBModel>
     {
         var current = await service.GetByIdAsync<TDTOModel>(
             id,
@@ -171,7 +207,7 @@ public static class BaseResolvers
         CancellationToken cancellationToken)
         where TDBModel : class, ISecuredEntityDBModel
         where TDTOModel : IEntityProjection<TDBModel, TDTOModel>
-        where TService : IBaseService<TDBModel>
+        where TService : ISecuredEntityService<TDBModel>
     {
         var result = await service.GetByIdAsync<TDTOModel>(id, cancellationToken);
         if (result is null)
@@ -192,19 +228,17 @@ public static class BaseResolvers
         if (model is not ISecuredEntityDTOModel secured)
             return null;
 
-        // Architecture exception: IRbacService is the authorization substrate below secured
+        // Authorization decisions are below secured
         // entity services. This call decides access to an already projected DTO, not DB access;
         // domain reads and writes must still go through the supplied secured entity service.
-        var rbacService = httpContext.RequestServices.GetService<IRbacService>();
-        if (rbacService is null)
-            return null;
-
-        var actorProvider = httpContext.RequestServices.GetService<ICurrentActorProvider>();
-        if (actorProvider?.TryGetActorUserId(httpContext) is null)
+        var rbacService = httpContext.RequestServices.GetRequiredService<IRbacAuthorizationService>();
+        var actorProvider = httpContext.RequestServices.GetRequiredService<ICurrentActorProvider>();
+        var actor = actorProvider.TryGetActorUserId(httpContext);
+        if (actor is null)
             return Results.Unauthorized();
 
-        var allowed = await rbacService.IsCurrentActorAllowedAsync(
-            httpContext,
+        var allowed = await rbacService.IsAllowedAsync(
+            actor.Value,
             secured.rbacobject_id,
             operation,
             cancellationToken);

@@ -281,7 +281,7 @@ Například `Base.csproj`:
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
 
     <PackageId>WebAppArchitecture.Base</PackageId>
     <Authors>Organization</Authors>
@@ -601,7 +601,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '10.0.x'
 
       - name: Restore
         run: dotnet restore
@@ -657,7 +657,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '10.0.x'
 
       - name: Restore
         run: dotnet restore
@@ -1644,4 +1644,3 @@ Klíčové principy:
 - stejný container image propagovat přes TEST až do PROD,
 - secrets držet mimo repository,
 - každou produkční verzi spojit s konkrétním Git commitem, package verzí a container imagem.
-

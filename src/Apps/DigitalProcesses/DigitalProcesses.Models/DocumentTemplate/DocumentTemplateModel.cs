@@ -3,6 +3,7 @@ using WebAppArchitecture.DBLayer;
 namespace WebAppArchitecture.DigitalProcesses.Models.DocumentTemplate;
 
 /// <summary>Version-owned RTF template stored transactionally in PostgreSQL.</summary>
+
 public sealed class DocumentTemplateModel : IEntityDBModel
 {
     public Guid id { get; set; }

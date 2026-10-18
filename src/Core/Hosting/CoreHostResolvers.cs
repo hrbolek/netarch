@@ -7,6 +7,8 @@ using WebAppArchitecture.Base.UI.Routing;
 
 namespace WebAppArchitecture.Hosting;
 
+
+
 public static class CoreHostResolvers
 {
     public static ApplicationDefinition[] Home(IApplicationNavigationRegistry navigation)

@@ -1,0 +1,115 @@
+using WebAppArchitecture.Base.UI.Pages;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+using WebAppArchitecture.Base.Endpoints;
+using WebAppArchitecture.Base.Data;
+using WebAppArchitecture.Base.Resolvers;
+using WebAppArchitecture.Base.UI.Components;
+using WebAppArchitecture.Base.Security;
+using WebAppArchitecture.Role.Models;
+using WebAppArchitecture.Role.Services;
+using WebAppArchitecture.Role.UI.Pages;
+using WebAppArchitecture.DBLayer;
+
+namespace WebAppArchitecture.Role.Resolvers;
+
+/// <summary>
+/// Typ Role Endpoint Extensions ve vrstvě Core; dokumentuje kontrakt a roli typu v architektuře.
+/// </summary>
+
+public static class RoleEndpointExtensions
+{
+    /// <summary>
+    /// Realizuje uvedenou operaci vrstvy; její vstupy a vedlejší účinky vyplývají z volaných služeb a navazujícího kontraktu.
+    /// </summary>
+    public static IEndpointRouteBuilder MapRoleEndpoints(this IEndpointRouteBuilder endpoints, string prefix)
+    {
+        var group = endpoints.MapGroup(prefix + "/RoleResponse").WithTags("Role");
+
+        group.MapGet("", RedirectResolvers.List)
+            .WithDescription("Redirects the short entity collection URI to the canonical /list endpoint while preserving query parameters.");
+
+        group.MapGet("/{id:guid}", RedirectResolvers.View)
+            .WithDescription("Redirects the short entity URI to the canonical /view/{id} endpoint while preserving query parameters.");
+
+        group.MapPost("/create-contained", RoleResolvers.CreateContained)
+            .WithName("RoleCreateContained")
+            .ApplyJsonModel<RoleResponse>()
+                .WithDescription("""
+                    Creates a Role inside group_id. Create permission is evaluated on that Group and the role RBAC scope is derived server-side.
+                    """);
+
+        group.MapGet("/create", RoleResolvers.CreatePage)
+            .WithName("RoleCreatePage")
+            .ApplyViewModel<RoleCreatePage, CreatePageModel>()
+                .WithDescription("""
+                    GET /create. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
+
+        group.MapPost("/create-form", RoleResolvers.CreateForm)
+            .WithName("RoleCreateForm")
+            .ApplyViewModel<RoleViewPage, RoleResponse>()
+                .WithDescription("""
+                    POST /create-form. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
+
+
+        group.MapGet("/link/{id:guid}", BaseResolvers.Link<RoleModel, RoleResponse, IRoleService>)
+            .WithName("RoleLink")
+            .ApplyViewModel<EntityLinkFragment, EntityLinkResponse>()
+                .WithDescription("""
+                    GET /link/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
+
+        group.MapGet("/actions/{id:guid}", RoleResolvers.Actions)
+            .WithName("RoleActions")
+            .ApplyViewModel<EntityActionMenu, EntityActionMenuModel>()
+            .WithDescription("""Returns the RBAC-aware contextual View/Edit/Delete action menu for a Role.""");
+
+        group.MapGet("/view/{id:guid}", BaseResolvers.Read<RoleModel, RoleResponse, IRoleService>)
+            .WithName("RoleRead")
+            .ApplyViewModel<RoleViewPage, RoleResponse>()
+                .WithDescription("""
+                    GET /view/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
+
+        group.MapGet("/edit/{id:guid}", BaseResolvers.Read<RoleModel, RoleResponse, IRoleService>)
+            .WithName("RoleEdit")
+            .ApplyViewModel<RoleEditPage, RoleResponse>()
+                .WithDescription("""
+                    GET /edit/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
+
+        group.MapGet("/list", BaseResolvers.List<RoleModel, RoleResponse, IRoleService>)
+            .WithName("RoleList")
+            .ApplyViewModel<RoleViewListPage, RoleResponse[]>()
+                .WithDescription("""
+                    Lists entities with the List RBAC operation. Optional `where` is a Hasura-like JSON filter, and `take` limits the result to 1..200 rows.
+                    """);
+
+        group.MapPut("/update", BaseResolvers.Update<RoleModel, RoleResponse, RoleUpdateRequest, IRoleService>)
+            .WithName("RoleUpdate")
+            .ApplyJsonModel<RoleResponse>()
+                .WithDescription("""
+                    PUT /update. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
+
+        group.MapPost("/update/{id:guid}", RoleResolvers.UpdateForm)
+            .WithName("RoleUpdateForm")
+            .ApplyViewModel<RoleEditPage, RoleResponse>()
+                .WithDescription("""
+                    POST /update/{id:guid}. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
+
+        group.MapDelete("/delete", BaseResolvers.Delete<RoleModel, RoleResponse, IRoleService>)
+            .WithName("RoleDelete")
+                .WithDescription("""
+                    DELETE /delete. This endpoint is part of the application API and applies the authorization and service rules of its resolver.
+                    """);
+
+        return endpoints;
+    }
+}
