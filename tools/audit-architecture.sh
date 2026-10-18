@@ -11,7 +11,9 @@ mkdir -p "$(dirname "$REPORT")"
 printf '%s\n' 'The attribute-based architecture auditor has been removed. Running build, tests and NuGet audit.'
 status=0
 if dotnet build "$ROOT/SignFakeArchitecture.sln" --configuration Release; then
-    if ! dotnet test "$ROOT/SignFakeArchitecture.sln" --configuration Release --no-build --no-restore \
+    # Relational suites share one test server; avoid concurrent project-level
+    # database creation/cleanup competing with the authorization regressions.
+    if ! dotnet test "$ROOT/SignFakeArchitecture.sln" --configuration Release --no-build --no-restore --maxcpucount:1 \
         --logger "trx;LogFilePrefix=validation" --results-directory "$ROOT/artifacts/test-results"; then
         status=1
     fi

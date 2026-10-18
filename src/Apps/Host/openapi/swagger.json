@@ -5,44 +5,6 @@
     "version": "1.0"
   },
   "paths": {
-    "/jsonata": {
-      "get": {
-        "tags": [
-          "Development"
-        ],
-        "description": "Development-only playground for the configured DigitalProcesses GraphQL backend.",
-        "operationId": "JsonataPlayground",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/jsonata/execute": {
-      "post": {
-        "tags": [
-          "Development"
-        ],
-        "description": "Development-only GraphQL proxy showing exact forwarded headers and full HTTP payload. Sensitive information is returned to the caller.",
-        "operationId": "JsonataExecute",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/JsonataDiagnosticInput"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/digital-processes/form-preview/data/{formVersionId}/{previewInstanceId}": {
       "get": {
         "tags": [
@@ -628,7 +590,7 @@
         "tags": [
           "DigitalProcesses.Forms"
         ],
-        "description": "Creates FormDefinition using typed creation scope for FormDefinition roots. The authorization target is derived server-side; clients cannot supply rbacobject_id.\nAccepts name and optional description; an optional children object in the FormSchema renderer_key format creates the initial FormVersion tree in the same transaction.",
+        "description": "Creates FormDefinition using typed creation scope for FormDefinition roots. The authorization target is derived server-side; clients cannot supply rbacobject_id.\r\nAccepts name and optional description; an optional children object in the FormSchema renderer_key format creates the initial FormVersion tree in the same transaction.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -6818,7 +6780,7 @@
         "tags": [
           "Group"
         ],
-        "description": "Lists groups on which the current actor has Create permission, for selecting a target when creating a related entity.\nOptional `where` is a Hasura-like JSON filter and `take` limits the result to 1..200 rows.",
+        "description": "Lists groups on which the current actor has Create permission, for selecting a target when creating a related entity.\r\nOptional `where` is a Hasura-like JSON filter and `take` limits the result to 1..200 rows.",
         "operationId": "GroupCreateTargets",
         "responses": {
           "200": {
@@ -7224,7 +7186,7 @@
         "tags": [
           "Home"
         ],
-        "description": "Displays the Digital Processes application landing page.\n\nThe page provides entry points to requests, process definitions, forms,\nworkflows, submissions and Digital Processes administration.",
+        "description": "Displays the Digital Processes application landing page.\r\n\r\nThe page provides entry points to requests, process definitions, forms,\r\nworkflows, submissions and Digital Processes administration.",
         "operationId": "DigitalProcessesHome",
         "responses": {
           "200": {
@@ -8280,7 +8242,7 @@
         "tags": [
           "RoleType"
         ],
-        "description": "Lists secured role types. Optional `where` accepts a JSON Hasura-like filter expression\nthat is translated to an IQueryable predicate before database materialization. Optional `take`\nlimits the result to 1..200 rows and is intended for selectors and incremental lookup UI.",
+        "description": "Lists secured role types. Optional `where` accepts a JSON Hasura-like filter expression\r\nthat is translated to an IQueryable predicate before database materialization. Optional `take`\r\nlimits the result to 1..200 rows and is intended for selectors and incremental lookup UI.",
         "operationId": "RoleTypeList",
         "responses": {
           "200": {
@@ -8497,7 +8459,7 @@
         "tags": [
           "Security"
         ],
-        "description": "Returns the RBAC-aware UI action for adding a role to the current object.\nThe response contains an active Add role button only when the current actor\nhas the create operation on the target RBAC object; otherwise it renders a\ndisabled action and no dialog-loading URL is exposed.",
+        "description": "Returns the RBAC-aware UI action for adding a role to the current object.\r\nThe response contains an active Add role button only when the current actor\r\nhas the create operation on the target RBAC object; otherwise it renders a\r\ndisabled action and no dialog-loading URL is exposed.",
         "operationId": "SecurityCreateRoleAction",
         "parameters": [
           {
@@ -8541,7 +8503,7 @@
         "tags": [
           "Security"
         ],
-        "description": "Returns the Bootstrap dialog content used to create a time-limited role\ndirectly on the current RBAC object. User and role-type choices are loaded\nlazily from their standard secured list endpoints using Hasura-like where filters.",
+        "description": "Returns the Bootstrap dialog content used to create a time-limited role\r\ndirectly on the current RBAC object. User and role-type choices are loaded\r\nlazily from their standard secured list endpoints using Hasura-like where filters.",
         "operationId": "SecurityCreateRoleDialog",
         "parameters": [
           {
@@ -8585,7 +8547,7 @@
         "tags": [
           "Security"
         ],
-        "description": "Creates a role on the selected RBAC object with an explicit validity interval\nand redirects the browser to the page from which role creation was initiated.",
+        "description": "Creates a role on the selected RBAC object with an explicit validity interval\r\nand redirects the browser to the page from which role creation was initiated.",
         "operationId": "SecurityCreateRoleForm",
         "parameters": [
           {
@@ -8909,7 +8871,7 @@
         "tags": [
           "User"
         ],
-        "description": "Lists secured users. Optional `where` accepts a JSON Hasura-like filter expression\nthat is translated to an IQueryable predicate before database materialization. Optional `take`\nlimits the result to 1..200 rows and is intended for selectors and incremental lookup UI.",
+        "description": "Lists secured users. Optional `where` accepts a JSON Hasura-like filter expression\r\nthat is translated to an IQueryable predicate before database materialization. Optional `take`\r\nlimits the result to 1..200 rows and is intended for selectors and incremental lookup UI.",
         "operationId": "UserList",
         "responses": {
           "200": {
@@ -11336,19 +11298,6 @@
         "properties": {
           "propertyNameCaseInsensitive": {
             "type": "boolean"
-          }
-        },
-        "additionalProperties": false
-      },
-      "JsonataDiagnosticInput": {
-        "type": "object",
-        "properties": {
-          "query": {
-            "type": "string",
-            "nullable": true
-          },
-          "variables": {
-            "$ref": "#/components/schemas/JsonNode"
           }
         },
         "additionalProperties": false

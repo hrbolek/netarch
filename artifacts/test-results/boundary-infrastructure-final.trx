@@ -1,0 +1,614 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="7c8513ca-bc88-4037-83fc-4801a5f38105" name="@672e2b22df40 2026-10-18 08:29:23" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-18T08:29:23.0419839+00:00" queuing="2026-10-18T08:29:23.0419840+00:00" start="2026-10-18T08:29:20.7999130+00:00" finish="2026-10-18T08:29:29.0962569+00:00" />
+  <TestSettings name="default" id="690d6d0f-e7a5-4528-be4d-f4e3fdedb368">
+    <Deployment runDeploymentRoot="_672e2b22df40_2026-10-18_08_29_23" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="c6f63c07-d6a3-4c58-bd18-9609102523c9" testId="d0fa9b01-cfe6-8b56-d3f3-aebdbcd3c8a7" testName="Core.Host.Integration.Tests.SecurityBoundary.ResolverDependencyTests.CompiledResolversCannotAccessPersistenceEvenThroughServiceLocationOrAsyncHelpers" computerName="672e2b22df40" duration="00:00:04.2433492" startTime="2026-10-18T08:29:26.6581493+00:00" endTime="2026-10-18T08:29:26.6581497+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c6f63c07-d6a3-4c58-bd18-9609102523c9" />
+    <UnitTestResult executionId="c0ef9695-d1ac-4110-b42e-18f0dea3023c" testId="81520291-ca27-b670-ee57-277939f23a2a" testName="Core.Host.Integration.Tests.SecurityBoundary.StrictServiceSpyTests.UnusedExpectationsFailVerification" computerName="672e2b22df40" duration="00:00:00.0146206" startTime="2026-10-18T08:29:24.1664513+00:00" endTime="2026-10-18T08:29:24.1664515+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c0ef9695-d1ac-4110-b42e-18f0dea3023c" />
+    <UnitTestResult executionId="8752d441-0bdf-4b6b-a4d9-96ac45016858" testId="d4353058-b994-7432-e29e-e8cb2a02a260" testName="Core.Host.Integration.Tests.SecurityBoundary.GenericListBoundaryTests.EveryRegisteredGenericListUsesReadAndRejectsCallerChosenOperation" computerName="672e2b22df40" duration="00:00:06.4494816" startTime="2026-10-18T08:29:28.8717797+00:00" endTime="2026-10-18T08:29:28.8717800+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8752d441-0bdf-4b6b-a4d9-96ac45016858" />
+    <UnitTestResult executionId="5cd89714-a80a-4925-82f9-fe806d7181c3" testId="a948d2a4-9895-30d1-2399-4277bdfaf64f" testName="Core.Host.Integration.Tests.SecurityBoundary.StrictServiceSpyTests.DifferentOverloadIsAnUnexpectedCall" computerName="672e2b22df40" duration="00:00:00.0094220" startTime="2026-10-18T08:29:22.4995161+00:00" endTime="2026-10-18T08:29:22.4995162+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5cd89714-a80a-4925-82f9-fe806d7181c3" />
+    <UnitTestResult executionId="779ce6a6-eff5-4325-b44b-ed602ea2a8e9" testId="5d6607dc-aebd-9415-32a8-c40c4b014cc9" testName="Core.Host.Integration.Tests.SecurityBoundary.StrictServiceSpyTests.PersistenceGuardFailsResolutionAndRecordsIt" computerName="672e2b22df40" duration="00:00:01.6539099" startTime="2026-10-18T08:29:24.1516599+00:00" endTime="2026-10-18T08:29:24.1516601+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="779ce6a6-eff5-4325-b44b-ed602ea2a8e9" />
+    <UnitTestResult executionId="d3554818-74b9-4127-805d-70b297965625" testId="980d8cc7-d190-acdc-0a9b-ed5a240858bc" testName="Core.Host.Integration.Tests.SecurityBoundary.StrictServiceSpyTests.UnconfiguredOperationsFailAndAreRememberedEvenIfCaught" computerName="672e2b22df40" duration="00:00:00.0664168" startTime="2026-10-18T08:29:22.4885926+00:00" endTime="2026-10-18T08:29:22.4886318+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d3554818-74b9-4127-805d-70b297965625" />
+    <UnitTestResult executionId="2b473aa1-3aea-4d46-b6a8-57f98a92f5d3" testId="18fcc1ee-9c46-a5cf-888a-36b5ba2c88db" testName="Core.Host.Integration.Tests.SecurityBoundary.ResolverDependencyTests.InspectorDetectsCompiledPersistenceCallsAndCapturedDependencies" computerName="672e2b22df40" duration="00:00:00.0178677" startTime="2026-10-18T08:29:27.9095869+00:00" endTime="2026-10-18T08:29:27.9095871+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2b473aa1-3aea-4d46-b6a8-57f98a92f5d3" />
+    <UnitTestResult executionId="9168c823-9f02-43f9-98a9-fe53126eadf4" testId="f91cf8a8-462a-4248-97fa-0c0cd8580140" testName="Core.Host.Integration.Tests.SecurityBoundary.ResolverDependencyTests.ResolverProjectReferencesCannotAddPersistenceDependencies" computerName="672e2b22df40" duration="00:00:01.2328782" startTime="2026-10-18T08:29:27.8915343+00:00" endTime="2026-10-18T08:29:27.8915346+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9168c823-9f02-43f9-98a9-fe53126eadf4" />
+    <UnitTestResult executionId="db8c7578-0531-437b-9892-6f771ef04992" testId="bad3f586-e9fc-8fa0-360d-fed7591b5a0d" testName="Core.Host.Integration.Tests.SecurityBoundary.EndpointSecurityInventoryTests.EveryRegisteredEndpointAppearsInSecurityCoverageReport" computerName="672e2b22df40" duration="00:00:04.1299982" startTime="2026-10-18T08:29:26.5447891+00:00" endTime="2026-10-18T08:29:26.5447894+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="db8c7578-0531-437b-9892-6f771ef04992" />
+    <UnitTestResult executionId="c157c148-daf3-4cbd-bb2b-847237af41de" testId="f72520c4-922e-85d5-f4cf-149a42b1c8bc" testName="Core.Host.Integration.Tests.SecurityBoundary.StrictServiceSpyTests.CaughtArgumentAssertionStillFailsVerification" computerName="672e2b22df40" duration="00:00:00.0039534" startTime="2026-10-18T08:29:24.1705758+00:00" endTime="2026-10-18T08:29:24.1705760+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c157c148-daf3-4cbd-bb2b-847237af41de" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.GenericListBoundaryTests.EveryRegisteredGenericListUsesReadAndRejectsCallerChosenOperation" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="d4353058-b994-7432-e29e-e8cb2a02a260">
+      <Execution id="8752d441-0bdf-4b6b-a4d9-96ac45016858" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.GenericListBoundaryTests" name="EveryRegisteredGenericListUsesReadAndRejectsCallerChosenOperation" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.ResolverDependencyTests.InspectorDetectsCompiledPersistenceCallsAndCapturedDependencies" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="18fcc1ee-9c46-a5cf-888a-36b5ba2c88db">
+      <Execution id="2b473aa1-3aea-4d46-b6a8-57f98a92f5d3" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.ResolverDependencyTests" name="InspectorDetectsCompiledPersistenceCallsAndCapturedDependencies" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.StrictServiceSpyTests.UnusedExpectationsFailVerification" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="81520291-ca27-b670-ee57-277939f23a2a">
+      <Execution id="c0ef9695-d1ac-4110-b42e-18f0dea3023c" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.StrictServiceSpyTests" name="UnusedExpectationsFailVerification" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.StrictServiceSpyTests.CaughtArgumentAssertionStillFailsVerification" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="f72520c4-922e-85d5-f4cf-149a42b1c8bc">
+      <Execution id="c157c148-daf3-4cbd-bb2b-847237af41de" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.StrictServiceSpyTests" name="CaughtArgumentAssertionStillFailsVerification" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.EndpointSecurityInventoryTests.EveryRegisteredEndpointAppearsInSecurityCoverageReport" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="bad3f586-e9fc-8fa0-360d-fed7591b5a0d">
+      <Execution id="db8c7578-0531-437b-9892-6f771ef04992" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.EndpointSecurityInventoryTests" name="EveryRegisteredEndpointAppearsInSecurityCoverageReport" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.StrictServiceSpyTests.UnconfiguredOperationsFailAndAreRememberedEvenIfCaught" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="980d8cc7-d190-acdc-0a9b-ed5a240858bc">
+      <Execution id="d3554818-74b9-4127-805d-70b297965625" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.StrictServiceSpyTests" name="UnconfiguredOperationsFailAndAreRememberedEvenIfCaught" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.ResolverDependencyTests.ResolverProjectReferencesCannotAddPersistenceDependencies" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="f91cf8a8-462a-4248-97fa-0c0cd8580140">
+      <Execution id="9168c823-9f02-43f9-98a9-fe53126eadf4" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.ResolverDependencyTests" name="ResolverProjectReferencesCannotAddPersistenceDependencies" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.StrictServiceSpyTests.DifferentOverloadIsAnUnexpectedCall" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="a948d2a4-9895-30d1-2399-4277bdfaf64f">
+      <Execution id="5cd89714-a80a-4925-82f9-fe806d7181c3" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.StrictServiceSpyTests" name="DifferentOverloadIsAnUnexpectedCall" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.StrictServiceSpyTests.PersistenceGuardFailsResolutionAndRecordsIt" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="5d6607dc-aebd-9415-32a8-c40c4b014cc9">
+      <Execution id="779ce6a6-eff5-4325-b44b-ed602ea2a8e9" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.StrictServiceSpyTests" name="PersistenceGuardFailsResolutionAndRecordsIt" />
+    </UnitTest>
+    <UnitTest name="Core.Host.Integration.Tests.SecurityBoundary.ResolverDependencyTests.CompiledResolversCannotAccessPersistenceEvenThroughServiceLocationOrAsyncHelpers" storage="/workspace/.build/bin/host.integration.tests/release/host.integration.tests.dll" id="d0fa9b01-cfe6-8b56-d3f3-aebdbcd3c8a7">
+      <Execution id="c6f63c07-d6a3-4c58-bd18-9609102523c9" />
+      <TestMethod codeBase="/workspace/.build/bin/Host.Integration.Tests/release/Host.Integration.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.Host.Integration.Tests.SecurityBoundary.ResolverDependencyTests" name="CompiledResolversCannotAccessPersistenceEvenThroughServiceLocationOrAsyncHelpers" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="d0fa9b01-cfe6-8b56-d3f3-aebdbcd3c8a7" executionId="c6f63c07-d6a3-4c58-bd18-9609102523c9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="81520291-ca27-b670-ee57-277939f23a2a" executionId="c0ef9695-d1ac-4110-b42e-18f0dea3023c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d4353058-b994-7432-e29e-e8cb2a02a260" executionId="8752d441-0bdf-4b6b-a4d9-96ac45016858" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a948d2a4-9895-30d1-2399-4277bdfaf64f" executionId="5cd89714-a80a-4925-82f9-fe806d7181c3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5d6607dc-aebd-9415-32a8-c40c4b014cc9" executionId="779ce6a6-eff5-4325-b44b-ed602ea2a8e9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="980d8cc7-d190-acdc-0a9b-ed5a240858bc" executionId="d3554818-74b9-4127-805d-70b297965625" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="18fcc1ee-9c46-a5cf-888a-36b5ba2c88db" executionId="2b473aa1-3aea-4d46-b6a8-57f98a92f5d3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f91cf8a8-462a-4248-97fa-0c0cd8580140" executionId="9168c823-9f02-43f9-98a9-fe53126eadf4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bad3f586-e9fc-8fa0-360d-fed7591b5a0d" executionId="db8c7578-0531-437b-9892-6f771ef04992" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f72520c4-922e-85d5-f4cf-149a42b1c8bc" executionId="c157c148-daf3-4cbd-bb2b-847237af41de" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="10" executed="10" passed="10" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 10.0.12)
+[xUnit.net 00:00:00.35]   Discovering: Host.Integration.Tests
+[xUnit.net 00:00:00.52]   Discovered:  Host.Integration.Tests
+[xUnit.net 00:00:00.53]   Starting:    Host.Integration.Tests
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+      Storing keys in a directory '/home/vscode/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/home/vscode/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:8080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /workspace/src/Apps/Host
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]
+      No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/architecture/UserResponse/list?take=5 - - -
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Host[0]
+      OpenAPI document v1 exported to /workspace/src/Apps/Host/openapi/swagger.json
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /architecture/UserResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'UserResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /architecture/UserResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/architecture/UserResponse/list?take=5 - 200 - application/json;+charset=utf-8 2271.3589ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/architecture/UserResponse/list?operation=create - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /architecture/UserResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[3]
+      Writing value of type '&lt;&gt;f__AnonymousType0`1' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /architecture/UserResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/architecture/UserResponse/list?operation=create - 400 - application/json;+charset=utf-8 19.0661ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/architecture/GroupResponse/list?take=5 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /architecture/GroupResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'GroupResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /architecture/GroupResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/architecture/GroupResponse/list?take=5 - 200 - application/json;+charset=utf-8 5.6834ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/architecture/GroupResponse/list?operation=create - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /architecture/GroupResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[3]
+      Writing value of type '&lt;&gt;f__AnonymousType0`1' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /architecture/GroupResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/architecture/GroupResponse/list?operation=create - 400 - application/json;+charset=utf-8 4.1503ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/architecture/GroupTypeResponse/list?take=5 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /architecture/GroupTypeResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'GroupTypeResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /architecture/GroupTypeResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/architecture/GroupTypeResponse/list?take=5 - 200 - application/json;+charset=utf-8 5.7629ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/architecture/GroupTypeResponse/list?operation=create - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /architecture/GroupTypeResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[3]
+      Writing value of type '&lt;&gt;f__AnonymousType0`1' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /architecture/GroupTypeResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/architecture/GroupTypeResponse/list?operation=create - 400 - application/json;+charset=utf-8 2.0164ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/architecture/RoleResponse/list?take=5 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /architecture/RoleResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'RoleResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /architecture/RoleResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/architecture/RoleResponse/list?take=5 - 200 - application/json;+charset=utf-8 7.4134ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/architecture/RoleResponse/list?operation=create - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /architecture/RoleResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[3]
+      Writing value of type '&lt;&gt;f__AnonymousType0`1' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /architecture/RoleResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/architecture/RoleResponse/list?operation=create - 400 - application/json;+charset=utf-8 3.2999ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/architecture/MembershipResponse/list?take=5 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /architecture/MembershipResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'MembershipResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /architecture/MembershipResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/architecture/MembershipResponse/list?take=5 - 200 - application/json;+charset=utf-8 3.6603ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/architecture/MembershipResponse/list?operation=create - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /architecture/MembershipResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[3]
+      Writing value of type '&lt;&gt;f__AnonymousType0`1' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /architecture/MembershipResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/architecture/MembershipResponse/list?operation=create - 400 - application/json;+charset=utf-8 2.4475ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/architecture/RoleTypeResponse/list?take=5 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /architecture/RoleTypeResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'RoleTypeResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /architecture/RoleTypeResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/architecture/RoleTypeResponse/list?take=5 - 200 - application/json;+charset=utf-8 3.6100ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/architecture/RoleTypeResponse/list?operation=create - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /architecture/RoleTypeResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[3]
+      Writing value of type '&lt;&gt;f__AnonymousType0`1' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /architecture/RoleTypeResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/architecture/RoleTypeResponse/list?operation=create - 400 - application/json;+charset=utf-8 1.5274ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/FormDefinitionResponse/list?take=5 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/FormDefinitionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FormDefinitionResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/FormDefinitionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/FormDefinitionResponse/list?take=5 - 200 - application/json;+charset=utf-8 3.4124ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/FormDefinitionResponse/list?operation=create - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/FormDefinitionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[3]
+      Writing value of type '&lt;&gt;f__AnonymousType0`1' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/FormDefinitionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/FormDefinitionResponse/list?operation=create - 400 - application/json;+charset=utf-8 11.6633ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/FormVersionResponse/list?take=5 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/FormVersionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FormVersionResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/FormVersionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/FormVersionResponse/list?take=5 - 200 - application/json;+charset=utf-8 6.2631ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/FormVersionResponse/list?operation=create - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/FormVersionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[3]
+      Writing value of type '&lt;&gt;f__AnonymousType0`1' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/FormVersionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/FormVersionResponse/list?operation=create - 400 - application/json;+charset=utf-8 3.3630ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/FormNodeTypeResponse/list?take=5 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/FormNodeTypeResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FormNodeTypeResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/FormNodeTypeResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/FormNodeTypeResponse/list?take=5 - 200 - application/json;+charset=utf-8 4.3338ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/FormNodeTypeResponse/list?operation=create - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/FormNodeTypeResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[3]
+      Writing value of type '&lt;&gt;f__AnonymousType0`1' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/FormNodeTypeResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/FormNodeTypeResponse/list?operation=create - 400 - application/json;+charset=utf-8 2.2797ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/FormNodeResponse/list?take=5 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/FormNodeResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'FormNodeResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/FormNodeResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/FormNodeResponse/list?take=5 - 200 - application/json;+charset=utf-8 4.6718ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/FormNodeResponse/list?operation=create - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/FormNodeResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[3]
+      Writing value of type '&lt;&gt;f__AnonymousType0`1' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/FormNodeResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/FormNodeResponse/list?operation=create - 400 - application/json;+charset=utf-8 3.1723ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/WorkflowDefinitionResponse/list?take=5 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/WorkflowDefinitionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'WorkflowDefinitionResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/WorkflowDefinitionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/WorkflowDefinitionResponse/list?take=5 - 200 - application/json;+charset=utf-8 3.0502ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/WorkflowDefinitionResponse/list?operation=create - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/WorkflowDefinitionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[3]
+      Writing value of type '&lt;&gt;f__AnonymousType0`1' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/WorkflowDefinitionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/WorkflowDefinitionResponse/list?operation=create - 400 - application/json;+charset=utf-8 2.5626ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/WorkflowVersionResponse/list?take=5 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/WorkflowVersionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'WorkflowVersionResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/WorkflowVersionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/WorkflowVersionResponse/list?take=5 - 200 - application/json;+charset=utf-8 3.1626ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/WorkflowVersionResponse/list?operation=create - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/WorkflowVersionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[3]
+      Writing value of type '&lt;&gt;f__AnonymousType0`1' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/WorkflowVersionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/WorkflowVersionResponse/list?operation=create - 400 - application/json;+charset=utf-8 2.8919ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/WorkflowStateResponse/list?take=5 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/WorkflowStateResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'WorkflowStateResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/WorkflowStateResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/WorkflowStateResponse/list?take=5 - 200 - application/json;+charset=utf-8 4.2641ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/WorkflowStateResponse/list?operation=create - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/WorkflowStateResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[3]
+      Writing value of type '&lt;&gt;f__AnonymousType0`1' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/WorkflowStateResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/WorkflowStateResponse/list?operation=create - 400 - application/json;+charset=utf-8 2.1976ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/WorkflowStateAccessRuleResponse/list?take=5 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/WorkflowStateAccessRuleResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'WorkflowStateAccessRuleResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/WorkflowStateAccessRuleResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/WorkflowStateAccessRuleResponse/list?take=5 - 200 - application/json;+charset=utf-8 3.5796ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/WorkflowStateAccessRuleResponse/list?operation=create - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/WorkflowStateAccessRuleResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[3]
+      Writing value of type '&lt;&gt;f__AnonymousType0`1' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/WorkflowStateAccessRuleResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/WorkflowStateAccessRuleResponse/list?operation=create - 400 - application/json;+charset=utf-8 2.5936ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/WorkflowTransitionResponse/list?take=5 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/WorkflowTransitionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'WorkflowTransitionResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/WorkflowTransitionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/WorkflowTransitionResponse/list?take=5 - 200 - application/json;+charset=utf-8 3.8802ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/WorkflowTransitionResponse/list?operation=create - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/WorkflowTransitionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[3]
+      Writing value of type '&lt;&gt;f__AnonymousType0`1' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/WorkflowTransitionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/WorkflowTransitionResponse/list?operation=create - 400 - application/json;+charset=utf-8 2.1287ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/ProcessDefinitionResponse/list?take=5 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/ProcessDefinitionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'ProcessDefinitionResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/ProcessDefinitionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/ProcessDefinitionResponse/list?take=5 - 200 - application/json;+charset=utf-8 3.3592ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/ProcessDefinitionResponse/list?operation=create - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/ProcessDefinitionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[3]
+      Writing value of type '&lt;&gt;f__AnonymousType0`1' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/ProcessDefinitionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/ProcessDefinitionResponse/list?operation=create - 400 - application/json;+charset=utf-8 2.0384ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/ProcessDefinitionVersionResponse/list?take=5 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/ProcessDefinitionVersionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'ProcessDefinitionVersionResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/ProcessDefinitionVersionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/ProcessDefinitionVersionResponse/list?take=5 - 200 - application/json;+charset=utf-8 4.0031ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/ProcessDefinitionVersionResponse/list?operation=create - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/ProcessDefinitionVersionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[3]
+      Writing value of type '&lt;&gt;f__AnonymousType0`1' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/ProcessDefinitionVersionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/ProcessDefinitionVersionResponse/list?operation=create - 400 - application/json;+charset=utf-8 2.5509ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/RequestResponse/list?take=5 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/RequestResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'RequestResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/RequestResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/RequestResponse/list?take=5 - 200 - application/json;+charset=utf-8 13.0213ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/RequestResponse/list?operation=create - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/RequestResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[3]
+      Writing value of type '&lt;&gt;f__AnonymousType0`1' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/RequestResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/RequestResponse/list?operation=create - 400 - application/json;+charset=utf-8 2.4527ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/SubmissionResponse/list?take=5 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/SubmissionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'SubmissionResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/SubmissionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/SubmissionResponse/list?take=5 - 200 - application/json;+charset=utf-8 2.6224ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/SubmissionResponse/list?operation=create - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/SubmissionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[3]
+      Writing value of type '&lt;&gt;f__AnonymousType0`1' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/SubmissionResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/SubmissionResponse/list?operation=create - 400 - application/json;+charset=utf-8 1.5445ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/SubmissionNodeResponse/list?take=5 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/SubmissionNodeResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'SubmissionNodeResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/SubmissionNodeResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/SubmissionNodeResponse/list?take=5 - 200 - application/json;+charset=utf-8 3.0774ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/SubmissionNodeResponse/list?operation=create - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/SubmissionNodeResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[3]
+      Writing value of type '&lt;&gt;f__AnonymousType0`1' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/SubmissionNodeResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/SubmissionNodeResponse/list?operation=create - 400 - application/json;+charset=utf-8 3.9131ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/RequestTransitionHistoryResponse/list?take=5 - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/RequestTransitionHistoryResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'RequestTransitionHistoryResponse[]' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/RequestTransitionHistoryResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/RequestTransitionHistoryResponse/list?take=5 - 200 - application/json;+charset=utf-8 3.5547ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost/digital-processes/RequestTransitionHistoryResponse/list?operation=create - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /digital-processes/RequestTransitionHistoryResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[1]
+      Setting HTTP status code 400.
+info: Microsoft.AspNetCore.Http.Result.BadRequestObjectResult[3]
+      Writing value of type '&lt;&gt;f__AnonymousType0`1' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /digital-processes/RequestTransitionHistoryResponse/list =&gt; List'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost/digital-processes/RequestTransitionHistoryResponse/list?operation=create - 400 - application/json;+charset=utf-8 1.8437ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+[xUnit.net 00:00:07.10]   Finished:    Host.Integration.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

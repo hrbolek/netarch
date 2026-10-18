@@ -10,14 +10,31 @@ permissions:
 jobs:
   application-validation:
     runs-on: ubuntu-latest
+    services:
+      postgres_test:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: data
+          # Disposable CI-only server; no application credentials or secrets.
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - "127.0.0.1:5432:5432"
+        options: >-
+          --health-cmd "pg_isready -U postgres -d data"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
+      - name: Resolve the isolated relational test server
+        run: echo '127.0.0.1 postgres_test' | sudo tee -a /etc/hosts
       - name: Validate optional vendor adapters, portable skills and architecture rules
         run: python3 tools/validate-agent-framework.py
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
-      - name: Build, test and audit NuGet dependencies
+      - name: Build, test resolver/service security boundaries and audit NuGet dependencies
         run: ./tools/audit-architecture.sh artifacts/nuget-audit.json
       - name: Upload validation results
         if: always()
@@ -27,4 +44,5 @@ jobs:
           path: |
             artifacts/nuget-audit.json
             artifacts/test-results/
+            artifacts/security-boundaries/
           if-no-files-found: ignore

@@ -29,6 +29,11 @@ public sealed class EndpointLayeringTests
             Assert.True(method is not null, $"Missing handler metadata: {endpoint.RoutePattern.RawText}");
             var owner = method!.DeclaringType!;
             var name = owner.FullName ?? owner.Name;
+            if (method == typeof(EventsUiAssets).GetMethod(nameof(EventsUiAssets.Get)))
+            {
+                Assert.Equal("Events.UI", owner.Assembly.GetName().Name);
+                continue;
+            }
             if (name.StartsWith("WebAppArchitecture.JsonataPlayground.", StringComparison.Ordinal) ||
                 name.Contains("PreviewFormEndpoints", StringComparison.Ordinal))
                 continue;

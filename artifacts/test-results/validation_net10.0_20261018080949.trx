@@ -1,0 +1,980 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="1873aab2-1100-48ab-9899-06204ddd0fc5" name="@672e2b22df40 2026-10-18 08:06:38" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-18T08:06:38.4418133+00:00" queuing="2026-10-18T08:06:38.4418136+00:00" start="2026-10-18T08:06:28.1808072+00:00" finish="2026-10-18T08:09:48.9302969+00:00" />
+  <TestSettings name="default" id="298366b3-c0bb-4507-a1d9-9dcb63037a6c">
+    <Deployment runDeploymentRoot="_672e2b22df40_2026-10-18_08_06_38" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="172b1260-df91-419a-a29b-55960f9af031" testId="3204fd83-47ef-b424-9dcf-f82d30aeb0c5" testName="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T07_DuplicateSynchronizationTargets_HaveSameResultAsUniqueTargets" computerName="672e2b22df40" duration="00:00:01.7033013" startTime="2026-10-18T08:08:54.9998154+00:00" endTime="2026-10-18T08:08:54.9998156+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="172b1260-df91-419a-a29b-55960f9af031" />
+    <UnitTestResult executionId="5521f3c6-c268-4e61-919b-5d0003a49f5b" testId="956d5295-040d-98e0-e83c-46623378854f" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T03_And_T09_SecurityService_RespectsOperations(operation: &quot;update&quot;, expected: False)" computerName="672e2b22df40" duration="00:00:00.9757881" startTime="2026-10-18T08:09:35.9502166+00:00" endTime="2026-10-18T08:09:35.9502169+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5521f3c6-c268-4e61-919b-5d0003a49f5b" />
+    <UnitTestResult executionId="16580891-7783-4bf7-98a2-d01f2c617784" testId="b53815c7-85f0-1cf7-c3d7-7df0acf59d54" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRequest_FlowsToDescendantsOnly(target: &quot;faculty&quot;, expected: False)" computerName="672e2b22df40" duration="00:00:01.8926380" startTime="2026-10-18T08:08:55.0757849+00:00" endTime="2026-10-18T08:08:55.0757852+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="16580891-7783-4bf7-98a2-d01f2c617784" />
+    <UnitTestResult executionId="a23d218c-1b70-48d8-b4ec-5a0d59ed340f" testId="1b29e929-623e-6607-a3a6-1453c4407b92" testName="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T04_RemovingOneOfTwoMemberships_DoesNotChangeRoleProjection" computerName="672e2b22df40" duration="00:00:04.3123245" startTime="2026-10-18T08:08:31.0708905+00:00" endTime="2026-10-18T08:08:31.0708910+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a23d218c-1b70-48d8-b4ec-5a0d59ed340f" />
+    <UnitTestResult executionId="35a4d658-8edf-4bee-b32c-7c86607fb59e" testId="31143480-a5ed-1113-2802-c652af4a65e5" testName="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T02_ReenableInheritance_RestoresAncestorRole" computerName="672e2b22df40" duration="00:00:02.9033045" startTime="2026-10-18T08:09:31.6681308+00:00" endTime="2026-10-18T08:09:31.6681310+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="35a4d658-8edf-4bee-b32c-7c86607fb59e" />
+    <UnitTestResult executionId="94f6c922-c682-4073-9d63-911b621f2e55" testId="5d1fffbd-81da-9587-18fc-b176f16edfc9" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRoot_FlowsDown(target: &quot;otherFaculty&quot;, expected: True)" computerName="672e2b22df40" duration="00:00:18.0246771" startTime="2026-10-18T08:08:26.7138928+00:00" endTime="2026-10-18T08:08:26.7138931+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="94f6c922-c682-4073-9d63-911b621f2e55" />
+    <UnitTestResult executionId="6bbaecaf-9e55-4d02-a1a6-4b7c29bf3f23" testId="28645795-cb4a-30d4-2e7f-659427f2188e" testName="Core.AuthorizationLayer.Tests.Stage2CompletionTests.T12_RollbackCreateAndProjectionLeavesNoEscalation" computerName="672e2b22df40" duration="00:00:18.1748453" startTime="2026-10-18T08:08:26.7803897+00:00" endTime="2026-10-18T08:08:26.7803902+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6bbaecaf-9e55-4d02-a1a6-4b7c29bf3f23" />
+    <UnitTestResult executionId="ba342cb9-3e65-4801-bb44-fbac53c60ad1" testId="56ebbff6-a36a-4d05-0207-0c364c121455" testName="Core.AuthorizationLayer.Tests.Stage4IncrementalImpactTests.T14_TargetedUpdate_CommandCountDoesNotGrowWithUnrelatedRoles" computerName="672e2b22df40" duration="00:00:18.2367192" startTime="2026-10-18T08:08:26.8005146+00:00" endTime="2026-10-18T08:08:26.8005149+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ba342cb9-3e65-4801-bb44-fbac53c60ad1" />
+    <UnitTestResult executionId="b8d16f2f-b2a9-4c60-8b14-9a175b3ee994" testId="5169ebb1-abf0-8540-1079-d158d15a7376" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T07_TargetedProjection_EqualsFullRebuild_AfterDenyAndRoleChange" computerName="672e2b22df40" duration="00:00:01.7362224" startTime="2026-10-18T08:09:20.0473145+00:00" endTime="2026-10-18T08:09:20.0473147+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b8d16f2f-b2a9-4c60-8b14-9a175b3ee994" />
+    <UnitTestResult executionId="8645aadd-97b0-4405-ac63-0127a15bb6f9" testId="3052e943-74c3-bc1d-5fe1-ef7420ef1ac8" testName="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T04_ActiveMembership_DoesNotChangeRoleProjection" computerName="672e2b22df40" duration="00:00:01.4310124" startTime="2026-10-18T08:09:24.9186062+00:00" endTime="2026-10-18T08:09:24.9186065+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8645aadd-97b0-4405-ac63-0127a15bb6f9" />
+    <UnitTestResult executionId="3598cc62-2dd3-43b8-a587-a8ea5458a7a9" testId="a1326cf9-c6ac-cb84-edd7-4475b5945918" testName="Core.AuthorizationLayer.Tests.SecuredConcurrencyTests.UnpagedVectorsRemainUnboundedAndPagesKeepStableOrderingAndAuthorization" computerName="672e2b22df40" duration="00:00:48.0942677" startTime="2026-10-18T08:07:24.6545418+00:00" endTime="2026-10-18T08:07:24.6545423+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3598cc62-2dd3-43b8-a587-a8ea5458a7a9">
+      <Output>
+        <ErrorInfo>
+          <Message>Npgsql.NpgsqlException : Exception while reading from stream
+---- System.TimeoutException : Timeout during reading attempt</Message>
+          <StackTrace>   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource&lt;TResult&gt;.GetResult(Int16 token)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult()
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+   at WebAppArchitecture.Tests.Shared.PostgresTestDatabase.Dispose() in /workspace/tests/Shared/PostgresTestDatabase.cs:line 56
+   at Core.AuthorizationLayer.Tests.RbacFixture.Dispose() in /workspace/tests/Core.AuthorizationLayer.Tests/RbacFixture.cs:line 87
+   at Core.AuthorizationLayer.Tests.SecuredConcurrencyTests.UnpagedVectorsRemainUnboundedAndPagesKeepStableOrderingAndAuthorization() in /workspace/tests/Core.AuthorizationLayer.Tests/SecuredConcurrencyTests.cs:line 76
+   at Core.AuthorizationLayer.Tests.SecuredConcurrencyTests.UnpagedVectorsRemainUnboundedAndPagesKeepStableOrderingAndAuthorization()
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6436c0c7-9f59-4678-a6dd-bb5b631a1fab" testId="b6a9159e-8518-5684-b65b-d1fef81befbc" testName="Core.AuthorizationLayer.Tests.Stage4QueryScalabilityTests.T14_SecureQuery_RemainsComposedBeforeExecution" computerName="672e2b22df40" duration="00:00:21.5320487" startTime="2026-10-18T08:07:45.4226197+00:00" endTime="2026-10-18T08:07:45.4226202+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6436c0c7-9f59-4678-a6dd-bb5b631a1fab" />
+    <UnitTestResult executionId="1243f7c8-3d24-4025-a9bb-f6fad49c964e" testId="6e0e7b94-e3f8-f9dd-3b6c-f48340be70c1" testName="Core.AuthorizationLayer.Tests.Stage2CompletionTests.T05_DeputyCannotExceedSourceValidity" computerName="672e2b22df40" duration="00:00:04.2402740" startTime="2026-10-18T08:08:50.7874081+00:00" endTime="2026-10-18T08:08:50.7874084+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1243f7c8-3d24-4025-a9bb-f6fad49c964e" />
+    <UnitTestResult executionId="9b378261-f919-42e1-a53e-bf9712db2ca5" testId="3ffd1b27-0d05-57be-6138-f01883fdd1d4" testName="Core.AuthorizationLayer.Tests.Stage2ProviderIntegrationTests.T12_SeparateContexts_CommitIsVisibleAfterTransaction" computerName="672e2b22df40" duration="00:00:45.4373530" startTime="2026-10-18T08:07:22.0416413+00:00" endTime="2026-10-18T08:07:22.0416418+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9b378261-f919-42e1-a53e-bf9712db2ca5">
+      <Output>
+        <ErrorInfo>
+          <Message>Npgsql.NpgsqlException : Exception while reading from stream
+---- System.TimeoutException : Timeout during reading attempt</Message>
+          <StackTrace>   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource&lt;TResult&gt;.GetResult(Int16 token)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult()
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+   at WebAppArchitecture.Tests.Shared.PostgresTestDatabase.Dispose() in /workspace/tests/Shared/PostgresTestDatabase.cs:line 56
+   at Core.AuthorizationLayer.Tests.Stage2ProviderIntegrationTests.FileDatabase.Dispose() in /workspace/tests/Core.AuthorizationLayer.Tests/Stage2ProviderIntegrationTests.cs:line 41
+   at Core.AuthorizationLayer.Tests.Stage2ProviderIntegrationTests.T12_SeparateContexts_CommitIsVisibleAfterTransaction() in /workspace/tests/Core.AuthorizationLayer.Tests/Stage2ProviderIntegrationTests.cs:line 69
+   at Core.AuthorizationLayer.Tests.Stage2ProviderIntegrationTests.T12_SeparateContexts_CommitIsVisibleAfterTransaction()
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6f4913f8-cd86-4e8e-800b-01db07c42b3f" testId="8be0e341-a04f-0253-3f85-41964b60a5b3" testName="Core.AuthorizationLayer.Tests.Stage2CompletionTests.T05_DeputyCannotChangeRoleTypeOfSource" computerName="672e2b22df40" duration="00:00:04.2014702" startTime="2026-10-18T08:08:30.9822459+00:00" endTime="2026-10-18T08:08:30.9822463+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6f4913f8-cd86-4e8e-800b-01db07c42b3f" />
+    <UnitTestResult executionId="2f1594b2-44a5-44ed-bbd1-c9c4905a02d5" testId="c8c28b92-5bec-edbe-3aca-19a4daff425d" testName="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T05_DeputyRole_DenyBlocksSensitiveSubtree" computerName="672e2b22df40" duration="00:00:23.3724880" startTime="2026-10-18T08:08:08.5506070+00:00" endTime="2026-10-18T08:08:08.5506073+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2f1594b2-44a5-44ed-bbd1-c9c4905a02d5" />
+    <UnitTestResult executionId="14559eed-8658-4bc7-92d8-9d97e9cad5de" testId="d643b016-d90f-af09-b529-847ec26a3527" testName="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T04_FutureMembership_DoesNotChangeRoleProjection" computerName="672e2b22df40" duration="00:00:01.8420887" startTime="2026-10-18T08:08:55.1530144+00:00" endTime="2026-10-18T08:08:55.1530146+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="14559eed-8658-4bc7-92d8-9d97e9cad5de" />
+    <UnitTestResult executionId="3575aa48-be5d-4bf8-8715-cdfa5307e538" testId="7fc3c129-c20e-efa4-9551-8f843cd916ef" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRoot_FlowsDown(target: &quot;root&quot;, expected: True)" computerName="672e2b22df40" duration="00:00:24.0571461" startTime="2026-10-18T08:08:08.6776604+00:00" endTime="2026-10-18T08:08:08.6776618+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3575aa48-be5d-4bf8-8715-cdfa5307e538" />
+    <UnitTestResult executionId="4d5af3db-ec25-4524-b5dd-b52157756b2f" testId="97c732f5-0a73-ae3d-2129-89734b866c78" testName="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T03_OperationMatrix_IsExplicit(operation: &quot;create&quot;, expected: False)" computerName="672e2b22df40" duration="00:00:02.8005635" startTime="2026-10-18T08:08:36.9216822+00:00" endTime="2026-10-18T08:08:36.9216825+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4d5af3db-ec25-4524-b5dd-b52157756b2f" />
+    <UnitTestResult executionId="8c7f3166-4a01-4bef-aefa-38f70f0f58c7" testId="db34a46e-835a-f2f3-a8e7-e55ae6b7f00f" testName="Core.AuthorizationLayer.Tests.ActorIdentitySourceTests.QueryStringActorUserId_IsNeverTrusted" computerName="672e2b22df40" duration="00:00:00.0095864" startTime="2026-10-18T08:06:36.9794695+00:00" endTime="2026-10-18T08:06:36.9794698+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8c7f3166-4a01-4bef-aefa-38f70f0f58c7" />
+    <UnitTestResult executionId="974d655f-8373-4a78-8e00-3e29a5111048" testId="31f8f64e-6ee9-f7bc-25fd-c5795fde9daf" testName="Core.AuthorizationLayer.Tests.Stage2ProviderIntegrationTests.T12_SeparateContexts_RollbackIsNeverVisible" computerName="672e2b22df40" duration="00:00:18.0860099" startTime="2026-10-18T08:08:26.6384256+00:00" endTime="2026-10-18T08:08:26.6384260+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="974d655f-8373-4a78-8e00-3e29a5111048" />
+    <UnitTestResult executionId="e28920b3-b1dd-468a-9b32-75643361a10a" testId="13ee152c-450f-765b-449d-feccad07d5a0" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T08_Deny_CoversLocallyAssignedRoleAndCanBeRemoved" computerName="672e2b22df40" duration="00:00:02.6283034" startTime="2026-10-18T08:09:28.7545193+00:00" endTime="2026-10-18T08:09:28.7545196+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e28920b3-b1dd-468a-9b32-75643361a10a" />
+    <UnitTestResult executionId="b771e147-973d-42fc-91bf-064aabfd30b8" testId="a36af73b-f62a-0a38-ba3c-8284425833ef" testName="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T02_IndependentFaculty_RemainsIsolatedFromLocalDean" computerName="672e2b22df40" duration="00:00:02.5814724" startTime="2026-10-18T08:08:53.2946412+00:00" endTime="2026-10-18T08:08:53.2946414+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b771e147-973d-42fc-91bf-064aabfd30b8" />
+    <UnitTestResult executionId="c5891e07-10f3-416f-8306-49ae9bd3bba5" testId="96201ebc-0d4e-bc66-d3bb-940b5ddd5f44" testName="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T04_ExpiredMembership_DoesNotChangeRoleProjection" computerName="672e2b22df40" duration="00:00:18.2009145" startTime="2026-10-18T08:08:26.7508425+00:00" endTime="2026-10-18T08:08:26.7508428+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c5891e07-10f3-416f-8306-49ae9bd3bba5" />
+    <UnitTestResult executionId="b048f6ac-d4d2-4968-b161-5c6f3b0ba2af" testId="87f70dd4-b9be-2e9e-ee5d-eb12f0f52d56" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T08_NonRecursiveDeny_DoesNotBlockGrandchild" computerName="672e2b22df40" duration="00:00:01.3375800" startTime="2026-10-18T08:09:24.8357782+00:00" endTime="2026-10-18T08:09:24.8357785+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b048f6ac-d4d2-4968-b161-5c6f3b0ba2af" />
+    <UnitTestResult executionId="35086cff-1914-4ec3-aff8-5fc4ce49d906" testId="a12db8e1-51ad-1a6f-21f3-98b64f6fbcb3" testName="Core.AuthorizationLayer.Tests.Stage4IncrementalImpactTests.T14_AddRole_OnlyChangesItsAffectedSubtree" computerName="672e2b22df40" duration="00:00:23.2667890" startTime="2026-10-18T08:08:08.5404927+00:00" endTime="2026-10-18T08:08:08.5404931+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="35086cff-1914-4ec3-aff8-5fc4ce49d906" />
+    <UnitTestResult executionId="ff6c8a23-8a5e-4c25-b4fb-9735e8515176" testId="604949b6-a0bd-cb23-af31-cf29c34f61da" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T08_Deny_IsRecursiveOnlyWhenRequested(recursive: True, childHidden: True)" computerName="672e2b22df40" duration="00:00:02.8600380" startTime="2026-10-18T08:09:31.6175927+00:00" endTime="2026-10-18T08:09:31.6175929+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ff6c8a23-8a5e-4c25-b4fb-9735e8515176" />
+    <UnitTestResult executionId="13835676-07da-4c4c-95b9-6fed9fa2265b" testId="9ba5c70c-229e-2607-f684-120bbdd7ebc9" testName="Core.AuthorizationLayer.Tests.Stage4IncrementalImpactTests.T14_RevokeRole_LeavesUnrelatedProjectionUnchanged" computerName="672e2b22df40" duration="00:00:20.6536929" startTime="2026-10-18T08:07:45.2717772+00:00" endTime="2026-10-18T08:07:45.2717775+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="13835676-07da-4c4c-95b9-6fed9fa2265b" />
+    <UnitTestResult executionId="17776828-8a46-4870-9a6f-51dcce2595e7" testId="a35d3dde-4f16-fbc8-eb8c-c113d54eff86" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T08_NewDescendant_InheritsExistingDenyAfterSynchronization" computerName="672e2b22df40" duration="00:00:01.4219025" startTime="2026-10-18T08:09:21.4713854+00:00" endTime="2026-10-18T08:09:21.4713857+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="17776828-8a46-4870-9a6f-51dcce2595e7" />
+    <UnitTestResult executionId="f5c170d4-12d6-43c8-9d79-46ad0cb1ab23" testId="38d211f9-5254-535a-32db-c3115d9c3da7" testName="Core.AuthorizationLayer.Tests.Stage2ProviderIntegrationTests.T10_CreateChildAndRebuildProjection_ChildBecomesReadable" computerName="672e2b22df40" duration="00:00:22.5401663" startTime="2026-10-18T08:07:44.6347725+00:00" endTime="2026-10-18T08:07:44.6347729+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f5c170d4-12d6-43c8-9d79-46ad0cb1ab23" />
+    <UnitTestResult executionId="86769e4b-32ba-41f9-a498-2961041d2b79" testId="46448a5e-b269-1197-73e2-755a81b98c5d" testName="Core.AuthorizationLayer.Tests.SecuredConcurrencyTests.AuthorizedWritesDeriveAuditWithoutTrustingIncomingModelMetadata" computerName="672e2b22df40" duration="00:00:23.3737124" startTime="2026-10-18T08:08:08.4766105+00:00" endTime="2026-10-18T08:08:08.4766112+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="86769e4b-32ba-41f9-a498-2961041d2b79" />
+    <UnitTestResult executionId="695fee5e-2b65-4320-8364-c45fc84b3781" testId="6c0f60d6-8acd-b78c-14fb-762341af540c" testName="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T10_ReadPermission_DoesNotPermitUpdate" computerName="672e2b22df40" duration="00:00:47.3855658" startTime="2026-10-18T08:07:24.0814213+00:00" endTime="2026-10-18T08:07:24.0814218+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="695fee5e-2b65-4320-8364-c45fc84b3781" />
+    <UnitTestResult executionId="26424b16-805f-4dd4-9ad5-9b689a2be928" testId="23a2ba36-7f9e-0b15-f815-cb9c84339ee5" testName="Core.AuthorizationLayer.Tests.SecuredServiceBoundaryTests.NoActorCannotReadOrWriteEvenWithoutHttpResolver" computerName="672e2b22df40" duration="00:00:20.8423934" startTime="2026-10-18T08:07:45.3019446+00:00" endTime="2026-10-18T08:07:45.3019455+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="26424b16-805f-4dd4-9ad5-9b689a2be928" />
+    <UnitTestResult executionId="64ca9b15-685b-4ce6-b2fa-f7be3e920605" testId="e787dd57-53e5-15db-278e-020b7bde48d6" testName="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T07_NewlyCreatedChild_FullAndTargetedProjectionsAgree" computerName="672e2b22df40" duration="00:00:48.0665877" startTime="2026-10-18T08:07:24.6383454+00:00" endTime="2026-10-18T08:07:24.6383457+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="64ca9b15-685b-4ce6-b2fa-f7be3e920605">
+      <Output>
+        <ErrorInfo>
+          <Message>Npgsql.NpgsqlException : Exception while reading from stream
+---- System.TimeoutException : Timeout during reading attempt</Message>
+          <StackTrace>   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource&lt;TResult&gt;.GetResult(Int16 token)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult()
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+   at WebAppArchitecture.Tests.Shared.PostgresTestDatabase.Dispose() in /workspace/tests/Shared/PostgresTestDatabase.cs:line 56
+   at Core.AuthorizationLayer.Tests.RbacFixture.Dispose() in /workspace/tests/Core.AuthorizationLayer.Tests/RbacFixture.cs:line 87
+   at Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T07_NewlyCreatedChild_FullAndTargetedProjectionsAgree() in /workspace/tests/Core.AuthorizationLayer.Tests/AdditionalAuthorizationTests.cs:line 197
+   at Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T07_NewlyCreatedChild_FullAndTargetedProjectionsAgree()
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="17eafdd5-c9ae-440d-abdf-09844d8826df" testId="09257ce1-f170-c77d-2160-7bb96bacd281" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T03_And_T09_SecurityService_RespectsOperations(operation: &quot;read&quot;, expected: True)" computerName="672e2b22df40" duration="00:00:01.2140027" startTime="2026-10-18T08:09:34.9676325+00:00" endTime="2026-10-18T08:09:34.9676327+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="17eafdd5-c9ae-440d-abdf-09844d8826df" />
+    <UnitTestResult executionId="63326f23-7e02-4026-9c4f-ceb5f545d7b7" testId="fc524dd7-fbdb-1932-aafc-1961a326dbee" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T09_AuthorizationLayer_Query_ExecutesSQLAndFiltersRows" computerName="672e2b22df40" duration="00:00:09.8354482" startTime="2026-10-18T08:08:46.5174335+00:00" endTime="2026-10-18T08:08:46.5174339+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="63326f23-7e02-4026-9c4f-ceb5f545d7b7" />
+    <UnitTestResult executionId="49bce95c-1d0f-4b1c-86be-75048fa13f00" testId="ee158e7b-7157-98f9-2f65-9ab6e682c0e1" testName="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T08_IndependentDenyRules_CanBeRemovedIndividually" computerName="672e2b22df40" duration="00:00:02.0652578" startTime="2026-10-18T08:09:23.4244455+00:00" endTime="2026-10-18T08:09:23.4244457+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="49bce95c-1d0f-4b1c-86be-75048fa13f00" />
+    <UnitTestResult executionId="b4660790-751c-48fb-ae24-98a7dfc5524d" testId="ca6c4cf2-aa67-bbcc-773b-26e825405e47" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T07_TargetedProjection_EqualsFullRebuild_AfterRemovingDeny" computerName="672e2b22df40" duration="00:00:01.1579707" startTime="2026-10-18T08:09:40.6813823+00:00" endTime="2026-10-18T08:09:40.6813825+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b4660790-751c-48fb-ae24-98a7dfc5524d" />
+    <UnitTestResult executionId="204b51a4-8b33-42a7-a7c5-5f0073ec4360" testId="0a2bfb98-0787-dcd8-f686-6122890ed53d" testName="Core.AuthorizationLayer.Tests.Stage4LargeAccessTests.T14_SecureListAndCount_DoNotIssuePerEntityQueries" computerName="672e2b22df40" duration="00:00:06.2934913" startTime="2026-10-18T08:07:27.0867191+00:00" endTime="2026-10-18T08:07:27.0867194+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="204b51a4-8b33-42a7-a7c5-5f0073ec4360" />
+    <UnitTestResult executionId="e9a93fd8-3f25-455a-9eea-9b087a92ada8" testId="5173abe2-e9e9-09b0-b22a-71a5faae7797" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T07_ExpiredRole_IsNotProjectedAsActive" computerName="672e2b22df40" duration="00:00:01.2507010" startTime="2026-10-18T08:09:33.7511442+00:00" endTime="2026-10-18T08:09:33.7511444+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e9a93fd8-3f25-455a-9eea-9b087a92ada8" />
+    <UnitTestResult executionId="5f60a355-d177-41dc-b6d9-a1e83a02f1d3" testId="f7380223-b963-00ff-c6aa-92184fa8fec2" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRequest_FlowsToDescendantsOnly(target: &quot;visible&quot;, expected: True)" computerName="672e2b22df40" duration="00:00:04.2505182" startTime="2026-10-18T08:08:50.7692589+00:00" endTime="2026-10-18T08:08:50.7692593+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5f60a355-d177-41dc-b6d9-a1e83a02f1d3" />
+    <UnitTestResult executionId="8e7bdd83-68ba-4a52-bd46-e96c9633974d" testId="7f2c0fa4-ac44-09d3-6957-cd7f91517d12" testName="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T10_ReadPermission_DoesNotPermitDelete" computerName="672e2b22df40" duration="00:00:02.9347267" startTime="2026-10-18T08:08:37.0199815+00:00" endTime="2026-10-18T08:08:37.0199818+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8e7bdd83-68ba-4a52-bd46-e96c9633974d" />
+    <UnitTestResult executionId="f0f2eb43-e1d2-4ebb-acd9-449430abe2e9" testId="0f1cdf80-137e-c2db-22f5-c2721e6fdda7" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRoot_FlowsDown(target: &quot;request&quot;, expected: True)" computerName="672e2b22df40" duration="00:00:47.0979856" startTime="2026-10-18T08:07:23.6720239+00:00" endTime="2026-10-18T08:07:23.6720243+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f0f2eb43-e1d2-4ebb-acd9-449430abe2e9">
+      <Output>
+        <ErrorInfo>
+          <Message>Npgsql.NpgsqlException : Exception while reading from stream
+---- System.TimeoutException : Timeout during reading attempt</Message>
+          <StackTrace>   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource&lt;TResult&gt;.GetResult(Int16 token)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult()
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+   at WebAppArchitecture.Tests.Shared.PostgresTestDatabase.Dispose() in /workspace/tests/Shared/PostgresTestDatabase.cs:line 56
+   at Core.AuthorizationLayer.Tests.RbacFixture.Dispose() in /workspace/tests/Core.AuthorizationLayer.Tests/RbacFixture.cs:line 87
+   at Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRoot_FlowsDown(String target, Boolean expected) in /workspace/tests/Core.AuthorizationLayer.Tests/ProjectionTests.cs:line 19
+   at Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRoot_FlowsDown(String target, Boolean expected)
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="848f454a-f166-490b-9ee1-52e1e9969771" testId="a9e29ed6-af61-fcc2-cc7f-3d103bd03cc8" testName="Core.AuthorizationLayer.Tests.Stage2CompletionTests.T10_CreateAuthorizedOnParent_NotNewObject" computerName="672e2b22df40" duration="00:00:23.6088965" startTime="2026-10-18T08:08:08.5906590+00:00" endTime="2026-10-18T08:08:08.5906595+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="848f454a-f166-490b-9ee1-52e1e9969771" />
+    <UnitTestResult executionId="52518a96-2900-44dd-8cb5-21f1a253c8f2" testId="fb263b64-50e1-3a1a-b684-845f8213c447" testName="Core.AuthorizationLayer.Tests.Stage4IncrementalImpactTests.T14_LocalDenySynchronizesOnlySelectedBranch" computerName="672e2b22df40" duration="00:00:48.0361653" startTime="2026-10-18T08:07:24.6047977+00:00" endTime="2026-10-18T08:07:24.6047981+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="52518a96-2900-44dd-8cb5-21f1a253c8f2">
+      <Output>
+        <ErrorInfo>
+          <Message>Npgsql.NpgsqlException : Exception while reading from stream
+---- System.TimeoutException : Timeout during reading attempt</Message>
+          <StackTrace>   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource&lt;TResult&gt;.GetResult(Int16 token)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult()
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+   at WebAppArchitecture.Tests.Shared.PostgresTestDatabase.Dispose() in /workspace/tests/Shared/PostgresTestDatabase.cs:line 56
+   at Core.AuthorizationLayer.Tests.RbacFixture.Dispose() in /workspace/tests/Core.AuthorizationLayer.Tests/RbacFixture.cs:line 87
+   at Core.AuthorizationLayer.Tests.Stage4IncrementalImpactTests.T14_LocalDenySynchronizesOnlySelectedBranch() in /workspace/tests/Core.AuthorizationLayer.Tests/Stage4IncrementalImpactTests.cs:line 84
+   at Core.AuthorizationLayer.Tests.Stage4IncrementalImpactTests.T14_LocalDenySynchronizesOnlySelectedBranch()
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="313dd0c2-b168-4d9b-8b00-3daf8f4c918a" testId="17f6c3f3-7780-88ca-1a51-8c21a5ccdaeb" testName="Core.AuthorizationLayer.Tests.Stage4IncrementalImpactTests.T14_RepeatedTargetSynchronization_PreservesAllProjectionRows" computerName="672e2b22df40" duration="00:00:04.2878976" startTime="2026-10-18T08:08:31.0850282+00:00" endTime="2026-10-18T08:08:31.0850286+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="313dd0c2-b168-4d9b-8b00-3daf8f4c918a" />
+    <UnitTestResult executionId="fc9d47a3-dbc8-41b2-aaf8-4aed72a49ac4" testId="1e7c4df6-1796-9515-bc4c-da1c75303675" testName="Core.AuthorizationLayer.Tests.Stage2CompletionTests.T05_DeputyCannotBeCreatedWithoutSourceRole" computerName="672e2b22df40" duration="00:00:01.9189194" startTime="2026-10-18T08:08:57.0286886+00:00" endTime="2026-10-18T08:08:57.0286889+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fc9d47a3-dbc8-41b2-aaf8-4aed72a49ac4" />
+    <UnitTestResult executionId="03d7d0ea-3221-4609-9956-6f2f41b71c81" testId="744702a4-9426-4601-91c5-f743b7449b7e" testName="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T09_WhereAndCount_DenyCannotBeBypassedByClientPredicate" computerName="672e2b22df40" duration="00:00:00.8814553" startTime="2026-10-18T08:09:32.5523164+00:00" endTime="2026-10-18T08:09:32.5523167+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="03d7d0ea-3221-4609-9956-6f2f41b71c81" />
+    <UnitTestResult executionId="40de4f0d-d7b7-4482-b36c-2f7edd2a909f" testId="bcc6782d-ac26-bc5f-c45a-13617374da8b" testName="Core.AuthorizationLayer.Tests.Stage4QueryScalabilityTests.T14_MultipleRoles_DoesNotDuplicateAuthorizedEntityRows" computerName="672e2b22df40" duration="00:00:47.3267325" startTime="2026-10-18T08:07:23.8859146+00:00" endTime="2026-10-18T08:07:23.8859149+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="40de4f0d-d7b7-4482-b36c-2f7edd2a909f" />
+    <UnitTestResult executionId="ac5286f0-48fe-47a9-a642-993534adbd25" testId="aec8097c-3a88-42c1-7ede-ad7544887aae" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T07_Rebuild_IsIdempotent" computerName="672e2b22df40" duration="00:00:01.2196279" startTime="2026-10-18T08:09:41.9087915+00:00" endTime="2026-10-18T08:09:41.9087918+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ac5286f0-48fe-47a9-a642-993534adbd25" />
+    <UnitTestResult executionId="b2d14500-68f0-4db5-a99a-324a92094755" testId="9bbf56bb-3a0a-f545-963d-196a7947f39d" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T09_MissingIdentity_IsRejectedBeforeQuery" computerName="672e2b22df40" duration="00:00:01.0925198" startTime="2026-10-18T08:09:39.5248799+00:00" endTime="2026-10-18T08:09:39.5248802+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b2d14500-68f0-4db5-a99a-324a92094755" />
+    <UnitTestResult executionId="d3515500-e21e-4053-af67-9db535ce6d53" testId="106e9571-8e04-4565-1bd2-254ce12fc1fa" testName="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T04_MembershipOutsideRoleInterval_DoesNotReactivateExpiredRole" computerName="672e2b22df40" duration="00:00:08.4593797" startTime="2026-10-18T08:09:19.5902283+00:00" endTime="2026-10-18T08:09:19.5902286+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d3515500-e21e-4053-af67-9db535ce6d53" />
+    <UnitTestResult executionId="dac66887-55c4-420b-9bbc-1022c2c2f74e" testId="8207b814-4067-6137-32b5-a56302b6784b" testName="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T08_DenyAddedAfterGrant_TakesEffectOnTargetedReprojection" computerName="672e2b22df40" duration="00:00:08.3507012" startTime="2026-10-18T08:09:19.5924025+00:00" endTime="2026-10-18T08:09:19.5924027+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dac66887-55c4-420b-9bbc-1022c2c2f74e" />
+    <UnitTestResult executionId="b0fa0f0f-ad37-4713-8678-8f9199176457" testId="e767e144-cb13-90f5-0d75-bbf5c37b678a" testName="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T06_BindingRequiresSourceRole_WithoutSourceRoleItCannotGrant" computerName="672e2b22df40" duration="00:00:20.6138804" startTime="2026-10-18T08:07:45.3158435+00:00" endTime="2026-10-18T08:07:45.3158439+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b0fa0f0f-ad37-4713-8678-8f9199176457" />
+    <UnitTestResult executionId="172a292d-81f7-4b73-9108-8638b8491060" testId="7bc000a8-eae8-d96d-66f3-f54cef369a53" testName="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T05_DeputyRole_IsProjectedForAssignedUser" computerName="672e2b22df40" duration="00:00:01.8577559" startTime="2026-10-18T08:08:57.0164275+00:00" endTime="2026-10-18T08:08:57.0164277+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="172a292d-81f7-4b73-9108-8638b8491060" />
+    <UnitTestResult executionId="cced9b1a-3458-4ca1-8b48-0736c6354d18" testId="33bda5c5-ea08-9866-63c8-b233003e244e" testName="Core.AuthorizationLayer.Tests.Stage4LargeAccessTests.T14_LargePopulation_OptIn_MeasuresProjectionAndSecureQueries" computerName="672e2b22df40" duration="00:00:00.0101680" startTime="2026-10-18T08:07:20.8188865+00:00" endTime="2026-10-18T08:07:20.8188868+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cced9b1a-3458-4ca1-8b48-0736c6354d18" />
+    <UnitTestResult executionId="6d7f9c34-ecdc-4eb5-bbbd-f14037c5a3b3" testId="3160817e-4621-2653-adbc-f6f0bd7868c8" testName="Core.AuthorizationLayer.Tests.Stage2CompletionTests.T10_CreateInForeignFacultyRejected" computerName="672e2b22df40" duration="00:00:02.8693152" startTime="2026-10-18T08:08:33.8490834+00:00" endTime="2026-10-18T08:08:33.8490838+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6d7f9c34-ecdc-4eb5-bbbd-f14037c5a3b3" />
+    <UnitTestResult executionId="077c7e8d-68ab-4e43-a78e-b89d571a630c" testId="192ddf1f-142b-c191-f4f5-8aa41e6f7ff2" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T02_BreakInheritance_DoesNotRemoveLocalRole" computerName="672e2b22df40" duration="00:00:03.3567033" startTime="2026-10-18T08:09:46.7388462+00:00" endTime="2026-10-18T08:09:46.7388465+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="077c7e8d-68ab-4e43-a78e-b89d571a630c" />
+    <UnitTestResult executionId="36bab143-1cec-4198-b97f-0fe4b694e0c0" testId="547f26e1-2bb2-f9da-a6a4-adbe7d97ca0e" testName="Core.AuthorizationLayer.Tests.SecuredServiceBoundaryTests.PostSaveProjectionFailureRollsBackEntireServiceCommand" computerName="672e2b22df40" duration="00:00:23.1482950" startTime="2026-10-18T08:08:08.4642522+00:00" endTime="2026-10-18T08:08:08.4642528+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="36bab143-1cec-4198-b97f-0fe4b694e0c0" />
+    <UnitTestResult executionId="a47cd779-7284-4ee6-a195-2274fdd1e95a" testId="18549305-f453-444a-1b43-afb209ac83e8" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRequest_FlowsToDescendantsOnly(target: &quot;root&quot;, expected: False)" computerName="672e2b22df40" duration="00:00:14.1485484" startTime="2026-10-18T08:09:11.1098961+00:00" endTime="2026-10-18T08:09:11.1098963+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a47cd779-7284-4ee6-a195-2274fdd1e95a" />
+    <UnitTestResult executionId="e997264d-913c-4def-990a-d44e903e268f" testId="060fc96c-3c5d-7e1b-b9c9-2a5e925f89ea" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRoot_FlowsDown(target: &quot;faculty&quot;, expected: True)" computerName="672e2b22df40" duration="00:00:20.9254058" startTime="2026-10-18T08:07:44.6143618+00:00" endTime="2026-10-18T08:07:44.6143622+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e997264d-913c-4def-990a-d44e903e268f" />
+    <UnitTestResult executionId="c652d082-add6-40d0-be2f-4d52ec19d5ed" testId="c55a8d08-b5fa-7fd9-698d-22c8a0406bcb" testName="Core.AuthorizationLayer.Tests.Stage2CompletionTests.T10_RoleUpdateCannotReplaceAssignedPrincipalOrRoleType" computerName="672e2b22df40" duration="00:00:21.0393396" startTime="2026-10-18T08:07:44.9795727+00:00" endTime="2026-10-18T08:07:44.9795739+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c652d082-add6-40d0-be2f-4d52ec19d5ed" />
+    <UnitTestResult executionId="05967bf2-a8fd-4eb4-8db8-883bcd3fc95b" testId="1e0cf993-ad24-68a5-a8de-bdc05dd0bb2b" testName="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T12_RollbackAfterAddingRole_LeavesNoPersistentRole" computerName="672e2b22df40" duration="00:00:02.9685541" startTime="2026-10-18T08:08:34.0765021+00:00" endTime="2026-10-18T08:08:34.0765024+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="05967bf2-a8fd-4eb4-8db8-883bcd3fc95b" />
+    <UnitTestResult executionId="5313fd12-a40d-4da4-8a98-a78f86018b82" testId="bbc68e2b-8bd8-8c22-3025-f7897d4090fa" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T03_RemoveRoleOperation_RevokesReadWithoutProjectionRebuild" computerName="672e2b22df40" duration="00:00:02.6434517" startTime="2026-10-18T08:08:36.6686101+00:00" endTime="2026-10-18T08:08:36.6686104+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5313fd12-a40d-4da4-8a98-a78f86018b82" />
+    <UnitTestResult executionId="af5f3ced-92da-4c72-b789-32518061f8aa" testId="534ec665-0e59-f9dc-5ca3-67eddec41ecb" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRoot_FlowsDown(target: &quot;secretChild&quot;, expected: True)" computerName="672e2b22df40" duration="00:00:02.8919811" startTime="2026-10-18T08:08:34.0231236+00:00" endTime="2026-10-18T08:08:34.0231240+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="af5f3ced-92da-4c72-b789-32518061f8aa" />
+    <UnitTestResult executionId="ed610705-4461-42bf-b642-0d4d5c552608" testId="33479831-4686-180d-4295-69bbc311bfae" testName="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T05_DeputyRole_FutureValidityDoesNotGiveAccess" computerName="672e2b22df40" duration="00:00:04.2429435" startTime="2026-10-18T08:08:50.7637436+00:00" endTime="2026-10-18T08:08:50.7637438+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ed610705-4461-42bf-b642-0d4d5c552608" />
+    <UnitTestResult executionId="46fa0204-3825-4400-95e9-1aad9315f459" testId="f93f726e-423d-6c09-1a7d-e85559dd4bf0" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T08_DenyApplicant_DoesNotDenyDean" computerName="672e2b22df40" duration="00:00:00.8691069" startTime="2026-10-18T08:09:38.4256323+00:00" endTime="2026-10-18T08:09:38.4256325+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="46fa0204-3825-4400-95e9-1aad9315f459" />
+    <UnitTestResult executionId="85659c0d-757c-470e-b6f0-453d90e51470" testId="74537154-53e5-9518-9497-1278f788c727" testName="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T07_TargetedAfterGrant_EqualsFullRebuild" computerName="672e2b22df40" duration="00:00:01.4631360" startTime="2026-10-18T08:09:24.8895365+00:00" endTime="2026-10-18T08:09:24.8895368+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="85659c0d-757c-470e-b6f0-453d90e51470" />
+    <UnitTestResult executionId="4605d40a-b3e3-4887-be1f-c554812465c5" testId="a3132c27-3810-ef0e-f230-dcfa7736b423" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T06_Binding_AllowsProjectionToNonInheritedTarget" computerName="672e2b22df40" duration="00:00:01.5965375" startTime="2026-10-18T08:09:37.5544177+00:00" endTime="2026-10-18T08:09:37.5544180+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4605d40a-b3e3-4887-be1f-c554812465c5" />
+    <UnitTestResult executionId="03cb0359-7719-4a98-aa5e-aff76500baea" testId="7de438b6-0282-126c-9708-1330cbe250e2" testName="Core.AuthorizationLayer.Tests.ActorIdentitySourceTests.QueryStringActorUserId_DoesNotOverrideTrustedClaim" computerName="672e2b22df40" duration="00:00:00.3237012" startTime="2026-10-18T08:06:36.9196946+00:00" endTime="2026-10-18T08:06:36.9199217+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="03cb0359-7719-4a98-aa5e-aff76500baea" />
+    <UnitTestResult executionId="b02f2523-3fd1-4565-b0f2-d40621928179" testId="3cab3ecf-91cf-7ff2-aa9e-145eb643b31c" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T07_OneOfTwoSourcesRemoved_RetainsAccess" computerName="672e2b22df40" duration="00:00:00.8936955" startTime="2026-10-18T08:09:48.5494684+00:00" endTime="2026-10-18T08:09:48.5494686+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b02f2523-3fd1-4565-b0f2-d40621928179" />
+    <UnitTestResult executionId="4ec1aeac-43d6-42fc-aa9d-fcc08d773ea2" testId="dde62827-d3e6-5ea6-90a6-0c58c4cea4a5" testName="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T08_DenyOnParentDoesNotEraseIndependentRoleType" computerName="672e2b22df40" duration="00:00:14.2720498" startTime="2026-10-18T08:09:11.2399893+00:00" endTime="2026-10-18T08:09:11.2399896+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4ec1aeac-43d6-42fc-aa9d-fcc08d773ea2" />
+    <UnitTestResult executionId="c7b3603f-b341-4cd9-a380-5b0675b2c5eb" testId="24546765-b1e0-61fe-64bb-858999dbb581" testName="Core.AuthorizationLayer.Tests.Stage2CompletionTests.T10_UpdateCannotClaimAccessByChangingRbacObject" computerName="672e2b22df40" duration="00:00:09.9902380" startTime="2026-10-18T08:08:46.5452163+00:00" endTime="2026-10-18T08:08:46.5452168+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c7b3603f-b341-4cd9-a380-5b0675b2c5eb" />
+    <UnitTestResult executionId="49247831-2858-46da-8e8d-d216bfac5407" testId="9c779216-86b3-8074-8675-d458fd6e2461" testName="Core.AuthorizationLayer.Tests.Stage4LargeAccessTests.T14_EffectiveAccessAndRoleOperation_HaveQueryableIndexes" computerName="672e2b22df40" duration="00:00:44.1805255" startTime="2026-10-18T08:07:20.8079870+00:00" endTime="2026-10-18T08:07:20.8079875+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="49247831-2858-46da-8e8d-d216bfac5407">
+      <Output>
+        <ErrorInfo>
+          <Message>Npgsql.NpgsqlException : Exception while reading from stream
+---- System.TimeoutException : Timeout during reading attempt</Message>
+          <StackTrace>   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource&lt;TResult&gt;.GetResult(Int16 token)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult()
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+   at WebAppArchitecture.Tests.Shared.PostgresTestDatabase.Dispose() in /workspace/tests/Shared/PostgresTestDatabase.cs:line 56
+   at Core.AuthorizationLayer.Tests.RbacFixture.Dispose() in /workspace/tests/Core.AuthorizationLayer.Tests/RbacFixture.cs:line 87
+   at Core.AuthorizationLayer.Tests.Stage4LargeAccessTests.T14_EffectiveAccessAndRoleOperation_HaveQueryableIndexes() in /workspace/tests/Core.AuthorizationLayer.Tests/Stage4LargeAccessTests.cs:line 63
+   at Core.AuthorizationLayer.Tests.Stage4LargeAccessTests.T14_EffectiveAccessAndRoleOperation_HaveQueryableIndexes() in /workspace/tests/Core.AuthorizationLayer.Tests/Stage4LargeAccessTests.cs:line 54
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+----- Inner Stack Trace -----
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="510049d0-12bf-4fc9-ba1d-f19e86d1a8b6" testId="76b0d717-b96d-b029-cbb3-6ebfd5b5e9d6" testName="Core.AuthorizationLayer.Tests.Stage2CompletionTests.T10_CreateRequiresCreatePermission_NotRead" computerName="672e2b22df40" duration="00:00:02.5282823" startTime="2026-10-18T08:08:53.3319073+00:00" endTime="2026-10-18T08:08:53.3319076+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="510049d0-12bf-4fc9-ba1d-f19e86d1a8b6" />
+    <UnitTestResult executionId="2468310e-f7ee-4634-9ea9-9424bf5311d5" testId="d1634f1b-e94a-6ffe-2e84-b1fdab7fdcf3" testName="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T06_RemoveBinding_RevokesMappedRoleButRetainsSourceRole" computerName="672e2b22df40" duration="00:00:01.2490489" startTime="2026-10-18T08:09:33.8013523+00:00" endTime="2026-10-18T08:09:33.8013525+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2468310e-f7ee-4634-9ea9-9424bf5311d5" />
+    <UnitTestResult executionId="54a1e250-a538-41c1-b11a-e69d4736425b" testId="c3b4cd13-fa25-4480-5211-74e601dfe781" testName="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T02_NewGrandchild_ReceivesInheritedRoleOnTargetedSync" computerName="672e2b22df40" duration="00:00:04.1851261" startTime="2026-10-18T08:08:50.7066984+00:00" endTime="2026-10-18T08:08:50.7066988+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="54a1e250-a538-41c1-b11a-e69d4736425b" />
+    <UnitTestResult executionId="5252eb26-aab3-4b49-9154-e878195d4d95" testId="ba7a0c62-6520-a7d9-fe05-0f541fa1a985" testName="Core.AuthorizationLayer.Tests.SecuredServiceBoundaryTests.ReadOnlyActorCannotCreateUpdateOrDeleteAndNothingPersists" computerName="672e2b22df40" duration="00:00:04.3158146" startTime="2026-10-18T08:08:31.1084617+00:00" endTime="2026-10-18T08:08:31.1084621+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5252eb26-aab3-4b49-9154-e878195d4d95" />
+    <UnitTestResult executionId="de9f3fcd-bc45-46a3-b7d6-485e581aa283" testId="8143e9b6-5854-894d-d64b-3bebef16769f" testName="Core.AuthorizationLayer.Tests.Stage2ProviderIntegrationTests.T12_SeparateContexts_SequentialWritersPreserveBothCommits" computerName="672e2b22df40" duration="00:00:23.8925223" startTime="2026-10-18T08:08:08.5406206+00:00" endTime="2026-10-18T08:08:08.5406207+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="de9f3fcd-bc45-46a3-b7d6-485e581aa283" />
+    <UnitTestResult executionId="c14cb948-91a5-4c09-8781-3a59f8ef1823" testId="2dd348ed-99bb-8a81-aaed-c39ada91352f" testName="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T09_DeniedEntityIsNotExposedBySingleOrDefault" computerName="672e2b22df40" duration="00:00:01.2310159" startTime="2026-10-18T08:09:26.1395288+00:00" endTime="2026-10-18T08:09:26.1395290+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c14cb948-91a5-4c09-8781-3a59f8ef1823" />
+    <UnitTestResult executionId="baabaa46-893b-4c97-a9fe-d5c032a5abbc" testId="b34a878b-5183-c502-9a32-aa5e7faad6b6" testName="Core.AuthorizationLayer.Tests.ActorIdentitySourceTests.CompatibilityOperationNamesMatchCanonicalRbacNames" computerName="672e2b22df40" duration="00:00:00.0298571" startTime="2026-10-18T08:06:36.9688219+00:00" endTime="2026-10-18T08:06:36.9688222+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="baabaa46-893b-4c97-a9fe-d5c032a5abbc" />
+    <UnitTestResult executionId="8297774f-8f90-4944-b785-4a21199c4b3e" testId="b0a4b577-8ff5-909d-11c1-a590e3382137" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRequest_FlowsToDescendantsOnly(target: &quot;secret&quot;, expected: True)" computerName="672e2b22df40" duration="00:00:02.3929415" startTime="2026-10-18T08:08:53.1655010+00:00" endTime="2026-10-18T08:08:53.1655021+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8297774f-8f90-4944-b785-4a21199c4b3e" />
+    <UnitTestResult executionId="9dca78b6-c303-40df-9864-6d0b98077953" testId="1f875768-1892-60fb-2145-f12724c1ce40" testName="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T03_RemoveOnlyUpdate_DoesNotRevokeRead" computerName="672e2b22df40" duration="00:00:01.7574474" startTime="2026-10-18T08:09:21.3555319+00:00" endTime="2026-10-18T08:09:21.3555322+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9dca78b6-c303-40df-9864-6d0b98077953" />
+    <UnitTestResult executionId="18c1eb3c-a37c-4f6d-aa04-260553758580" testId="3c17dec1-264a-bf04-5f09-64c1b4690d4b" testName="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T06_DenyOutsideBindingSource_DoesNotRemoveUnrelatedBinding" computerName="672e2b22df40" duration="00:00:23.3518449" startTime="2026-10-18T08:08:08.6775186+00:00" endTime="2026-10-18T08:08:08.6775190+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="18c1eb3c-a37c-4f6d-aa04-260553758580" />
+    <UnitTestResult executionId="b0f056ac-b1ec-4b54-843c-f96683226909" testId="05f12bda-9e47-e4a0-1575-54420557c8de" testName="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T12_RollbackAfterDenyRule_LeavesNoPersistentDeny" computerName="672e2b22df40" duration="00:00:21.0874355" startTime="2026-10-18T08:07:45.1732826+00:00" endTime="2026-10-18T08:07:45.1732829+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b0f056ac-b1ec-4b54-843c-f96683226909" />
+    <UnitTestResult executionId="00529f3c-d563-49d4-9b68-a39db26f0824" testId="519d3526-20e1-aa05-6d76-10aa0ccfe864" testName="Core.AuthorizationLayer.Tests.SecuredConcurrencyTests.TwoWritersWithSameTokenCannotOverwriteEachOtherAndRollbackClearsFailedWork" computerName="672e2b22df40" duration="00:00:20.4422752" startTime="2026-10-18T08:07:45.1018449+00:00" endTime="2026-10-18T08:07:45.1018451+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="00529f3c-d563-49d4-9b68-a39db26f0824" />
+    <UnitTestResult executionId="478db71f-54f9-45ae-a564-c1633ab4a7b4" testId="2674a8b5-f17d-f6ce-7770-8f58e54d900e" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRequest_FlowsToDescendantsOnly(target: &quot;request&quot;, expected: True)" computerName="672e2b22df40" duration="00:00:07.1961354" startTime="2026-10-18T08:09:18.3093222+00:00" endTime="2026-10-18T08:09:18.3093224+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="478db71f-54f9-45ae-a564-c1633ab4a7b4" />
+    <UnitTestResult executionId="58c44b40-338e-4b83-8600-431969d68de0" testId="e19ead67-d74a-609e-ea4b-e2e25507c5e3" testName="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T10_OtherFacultyUpdate_IsRejectedDespiteLocalWrite" computerName="672e2b22df40" duration="00:00:02.5331321" startTime="2026-10-18T08:08:53.3085230+00:00" endTime="2026-10-18T08:08:53.3085232+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="58c44b40-338e-4b83-8600-431969d68de0" />
+    <UnitTestResult executionId="99aeeed3-7011-456d-bf50-9e590dfedc8a" testId="6481463b-676a-ba07-fce1-656a86e3cb1b" testName="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T03_OperationMatrix_IsExplicit(operation: &quot;update&quot;, expected: True)" computerName="672e2b22df40" duration="00:00:04.3419175" startTime="2026-10-18T08:08:31.1184183+00:00" endTime="2026-10-18T08:08:31.1184186+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="99aeeed3-7011-456d-bf50-9e590dfedc8a" />
+    <UnitTestResult executionId="b34f4251-9f7e-4e85-9eac-842abd38d95a" testId="6df697d5-14b7-cb6b-3ac4-a931acfdd865" testName="Core.AuthorizationLayer.Tests.SecuredServiceBoundaryTests.RealServiceFiltersSingleReadsAndCollectionsWithoutResolvers" computerName="672e2b22df40" duration="00:00:47.8796469" startTime="2026-10-18T08:07:24.4526499+00:00" endTime="2026-10-18T08:07:24.4526502+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b34f4251-9f7e-4e85-9eac-842abd38d95a" />
+    <UnitTestResult executionId="ee9f834a-bdf9-4a49-b3ec-6f7383b40583" testId="0dc49dc4-c68d-76e3-078c-72093bf71b86" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRoot_FlowsDown(target: &quot;secret&quot;, expected: True)" computerName="672e2b22df40" duration="00:00:04.3781403" startTime="2026-10-18T08:08:31.0943626+00:00" endTime="2026-10-18T08:08:31.0943629+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ee9f834a-bdf9-4a49-b3ec-6f7383b40583" />
+    <UnitTestResult executionId="88a84244-4003-4668-85c8-3834de1bdd6d" testId="305c447a-9441-8e9f-badb-02b680edd6e3" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T09_ForbiddenRead_DoesNotRevealEntityViaCount" computerName="672e2b22df40" duration="00:00:01.4704097" startTime="2026-10-18T08:09:43.3798065+00:00" endTime="2026-10-18T08:09:43.3798067+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="88a84244-4003-4668-85c8-3834de1bdd6d" />
+    <UnitTestResult executionId="f0b04b28-47a4-4067-ab06-da971bb281f5" testId="58f3d03f-721a-310f-eca4-2a9c1f7f168d" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T06_Binding_ChangesRoleTypeAndDenyMatchesSourceRole" computerName="672e2b22df40" duration="00:00:01.2787318" startTime="2026-10-18T08:09:26.1246840+00:00" endTime="2026-10-18T08:09:26.1246843+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f0b04b28-47a4-4067-ab06-da971bb281f5" />
+    <UnitTestResult executionId="f1ad55d7-afd3-4a90-abcd-964dc652d018" testId="76712bdd-723e-f319-7b46-ae753033304b" testName="Core.AuthorizationLayer.Tests.Stage2CompletionTests.T10_UpdateCannotMoveSecuredEntityToForeignScope" computerName="672e2b22df40" duration="00:00:47.3720574" startTime="2026-10-18T08:07:24.0515793+00:00" endTime="2026-10-18T08:07:24.0515797+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f1ad55d7-afd3-4a90-abcd-964dc652d018" />
+    <UnitTestResult executionId="30dddaf0-21b6-430f-918e-2df6c1a6fdf6" testId="3ada9837-3d4f-e06a-3e8e-cbe8009f5906" testName="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T05_DeputyRole_ExpiredValidityDoesNotGiveAccess" computerName="672e2b22df40" duration="00:00:01.1280995" startTime="2026-10-18T08:09:26.0555288+00:00" endTime="2026-10-18T08:09:26.0555290+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="30dddaf0-21b6-430f-918e-2df6c1a6fdf6" />
+    <UnitTestResult executionId="a062a3be-0a8c-43d3-9e7f-f674d6687089" testId="ded12f00-78c8-8dd2-a696-6a7755daf1d2" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T08_AnotherRoleStillAllowsAccess_SelectiveDenyNotGlobalBan" computerName="672e2b22df40" duration="00:00:02.0075056" startTime="2026-10-18T08:09:23.4835934+00:00" endTime="2026-10-18T08:09:23.4835936+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a062a3be-0a8c-43d3-9e7f-f674d6687089" />
+    <UnitTestResult executionId="9f015478-6ca0-49ef-b278-cb0eb190fcf2" testId="160d33cc-fda7-c8b4-f39b-06c8ac07f645" testName="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T03_OperationMatrix_IsExplicit(operation: &quot;read&quot;, expected: True)" computerName="672e2b22df40" duration="00:00:02.9807023" startTime="2026-10-18T08:08:34.1074173+00:00" endTime="2026-10-18T08:08:34.1074176+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9f015478-6ca0-49ef-b278-cb0eb190fcf2" />
+    <UnitTestResult executionId="72c6f243-371a-45e1-acf9-cbf183c52e8c" testId="7cddd776-18d4-0593-ee4d-e9d196f33a87" testName="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T08_DenyForDean_DoesNotAffectApplicant" computerName="672e2b22df40" duration="00:00:01.1178525" startTime="2026-10-18T08:09:34.9287176+00:00" endTime="2026-10-18T08:09:34.9287179+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="72c6f243-371a-45e1-acf9-cbf183c52e8c" />
+    <UnitTestResult executionId="8657d812-027d-4400-b6a0-b1d4bc4aee34" testId="a4ae84e1-740c-d0ef-07d7-c59ec7f6fd9e" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRequest_FlowsToDescendantsOnly(target: &quot;otherFaculty&quot;, expected: False)" computerName="672e2b22df40" duration="00:00:01.8804009" startTime="2026-10-18T08:08:56.9694567+00:00" endTime="2026-10-18T08:08:56.9694570+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8657d812-027d-4400-b6a0-b1d4bc4aee34" />
+    <UnitTestResult executionId="005c8f32-8d1b-4c93-bbd4-5d98bf12d7d6" testId="55a57665-c839-ccd4-ed39-8c9c95dd6ccd" testName="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T10_UpdatePermission_AllowsAuthorizedUpdate" computerName="672e2b22df40" duration="00:00:09.5022411" startTime="2026-10-18T08:08:46.5184580+00:00" endTime="2026-10-18T08:08:46.5184583+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="005c8f32-8d1b-4c93-bbd4-5d98bf12d7d6" />
+    <UnitTestResult executionId="0e0bf07f-8da0-492e-92b9-6fa443f3abae" testId="1845d26a-d000-3e90-fa4e-fcbd09a1e521" testName="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T09_ExplicitlyUnauthorizedOperation_ReturnsNoRows" computerName="672e2b22df40" duration="00:00:01.9698208" startTime="2026-10-18T08:08:56.9843710+00:00" endTime="2026-10-18T08:08:56.9843712+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0e0bf07f-8da0-492e-92b9-6fa443f3abae" />
+    <UnitTestResult executionId="ad1c145f-9307-4719-b8e5-25c3e8c04020" testId="9b704125-553f-605f-a715-35e1290c712d" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T07_RemoveLastRole_RevokesEffectiveAccess" computerName="672e2b22df40" duration="00:00:00.9114055" startTime="2026-10-18T08:09:47.6538653+00:00" endTime="2026-10-18T08:09:47.6538656+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ad1c145f-9307-4719-b8e5-25c3e8c04020" />
+    <UnitTestResult executionId="1e667235-e755-4376-a5ce-a175f11d32f3" testId="920863a2-0e01-d3fd-79cf-46608f9bdd54" testName="Core.AuthorizationLayer.Tests.Stage2CompletionTests.T05_ValidDeputyRequiresDirectSourceAndWithinValidity" computerName="672e2b22df40" duration="00:00:02.6928198" startTime="2026-10-18T08:08:36.5452905+00:00" endTime="2026-10-18T08:08:36.5452909+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1e667235-e755-4376-a5ce-a175f11d32f3" />
+    <UnitTestResult executionId="bd6d3657-99fc-47aa-a361-13f99422925b" testId="ab4505f6-1db6-f952-3489-f7c2dc3cccc2" testName="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T05_RemoveDeputyRole_RevokesOnlyDeputy" computerName="672e2b22df40" duration="00:00:02.0225481" startTime="2026-10-18T08:09:23.4772389+00:00" endTime="2026-10-18T08:09:23.4772392+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bd6d3657-99fc-47aa-a361-13f99422925b" />
+    <UnitTestResult executionId="875bb445-dd78-451d-8da1-faea51cd240f" testId="1973614f-005c-a69e-fd35-7a4641e0ac3c" testName="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T09_AnotherUserCannotBorrowApplicantsAccess" computerName="672e2b22df40" duration="00:00:18.0917398" startTime="2026-10-18T08:08:26.7732865+00:00" endTime="2026-10-18T08:08:26.7732868+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="875bb445-dd78-451d-8da1-faea51cd240f" />
+    <UnitTestResult executionId="4c6b32ac-454d-4ef5-9435-a2d6131ebe13" testId="541fae83-0f50-7f5c-cc05-1f195ed2e215" testName="Core.AuthorizationLayer.Tests.Stage4QueryScalabilityTests.T14_ManySecuredRows_KeepDenyAndCallerPagingCorrect" computerName="672e2b22df40" duration="00:00:23.0609148" startTime="2026-10-18T08:08:08.5045295+00:00" endTime="2026-10-18T08:08:08.5045300+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4c6b32ac-454d-4ef5-9435-a2d6131ebe13" />
+    <UnitTestResult executionId="21c14546-0cfc-42e4-94a7-a027bfb76b1c" testId="c6b3e1de-1387-1934-a904-8319864eb547" testName="Core.AuthorizationLayer.Tests.ProjectionTests.T08_Deny_IsRecursiveOnlyWhenRequested(recursive: False, childHidden: False)" computerName="672e2b22df40" duration="00:00:00.8788667" startTime="2026-10-18T08:09:32.5034853+00:00" endTime="2026-10-18T08:09:32.5034856+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="21c14546-0cfc-42e4-94a7-a027bfb76b1c" />
+    <UnitTestResult executionId="303fac0a-2c01-429a-ab79-1f518f65f355" testId="cb1d7883-1309-890e-d398-8535ca0e8b9d" testName="Core.AuthorizationLayer.Tests.SecuredServiceBoundaryTests.AuthorizedServiceWritesUseTrustedAuditActorAndPersist" computerName="672e2b22df40" duration="00:00:18.3130448" startTime="2026-10-18T08:08:26.8007991+00:00" endTime="2026-10-18T08:08:26.8007994+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="303fac0a-2c01-429a-ab79-1f518f65f355" />
+    <UnitTestResult executionId="241875b4-7795-4bf6-a7e0-890d1dd9b0fd" testId="fcd5787d-2d80-eb67-cd9c-211d58645678" testName="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T07_TargetedAfterRemoval_EqualsFullRebuild" computerName="672e2b22df40" duration="00:00:02.6256035" startTime="2026-10-18T08:09:28.7623223+00:00" endTime="2026-10-18T08:09:28.7623225+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="241875b4-7795-4bf6-a7e0-890d1dd9b0fd" />
+    <UnitTestResult executionId="e24c81a6-964f-4f99-b182-efeb848cbd79" testId="aa0aafa1-c79e-dd90-d9d0-7ecc532c61df" testName="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T04_RemoveMembership_DoesNotRevokeRoleOrItsProjection" computerName="672e2b22df40" duration="00:00:01.8527387" startTime="2026-10-18T08:09:21.4456338+00:00" endTime="2026-10-18T08:09:21.4456340+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e24c81a6-964f-4f99-b182-efeb848cbd79" />
+    <UnitTestResult executionId="c6a4e3ce-ec02-4330-af45-c214743bec23" testId="40f29323-77a7-2934-e480-8e4176f275c6" testName="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T12_RepeatedProjectionSync_IsStable" computerName="672e2b22df40" duration="00:00:14.1125411" startTime="2026-10-18T08:09:11.1287068+00:00" endTime="2026-10-18T08:09:11.1287070+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c6a4e3ce-ec02-4330-af45-c214743bec23" />
+    <UnitTestResult executionId="a6c45595-9be1-450d-8c81-7645e33c0259" testId="75e8cc10-dc57-9fb9-99b9-4837bc11b49c" testName="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T03_OperationMatrix_IsExplicit(operation: &quot;delete&quot;, expected: False)" computerName="672e2b22df40" duration="00:00:09.5913091" startTime="2026-10-18T08:08:46.5179420+00:00" endTime="2026-10-18T08:08:46.5179422+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a6c45595-9be1-450d-8c81-7645e33c0259" />
+    <UnitTestResult executionId="38d5d90d-c96c-4f0a-a53e-272e560cfa19" testId="c5f1d3f9-0e85-4e14-d5e3-e46cc66ef988" testName="Core.AuthorizationLayer.Tests.Stage2CompletionTests.T05_DeputyCannotBeCreatedFromOtherUsersRole" computerName="672e2b22df40" duration="00:00:01.7455837" startTime="2026-10-18T08:08:55.0850406+00:00" endTime="2026-10-18T08:08:55.0850408+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="38d5d90d-c96c-4f0a-a53e-272e560cfa19" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T07_TargetedAfterGrant_EqualsFullRebuild" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="74537154-53e5-9518-9497-1278f788c727">
+      <Execution id="85659c0d-757c-470e-b6f0-453d90e51470" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests" name="T07_TargetedAfterGrant_EqualsFullRebuild" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T06_RemoveBinding_RevokesMappedRoleButRetainsSourceRole" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="d1634f1b-e94a-6ffe-2e84-b1fdab7fdcf3">
+      <Execution id="2468310e-f7ee-4634-9ea9-9424bf5311d5" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests" name="T06_RemoveBinding_RevokesMappedRoleButRetainsSourceRole" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.SecuredConcurrencyTests.AuthorizedWritesDeriveAuditWithoutTrustingIncomingModelMetadata" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="46448a5e-b269-1197-73e2-755a81b98c5d">
+      <Execution id="86769e4b-32ba-41f9-a498-2961041d2b79" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.SecuredConcurrencyTests" name="AuthorizedWritesDeriveAuditWithoutTrustingIncomingModelMetadata" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T03_RemoveOnlyUpdate_DoesNotRevokeRead" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="1f875768-1892-60fb-2145-f12724c1ce40">
+      <Execution id="9dca78b6-c303-40df-9864-6d0b98077953" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests" name="T03_RemoveOnlyUpdate_DoesNotRevokeRead" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2CompletionTests.T05_ValidDeputyRequiresDirectSourceAndWithinValidity" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="920863a2-0e01-d3fd-79cf-46608f9bdd54">
+      <Execution id="1e667235-e755-4376-a5ce-a175f11d32f3" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2CompletionTests" name="T05_ValidDeputyRequiresDirectSourceAndWithinValidity" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2CompletionTests.T05_DeputyCannotBeCreatedWithoutSourceRole" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="1e7c4df6-1796-9515-bc4c-da1c75303675">
+      <Execution id="fc9d47a3-dbc8-41b2-aaf8-4aed72a49ac4" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2CompletionTests" name="T05_DeputyCannotBeCreatedWithoutSourceRole" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T07_RemoveLastRole_RevokesEffectiveAccess" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="9b704125-553f-605f-a715-35e1290c712d">
+      <Execution id="ad1c145f-9307-4719-b8e5-25c3e8c04020" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T07_RemoveLastRole_RevokesEffectiveAccess" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T07_TargetedAfterRemoval_EqualsFullRebuild" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="fcd5787d-2d80-eb67-cd9c-211d58645678">
+      <Execution id="241875b4-7795-4bf6-a7e0-890d1dd9b0fd" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests" name="T07_TargetedAfterRemoval_EqualsFullRebuild" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRequest_FlowsToDescendantsOnly(target: &quot;secret&quot;, expected: True)" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="b0a4b577-8ff5-909d-11c1-a590e3382137">
+      <Execution id="8297774f-8f90-4944-b785-4a21199c4b3e" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T02_Role_AtRequest_FlowsToDescendantsOnly" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2ProviderIntegrationTests.T12_SeparateContexts_SequentialWritersPreserveBothCommits" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="8143e9b6-5854-894d-d64b-3bebef16769f">
+      <Execution id="de9f3fcd-bc45-46a3-b7d6-485e581aa283" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2ProviderIntegrationTests" name="T12_SeparateContexts_SequentialWritersPreserveBothCommits" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T03_OperationMatrix_IsExplicit(operation: &quot;read&quot;, expected: True)" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="160d33cc-fda7-c8b4-f39b-06c8ac07f645">
+      <Execution id="9f015478-6ca0-49ef-b278-cb0eb190fcf2" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests" name="T03_OperationMatrix_IsExplicit" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage4IncrementalImpactTests.T14_RevokeRole_LeavesUnrelatedProjectionUnchanged" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="9ba5c70c-229e-2607-f684-120bbdd7ebc9">
+      <Execution id="13835676-07da-4c4c-95b9-6fed9fa2265b" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage4IncrementalImpactTests" name="T14_RevokeRole_LeavesUnrelatedProjectionUnchanged" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2ProviderIntegrationTests.T12_SeparateContexts_CommitIsVisibleAfterTransaction" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="3ffd1b27-0d05-57be-6138-f01883fdd1d4">
+      <Execution id="9b378261-f919-42e1-a53e-bf9712db2ca5" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2ProviderIntegrationTests" name="T12_SeparateContexts_CommitIsVisibleAfterTransaction" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T05_DeputyRole_FutureValidityDoesNotGiveAccess" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="33479831-4686-180d-4295-69bbc311bfae">
+      <Execution id="ed610705-4461-42bf-b642-0d4d5c552608" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2LifecycleTests" name="T05_DeputyRole_FutureValidityDoesNotGiveAccess" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRoot_FlowsDown(target: &quot;root&quot;, expected: True)" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="7fc3c129-c20e-efa4-9551-8f843cd916ef">
+      <Execution id="3575aa48-be5d-4bf8-8715-cdfa5307e538" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T02_Role_AtRoot_FlowsDown" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ActorIdentitySourceTests.CompatibilityOperationNamesMatchCanonicalRbacNames" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="b34a878b-5183-c502-9a32-aa5e7faad6b6">
+      <Execution id="baabaa46-893b-4c97-a9fe-d5c032a5abbc" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ActorIdentitySourceTests" name="CompatibilityOperationNamesMatchCanonicalRbacNames" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T02_ReenableInheritance_RestoresAncestorRole" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="31143480-a5ed-1113-2802-c652af4a65e5">
+      <Execution id="35a4d658-8edf-4bee-b32c-7c86607fb59e" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests" name="T02_ReenableInheritance_RestoresAncestorRole" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage4QueryScalabilityTests.T14_MultipleRoles_DoesNotDuplicateAuthorizedEntityRows" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="bcc6782d-ac26-bc5f-c45a-13617374da8b">
+      <Execution id="40de4f0d-d7b7-4482-b36c-2f7edd2a909f" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage4QueryScalabilityTests" name="T14_MultipleRoles_DoesNotDuplicateAuthorizedEntityRows" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T03_RemoveRoleOperation_RevokesReadWithoutProjectionRebuild" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="bbc68e2b-8bd8-8c22-3025-f7897d4090fa">
+      <Execution id="5313fd12-a40d-4da4-8a98-a78f86018b82" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T03_RemoveRoleOperation_RevokesReadWithoutProjectionRebuild" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T08_DenyApplicant_DoesNotDenyDean" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="f93f726e-423d-6c09-1a7d-e85559dd4bf0">
+      <Execution id="46fa0204-3825-4400-95e9-1aad9315f459" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T08_DenyApplicant_DoesNotDenyDean" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRoot_FlowsDown(target: &quot;faculty&quot;, expected: True)" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="060fc96c-3c5d-7e1b-b9c9-2a5e925f89ea">
+      <Execution id="e997264d-913c-4def-990a-d44e903e268f" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T02_Role_AtRoot_FlowsDown" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2CompletionTests.T10_RoleUpdateCannotReplaceAssignedPrincipalOrRoleType" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="c55a8d08-b5fa-7fd9-698d-22c8a0406bcb">
+      <Execution id="c652d082-add6-40d0-be2f-4d52ec19d5ed" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2CompletionTests" name="T10_RoleUpdateCannotReplaceAssignedPrincipalOrRoleType" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T06_BindingRequiresSourceRole_WithoutSourceRoleItCannotGrant" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="e767e144-cb13-90f5-0d75-bbf5c37b678a">
+      <Execution id="b0fa0f0f-ad37-4713-8678-8f9199176457" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests" name="T06_BindingRequiresSourceRole_WithoutSourceRoleItCannotGrant" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T08_NonRecursiveDeny_DoesNotBlockGrandchild" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="87f70dd4-b9be-2e9e-ee5d-eb12f0f52d56">
+      <Execution id="b048f6ac-d4d2-4968-b161-5c6f3b0ba2af" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T08_NonRecursiveDeny_DoesNotBlockGrandchild" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage4IncrementalImpactTests.T14_TargetedUpdate_CommandCountDoesNotGrowWithUnrelatedRoles" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="56ebbff6-a36a-4d05-0207-0c364c121455">
+      <Execution id="ba342cb9-3e65-4801-bb44-fbac53c60ad1" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage4IncrementalImpactTests" name="T14_TargetedUpdate_CommandCountDoesNotGrowWithUnrelatedRoles" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T07_OneOfTwoSourcesRemoved_RetainsAccess" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="3cab3ecf-91cf-7ff2-aa9e-145eb643b31c">
+      <Execution id="b02f2523-3fd1-4565-b0f2-d40621928179" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T07_OneOfTwoSourcesRemoved_RetainsAccess" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T04_MembershipOutsideRoleInterval_DoesNotReactivateExpiredRole" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="106e9571-8e04-4565-1bd2-254ce12fc1fa">
+      <Execution id="d3515500-e21e-4053-af67-9db535ce6d53" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2LifecycleTests" name="T04_MembershipOutsideRoleInterval_DoesNotReactivateExpiredRole" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage4LargeAccessTests.T14_LargePopulation_OptIn_MeasuresProjectionAndSecureQueries" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="33bda5c5-ea08-9866-63c8-b233003e244e">
+      <Execution id="cced9b1a-3458-4ca1-8b48-0736c6354d18" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage4LargeAccessTests" name="T14_LargePopulation_OptIn_MeasuresProjectionAndSecureQueries" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRoot_FlowsDown(target: &quot;secretChild&quot;, expected: True)" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="534ec665-0e59-f9dc-5ca3-67eddec41ecb">
+      <Execution id="af5f3ced-92da-4c72-b789-32518061f8aa" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T02_Role_AtRoot_FlowsDown" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T09_WhereAndCount_DenyCannotBeBypassedByClientPredicate" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="744702a4-9426-4601-91c5-f743b7449b7e">
+      <Execution id="03d7d0ea-3221-4609-9956-6f2f41b71c81" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests" name="T09_WhereAndCount_DenyCannotBeBypassedByClientPredicate" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2CompletionTests.T05_DeputyCannotExceedSourceValidity" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="6e0e7b94-e3f8-f9dd-3b6c-f48340be70c1">
+      <Execution id="1243f7c8-3d24-4025-a9bb-f6fad49c964e" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2CompletionTests" name="T05_DeputyCannotExceedSourceValidity" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T09_MissingIdentity_IsRejectedBeforeQuery" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="9bbf56bb-3a0a-f545-963d-196a7947f39d">
+      <Execution id="b2d14500-68f0-4db5-a99a-324a92094755" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T09_MissingIdentity_IsRejectedBeforeQuery" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2ProviderIntegrationTests.T12_SeparateContexts_RollbackIsNeverVisible" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="31f8f64e-6ee9-f7bc-25fd-c5795fde9daf">
+      <Execution id="974d655f-8373-4a78-8e00-3e29a5111048" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2ProviderIntegrationTests" name="T12_SeparateContexts_RollbackIsNeverVisible" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T09_AuthorizationLayer_Query_ExecutesSQLAndFiltersRows" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="fc524dd7-fbdb-1932-aafc-1961a326dbee">
+      <Execution id="63326f23-7e02-4026-9c4f-ceb5f545d7b7" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T09_AuthorizationLayer_Query_ExecutesSQLAndFiltersRows" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T05_DeputyRole_ExpiredValidityDoesNotGiveAccess" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="3ada9837-3d4f-e06a-3e8e-cbe8009f5906">
+      <Execution id="30dddaf0-21b6-430f-918e-2df6c1a6fdf6" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2LifecycleTests" name="T05_DeputyRole_ExpiredValidityDoesNotGiveAccess" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T08_DenyAddedAfterGrant_TakesEffectOnTargetedReprojection" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="8207b814-4067-6137-32b5-a56302b6784b">
+      <Execution id="dac66887-55c4-420b-9bbc-1022c2c2f74e" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests" name="T08_DenyAddedAfterGrant_TakesEffectOnTargetedReprojection" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRequest_FlowsToDescendantsOnly(target: &quot;root&quot;, expected: False)" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="18549305-f453-444a-1b43-afb209ac83e8">
+      <Execution id="a47cd779-7284-4ee6-a195-2274fdd1e95a" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T02_Role_AtRequest_FlowsToDescendantsOnly" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T10_OtherFacultyUpdate_IsRejectedDespiteLocalWrite" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="e19ead67-d74a-609e-ea4b-e2e25507c5e3">
+      <Execution id="58c44b40-338e-4b83-8600-431969d68de0" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2LifecycleTests" name="T10_OtherFacultyUpdate_IsRejectedDespiteLocalWrite" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T04_RemoveMembership_DoesNotRevokeRoleOrItsProjection" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="aa0aafa1-c79e-dd90-d9d0-7ecc532c61df">
+      <Execution id="e24c81a6-964f-4f99-b182-efeb848cbd79" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2LifecycleTests" name="T04_RemoveMembership_DoesNotRevokeRoleOrItsProjection" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T10_ReadPermission_DoesNotPermitUpdate" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="6c0f60d6-8acd-b78c-14fb-762341af540c">
+      <Execution id="695fee5e-2b65-4320-8364-c45fc84b3781" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2LifecycleTests" name="T10_ReadPermission_DoesNotPermitUpdate" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T12_RepeatedProjectionSync_IsStable" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="40f29323-77a7-2934-e480-8e4176f275c6">
+      <Execution id="c6a4e3ce-ec02-4330-af45-c214743bec23" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2LifecycleTests" name="T12_RepeatedProjectionSync_IsStable" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T08_Deny_IsRecursiveOnlyWhenRequested(recursive: True, childHidden: True)" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="604949b6-a0bd-cb23-af31-cf29c34f61da">
+      <Execution id="ff6c8a23-8a5e-4c25-b4fb-9735e8515176" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T08_Deny_IsRecursiveOnlyWhenRequested" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ActorIdentitySourceTests.QueryStringActorUserId_IsNeverTrusted" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="db34a46e-835a-f2f3-a8e7-e55ae6b7f00f">
+      <Execution id="8c7f3166-4a01-4bef-aefa-38f70f0f58c7" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ActorIdentitySourceTests" name="QueryStringActorUserId_IsNeverTrusted" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T03_And_T09_SecurityService_RespectsOperations(operation: &quot;read&quot;, expected: True)" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="09257ce1-f170-c77d-2160-7bb96bacd281">
+      <Execution id="17eafdd5-c9ae-440d-abdf-09844d8826df" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T03_And_T09_SecurityService_RespectsOperations" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ActorIdentitySourceTests.QueryStringActorUserId_DoesNotOverrideTrustedClaim" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="7de438b6-0282-126c-9708-1330cbe250e2">
+      <Execution id="03cb0359-7719-4a98-aa5e-aff76500baea" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ActorIdentitySourceTests" name="QueryStringActorUserId_DoesNotOverrideTrustedClaim" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T12_RollbackAfterDenyRule_LeavesNoPersistentDeny" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="05f12bda-9e47-e4a0-1575-54420557c8de">
+      <Execution id="b0f056ac-b1ec-4b54-843c-f96683226909" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2LifecycleTests" name="T12_RollbackAfterDenyRule_LeavesNoPersistentDeny" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2CompletionTests.T10_CreateRequiresCreatePermission_NotRead" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="76b0d717-b96d-b029-cbb3-6ebfd5b5e9d6">
+      <Execution id="510049d0-12bf-4fc9-ba1d-f19e86d1a8b6" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2CompletionTests" name="T10_CreateRequiresCreatePermission_NotRead" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T08_Deny_IsRecursiveOnlyWhenRequested(recursive: False, childHidden: False)" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="c6b3e1de-1387-1934-a904-8319864eb547">
+      <Execution id="21c14546-0cfc-42e4-94a7-a027bfb76b1c" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T08_Deny_IsRecursiveOnlyWhenRequested" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T08_IndependentDenyRules_CanBeRemovedIndividually" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="ee158e7b-7157-98f9-2f65-9ab6e682c0e1">
+      <Execution id="49bce95c-1d0f-4b1c-86be-75048fa13f00" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests" name="T08_IndependentDenyRules_CanBeRemovedIndividually" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T04_FutureMembership_DoesNotChangeRoleProjection" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="d643b016-d90f-af09-b529-847ec26a3527">
+      <Execution id="14559eed-8658-4bc7-92d8-9d97e9cad5de" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2LifecycleTests" name="T04_FutureMembership_DoesNotChangeRoleProjection" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.SecuredServiceBoundaryTests.PostSaveProjectionFailureRollsBackEntireServiceCommand" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="547f26e1-2bb2-f9da-a6a4-adbe7d97ca0e">
+      <Execution id="36bab143-1cec-4198-b97f-0fe4b694e0c0" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.SecuredServiceBoundaryTests" name="PostSaveProjectionFailureRollsBackEntireServiceCommand" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T10_ReadPermission_DoesNotPermitDelete" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="7f2c0fa4-ac44-09d3-6957-cd7f91517d12">
+      <Execution id="8e7bdd83-68ba-4a52-bd46-e96c9633974d" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2LifecycleTests" name="T10_ReadPermission_DoesNotPermitDelete" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T03_And_T09_SecurityService_RespectsOperations(operation: &quot;update&quot;, expected: False)" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="956d5295-040d-98e0-e83c-46623378854f">
+      <Execution id="5521f3c6-c268-4e61-919b-5d0003a49f5b" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T03_And_T09_SecurityService_RespectsOperations" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRequest_FlowsToDescendantsOnly(target: &quot;visible&quot;, expected: True)" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="f7380223-b963-00ff-c6aa-92184fa8fec2">
+      <Execution id="5f60a355-d177-41dc-b6d9-a1e83a02f1d3" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T02_Role_AtRequest_FlowsToDescendantsOnly" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T08_DenyForDean_DoesNotAffectApplicant" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="7cddd776-18d4-0593-ee4d-e9d196f33a87">
+      <Execution id="72c6f243-371a-45e1-acf9-cbf183c52e8c" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests" name="T08_DenyForDean_DoesNotAffectApplicant" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage4LargeAccessTests.T14_SecureListAndCount_DoNotIssuePerEntityQueries" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="0a2bfb98-0787-dcd8-f686-6122890ed53d">
+      <Execution id="204b51a4-8b33-42a7-a7c5-5f0073ec4360" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage4LargeAccessTests" name="T14_SecureListAndCount_DoNotIssuePerEntityQueries" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage4IncrementalImpactTests.T14_LocalDenySynchronizesOnlySelectedBranch" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="fb263b64-50e1-3a1a-b684-845f8213c447">
+      <Execution id="52518a96-2900-44dd-8cb5-21f1a253c8f2" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage4IncrementalImpactTests" name="T14_LocalDenySynchronizesOnlySelectedBranch" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T07_DuplicateSynchronizationTargets_HaveSameResultAsUniqueTargets" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="3204fd83-47ef-b424-9dcf-f82d30aeb0c5">
+      <Execution id="172b1260-df91-419a-a29b-55960f9af031" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests" name="T07_DuplicateSynchronizationTargets_HaveSameResultAsUniqueTargets" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage4LargeAccessTests.T14_EffectiveAccessAndRoleOperation_HaveQueryableIndexes" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="9c779216-86b3-8074-8675-d458fd6e2461">
+      <Execution id="49247831-2858-46da-8e8d-d216bfac5407" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage4LargeAccessTests" name="T14_EffectiveAccessAndRoleOperation_HaveQueryableIndexes" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T07_TargetedProjection_EqualsFullRebuild_AfterRemovingDeny" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="ca6c4cf2-aa67-bbcc-773b-26e825405e47">
+      <Execution id="b4660790-751c-48fb-ae24-98a7dfc5524d" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T07_TargetedProjection_EqualsFullRebuild_AfterRemovingDeny" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T04_ExpiredMembership_DoesNotChangeRoleProjection" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="96201ebc-0d4e-bc66-d3bb-940b5ddd5f44">
+      <Execution id="c5891e07-10f3-416f-8306-49ae9bd3bba5" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2LifecycleTests" name="T04_ExpiredMembership_DoesNotChangeRoleProjection" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage4QueryScalabilityTests.T14_SecureQuery_RemainsComposedBeforeExecution" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="b6a9159e-8518-5684-b65b-d1fef81befbc">
+      <Execution id="6436c0c7-9f59-4678-a6dd-bb5b631a1fab" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage4QueryScalabilityTests" name="T14_SecureQuery_RemainsComposedBeforeExecution" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.SecuredConcurrencyTests.TwoWritersWithSameTokenCannotOverwriteEachOtherAndRollbackClearsFailedWork" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="519d3526-20e1-aa05-6d76-10aa0ccfe864">
+      <Execution id="00529f3c-d563-49d4-9b68-a39db26f0824" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.SecuredConcurrencyTests" name="TwoWritersWithSameTokenCannotOverwriteEachOtherAndRollbackClearsFailedWork" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T08_AnotherRoleStillAllowsAccess_SelectiveDenyNotGlobalBan" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="ded12f00-78c8-8dd2-a696-6a7755daf1d2">
+      <Execution id="a062a3be-0a8c-43d3-9e7f-f674d6687089" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T08_AnotherRoleStillAllowsAccess_SelectiveDenyNotGlobalBan" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T05_DeputyRole_IsProjectedForAssignedUser" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="7bc000a8-eae8-d96d-66f3-f54cef369a53">
+      <Execution id="172a292d-81f7-4b73-9108-8638b8491060" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2LifecycleTests" name="T05_DeputyRole_IsProjectedForAssignedUser" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage4IncrementalImpactTests.T14_RepeatedTargetSynchronization_PreservesAllProjectionRows" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="17f6c3f3-7780-88ca-1a51-8c21a5ccdaeb">
+      <Execution id="313dd0c2-b168-4d9b-8b00-3daf8f4c918a" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage4IncrementalImpactTests" name="T14_RepeatedTargetSynchronization_PreservesAllProjectionRows" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T12_RollbackAfterAddingRole_LeavesNoPersistentRole" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="1e0cf993-ad24-68a5-a8de-bdc05dd0bb2b">
+      <Execution id="05967bf2-a8fd-4eb4-8db8-883bcd3fc95b" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2LifecycleTests" name="T12_RollbackAfterAddingRole_LeavesNoPersistentRole" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.SecuredServiceBoundaryTests.ReadOnlyActorCannotCreateUpdateOrDeleteAndNothingPersists" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="ba7a0c62-6520-a7d9-fe05-0f541fa1a985">
+      <Execution id="5252eb26-aab3-4b49-9154-e878195d4d95" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.SecuredServiceBoundaryTests" name="ReadOnlyActorCannotCreateUpdateOrDeleteAndNothingPersists" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T04_ActiveMembership_DoesNotChangeRoleProjection" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="3052e943-74c3-bc1d-5fe1-ef7420ef1ac8">
+      <Execution id="8645aadd-97b0-4405-ac63-0127a15bb6f9" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2LifecycleTests" name="T04_ActiveMembership_DoesNotChangeRoleProjection" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2CompletionTests.T12_RollbackCreateAndProjectionLeavesNoEscalation" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="28645795-cb4a-30d4-2e7f-659427f2188e">
+      <Execution id="6bbaecaf-9e55-4d02-a1a6-4b7c29bf3f23" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2CompletionTests" name="T12_RollbackCreateAndProjectionLeavesNoEscalation" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T05_RemoveDeputyRole_RevokesOnlyDeputy" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="ab4505f6-1db6-f952-3489-f7c2dc3cccc2">
+      <Execution id="bd6d3657-99fc-47aa-a361-13f99422925b" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2LifecycleTests" name="T05_RemoveDeputyRole_RevokesOnlyDeputy" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T08_Deny_CoversLocallyAssignedRoleAndCanBeRemoved" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="13ee152c-450f-765b-449d-feccad07d5a0">
+      <Execution id="e28920b3-b1dd-468a-9b32-75643361a10a" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T08_Deny_CoversLocallyAssignedRoleAndCanBeRemoved" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T09_DeniedEntityIsNotExposedBySingleOrDefault" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="2dd348ed-99bb-8a81-aaed-c39ada91352f">
+      <Execution id="c14cb948-91a5-4c09-8781-3a59f8ef1823" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests" name="T09_DeniedEntityIsNotExposedBySingleOrDefault" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRoot_FlowsDown(target: &quot;otherFaculty&quot;, expected: True)" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="5d1fffbd-81da-9587-18fc-b176f16edfc9">
+      <Execution id="94f6c922-c682-4073-9d63-911b621f2e55" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T02_Role_AtRoot_FlowsDown" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.SecuredServiceBoundaryTests.NoActorCannotReadOrWriteEvenWithoutHttpResolver" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="23a2ba36-7f9e-0b15-f815-cb9c84339ee5">
+      <Execution id="26424b16-805f-4dd4-9ad5-9b689a2be928" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.SecuredServiceBoundaryTests" name="NoActorCannotReadOrWriteEvenWithoutHttpResolver" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRequest_FlowsToDescendantsOnly(target: &quot;otherFaculty&quot;, expected: False)" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="a4ae84e1-740c-d0ef-07d7-c59ec7f6fd9e">
+      <Execution id="8657d812-027d-4400-b6a0-b1d4bc4aee34" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T02_Role_AtRequest_FlowsToDescendantsOnly" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2CompletionTests.T10_CreateInForeignFacultyRejected" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="3160817e-4621-2653-adbc-f6f0bd7868c8">
+      <Execution id="6d7f9c34-ecdc-4eb5-bbbd-f14037c5a3b3" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2CompletionTests" name="T10_CreateInForeignFacultyRejected" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T06_DenyOutsideBindingSource_DoesNotRemoveUnrelatedBinding" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="3c17dec1-264a-bf04-5f09-64c1b4690d4b">
+      <Execution id="18c1eb3c-a37c-4f6d-aa04-260553758580" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests" name="T06_DenyOutsideBindingSource_DoesNotRemoveUnrelatedBinding" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T02_NewGrandchild_ReceivesInheritedRoleOnTargetedSync" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="c3b4cd13-fa25-4480-5211-74e601dfe781">
+      <Execution id="54a1e250-a538-41c1-b11a-e69d4736425b" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests" name="T02_NewGrandchild_ReceivesInheritedRoleOnTargetedSync" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T04_RemovingOneOfTwoMemberships_DoesNotChangeRoleProjection" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="1b29e929-623e-6607-a3a6-1453c4407b92">
+      <Execution id="a23d218c-1b70-48d8-b4ec-5a0d59ed340f" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2LifecycleTests" name="T04_RemovingOneOfTwoMemberships_DoesNotChangeRoleProjection" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2CompletionTests.T10_UpdateCannotClaimAccessByChangingRbacObject" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="24546765-b1e0-61fe-64bb-858999dbb581">
+      <Execution id="c7b3603f-b341-4cd9-a380-5b0675b2c5eb" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2CompletionTests" name="T10_UpdateCannotClaimAccessByChangingRbacObject" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2CompletionTests.T05_DeputyCannotChangeRoleTypeOfSource" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="8be0e341-a04f-0253-3f85-41964b60a5b3">
+      <Execution id="6f4913f8-cd86-4e8e-800b-01db07c42b3f" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2CompletionTests" name="T05_DeputyCannotChangeRoleTypeOfSource" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T07_NewlyCreatedChild_FullAndTargetedProjectionsAgree" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="e787dd57-53e5-15db-278e-020b7bde48d6">
+      <Execution id="64ca9b15-685b-4ce6-b2fa-f7be3e920605" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests" name="T07_NewlyCreatedChild_FullAndTargetedProjectionsAgree" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T07_TargetedProjection_EqualsFullRebuild_AfterDenyAndRoleChange" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="5169ebb1-abf0-8540-1079-d158d15a7376">
+      <Execution id="b8d16f2f-b2a9-4c60-8b14-9a175b3ee994" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T07_TargetedProjection_EqualsFullRebuild_AfterDenyAndRoleChange" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T06_Binding_AllowsProjectionToNonInheritedTarget" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="a3132c27-3810-ef0e-f230-dcfa7736b423">
+      <Execution id="4605d40a-b3e3-4887-be1f-c554812465c5" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T06_Binding_AllowsProjectionToNonInheritedTarget" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T10_UpdatePermission_AllowsAuthorizedUpdate" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="55a57665-c839-ccd4-ed39-8c9c95dd6ccd">
+      <Execution id="005c8f32-8d1b-4c93-bbd4-5d98bf12d7d6" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2LifecycleTests" name="T10_UpdatePermission_AllowsAuthorizedUpdate" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T06_Binding_ChangesRoleTypeAndDenyMatchesSourceRole" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="58f3d03f-721a-310f-eca4-2a9c1f7f168d">
+      <Execution id="f0b04b28-47a4-4067-ab06-da971bb281f5" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T06_Binding_ChangesRoleTypeAndDenyMatchesSourceRole" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T02_IndependentFaculty_RemainsIsolatedFromLocalDean" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="a36af73b-f62a-0a38-ba3c-8284425833ef">
+      <Execution id="b771e147-973d-42fc-91bf-064aabfd30b8" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests" name="T02_IndependentFaculty_RemainsIsolatedFromLocalDean" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRoot_FlowsDown(target: &quot;request&quot;, expected: True)" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="0f1cdf80-137e-c2db-22f5-c2721e6fdda7">
+      <Execution id="f0f2eb43-e1d2-4ebb-acd9-449430abe2e9" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T02_Role_AtRoot_FlowsDown" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2LifecycleTests.T05_DeputyRole_DenyBlocksSensitiveSubtree" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="c8c28b92-5bec-edbe-3aca-19a4daff425d">
+      <Execution id="2f1594b2-44a5-44ed-bbd1-c9c4905a02d5" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2LifecycleTests" name="T05_DeputyRole_DenyBlocksSensitiveSubtree" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T03_OperationMatrix_IsExplicit(operation: &quot;create&quot;, expected: False)" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="97c732f5-0a73-ae3d-2129-89734b866c78">
+      <Execution id="4d5af3db-ec25-4524-b5dd-b52157756b2f" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests" name="T03_OperationMatrix_IsExplicit" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.SecuredConcurrencyTests.UnpagedVectorsRemainUnboundedAndPagesKeepStableOrderingAndAuthorization" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="a1326cf9-c6ac-cb84-edd7-4475b5945918">
+      <Execution id="3598cc62-2dd3-43b8-a587-a8ea5458a7a9" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.SecuredConcurrencyTests" name="UnpagedVectorsRemainUnboundedAndPagesKeepStableOrderingAndAuthorization" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T08_DenyOnParentDoesNotEraseIndependentRoleType" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="dde62827-d3e6-5ea6-90a6-0c58c4cea4a5">
+      <Execution id="4ec1aeac-43d6-42fc-aa9d-fcc08d773ea2" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests" name="T08_DenyOnParentDoesNotEraseIndependentRoleType" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T03_OperationMatrix_IsExplicit(operation: &quot;delete&quot;, expected: False)" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="75e8cc10-dc57-9fb9-99b9-4837bc11b49c">
+      <Execution id="a6c45595-9be1-450d-8c81-7645e33c0259" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests" name="T03_OperationMatrix_IsExplicit" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage4IncrementalImpactTests.T14_AddRole_OnlyChangesItsAffectedSubtree" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="a12db8e1-51ad-1a6f-21f3-98b64f6fbcb3">
+      <Execution id="35086cff-1914-4ec3-aff8-5fc4ce49d906" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage4IncrementalImpactTests" name="T14_AddRole_OnlyChangesItsAffectedSubtree" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage4QueryScalabilityTests.T14_ManySecuredRows_KeepDenyAndCallerPagingCorrect" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="541fae83-0f50-7f5c-cc05-1f195ed2e215">
+      <Execution id="4c6b32ac-454d-4ef5-9435-a2d6131ebe13" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage4QueryScalabilityTests" name="T14_ManySecuredRows_KeepDenyAndCallerPagingCorrect" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T03_OperationMatrix_IsExplicit(operation: &quot;update&quot;, expected: True)" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="6481463b-676a-ba07-fce1-656a86e3cb1b">
+      <Execution id="99aeeed3-7011-456d-bf50-9e590dfedc8a" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests" name="T03_OperationMatrix_IsExplicit" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T07_ExpiredRole_IsNotProjectedAsActive" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="5173abe2-e9e9-09b0-b22a-71a5faae7797">
+      <Execution id="e9a93fd8-3f25-455a-9eea-9b087a92ada8" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T07_ExpiredRole_IsNotProjectedAsActive" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2ProviderIntegrationTests.T10_CreateChildAndRebuildProjection_ChildBecomesReadable" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="38d211f9-5254-535a-32db-c3115d9c3da7">
+      <Execution id="f5c170d4-12d6-43c8-9d79-46ad0cb1ab23" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2ProviderIntegrationTests" name="T10_CreateChildAndRebuildProjection_ChildBecomesReadable" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2CompletionTests.T10_CreateAuthorizedOnParent_NotNewObject" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="a9e29ed6-af61-fcc2-cc7f-3d103bd03cc8">
+      <Execution id="848f454a-f166-490b-9ee1-52e1e9969771" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2CompletionTests" name="T10_CreateAuthorizedOnParent_NotNewObject" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRequest_FlowsToDescendantsOnly(target: &quot;faculty&quot;, expected: False)" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="b53815c7-85f0-1cf7-c3d7-7df0acf59d54">
+      <Execution id="16580891-7783-4bf7-98a2-d01f2c617784" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T02_Role_AtRequest_FlowsToDescendantsOnly" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T07_Rebuild_IsIdempotent" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="aec8097c-3a88-42c1-7ede-ad7544887aae">
+      <Execution id="ac5286f0-48fe-47a9-a642-993534adbd25" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T07_Rebuild_IsIdempotent" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T09_ForbiddenRead_DoesNotRevealEntityViaCount" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="305c447a-9441-8e9f-badb-02b680edd6e3">
+      <Execution id="88a84244-4003-4668-85c8-3834de1bdd6d" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T09_ForbiddenRead_DoesNotRevealEntityViaCount" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T09_AnotherUserCannotBorrowApplicantsAccess" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="1973614f-005c-a69e-fd35-7a4641e0ac3c">
+      <Execution id="875bb445-dd78-451d-8da1-faea51cd240f" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests" name="T09_AnotherUserCannotBorrowApplicantsAccess" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRoot_FlowsDown(target: &quot;secret&quot;, expected: True)" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="0dc49dc4-c68d-76e3-078c-72093bf71b86">
+      <Execution id="ee9f834a-bdf9-4a49-b3ec-6f7383b40583" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T02_Role_AtRoot_FlowsDown" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2CompletionTests.T05_DeputyCannotBeCreatedFromOtherUsersRole" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="c5f1d3f9-0e85-4e14-d5e3-e46cc66ef988">
+      <Execution id="38d5d90d-c96c-4f0a-a53e-272e560cfa19" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2CompletionTests" name="T05_DeputyCannotBeCreatedFromOtherUsersRole" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T02_BreakInheritance_DoesNotRemoveLocalRole" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="192ddf1f-142b-c191-f4f5-8aa41e6f7ff2">
+      <Execution id="077c7e8d-68ab-4e43-a78e-b89d571a630c" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T02_BreakInheritance_DoesNotRemoveLocalRole" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.Stage2CompletionTests.T10_UpdateCannotMoveSecuredEntityToForeignScope" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="76712bdd-723e-f319-7b46-ae753033304b">
+      <Execution id="f1ad55d7-afd3-4a90-abcd-964dc652d018" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.Stage2CompletionTests" name="T10_UpdateCannotMoveSecuredEntityToForeignScope" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.SecuredServiceBoundaryTests.RealServiceFiltersSingleReadsAndCollectionsWithoutResolvers" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="6df697d5-14b7-cb6b-3ac4-a931acfdd865">
+      <Execution id="b34f4251-9f7e-4e85-9eac-842abd38d95a" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.SecuredServiceBoundaryTests" name="RealServiceFiltersSingleReadsAndCollectionsWithoutResolvers" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T08_NewDescendant_InheritsExistingDenyAfterSynchronization" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="a35d3dde-4f16-fbc8-eb8c-c113d54eff86">
+      <Execution id="17776828-8a46-4870-9a6f-51dcce2595e7" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T08_NewDescendant_InheritsExistingDenyAfterSynchronization" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.SecuredServiceBoundaryTests.AuthorizedServiceWritesUseTrustedAuditActorAndPersist" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="cb1d7883-1309-890e-d398-8535ca0e8b9d">
+      <Execution id="303fac0a-2c01-429a-ab79-1f518f65f355" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.SecuredServiceBoundaryTests" name="AuthorizedServiceWritesUseTrustedAuditActorAndPersist" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T09_ExplicitlyUnauthorizedOperation_ReturnsNoRows" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="1845d26a-d000-3e90-fa4e-fcbd09a1e521">
+      <Execution id="0e0bf07f-8da0-492e-92b9-6fa443f3abae" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests" name="T09_ExplicitlyUnauthorizedOperation_ReturnsNoRows" />
+    </UnitTest>
+    <UnitTest name="Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRequest_FlowsToDescendantsOnly(target: &quot;request&quot;, expected: True)" storage="/workspace/.build/bin/core.authorizationlayer.tests/release/core.authorizationlayer.tests.dll" id="2674a8b5-f17d-f6ce-7770-8f58e54d900e">
+      <Execution id="478db71f-54f9-45ae-a564-c1633ab4a7b4" />
+      <TestMethod codeBase="/workspace/.build/bin/Core.AuthorizationLayer.Tests/release/Core.AuthorizationLayer.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Core.AuthorizationLayer.Tests.ProjectionTests" name="T02_Role_AtRequest_FlowsToDescendantsOnly" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="3204fd83-47ef-b424-9dcf-f82d30aeb0c5" executionId="172b1260-df91-419a-a29b-55960f9af031" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="956d5295-040d-98e0-e83c-46623378854f" executionId="5521f3c6-c268-4e61-919b-5d0003a49f5b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b53815c7-85f0-1cf7-c3d7-7df0acf59d54" executionId="16580891-7783-4bf7-98a2-d01f2c617784" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1b29e929-623e-6607-a3a6-1453c4407b92" executionId="a23d218c-1b70-48d8-b4ec-5a0d59ed340f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="31143480-a5ed-1113-2802-c652af4a65e5" executionId="35a4d658-8edf-4bee-b32c-7c86607fb59e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5d1fffbd-81da-9587-18fc-b176f16edfc9" executionId="94f6c922-c682-4073-9d63-911b621f2e55" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="28645795-cb4a-30d4-2e7f-659427f2188e" executionId="6bbaecaf-9e55-4d02-a1a6-4b7c29bf3f23" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="56ebbff6-a36a-4d05-0207-0c364c121455" executionId="ba342cb9-3e65-4801-bb44-fbac53c60ad1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5169ebb1-abf0-8540-1079-d158d15a7376" executionId="b8d16f2f-b2a9-4c60-8b14-9a175b3ee994" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3052e943-74c3-bc1d-5fe1-ef7420ef1ac8" executionId="8645aadd-97b0-4405-ac63-0127a15bb6f9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a1326cf9-c6ac-cb84-edd7-4475b5945918" executionId="3598cc62-2dd3-43b8-a587-a8ea5458a7a9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b6a9159e-8518-5684-b65b-d1fef81befbc" executionId="6436c0c7-9f59-4678-a6dd-bb5b631a1fab" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6e0e7b94-e3f8-f9dd-3b6c-f48340be70c1" executionId="1243f7c8-3d24-4025-a9bb-f6fad49c964e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3ffd1b27-0d05-57be-6138-f01883fdd1d4" executionId="9b378261-f919-42e1-a53e-bf9712db2ca5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8be0e341-a04f-0253-3f85-41964b60a5b3" executionId="6f4913f8-cd86-4e8e-800b-01db07c42b3f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c8c28b92-5bec-edbe-3aca-19a4daff425d" executionId="2f1594b2-44a5-44ed-bbd1-c9c4905a02d5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d643b016-d90f-af09-b529-847ec26a3527" executionId="14559eed-8658-4bc7-92d8-9d97e9cad5de" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7fc3c129-c20e-efa4-9551-8f843cd916ef" executionId="3575aa48-be5d-4bf8-8715-cdfa5307e538" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="97c732f5-0a73-ae3d-2129-89734b866c78" executionId="4d5af3db-ec25-4524-b5dd-b52157756b2f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="db34a46e-835a-f2f3-a8e7-e55ae6b7f00f" executionId="8c7f3166-4a01-4bef-aefa-38f70f0f58c7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="31f8f64e-6ee9-f7bc-25fd-c5795fde9daf" executionId="974d655f-8373-4a78-8e00-3e29a5111048" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="13ee152c-450f-765b-449d-feccad07d5a0" executionId="e28920b3-b1dd-468a-9b32-75643361a10a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a36af73b-f62a-0a38-ba3c-8284425833ef" executionId="b771e147-973d-42fc-91bf-064aabfd30b8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="96201ebc-0d4e-bc66-d3bb-940b5ddd5f44" executionId="c5891e07-10f3-416f-8306-49ae9bd3bba5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="87f70dd4-b9be-2e9e-ee5d-eb12f0f52d56" executionId="b048f6ac-d4d2-4968-b161-5c6f3b0ba2af" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a12db8e1-51ad-1a6f-21f3-98b64f6fbcb3" executionId="35086cff-1914-4ec3-aff8-5fc4ce49d906" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="604949b6-a0bd-cb23-af31-cf29c34f61da" executionId="ff6c8a23-8a5e-4c25-b4fb-9735e8515176" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9ba5c70c-229e-2607-f684-120bbdd7ebc9" executionId="13835676-07da-4c4c-95b9-6fed9fa2265b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a35d3dde-4f16-fbc8-eb8c-c113d54eff86" executionId="17776828-8a46-4870-9a6f-51dcce2595e7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="38d211f9-5254-535a-32db-c3115d9c3da7" executionId="f5c170d4-12d6-43c8-9d79-46ad0cb1ab23" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="46448a5e-b269-1197-73e2-755a81b98c5d" executionId="86769e4b-32ba-41f9-a498-2961041d2b79" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6c0f60d6-8acd-b78c-14fb-762341af540c" executionId="695fee5e-2b65-4320-8364-c45fc84b3781" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="23a2ba36-7f9e-0b15-f815-cb9c84339ee5" executionId="26424b16-805f-4dd4-9ad5-9b689a2be928" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e787dd57-53e5-15db-278e-020b7bde48d6" executionId="64ca9b15-685b-4ce6-b2fa-f7be3e920605" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="09257ce1-f170-c77d-2160-7bb96bacd281" executionId="17eafdd5-c9ae-440d-abdf-09844d8826df" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fc524dd7-fbdb-1932-aafc-1961a326dbee" executionId="63326f23-7e02-4026-9c4f-ceb5f545d7b7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ee158e7b-7157-98f9-2f65-9ab6e682c0e1" executionId="49bce95c-1d0f-4b1c-86be-75048fa13f00" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ca6c4cf2-aa67-bbcc-773b-26e825405e47" executionId="b4660790-751c-48fb-ae24-98a7dfc5524d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0a2bfb98-0787-dcd8-f686-6122890ed53d" executionId="204b51a4-8b33-42a7-a7c5-5f0073ec4360" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5173abe2-e9e9-09b0-b22a-71a5faae7797" executionId="e9a93fd8-3f25-455a-9eea-9b087a92ada8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f7380223-b963-00ff-c6aa-92184fa8fec2" executionId="5f60a355-d177-41dc-b6d9-a1e83a02f1d3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7f2c0fa4-ac44-09d3-6957-cd7f91517d12" executionId="8e7bdd83-68ba-4a52-bd46-e96c9633974d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0f1cdf80-137e-c2db-22f5-c2721e6fdda7" executionId="f0f2eb43-e1d2-4ebb-acd9-449430abe2e9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a9e29ed6-af61-fcc2-cc7f-3d103bd03cc8" executionId="848f454a-f166-490b-9ee1-52e1e9969771" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fb263b64-50e1-3a1a-b684-845f8213c447" executionId="52518a96-2900-44dd-8cb5-21f1a253c8f2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="17f6c3f3-7780-88ca-1a51-8c21a5ccdaeb" executionId="313dd0c2-b168-4d9b-8b00-3daf8f4c918a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1e7c4df6-1796-9515-bc4c-da1c75303675" executionId="fc9d47a3-dbc8-41b2-aaf8-4aed72a49ac4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="744702a4-9426-4601-91c5-f743b7449b7e" executionId="03d7d0ea-3221-4609-9956-6f2f41b71c81" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bcc6782d-ac26-bc5f-c45a-13617374da8b" executionId="40de4f0d-d7b7-4482-b36c-2f7edd2a909f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="aec8097c-3a88-42c1-7ede-ad7544887aae" executionId="ac5286f0-48fe-47a9-a642-993534adbd25" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9bbf56bb-3a0a-f545-963d-196a7947f39d" executionId="b2d14500-68f0-4db5-a99a-324a92094755" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="106e9571-8e04-4565-1bd2-254ce12fc1fa" executionId="d3515500-e21e-4053-af67-9db535ce6d53" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8207b814-4067-6137-32b5-a56302b6784b" executionId="dac66887-55c4-420b-9bbc-1022c2c2f74e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e767e144-cb13-90f5-0d75-bbf5c37b678a" executionId="b0fa0f0f-ad37-4713-8678-8f9199176457" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7bc000a8-eae8-d96d-66f3-f54cef369a53" executionId="172a292d-81f7-4b73-9108-8638b8491060" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="33bda5c5-ea08-9866-63c8-b233003e244e" executionId="cced9b1a-3458-4ca1-8b48-0736c6354d18" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3160817e-4621-2653-adbc-f6f0bd7868c8" executionId="6d7f9c34-ecdc-4eb5-bbbd-f14037c5a3b3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="192ddf1f-142b-c191-f4f5-8aa41e6f7ff2" executionId="077c7e8d-68ab-4e43-a78e-b89d571a630c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="547f26e1-2bb2-f9da-a6a4-adbe7d97ca0e" executionId="36bab143-1cec-4198-b97f-0fe4b694e0c0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="18549305-f453-444a-1b43-afb209ac83e8" executionId="a47cd779-7284-4ee6-a195-2274fdd1e95a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="060fc96c-3c5d-7e1b-b9c9-2a5e925f89ea" executionId="e997264d-913c-4def-990a-d44e903e268f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c55a8d08-b5fa-7fd9-698d-22c8a0406bcb" executionId="c652d082-add6-40d0-be2f-4d52ec19d5ed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1e0cf993-ad24-68a5-a8de-bdc05dd0bb2b" executionId="05967bf2-a8fd-4eb4-8db8-883bcd3fc95b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bbc68e2b-8bd8-8c22-3025-f7897d4090fa" executionId="5313fd12-a40d-4da4-8a98-a78f86018b82" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="534ec665-0e59-f9dc-5ca3-67eddec41ecb" executionId="af5f3ced-92da-4c72-b789-32518061f8aa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="33479831-4686-180d-4295-69bbc311bfae" executionId="ed610705-4461-42bf-b642-0d4d5c552608" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f93f726e-423d-6c09-1a7d-e85559dd4bf0" executionId="46fa0204-3825-4400-95e9-1aad9315f459" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="74537154-53e5-9518-9497-1278f788c727" executionId="85659c0d-757c-470e-b6f0-453d90e51470" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a3132c27-3810-ef0e-f230-dcfa7736b423" executionId="4605d40a-b3e3-4887-be1f-c554812465c5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7de438b6-0282-126c-9708-1330cbe250e2" executionId="03cb0359-7719-4a98-aa5e-aff76500baea" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3cab3ecf-91cf-7ff2-aa9e-145eb643b31c" executionId="b02f2523-3fd1-4565-b0f2-d40621928179" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dde62827-d3e6-5ea6-90a6-0c58c4cea4a5" executionId="4ec1aeac-43d6-42fc-aa9d-fcc08d773ea2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="24546765-b1e0-61fe-64bb-858999dbb581" executionId="c7b3603f-b341-4cd9-a380-5b0675b2c5eb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9c779216-86b3-8074-8675-d458fd6e2461" executionId="49247831-2858-46da-8e8d-d216bfac5407" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="76b0d717-b96d-b029-cbb3-6ebfd5b5e9d6" executionId="510049d0-12bf-4fc9-ba1d-f19e86d1a8b6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d1634f1b-e94a-6ffe-2e84-b1fdab7fdcf3" executionId="2468310e-f7ee-4634-9ea9-9424bf5311d5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c3b4cd13-fa25-4480-5211-74e601dfe781" executionId="54a1e250-a538-41c1-b11a-e69d4736425b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ba7a0c62-6520-a7d9-fe05-0f541fa1a985" executionId="5252eb26-aab3-4b49-9154-e878195d4d95" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8143e9b6-5854-894d-d64b-3bebef16769f" executionId="de9f3fcd-bc45-46a3-b7d6-485e581aa283" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2dd348ed-99bb-8a81-aaed-c39ada91352f" executionId="c14cb948-91a5-4c09-8781-3a59f8ef1823" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b34a878b-5183-c502-9a32-aa5e7faad6b6" executionId="baabaa46-893b-4c97-a9fe-d5c032a5abbc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b0a4b577-8ff5-909d-11c1-a590e3382137" executionId="8297774f-8f90-4944-b785-4a21199c4b3e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1f875768-1892-60fb-2145-f12724c1ce40" executionId="9dca78b6-c303-40df-9864-6d0b98077953" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3c17dec1-264a-bf04-5f09-64c1b4690d4b" executionId="18c1eb3c-a37c-4f6d-aa04-260553758580" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="05f12bda-9e47-e4a0-1575-54420557c8de" executionId="b0f056ac-b1ec-4b54-843c-f96683226909" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="519d3526-20e1-aa05-6d76-10aa0ccfe864" executionId="00529f3c-d563-49d4-9b68-a39db26f0824" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2674a8b5-f17d-f6ce-7770-8f58e54d900e" executionId="478db71f-54f9-45ae-a564-c1633ab4a7b4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e19ead67-d74a-609e-ea4b-e2e25507c5e3" executionId="58c44b40-338e-4b83-8600-431969d68de0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6481463b-676a-ba07-fce1-656a86e3cb1b" executionId="99aeeed3-7011-456d-bf50-9e590dfedc8a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6df697d5-14b7-cb6b-3ac4-a931acfdd865" executionId="b34f4251-9f7e-4e85-9eac-842abd38d95a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0dc49dc4-c68d-76e3-078c-72093bf71b86" executionId="ee9f834a-bdf9-4a49-b3ec-6f7383b40583" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="305c447a-9441-8e9f-badb-02b680edd6e3" executionId="88a84244-4003-4668-85c8-3834de1bdd6d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="58f3d03f-721a-310f-eca4-2a9c1f7f168d" executionId="f0b04b28-47a4-4067-ab06-da971bb281f5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="76712bdd-723e-f319-7b46-ae753033304b" executionId="f1ad55d7-afd3-4a90-abcd-964dc652d018" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3ada9837-3d4f-e06a-3e8e-cbe8009f5906" executionId="30dddaf0-21b6-430f-918e-2df6c1a6fdf6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ded12f00-78c8-8dd2-a696-6a7755daf1d2" executionId="a062a3be-0a8c-43d3-9e7f-f674d6687089" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="160d33cc-fda7-c8b4-f39b-06c8ac07f645" executionId="9f015478-6ca0-49ef-b278-cb0eb190fcf2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7cddd776-18d4-0593-ee4d-e9d196f33a87" executionId="72c6f243-371a-45e1-acf9-cbf183c52e8c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a4ae84e1-740c-d0ef-07d7-c59ec7f6fd9e" executionId="8657d812-027d-4400-b6a0-b1d4bc4aee34" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="55a57665-c839-ccd4-ed39-8c9c95dd6ccd" executionId="005c8f32-8d1b-4c93-bbd4-5d98bf12d7d6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1845d26a-d000-3e90-fa4e-fcbd09a1e521" executionId="0e0bf07f-8da0-492e-92b9-6fa443f3abae" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9b704125-553f-605f-a715-35e1290c712d" executionId="ad1c145f-9307-4719-b8e5-25c3e8c04020" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="920863a2-0e01-d3fd-79cf-46608f9bdd54" executionId="1e667235-e755-4376-a5ce-a175f11d32f3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ab4505f6-1db6-f952-3489-f7c2dc3cccc2" executionId="bd6d3657-99fc-47aa-a361-13f99422925b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1973614f-005c-a69e-fd35-7a4641e0ac3c" executionId="875bb445-dd78-451d-8da1-faea51cd240f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="541fae83-0f50-7f5c-cc05-1f195ed2e215" executionId="4c6b32ac-454d-4ef5-9435-a2d6131ebe13" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c6b3e1de-1387-1934-a904-8319864eb547" executionId="21c14546-0cfc-42e4-94a7-a027bfb76b1c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cb1d7883-1309-890e-d398-8535ca0e8b9d" executionId="303fac0a-2c01-429a-ab79-1f518f65f355" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fcd5787d-2d80-eb67-cd9c-211d58645678" executionId="241875b4-7795-4bf6-a7e0-890d1dd9b0fd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="aa0aafa1-c79e-dd90-d9d0-7ecc532c61df" executionId="e24c81a6-964f-4f99-b182-efeb848cbd79" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="40f29323-77a7-2934-e480-8e4176f275c6" executionId="c6a4e3ce-ec02-4330-af45-c214743bec23" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="75e8cc10-dc57-9fb9-99b9-4837bc11b49c" executionId="a6c45595-9be1-450d-8c81-7645e33c0259" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c5f1d3f9-0e85-4e14-d5e3-e46cc66ef988" executionId="38d5d90d-c96c-4f0a-a53e-272e560cfa19" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="113" executed="113" passed="107" failed="6" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.03] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 10.0.12)
+[xUnit.net 00:00:01.86]   Discovering: Core.AuthorizationLayer.Tests
+[xUnit.net 00:00:02.97]   Discovered:  Core.AuthorizationLayer.Tests
+[xUnit.net 00:00:03.02]   Starting:    Core.AuthorizationLayer.Tests
+[xUnit.net 00:00:47.69]       Npgsql.NpgsqlException : Exception while reading from stream
+[xUnit.net 00:00:47.69]       ---- System.TimeoutException : Timeout during reading attempt
+[xUnit.net 00:00:47.69]       Stack Trace:
+[xUnit.net 00:00:47.70]            at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+[xUnit.net 00:00:47.70]            at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource&lt;TResult&gt;.GetResult(Int16 token)
+[xUnit.net 00:00:47.70]            at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+[xUnit.net 00:00:47.70]            at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+[xUnit.net 00:00:47.70]            at Npgsql.NpgsqlDataReader.NextResult()
+[xUnit.net 00:00:47.70]            at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+[xUnit.net 00:00:47.70]            at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+[xUnit.net 00:00:47.70]            at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+[xUnit.net 00:00:47.70]            at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+[xUnit.net 00:00:47.70]         /workspace/tests/Shared/PostgresTestDatabase.cs(56,0): at WebAppArchitecture.Tests.Shared.PostgresTestDatabase.Dispose()
+[xUnit.net 00:00:47.70]         /workspace/tests/Core.AuthorizationLayer.Tests/RbacFixture.cs(87,0): at Core.AuthorizationLayer.Tests.RbacFixture.Dispose()
+[xUnit.net 00:00:47.70]         /workspace/tests/Core.AuthorizationLayer.Tests/Stage4LargeAccessTests.cs(63,0): at Core.AuthorizationLayer.Tests.Stage4LargeAccessTests.T14_EffectiveAccessAndRoleOperation_HaveQueryableIndexes()
+[xUnit.net 00:00:47.70]         /workspace/tests/Core.AuthorizationLayer.Tests/Stage4LargeAccessTests.cs(54,0): at Core.AuthorizationLayer.Tests.Stage4LargeAccessTests.T14_EffectiveAccessAndRoleOperation_HaveQueryableIndexes()
+[xUnit.net 00:00:47.70]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:47.70]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:47.70]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:47.70]         
+[xUnit.net 00:00:48.93]       Npgsql.NpgsqlException : Exception while reading from stream
+[xUnit.net 00:00:48.93]       ---- System.TimeoutException : Timeout during reading attempt
+[xUnit.net 00:00:48.93]       Stack Trace:
+[xUnit.net 00:00:48.93]            at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+[xUnit.net 00:00:48.93]            at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource&lt;TResult&gt;.GetResult(Int16 token)
+[xUnit.net 00:00:48.93]            at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+[xUnit.net 00:00:48.93]            at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+[xUnit.net 00:00:48.94]            at Npgsql.NpgsqlDataReader.NextResult()
+[xUnit.net 00:00:48.94]            at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+[xUnit.net 00:00:48.94]            at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+[xUnit.net 00:00:48.94]            at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+[xUnit.net 00:00:48.94]            at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+[xUnit.net 00:00:48.94]         /workspace/tests/Shared/PostgresTestDatabase.cs(56,0): at WebAppArchitecture.Tests.Shared.PostgresTestDatabase.Dispose()
+[xUnit.net 00:00:48.94]         /workspace/tests/Core.AuthorizationLayer.Tests/Stage2ProviderIntegrationTests.cs(41,0): at Core.AuthorizationLayer.Tests.Stage2ProviderIntegrationTests.FileDatabase.Dispose()
+[xUnit.net 00:00:48.94]         /workspace/tests/Core.AuthorizationLayer.Tests/Stage2ProviderIntegrationTests.cs(69,0): at Core.AuthorizationLayer.Tests.Stage2ProviderIntegrationTests.T12_SeparateContexts_CommitIsVisibleAfterTransaction()
+[xUnit.net 00:00:48.94]            at Core.AuthorizationLayer.Tests.Stage2ProviderIntegrationTests.T12_SeparateContexts_CommitIsVisibleAfterTransaction()
+[xUnit.net 00:00:48.94]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:48.94]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:48.94]         
+[xUnit.net 00:00:50.56]       Npgsql.NpgsqlException : Exception while reading from stream
+[xUnit.net 00:00:50.56]       ---- System.TimeoutException : Timeout during reading attempt
+[xUnit.net 00:00:50.56]       Stack Trace:
+[xUnit.net 00:00:50.57]            at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+[xUnit.net 00:00:50.57]            at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource&lt;TResult&gt;.GetResult(Int16 token)
+[xUnit.net 00:00:50.57]            at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+[xUnit.net 00:00:50.57]            at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+[xUnit.net 00:00:50.57]            at Npgsql.NpgsqlDataReader.NextResult()
+[xUnit.net 00:00:50.57]            at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+[xUnit.net 00:00:50.57]            at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+[xUnit.net 00:00:50.57]            at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+[xUnit.net 00:00:50.57]            at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+[xUnit.net 00:00:50.57]         /workspace/tests/Shared/PostgresTestDatabase.cs(56,0): at WebAppArchitecture.Tests.Shared.PostgresTestDatabase.Dispose()
+[xUnit.net 00:00:50.57]         /workspace/tests/Core.AuthorizationLayer.Tests/RbacFixture.cs(87,0): at Core.AuthorizationLayer.Tests.RbacFixture.Dispose()
+[xUnit.net 00:00:50.57]         /workspace/tests/Core.AuthorizationLayer.Tests/ProjectionTests.cs(19,0): at Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRoot_FlowsDown(String target, Boolean expected)
+[xUnit.net 00:00:50.57]            at Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRoot_FlowsDown(String target, Boolean expected)
+[xUnit.net 00:00:50.57]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:50.57]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:50.57]         
+[xUnit.net 00:00:51.50]       Npgsql.NpgsqlException : Exception while reading from stream
+[xUnit.net 00:00:51.50]       ---- System.TimeoutException : Timeout during reading attempt
+[xUnit.net 00:00:51.50]       Stack Trace:
+[xUnit.net 00:00:51.50]            at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+[xUnit.net 00:00:51.50]            at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource&lt;TResult&gt;.GetResult(Int16 token)
+[xUnit.net 00:00:51.50]            at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+[xUnit.net 00:00:51.50]            at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+[xUnit.net 00:00:51.50]            at Npgsql.NpgsqlDataReader.NextResult()
+[xUnit.net 00:00:51.50]            at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+[xUnit.net 00:00:51.50]            at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+[xUnit.net 00:00:51.50]            at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+[xUnit.net 00:00:51.50]            at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+[xUnit.net 00:00:51.50]         /workspace/tests/Shared/PostgresTestDatabase.cs(56,0): at WebAppArchitecture.Tests.Shared.PostgresTestDatabase.Dispose()
+[xUnit.net 00:00:51.50]         /workspace/tests/Core.AuthorizationLayer.Tests/RbacFixture.cs(87,0): at Core.AuthorizationLayer.Tests.RbacFixture.Dispose()
+[xUnit.net 00:00:51.50]         /workspace/tests/Core.AuthorizationLayer.Tests/Stage4IncrementalImpactTests.cs(84,0): at Core.AuthorizationLayer.Tests.Stage4IncrementalImpactTests.T14_LocalDenySynchronizesOnlySelectedBranch()
+[xUnit.net 00:00:51.50]            at Core.AuthorizationLayer.Tests.Stage4IncrementalImpactTests.T14_LocalDenySynchronizesOnlySelectedBranch()
+[xUnit.net 00:00:51.50]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:51.50]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:51.50]         
+[xUnit.net 00:00:51.53]       Npgsql.NpgsqlException : Exception while reading from stream
+[xUnit.net 00:00:51.53]       ---- System.TimeoutException : Timeout during reading attempt
+[xUnit.net 00:00:51.53]       Stack Trace:
+[xUnit.net 00:00:51.53]            at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+[xUnit.net 00:00:51.53]            at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource&lt;TResult&gt;.GetResult(Int16 token)
+[xUnit.net 00:00:51.53]            at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+[xUnit.net 00:00:51.53]            at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+[xUnit.net 00:00:51.53]            at Npgsql.NpgsqlDataReader.NextResult()
+[xUnit.net 00:00:51.53]            at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+[xUnit.net 00:00:51.53]            at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+[xUnit.net 00:00:51.53]            at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+[xUnit.net 00:00:51.53]            at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+[xUnit.net 00:00:51.53]         /workspace/tests/Shared/PostgresTestDatabase.cs(56,0): at WebAppArchitecture.Tests.Shared.PostgresTestDatabase.Dispose()
+[xUnit.net 00:00:51.53]         /workspace/tests/Core.AuthorizationLayer.Tests/RbacFixture.cs(87,0): at Core.AuthorizationLayer.Tests.RbacFixture.Dispose()
+[xUnit.net 00:00:51.53]         /workspace/tests/Core.AuthorizationLayer.Tests/AdditionalAuthorizationTests.cs(197,0): at Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T07_NewlyCreatedChild_FullAndTargetedProjectionsAgree()
+[xUnit.net 00:00:51.53]            at Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T07_NewlyCreatedChild_FullAndTargetedProjectionsAgree()
+[xUnit.net 00:00:51.53]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:51.53]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:51.53]         
+[xUnit.net 00:00:51.55]       Npgsql.NpgsqlException : Exception while reading from stream
+[xUnit.net 00:00:51.55]       ---- System.TimeoutException : Timeout during reading attempt
+[xUnit.net 00:00:51.55]       Stack Trace:
+[xUnit.net 00:00:51.55]            at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+[xUnit.net 00:00:51.55]            at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource&lt;TResult&gt;.GetResult(Int16 token)
+[xUnit.net 00:00:51.55]            at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+[xUnit.net 00:00:51.55]            at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+[xUnit.net 00:00:51.55]            at Npgsql.NpgsqlDataReader.NextResult()
+[xUnit.net 00:00:51.55]            at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+[xUnit.net 00:00:51.55]            at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+[xUnit.net 00:00:51.55]            at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+[xUnit.net 00:00:51.55]            at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+[xUnit.net 00:00:51.55]         /workspace/tests/Shared/PostgresTestDatabase.cs(56,0): at WebAppArchitecture.Tests.Shared.PostgresTestDatabase.Dispose()
+[xUnit.net 00:00:51.55]         /workspace/tests/Core.AuthorizationLayer.Tests/RbacFixture.cs(87,0): at Core.AuthorizationLayer.Tests.RbacFixture.Dispose()
+[xUnit.net 00:00:51.55]         /workspace/tests/Core.AuthorizationLayer.Tests/SecuredConcurrencyTests.cs(76,0): at Core.AuthorizationLayer.Tests.SecuredConcurrencyTests.UnpagedVectorsRemainUnboundedAndPagesKeepStableOrderingAndAuthorization()
+[xUnit.net 00:00:51.55]            at Core.AuthorizationLayer.Tests.SecuredConcurrencyTests.UnpagedVectorsRemainUnboundedAndPagesKeepStableOrderingAndAuthorization()
+[xUnit.net 00:00:51.55]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:51.55]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:51.55]         
+[xUnit.net 00:03:15.48]   Finished:    Core.AuthorizationLayer.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="672e2b22df40" outcome="Error" timestamp="2026-10-18T08:07:20.7938414+00:00">
+        <Text>[xUnit.net 00:00:47.69]     Core.AuthorizationLayer.Tests.Stage4LargeAccessTests.T14_EffectiveAccessAndRoleOperation_HaveQueryableIndexes [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="672e2b22df40" outcome="Error" timestamp="2026-10-18T08:07:22.0553206+00:00">
+        <Text>[xUnit.net 00:00:48.93]     Core.AuthorizationLayer.Tests.Stage2ProviderIntegrationTests.T12_SeparateContexts_CommitIsVisibleAfterTransaction [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="672e2b22df40" outcome="Error" timestamp="2026-10-18T08:07:23.6675185+00:00">
+        <Text>[xUnit.net 00:00:50.56]     Core.AuthorizationLayer.Tests.ProjectionTests.T02_Role_AtRoot_FlowsDown(target: "request", expected: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="672e2b22df40" outcome="Error" timestamp="2026-10-18T08:07:24.6116066+00:00">
+        <Text>[xUnit.net 00:00:51.50]     Core.AuthorizationLayer.Tests.Stage4IncrementalImpactTests.T14_LocalDenySynchronizesOnlySelectedBranch [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="672e2b22df40" outcome="Error" timestamp="2026-10-18T08:07:24.6581046+00:00">
+        <Text>[xUnit.net 00:00:51.53]     Core.AuthorizationLayer.Tests.AdditionalAuthorizationTests.T07_NewlyCreatedChild_FullAndTargetedProjectionsAgree [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="672e2b22df40" outcome="Error" timestamp="2026-10-18T08:07:24.6583321+00:00">
+        <Text>[xUnit.net 00:00:51.55]     Core.AuthorizationLayer.Tests.SecuredConcurrencyTests.UnpagedVectorsRemainUnboundedAndPagesKeepStableOrderingAndAuthorization [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>
