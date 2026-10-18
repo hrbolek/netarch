@@ -28,7 +28,7 @@ public static class GroupTypeEndpointExtensions
                 """);
         typeGroup.MapGet("/list", BaseResolvers.List<GroupTypeModel, GroupTypeResponse, IGroupTypeService>).WithName("GroupTypeList").ApplyJsonModel<GroupTypeResponse[]>()
             .WithDescription("""
-                Lists entities with the List RBAC operation. Optional `where` is a Hasura-like JSON filter, and `take` limits the result to 1..200 rows.
+                Lists entities readable by the current actor. Optional `where` is a Hasura-like JSON filter, and `take` limits the result to 1..200 rows.
                 """);
         typeGroup.MapPut("/update", BaseResolvers.Update<GroupTypeModel, GroupTypeResponse, GroupTypeUpdateRequest, IGroupTypeService>).WithName("GroupTypeUpdate").ApplyJsonModel<GroupTypeResponse>()
             .WithDescription("""

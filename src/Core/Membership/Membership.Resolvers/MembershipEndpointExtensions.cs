@@ -87,7 +87,7 @@ public static class MembershipEndpointExtensions
             .WithName("MembershipList")
             .ApplyViewModel<MembershipViewListPage, MembershipResponse[]>()
                 .WithDescription("""
-                    Lists entities with the List RBAC operation. Optional `where` is a Hasura-like JSON filter, and `take` limits the result to 1..200 rows.
+                    Lists entities readable by the current actor. Optional `where` is a Hasura-like JSON filter, and `take` limits the result to 1..200 rows.
                     """);
 
         group.MapPut("/update", BaseResolvers.Update<MembershipModel, MembershipResponse, MembershipUpdateRequest, IMembershipService>)

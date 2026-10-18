@@ -1,0 +1,14 @@
+---
+description: Shared ZArchitecture instructions and vendor-neutral agent knowledge entry point.
+alwaysApply: true
+---
+
+Use [`AGENTS.md`](../../AGENTS.md) as the primary repository guidance. Stable
+architecture rules and accepted decisions are in
+[`docs/architecture/`](../../docs/architecture/); canonical optional role
+specifications are in [`agent-roles/`](../../agent-roles/) and reusable
+portable skills are in [`.agents/skills/`](../../.agents/skills/).
+
+This Cursor rule is an index only. Do not duplicate or redefine those
+contracts. Agent features are optional; use ordinary deterministic build,
+test, and Git workflows when no agent features are available.

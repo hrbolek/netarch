@@ -14,7 +14,7 @@ namespace Core.Host.Integration.Tests;
 public sealed class GroupListOperationTests
 {
     [Fact]
-    public async Task ListOperationIsFixedAndCreatePickerUsesCreatePermission()
+    public async Task ListUsesReadPermissionAndCreatePickerUsesCreatePermission()
     {
         using var host = new IsolatedHost();
         using var client = host.CreateClient();
@@ -40,7 +40,7 @@ public sealed class GroupListOperationTests
         using var listRequest = ActingRequest.Get(prefix + "/list?take=20", actor);
         using var list = await client.SendAsync(listRequest);
         Assert.Equal(HttpStatusCode.OK, list.StatusCode);
-        Assert.Empty((await list.Content.ReadFromJsonAsync<GroupResponse[]>())!);
+        Assert.NotEmpty((await list.Content.ReadFromJsonAsync<GroupResponse[]>())!);
 
         using var configurableListRequest = ActingRequest.Get(prefix + "/list?operation=create", actor);
         using var configurableList = await client.SendAsync(configurableListRequest);

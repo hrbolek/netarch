@@ -6786,7 +6786,7 @@
         "tags": [
           "Group"
         ],
-        "description": "Lists entities with the List RBAC operation. Optional `where` is a Hasura-like JSON filter, and `take` limits the result to 1..200 rows.",
+        "description": "Lists entities readable by the current actor. Optional `where` is a Hasura-like JSON filter, and `take` limits the result to 1..200 rows.",
         "operationId": "GroupList",
         "responses": {
           "200": {
@@ -7132,7 +7132,7 @@
         "tags": [
           "GroupType"
         ],
-        "description": "Lists entities with the List RBAC operation. Optional `where` is a Hasura-like JSON filter, and `take` limits the result to 1..200 rows.",
+        "description": "Lists entities readable by the current actor. Optional `where` is a Hasura-like JSON filter, and `take` limits the result to 1..200 rows.",
         "operationId": "GroupTypeList",
         "responses": {
           "200": {
@@ -7601,7 +7601,7 @@
         "tags": [
           "Membership"
         ],
-        "description": "Lists entities with the List RBAC operation. Optional `where` is a Hasura-like JSON filter, and `take` limits the result to 1..200 rows.",
+        "description": "Lists entities readable by the current actor. Optional `where` is a Hasura-like JSON filter, and `take` limits the result to 1..200 rows.",
         "operationId": "MembershipList",
         "responses": {
           "200": {
@@ -8003,7 +8003,7 @@
         "tags": [
           "Role"
         ],
-        "description": "Lists entities with the List RBAC operation. Optional `where` is a Hasura-like JSON filter, and `take` limits the result to 1..200 rows.",
+        "description": "Lists entities readable by the current actor. Optional `where` is a Hasura-like JSON filter, and `take` limits the result to 1..200 rows.",
         "operationId": "RoleList",
         "responses": {
           "200": {

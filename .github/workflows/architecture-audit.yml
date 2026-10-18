@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Validate optional vendor adapters, portable skills and architecture rules
+        run: python3 tools/validate-agent-framework.py
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x

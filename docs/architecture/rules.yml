@@ -1,0 +1,107 @@
+schema_version: 1
+description: >
+  Stable repository architecture contracts for reviews and deterministic tests.
+  A recommendation is not a violation unless a rule below or an accepted
+  decision says so. Keep source evidence current when moving implementations.
+authority:
+  - accepted_architecture_decisions
+  - verified_contracts_and_invariants
+  - current_source_and_tests
+  - established_implementation_conventions
+  - agent_recommendations
+rules:
+  - id: ZA-LAYER-001
+    title: Keep compile-time dependencies directed toward lower-level contracts
+    severity: error
+    contract: Models contain domain persistence/DTO contracts; Services depend on contracts and authorization, not HTTP/UI; Resolvers call services and do not own persistence; UI renders models without becoming a Services dependency.
+    evidence:
+      - src/Core/Contracts/
+      - src/Core/AuthorizationLayer/SecuredEntityService.cs
+      - src/Core/Base/Resolvers/BaseResolvers.cs
+      - src/Core/Base/Resolvers/ViewModelEndpointExtensions.cs
+      - templates/DOMAIN_CONTRACT.md
+    verification:
+      - tests/Core/Host.Integration.Tests/ArchitectureDependencyTests.cs
+      - dotnet build SignFakeArchitecture.sln --configuration Release
+  - id: ZA-GENERIC-001
+    title: Discover and reuse generic contracts before adding entity-specific infrastructure
+    severity: error
+    contract: Preserve generic constraints and static abstract contracts; prefer existing secured/tree services, resolver helpers, DTO projections, DI and Razor primitives when they express the requirement. Do not generalize merely to remove a few obvious lines.
+    evidence:
+      - src/Core/Contracts/DTO/IEntityProjection.cs
+      - src/Core/Contracts/Services/ISecuredEntityService.cs
+      - src/Core/AuthorizationLayer/SecuredEntityService.cs
+      - src/Core/AuthorizationLayer/TreeSecuredService.cs
+      - src/Core/Base/Resolvers/BaseResolvers.cs
+      - src/Core/Base/UI/Components/
+  - id: ZA-ENTITY-001
+    title: Implement an entity as a complete vertical slice with minimal local code
+    severity: error
+    contract: Discover the closest domain and reusable mechanisms first; then implement only required model, mapping, DTO, service, resolver, UI, DI, schema and test code. Do not duplicate generic Core or another domain wholesale.
+    evidence:
+      - templates/DOMAIN_CONTRACT.md
+      - templates/ENTITY_CONTRACT.md
+      - templates/REFERENCE_CATALOG.md
+      - src/Apps/Events/README.md
+  - id: ZA-AUTH-001
+    title: Keep authorization at the trusted service boundary
+    severity: error
+    contract: Ordinary reads must use operation-filtered secured queries and ordinary writes must use authorized stage/save transactions. HTTP actor checks do not replace RBAC checks. Raw persistence is limited to explicitly justified invariants or narrowly scoped commands.
+    evidence:
+      - src/Core/AuthorizationLayer/SecuredEntityService.cs
+      - src/Core/AuthorizationLayer/TreeSecuredService.cs
+      - src/Core/Contracts/Security/IRbacAuthorizationService.cs
+      - templates/DOMAIN_CONTRACT.md
+    verification:
+      - tests/Core/Host.Integration.Tests/ArchitectureDependencyTests.cs
+      - tests/Core/Host.Integration.Tests/EventsArchitectureTests.cs
+      - dotnet test SignFakeArchitecture.sln --configuration Release --no-build --no-restore
+  - id: ZA-API-001
+    title: Keep resolver endpoints thin and preserve API metadata and representations
+    severity: error
+    contract: Resolvers orchestrate trusted actor resolution, service calls and HTTP result shaping. Reuse BaseResolvers and ApplyViewModel/ApplyJsonModel where applicable; keep route names, descriptions and response behavior explicit.
+    evidence:
+      - src/Core/Base/Resolvers/BaseResolvers.cs
+      - src/Core/Base/Resolvers/ViewModelEndpointExtensions.cs
+      - templates/ENDPOINT_CONTRACT.md
+  - id: ZA-UI-001
+    title: Reuse the shared Razor component system for presentation
+    severity: error
+    contract: Render HTML through Razor components and existing shared primitives when suitable. Do not place large HTML strings or visual fragments in resolvers or services.
+    evidence:
+      - src/Core/Base/UI/Components/
+      - src/Core/Base/UI/Pages/
+      - src/Apps/Events/Events.UI/
+      - src/Apps/Events/README.md
+  - id: ZA-CORE-001
+    title: Analyze and regression-test shared generic infrastructure changes
+    severity: error
+    contract: Before changing shared Core contracts or generic implementations, record affected type constraints, consumers, behavior and compatibility risks; validate representative downstream layers and focused regression tests.
+    evidence:
+      - src/Core/Contracts/
+      - src/Core/AuthorizationLayer/
+      - tests/Core/Host.Integration.Tests/ArchitectureDependencyTests.cs
+      - tools/audit-architecture.sh
+    verification:
+      - dotnet build SignFakeArchitecture.sln --configuration Release
+      - dotnet test SignFakeArchitecture.sln --configuration Release --no-build --no-restore
+  - id: ZA-DOC-001
+    title: Keep architectural claims evidence-backed and report conflicts
+    severity: error
+    contract: Prefer accepted decision records, verified contracts, source and tests in that order. Cite real implementations; label unverified proposals as recommendations and do not silently resolve contradictory sources.
+    evidence:
+      - AGENTS.md
+      - docs/architecture/rules.yml
+      - templates/DOMAIN_CONTRACT.md
+  - id: ZA-MIGRATE-001
+    title: Treat migrations and refactors as behavior-preserving unless approved otherwise
+    severity: error
+    contract: Inventory callers, data compatibility, DI and dependency effects before migration. Preserve security checks and data; provide explicit backfill/rollback reasoning for persistence changes.
+    evidence:
+      - tools/audit-architecture.sh
+      - .github/workflows/architecture-audit.yml
+recommendation_policy:
+  - id: ZA-REC-001
+    rule: Recommendations are advisory and must be labeled as recommendations, not violations.
+  - id: ZA-REC-002
+    rule: Shared abstractions are justified by demonstrated cross-entity reuse, not by speculative future flexibility.

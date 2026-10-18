@@ -87,7 +87,7 @@ public static class RoleEndpointExtensions
             .WithName("RoleList")
             .ApplyViewModel<RoleViewListPage, RoleResponse[]>()
                 .WithDescription("""
-                    Lists entities with the List RBAC operation. Optional `where` is a Hasura-like JSON filter, and `take` limits the result to 1..200 rows.
+                    Lists entities readable by the current actor. Optional `where` is a Hasura-like JSON filter, and `take` limits the result to 1..200 rows.
                     """);
 
         group.MapPut("/update", BaseResolvers.Update<RoleModel, RoleResponse, RoleUpdateRequest, IRoleService>)

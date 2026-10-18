@@ -72,7 +72,7 @@ public static class BaseResolvers
             });
 
         return await ListCore<TDBModel, TDTOModel, TService>(
-            RbacOperations.List, httpContext, service, cancellationToken);
+            RbacOperations.Read, httpContext, service, cancellationToken);
     }
 
     public static async Task<IResult> ListForCreate<

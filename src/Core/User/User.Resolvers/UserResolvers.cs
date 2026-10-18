@@ -168,7 +168,9 @@ public static class UserResolvers
             }
 
             var page = await membershipService.VectorPageAsync<MembershipResponse>(
-                predicate, RbacOperations.List, options, cancellationToken);
+                // Read currently grants visibility to the user's membership list; a stricter
+                // list-specific or dedicated policy can be introduced here in the future.
+                predicate, RbacOperations.Read, options, cancellationToken);
             memberships = page.Items;
             pageInfo = VectorQueryParser.WithRequestState(httpContext, page.PageInfo);
             VectorQueryParser.WritePagingHeaders(httpContext, pageInfo);
